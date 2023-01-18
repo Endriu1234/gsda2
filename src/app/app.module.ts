@@ -12,6 +12,9 @@ import { reducers } from './app.reducer';
 import { AppRoutingModule } from './app-routing.module';
 import { WelcomePage } from './navigation/pages/welcome/welcome.page';
 import { MenuSwitchComponent } from './navigation/components/menu-switch/menu-switch.component';
+import { EffectsModule } from '@ngrx/effects';
+import { ItemsEffects } from './items/store/items.effects';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -27,7 +30,9 @@ import { MenuSwitchComponent } from './navigation/components/menu-switch/menu-sw
     MaterialModule,
     FlexLayoutModule,
     StoreModule.forRoot(reducers),
-    AppRoutingModule
+    AppRoutingModule,
+    EffectsModule.forRoot([ItemsEffects]),
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

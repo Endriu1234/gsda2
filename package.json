@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "backend": "nodemon backend/app.js"
   },
   "private": true,
   "dependencies": {
@@ -21,7 +22,18 @@
     "@angular/platform-browser": "^14.1.0",
     "@angular/platform-browser-dynamic": "^14.1.0",
     "@angular/router": "^14.1.0",
+    "@ngrx/effects": "^14.3.3",
     "@ngrx/store": "^14.3.1",
+    "@types/lodash": "^4.14.191",
+    "axios": "^1.2.2",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-mongo-sanitize": "^2.2.0",
+    "lodash": "^4.17.21",
+    "method-override": "^3.0.0",
+    "mongoose": "^6.7.2",
+    "node-cache": "^5.1.2",
+    "oracledb": "^5.5.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
