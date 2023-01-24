@@ -5,12 +5,9 @@
             <mat-card-subtitle><button mat-button>Fill From Id</button></mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-            <mat-chip-list>
-                <mat-chip>One fish</mat-chip>
-            </mat-chip-list>
-            <p *ngFor="let tracker of (trackers$ | async)">
-                {{ tracker.name }}
-            </p>
+            <mat-chip-listbox>
+                <mat-chip-option *ngFor="let tracker of (trackers$ | async)">{{ tracker.name }}</mat-chip-option>
+            </mat-chip-listbox>
         </mat-card-content>
         <mat-card-actions [align]="'end'">
             <button mat-raised-button color="accent">Create and Open</button>

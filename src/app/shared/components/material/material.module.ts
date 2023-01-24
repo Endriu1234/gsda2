@@ -2,9 +2,9 @@ import { NgModule } from "@angular/core";
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 
@@ -13,21 +13,21 @@ import { MatChipsModule } from '@angular/material/chips';
         MatButtonModule,
         MatIconModule,
         MatSidenavModule,
-        MatListModule,
         MatToolbarModule,
         MatExpansionModule,
-        MatCardModule,
-        MatChipsModule
+        MatChipsModule,
+        MatListModule,
+        MatCardModule
     ],
     exports: [
         MatButtonModule,
         MatIconModule,
         MatSidenavModule,
-        MatListModule,
         MatToolbarModule,
         MatExpansionModule,
-        MatCardModule,
-        MatChipsModule
+        MatChipsModule,
+        MatListModule,
+        MatCardModule
     ]
 })
 export class MaterialModule { }
