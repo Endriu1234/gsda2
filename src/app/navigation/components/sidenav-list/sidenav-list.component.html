@@ -11,10 +11,10 @@
               <span class="material-symbols-rounded">{{ menu.icon }}</span>
                 <span class="nav-caption">{{ menu.caption }}</span>
               </a>
-          <button type ="button" mat-list-item *ngIf="menu.childMenuItems && menu.childMenuItems.length > 0">
-                <span class="material-symbols-rounded">{{ menu.icon }}</span>
-          <span class="nav-caption">{{ menu.caption }}</span>
-          </button>
+          <div mat-list-item *ngIf="menu.childMenuItems && menu.childMenuItems.length > 0">
+            <span class="material-symbols-rounded">{{ menu.icon }}</span>
+            <span class="nav-caption">{{ menu.caption }}</span>
+          </div>
 
         </mat-panel-title>
       </mat-expansion-panel-header>
