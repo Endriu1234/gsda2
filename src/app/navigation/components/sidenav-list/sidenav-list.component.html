@@ -7,19 +7,20 @@
       class="navigation-menu-item">
       <mat-expansion-panel-header class="menu-item">
         <mat-panel-title>
-          <a  mat-list-item [routerLink]="menu.route" (click)="onToggleSideNav()" *ngIf="!menu.childMenuItems || menu.childMenuItems.length == 0">
-              <span class="material-symbols-rounded">{{ menu.icon }}</span>
+          <div>
+            <a  mat-list-item class="single-menu-item" [routerLink]="menu.route" (click)="onToggleSideNav()" *ngIf="!menu.childMenuItems || menu.childMenuItems.length == 0">
+              <span class="material-symbols-rounded menu-item-icon">{{ menu.icon }}</span>
                 <span class="nav-caption">{{ menu.caption }}</span>
               </a>
-          <div mat-list-item *ngIf="menu.childMenuItems && menu.childMenuItems.length > 0">
-            <span class="material-symbols-rounded">{{ menu.icon }}</span>
-            <span class="nav-caption">{{ menu.caption }}</span>
+            <div mat-list-item *ngIf="menu.childMenuItems && menu.childMenuItems.length > 0">
+              <span class="material-symbols-rounded menu-item-icon ">{{ menu.icon }}</span>
+              <span class="nav-caption">{{ menu.caption }}</span>
+            </div>
           </div>
-
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <a mat-list-item class="child-menu-item" [routerLink]="childMenu.route" (click)="onToggleSideNav()" *ngFor="let childMenu of menu.childMenuItems">
-        <span class="material-symbols-rounded">{{ childMenu.icon }}</span>
+      <a mat-list-item [routerLink]="childMenu.route" (click)="onToggleSideNav()" *ngFor="let childMenu of menu.childMenuItems">
+        <span class="material-symbols-rounded menu-item-icon ">{{ childMenu.icon }}</span>
           <span class="nav-caption">{{ childMenu.caption }}</span>
         </a>
     </mat-expansion-panel>

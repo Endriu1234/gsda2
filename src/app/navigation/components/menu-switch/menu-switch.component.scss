@@ -13,3 +13,7 @@ a:active {
     flex-direction: row;
     align-items: center;
 }
+
+button {
+    --mat-mdc-button-persistent-ripple-color: #3f51b5;
+}
