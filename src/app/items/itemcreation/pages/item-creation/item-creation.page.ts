@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { take, tap } from 'rxjs';
 import * as fromRoot from '../../../../app.reducer';
-import * as fromItems from '../../../store/items.reducer';
+import * as fromItemsSelectors from '../../../store/items.selectors';
 import { initRedmineTrackers } from '../../../store/items.actions';
 import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model';
 import { Observable } from 'rxjs';
@@ -20,12 +20,12 @@ export class ItemCreationPage implements OnInit {
 
   ngOnInit(): void {
 
-    this.store.select(fromItems.getRedmineTrackersLoaded).pipe(take(1)).subscribe(loaded => {
+    this.store.select(fromItemsSelectors.getRedmineTrackersLoaded).pipe(take(1)).subscribe(loaded => {
       if (!loaded)
         this.store.dispatch(initRedmineTrackers());
     });
 
-    this.trackers$ = this.store.select(fromItems.getRedmineTrackers);
+    this.trackers$ = this.store.select(fromItemsSelectors.getRedmineTrackers);
   }
 
 }

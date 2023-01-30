@@ -1,25 +1,7 @@
-import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
-import { initRedmineTrackers, loadRedmineTrackers } from './items.actions';
+import { createReducer, on } from '@ngrx/store';
+import { initRedmineTrackers, loadRedmineTrackers, initRedmineUsers, loadRedmineUsers } from './items.actions';
 import * as _ from 'lodash';
-import { RedmineTracker } from './models/redmine-tracker.model';
-
-
-export interface ItemCreation {
-    redmineTrackersLoaded: boolean;
-    redmineTrackers: RedmineTracker[];
-}
-
-export interface State {
-
-    itemCreation: ItemCreation;
-}
-
-const initialState: State = {
-    itemCreation: {
-        redmineTrackersLoaded: false,
-        redmineTrackers: []
-    }
-}
+import { initialState, State } from './items.state';
 
 export const itemsReducerKey = 'items';
 
@@ -34,9 +16,17 @@ export const itemsReducer = createReducer(initialState,
         newState.itemCreation.redmineTrackers = redmineTrackers;
         newState.itemCreation.redmineTrackersLoaded = true;
         return newState;
+    }),
+    on(initRedmineUsers, (state) => {
+        return {
+            ...state, redmineUsersLoaded: false
+        }
+    }),
+    on(loadRedmineUsers, (state, { redmineUsers }) => {
+        let newState: State = _.cloneDeep(state);
+        newState.itemCreation.redmineUsers = redmineUsers;
+        newState.itemCreation.redmineUsersLoaded = true;
+        return newState;
     }));
 
 
-export const getItemsState = createFeatureSelector<State>(itemsReducerKey);
-export const getRedmineTrackers = createSelector(getItemsState, (state: State) => state.itemCreation.redmineTrackers);
-export const getRedmineTrackersLoaded = createSelector(getItemsState, (state: State) => state.itemCreation.redmineTrackersLoaded);
