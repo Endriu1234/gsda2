@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
 import * as fromRoot from './app.reducer';
 import * as fromNavigation from './navigation/store/navigation.reducer';
 import { changeSidenavOpened } from './navigation/store/navigation.actions';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
