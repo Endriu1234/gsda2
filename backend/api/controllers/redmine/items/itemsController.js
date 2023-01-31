@@ -9,3 +9,8 @@ module.exports.getRedmineUsers = async (req, res) => {
     const trackers = await cacheValueProvider.getValue('redmine_users');
     return res.status(200).json(trackers);
 }
+
+module.exports.getRedmineProjects = async (req, res) => {
+    const projects = await cacheValueProvider.getValue('redmine_projects');
+    return res.status(200).json(projects);
+}

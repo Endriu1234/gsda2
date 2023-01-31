@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromRoot from '../../../../app.reducer';
 import * as fromItemsSelectors from '../../../store/items.selectors';
-import { initRedmineTrackers, initRedmineUsers } from '../../../store/items.actions';
+import { initRedmineProjects, initRedmineTrackers, initRedmineUsers } from '../../../store/items.actions';
 import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model';
 import { Observable, take } from 'rxjs';
 import { RedmineUser } from 'src/app/items/store/models/redmine-user.model';
+import { RedmineProject } from 'src/app/items/store/models/redmine-project.model';
 
 @Component({
   selector: 'app-item-creation',
@@ -16,6 +17,8 @@ export class ItemCreationPage implements OnInit {
 
   trackers$: Observable<RedmineTracker[]> | null = null;
   users$: Observable<RedmineUser[]> | null = null;
+  projects$: Observable<RedmineProject[]> | null = null;
+
 
   constructor(private store: Store<fromRoot.State>) { }
 
@@ -34,6 +37,13 @@ export class ItemCreationPage implements OnInit {
     });
 
     this.users$ = this.store.select(fromItemsSelectors.getRedmineUsers);
+
+    this.store.select(fromItemsSelectors.getRedmineProjectsLoaded).pipe(take(1)).subscribe((loaded: boolean) => {
+      if (!loaded)
+        this.store.dispatch(initRedmineProjects());
+    });
+
+    this.projects$ = this.store.select(fromItemsSelectors.getRedmineProjects);
   }
 
 }
