@@ -7,6 +7,9 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete'
 
 @NgModule({
     imports: [
@@ -17,7 +20,10 @@ import { MatChipsModule } from '@angular/material/chips';
         MatExpansionModule,
         MatChipsModule,
         MatListModule,
-        MatCardModule
+        MatCardModule,
+        MatInputModule,
+        MatSelectModule,
+        MatAutocompleteModule
     ],
     exports: [
         MatButtonModule,
@@ -27,7 +33,10 @@ import { MatChipsModule } from '@angular/material/chips';
         MatExpansionModule,
         MatChipsModule,
         MatListModule,
-        MatCardModule
+        MatCardModule,
+        MatInputModule,
+        MatSelectModule,
+        MatAutocompleteModule
     ]
 })
 export class MaterialModule { }
