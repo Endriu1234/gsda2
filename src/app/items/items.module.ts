@@ -6,6 +6,7 @@ import { ItemCreationPage } from './itemcreation/pages/item-creation/item-creati
 import { ItemsRoutingModule } from './items-routing.module';
 import { BatchItemsCreationPage } from './batchitemscreation/pages/batch-items-creation/batch-items-creation.page';
 import { MaterialModule } from '../shared/components/material/material.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -18,7 +19,8 @@ import { MaterialModule } from '../shared/components/material/material.module';
   imports: [
     CommonModule,
     ItemsRoutingModule,
-    MaterialModule
+    MaterialModule,
+    ReactiveFormsModule
   ]
 })
 export class ItemsModule { }

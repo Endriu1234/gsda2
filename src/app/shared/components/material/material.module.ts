@@ -7,6 +7,10 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+
 
 @NgModule({
     imports: [
@@ -17,7 +21,10 @@ import { MatChipsModule } from '@angular/material/chips';
         MatExpansionModule,
         MatChipsModule,
         MatListModule,
-        MatCardModule
+        MatCardModule,
+        MatAutocompleteModule,
+        MatFormFieldModule,
+        MatInputModule
     ],
     exports: [
         MatButtonModule,
@@ -27,7 +34,10 @@ import { MatChipsModule } from '@angular/material/chips';
         MatExpansionModule,
         MatChipsModule,
         MatListModule,
-        MatCardModule
+        MatCardModule,
+        MatAutocompleteModule,
+        MatFormFieldModule,
+        MatInputModule
     ]
 })
 export class MaterialModule { }
