@@ -1,3 +1,4 @@
+import { RedmineProject } from "./models/redmine-project.model";
 import { RedmineTracker } from "./models/redmine-tracker.model";
 import { RedmineUser } from "./models/redmine-user.model";
 
@@ -6,7 +7,8 @@ export interface ItemCreation {
     redmineTrackers: RedmineTracker[];
     redmineUsersLoaded: boolean;
     redmineUsers: RedmineUser[];
-
+    redmineProjectsLoaded: boolean;
+    redmineProjects: RedmineProject[];
 }
 
 export interface State {
@@ -19,6 +21,8 @@ export const initialState: State = {
         redmineTrackersLoaded: false,
         redmineTrackers: [],
         redmineUsersLoaded: false,
-        redmineUsers: []
+        redmineUsers: [],
+        redmineProjectsLoaded: false,
+        redmineProjects: []
     }
 }

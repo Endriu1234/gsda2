@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { initRedmineTrackers, loadRedmineTrackers } from './items.actions';
+import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, loadRedmineProjects, loadRedmineTrackers, loadRedmineUsers } from './items.actions';
 import { map, switchMap } from "rxjs";
 import { HttpClient } from '@angular/common/http';
 import { RedmineTracker } from './models/redmine-tracker.model';
 import { environment } from 'src/environments/environment';
+import { RedmineUser } from './models/redmine-user.model';
+import { RedmineProject } from './models/redmine-project.model';
 
 const BACKEND_URL = environment.apiUrl + "/redmine/items/get-redmine-trackers";
 
@@ -17,6 +19,18 @@ export class ItemsEffects {
         switchMap(() => {
             return this.http.get<RedmineTracker[]>(environment.apiUrl + '/redmine/items/get-redmine-trackers');
         }), map(redmineTrackers => loadRedmineTrackers({ redmineTrackers }))
+    ));
+
+    initRedmineUsers$ = createEffect(() => this.actions$.pipe(ofType(initRedmineUsers),
+        switchMap(() => {
+            return this.http.get<RedmineUser[]>(environment.apiUrl + '/redmine/items/get-redmine-users');
+        }), map(redmineUsers => loadRedmineUsers({ redmineUsers }))
+    ));
+
+    initRedmineProjects$ = createEffect(() => this.actions$.pipe(ofType(initRedmineProjects),
+        switchMap(() => {
+            return this.http.get<RedmineProject[]>(environment.apiUrl + '/redmine/items/get-redmine-projects');
+        }), map(redmineProjects => loadRedmineProjects({ redmineProjects }))
     ));
 
 }

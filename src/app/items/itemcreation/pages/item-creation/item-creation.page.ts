@@ -2,9 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromRoot from '../../../../app.reducer';
 import * as fromItemsSelectors from '../../../store/items.selectors';
-import { initRedmineTrackers } from '../../../store/items.actions';
+import { initRedmineProjects, initRedmineTrackers, initRedmineUsers } from '../../../store/items.actions';
 import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model';
+import { RedmineUser } from 'src/app/items/store/models/redmine-user.model';
+import { RedmineProject } from 'src/app/items/store/models/redmine-project.model';
 import { Observable, take } from 'rxjs';
+import { RedmineUser } from 'src/app/items/store/models/redmine-user.model';
+import { RedmineProject } from 'src/app/items/store/models/redmine-project.model';
 import {FormBuilder} from '@angular/forms';
 import {startWith, map} from 'rxjs/operators'
 
@@ -97,6 +101,9 @@ export class ItemCreationPage implements OnInit {
 
   sdProjectOptions: Observable<sdProject[]> | null = null;
   trackers$: Observable<RedmineTracker[]> | null = null;
+  users$: Observable<RedmineUser[]> | null = null;
+  projects$: Observable<RedmineProject[]> | null = null;
+
 
   constructor(private store: Store<fromRoot.State>,
     private _formBuilder: FormBuilder) { }
@@ -114,6 +121,19 @@ export class ItemCreationPage implements OnInit {
       startWith(''),
       map(value => this._filterGroup(value || '')),
     );
+    this.store.select(fromItemsSelectors.getRedmineUsersLoaded).pipe(take(1)).subscribe((loaded: boolean) => {
+      if (!loaded)
+        this.store.dispatch(initRedmineUsers());
+    });
+
+    this.users$ = this.store.select(fromItemsSelectors.getRedmineUsers);
+
+    this.store.select(fromItemsSelectors.getRedmineProjectsLoaded).pipe(take(1)).subscribe((loaded: boolean) => {
+      if (!loaded)
+        this.store.dispatch(initRedmineProjects());
+    });
+
+    this.projects$ = this.store.select(fromItemsSelectors.getRedmineProjects);
   }
 
   private _filterGroup(value: string): sdProject[] {
