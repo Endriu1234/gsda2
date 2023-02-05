@@ -7,12 +7,10 @@ import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model
 import { RedmineUser } from 'src/app/items/store/models/redmine-user.model';
 import { RedmineProject } from 'src/app/items/store/models/redmine-project.model';
 import { Observable, take } from 'rxjs';
-import { RedmineUser } from 'src/app/items/store/models/redmine-user.model';
-import { RedmineProject } from 'src/app/items/store/models/redmine-project.model';
-import {FormBuilder} from '@angular/forms';
-import {startWith, map} from 'rxjs/operators'
+import { startWith, map } from 'rxjs/operators'
+import { FormBuilder } from '@angular/forms';
 
-export interface sdProject {
+export interface rmUser {
   letter: string;
   names: string[];
 }
@@ -31,10 +29,10 @@ export const _filter = (opt: string[], value: string): string[] => {
 export class ItemCreationPage implements OnInit {
 
   stateForm = this._formBuilder.group({
-    sdProject: '',
+    rmUser: '',
   });
 
-  sdProjects: sdProject[] = [
+  rmUsers: rmUser[] = [
     {
       letter: 'A',
       names: ['Alabama', 'Alaska', 'Arizona', 'Arkansas'],
@@ -99,10 +97,10 @@ export class ItemCreationPage implements OnInit {
     },
   ];
 
-  sdProjectOptions: Observable<sdProject[]> | null = null;
   trackers$: Observable<RedmineTracker[]> | null = null;
   users$: Observable<RedmineUser[]> | null = null;
   projects$: Observable<RedmineProject[]> | null = null;
+  rmUsersOptions: Observable<rmUser[]> | null = null;
 
 
   constructor(private store: Store<fromRoot.State>,
@@ -117,10 +115,6 @@ export class ItemCreationPage implements OnInit {
 
     this.trackers$ = this.store.select(fromItemsSelectors.getRedmineTrackers);
 
-    this.sdProjectOptions = this.stateForm.get('sdProject')!.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filterGroup(value || '')),
-    );
     this.store.select(fromItemsSelectors.getRedmineUsersLoaded).pipe(take(1)).subscribe((loaded: boolean) => {
       if (!loaded)
         this.store.dispatch(initRedmineUsers());
@@ -134,16 +128,21 @@ export class ItemCreationPage implements OnInit {
     });
 
     this.projects$ = this.store.select(fromItemsSelectors.getRedmineProjects);
+
+    this.rmUsersOptions = this.stateForm.get('rmUser')!.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filterGroupUser(value || '')),
+    );
   }
 
-  private _filterGroup(value: string): sdProject[] {
+  private _filterGroupUser(value: string): rmUser[] {
     if (value) {
-      return this.sdProjects
+      return this.rmUsers
         .map(group => ({letter: group.letter, names: _filter(group.names, value)}))
         .filter(group => group.names.length > 0);
     }
 
-    return this.sdProjects;
+    return this.rmUsers;
   }
 
 }

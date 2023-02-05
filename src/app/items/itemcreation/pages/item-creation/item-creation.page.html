@@ -8,18 +8,16 @@
             <mat-card class="mt-1">
                 <mat-card-content>
                     <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
-                        <mat-label>SoftDev Project</mat-label>
+                        <mat-label>Redmine Project</mat-label>
                         <input type="text"
                             matInput
-                            formControlName="sdProject"
+                            formControlName="rmProject"
                             required
                             [matAutocomplete]="autoProject">
                         <mat-autocomplete #autoProject="matAutocomplete">
-                            <mat-optgroup *ngFor="let project of sdProjectOptions | async" [label]="project.letter">
-                                <mat-option *ngFor="let name of project.names" [value]="name">
-                                    {{name}}
-                                </mat-option>
-                            </mat-optgroup>
+                            <mat-option *ngFor="let project of (projects$ | async)" [value]="project">
+                                {{project.name}}
+                            </mat-option>
                         </mat-autocomplete>
                     </mat-form-field>
                 </mat-card-content>
@@ -44,15 +42,15 @@
                         </tr>
                         <tr>
                             <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
-                                <mat-label>SoftDev Project</mat-label>
+                                <mat-label>Redmine Users</mat-label>
                                 <input type="text"
                                     matInput
-                                    formControlName="sdProject"
+                                    formControlName="rmUser"
                                     required
-                                    [matAutocomplete]="autoProject">
-                                <mat-autocomplete #autoProject="matAutocomplete">
-                                    <mat-optgroup *ngFor="let project of sdProjectOptions | async" [label]="project.letter">
-                                        <mat-option *ngFor="let name of project.names" [value]="name">
+                                    [matAutocomplete]="autoUser">
+                                <mat-autocomplete #autoUser="matAutocomplete">
+                                    <mat-optgroup *ngFor="let user of rmUsersOptions | async" [label]="user.letter">
+                                        <mat-option *ngFor="let name of user.names" [value]="name">
                                             {{name}}
                                         </mat-option>
                                     </mat-optgroup>
