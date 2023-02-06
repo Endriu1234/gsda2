@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import { RedmineTracker } from './models/redmine-tracker.model';
 import { RedmineUser } from './models/redmine-user.model';
 import { RedmineProject } from './models/redmine-project.model';
+import { RedmineUsersFilter } from './models/redmine-user-filter';
 
 export function initRedmineTrackers(state: State): State {
     const newState = _.cloneDeep(state);
@@ -27,8 +28,30 @@ export function initRedmineUsers(state: State): State {
 export function loadRedmineUsers(state: State, args: { redmineUsers: RedmineUser[] }): State {
     const newState: State = _.cloneDeep(state);
     newState.itemCreation.redmineUsers = args.redmineUsers;
+    newState.itemCreation.redmineUsersFiltered = filterRedmineUsers(args.redmineUsers, newState.itemCreation.redmineUsersFilter);
     newState.itemCreation.redmineUsersLoaded = true;
     return newState;
+}
+
+export function setRedmineUsersFilter(state: State, args: { redmineUsersFilter: RedmineUsersFilter }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemCreation.redmineUsersFilter = args.redmineUsersFilter;
+    newState.itemCreation.redmineUsersFiltered = filterRedmineUsers(newState.itemCreation.redmineUsers, args.redmineUsersFilter);
+    return newState;
+}
+
+function filterRedmineUsers(allUsers: RedmineUser[], filter: RedmineUsersFilter): RedmineUser[] {
+    if (filter.filter) {
+        if (filter.filter instanceof RedmineUser)
+            return [filter.filter];
+
+        if (typeof filter.filter === 'string') {
+            let filterStr: string = filter.filter;
+            return allUsers.filter(u => u.name.toLocaleLowerCase().includes(filterStr.toLocaleLowerCase()));
+        }
+    }
+
+    return allUsers;
 }
 
 export function initRedmineProjects(state: State): State {
@@ -43,4 +66,6 @@ export function loadRedmineProjects(state: State, args: { redmineProjects: Redmi
     newState.itemCreation.redmineProjectsLoaded = true;
     return newState;
 }
+
+
 

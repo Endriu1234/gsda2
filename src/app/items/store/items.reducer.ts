@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { initRedmineTrackers, loadRedmineTrackers, initRedmineUsers, loadRedmineUsers, initRedmineProjects, loadRedmineProjects } from './items.actions';
+import { initRedmineTrackers, loadRedmineTrackers, initRedmineUsers, loadRedmineUsers, initRedmineProjects, loadRedmineProjects, setRedmineUsersFilter } from './items.actions';
 import { initialState } from './items.state';
 import * as fromReducerHanders from './items.reducer-handlers';
 
@@ -11,4 +11,5 @@ export const itemsReducer = createReducer(initialState,
     on(initRedmineUsers, fromReducerHanders.initRedmineUsers),
     on(loadRedmineUsers, fromReducerHanders.loadRedmineUsers),
     on(initRedmineProjects, fromReducerHanders.initRedmineProjects),
-    on(loadRedmineProjects, fromReducerHanders.loadRedmineProjects));
+    on(loadRedmineProjects, fromReducerHanders.loadRedmineProjects),
+    on(setRedmineUsersFilter, fromReducerHanders.setRedmineUsersFilter));

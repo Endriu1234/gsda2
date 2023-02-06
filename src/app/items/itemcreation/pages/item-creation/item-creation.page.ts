@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromRoot from '../../../../app.reducer';
 import * as fromItemsSelectors from '../../../store/items.selectors';
-import { initRedmineProjects, initRedmineTrackers, initRedmineUsers } from '../../../store/items.actions';
+import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, setRedmineUsersFilter } from '../../../store/items.actions';
 import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model';
 import { RedmineUser } from 'src/app/items/store/models/redmine-user.model';
 import { RedmineProject } from 'src/app/items/store/models/redmine-project.model';
 import { Observable, take } from 'rxjs';
 import { startWith, map } from 'rxjs/operators'
 import { FormBuilder } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 
 export interface rmUser {
   letter: string;
@@ -98,9 +99,10 @@ export class ItemCreationPage implements OnInit {
   ];
 
   trackers$: Observable<RedmineTracker[]> | null = null;
-  users$: Observable<RedmineUser[]> | null = null;
+  usersFiltered$: Observable<RedmineUser[]> | null = null;
   projects$: Observable<RedmineProject[]> | null = null;
   rmUsersOptions: Observable<rmUser[]> | null = null;
+  myControl = new FormControl('');
 
 
   constructor(private store: Store<fromRoot.State>,
@@ -120,7 +122,7 @@ export class ItemCreationPage implements OnInit {
         this.store.dispatch(initRedmineUsers());
     });
 
-    this.users$ = this.store.select(fromItemsSelectors.getRedmineUsers);
+    this.usersFiltered$ = this.store.select(fromItemsSelectors.getRedmineUsersFiltered);
 
     this.store.select(fromItemsSelectors.getRedmineProjectsLoaded).pipe(take(1)).subscribe((loaded: boolean) => {
       if (!loaded)
@@ -133,6 +135,12 @@ export class ItemCreationPage implements OnInit {
       startWith(''),
       map(value => this._filterGroupUser(value || '')),
     );
+
+    this.myControl.valueChanges
+      .subscribe(redmineUsersFilter => {
+        redmineUsersFilter
+        this.store.dispatch(setRedmineUsersFilter({ redmineUsersFilter: { filter: redmineUsersFilter } }))
+      });
   }
 
   private _filterGroupUser(value: string): rmUser[] {
@@ -143,6 +151,7 @@ export class ItemCreationPage implements OnInit {
     }
 
     return this.rmUsers;
+
   }
 
 }
