@@ -10,4 +10,5 @@ export const getRedmineUsers = createSelector(getItemsState, (state: State) => s
 export const getRedmineUsersFiltered = createSelector(getItemsState, (state: State) => state.itemCreation.redmineUsersFiltered);
 export const getRedmineUsersLoaded = createSelector(getItemsState, (state: State) => state.itemCreation.redmineUsersLoaded);
 export const getRedmineProjects = createSelector(getItemsState, (state: State) => state.itemCreation.redmineProjects);
+export const getRedmineProjectsFiltered = createSelector(getItemsState, (state: State) => state.itemCreation.redmineProjectsFiltered);
 export const getRedmineProjectsLoaded = createSelector(getItemsState, (state: State) => state.itemCreation.redmineProjectsLoaded);

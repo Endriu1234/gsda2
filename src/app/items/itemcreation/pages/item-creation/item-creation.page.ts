@@ -2,25 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromRoot from '../../../../app.reducer';
 import * as fromItemsSelectors from '../../../store/items.selectors';
-import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, setRedmineUsersFilter } from '../../../store/items.actions';
+import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, setRedmineUsersFilter, setRedmineProjectsFilter } from '../../../store/items.actions';
 import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model';
 import { RedmineUser } from 'src/app/items/store/models/redmine-user.model';
 import { RedmineProject } from 'src/app/items/store/models/redmine-project.model';
 import { Observable, take } from 'rxjs';
-import { startWith, map } from 'rxjs/operators'
-import { FormBuilder } from '@angular/forms';
 import { FormControl } from '@angular/forms';
-
-export interface rmUser {
-  letter: string;
-  names: string[];
-}
-
-export const _filter = (opt: string[], value: string): string[] => {
-  const filterValue = value.toLowerCase();
-
-  return opt.filter(item => item.toLowerCase().includes(filterValue));
-};
 
 @Component({
   selector: 'app-item-creation',
@@ -29,84 +16,15 @@ export const _filter = (opt: string[], value: string): string[] => {
 })
 export class ItemCreationPage implements OnInit {
 
-  stateForm = this._formBuilder.group({
-    rmUser: '',
-  });
-
-  rmUsers: rmUser[] = [
-    {
-      letter: 'A',
-      names: ['Alabama', 'Alaska', 'Arizona', 'Arkansas'],
-    },
-    {
-      letter: 'C',
-      names: ['California', 'Colorado', 'Connecticut'],
-    },
-    {
-      letter: 'D',
-      names: ['Delaware'],
-    },
-    {
-      letter: 'F',
-      names: ['Florida'],
-    },
-    {
-      letter: 'G',
-      names: ['Georgia'],
-    },
-    {
-      letter: 'H',
-      names: ['Hawaii'],
-    },
-    {
-      letter: 'I',
-      names: ['Idaho', 'Illinois', 'Indiana', 'Iowa'],
-    },
-    {
-      letter: 'K',
-      names: ['Kansas', 'Kentucky'],
-    },
-    {
-      letter: 'L',
-      names: ['Louisiana'],
-    },
-    {
-      letter: 'M',
-      names: [
-        'Maine',
-        'Maryland',
-        'Massachusetts',
-        'Michigan',
-        'Minnesota',
-        'Mississippi',
-        'Missouri',
-        'Montana',
-      ],
-    },
-    {
-      letter: 'N',
-      names: [
-        'Nebraska',
-        'Nevada',
-        'New Hampshire',
-        'New Jersey',
-        'New Mexico',
-        'New York',
-        'North Carolina',
-        'North Dakota',
-      ],
-    },
-  ];
-
   trackers$: Observable<RedmineTracker[]> | null = null;
   usersFiltered$: Observable<RedmineUser[]> | null = null;
   projects$: Observable<RedmineProject[]> | null = null;
-  rmUsersOptions: Observable<rmUser[]> | null = null;
-  myControl = new FormControl('');
+  projectsFiltered$: Observable<RedmineProject[]> | null = null;
+  rmAutoProject = new FormControl('');
+  rmAutoUser = new FormControl('');
 
 
-  constructor(private store: Store<fromRoot.State>,
-    private _formBuilder: FormBuilder) { }
+  constructor(private store: Store<fromRoot.State>) { }
 
   ngOnInit(): void {
 
@@ -131,27 +49,19 @@ export class ItemCreationPage implements OnInit {
 
     this.projects$ = this.store.select(fromItemsSelectors.getRedmineProjects);
 
-    this.rmUsersOptions = this.stateForm.get('rmUser')!.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filterGroupUser(value || '')),
-    );
+    this.projectsFiltered$ = this.store.select(fromItemsSelectors.getRedmineProjectsFiltered);
 
-    this.myControl.valueChanges
+    this.rmAutoUser.valueChanges
       .subscribe(redmineUsersFilter => {
         redmineUsersFilter
         this.store.dispatch(setRedmineUsersFilter({ redmineUsersFilter: { filter: redmineUsersFilter } }))
       });
-  }
 
-  private _filterGroupUser(value: string): rmUser[] {
-    if (value) {
-      return this.rmUsers
-        .map(group => ({letter: group.letter, names: _filter(group.names, value)}))
-        .filter(group => group.names.length > 0);
-    }
-
-    return this.rmUsers;
-
+      this.rmAutoProject.valueChanges
+      .subscribe(redmineProjectsFilter => {
+        redmineProjectsFilter
+        this.store.dispatch(setRedmineProjectsFilter({ redmineProjectsFilter: { filter: redmineProjectsFilter } }))
+      });
   }
 
 }

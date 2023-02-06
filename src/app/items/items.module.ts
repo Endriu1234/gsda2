@@ -6,7 +6,7 @@ import { ItemCreationPage } from './itemcreation/pages/item-creation/item-creati
 import { ItemsRoutingModule } from './items-routing.module';
 import { BatchItemsCreationPage } from './batchitemscreation/pages/batch-items-creation/batch-items-creation.page';
 import { MaterialModule } from '../shared/components/material/material.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -20,7 +20,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     ItemsRoutingModule,
     MaterialModule,
-    FormsModule,
     ReactiveFormsModule
   ]
 })

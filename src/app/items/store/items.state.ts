@@ -1,4 +1,5 @@
 import { RedmineProject } from "./models/redmine-project.model";
+import { RedmineProjectsFilter } from "./models/redmine-project-filter";
 import { RedmineTracker } from "./models/redmine-tracker.model";
 import { RedmineUsersFilter } from "./models/redmine-user-filter";
 import { RedmineUser } from "./models/redmine-user.model";
@@ -14,6 +15,8 @@ export interface ItemCreation {
     redmineUsersFilter: RedmineUsersFilter;
     redmineProjectsLoaded: boolean;
     redmineProjects: RedmineProject[];
+    redmineProjectsFiltered: RedmineProject[];
+    redmineProjectsFilter: RedmineProjectsFilter;
 }
 
 export interface State {
@@ -30,6 +33,8 @@ export const initialState: State = {
         redmineUsersFiltered: [],
         redmineUsersFilter: { filter: null },
         redmineProjectsLoaded: false,
-        redmineProjects: []
+        redmineProjects: [],
+        redmineProjectsFiltered: [],
+        redmineProjectsFilter: { filter: null }
     }
 }
