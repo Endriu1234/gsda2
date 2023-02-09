@@ -30,10 +30,13 @@ export function initRedmineUsers(state: State): State {
 
 export function loadRedmineUsers(state: State, args: { redmineUsers: RedmineUser[] }): State {
     const newState: State = _.cloneDeep(state);
-    //console.dir(args.redmineUsers);
     newState.itemCreation.redmineUsers = args.redmineUsers;
     newState.itemCreation.redmineUsersFiltered = filterRedmineUsers(args.redmineUsers, newState.itemCreation.redmineUsersFilter);
     newState.itemCreation.redmineUsersLoaded = true;
+    const usersByLetter = createUsersByLetter(args.redmineUsers);
+    newState.itemCreation.redmineUsersByLetter = usersByLetter;
+    newState.itemCreation.redmineUsersByLetterFiltered = filterRedmineUsersGroup(usersByLetter, newState.itemCreation.redmineUsersByLetterFilter);
+    newState.itemCreation.redmineUsersByLetterLoaded = true;
     return newState;
 }
 
@@ -58,25 +61,35 @@ function filterRedmineUsers(allUsers: RedmineUser[], filter: RedmineUsersFilter)
     return allUsers;
 }
 
-export function initRedmineUsersByLetter(state: State): State {
-    const newState = _.cloneDeep(state);
-    newState.itemCreation.redmineUsersByLetterLoaded = false;
-    return newState;
-}
-
-export function loadRedmineUsersByLetter(state: State, args: { redmineUsersByLetter: RedmineUserByLetter[] }): State {
-    const newState: State = _.cloneDeep(state);
-    newState.itemCreation.redmineUsersByLetter = args.redmineUsersByLetter;
-    newState.itemCreation.redmineUsersByLetterFiltered = filterRedmineUsersGroup(args.redmineUsersByLetter, newState.itemCreation.redmineUsersByLetterFilter);
-    newState.itemCreation.redmineUsersByLetterLoaded = true;
-    return newState;
-}
-
 export function setRedmineUsersByLetterFilter(state: State, args: { redmineUsersByLetterFilter: RedmineUsersByLetterFilter }): State {
     const newState: State = _.cloneDeep(state);
     newState.itemCreation.redmineUsersByLetterFilter = args.redmineUsersByLetterFilter;
     newState.itemCreation.redmineUsersByLetterFiltered = filterRedmineUsersGroup(newState.itemCreation.redmineUsersByLetter, args.redmineUsersByLetterFilter);
     return newState;
+}
+
+function createUsersByLetter(allUsers: RedmineUser[]) : RedmineUserByLetter[] {
+    let usersByLetter: RedmineUserByLetter[] = [];
+    let letter = '';
+    let usersTmp: RedmineUser[] = [];
+
+    if (allUsers) {
+        allUsers.forEach(element => {
+            if (element.name[0] !== letter) {
+                if (letter !== '') {
+                    usersByLetter.push({ letter: letter, redmineUsers: usersTmp.slice() });
+                }
+                letter = element.name[0];
+                usersTmp.length = 0;
+            }
+            usersTmp.push(element);
+        });
+        if (letter !== '') {
+            usersByLetter.push({ letter: letter, redmineUsers: usersTmp.slice() });
+        }
+    }
+
+    return usersByLetter;
 }
 
 function filterRedmineUsersGroup(allUsers: RedmineUserByLetter[], filter: RedmineUsersByLetterFilter): RedmineUserByLetter[] {

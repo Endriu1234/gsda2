@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, loadRedmineProjects, loadRedmineTrackers, loadRedmineUsers,
-         initRedmineUsersByLetter, loadRedmineUsersByLetter } from './items.actions';
+import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, loadRedmineProjects, loadRedmineTrackers, loadRedmineUsers} from './items.actions';
 import { map, switchMap } from "rxjs";
 import { HttpClient } from '@angular/common/http';
 import { RedmineTracker } from './models/redmine-tracker.model';
 import { environment } from 'src/environments/environment';
 import { RedmineUser } from './models/redmine-user.model';
 import { RedmineProject } from './models/redmine-project.model';
-import { RedmineUserByLetter } from './models/redmine-user-letter-model';
 
 const BACKEND_URL = environment.apiUrl + "/redmine/items/get-redmine-trackers";
 
@@ -27,12 +25,6 @@ export class ItemsEffects {
         switchMap(() => {
             return this.http.get<RedmineUser[]>(environment.apiUrl + '/redmine/items/get-redmine-users');
         }), map(redmineUsers => loadRedmineUsers({ redmineUsers }))
-    ));
-
-    initRedmineUsersByLetter$ = createEffect(() => this.actions$.pipe(ofType(initRedmineUsersByLetter),
-        switchMap(() => {
-            return this.http.get<RedmineUserByLetter[]>(environment.apiUrl + '/redmine/items/get-redmine-users-with-letter');
-        }), map(redmineUsersByLetter => loadRedmineUsersByLetter({ redmineUsersByLetter }))
     ));
 
     initRedmineProjects$ = createEffect(() => this.actions$.pipe(ofType(initRedmineProjects),
