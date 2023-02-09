@@ -11,7 +11,6 @@
                         <mat-label>Redmine Project</mat-label>
                         <input type="text"
                             matInput
-                            formControlName="rmProject"
                             required
                             [formControl]="rmAutoProject"
                             [matAutocomplete]="autoProject">
@@ -46,18 +45,15 @@
                                 <mat-label>Redmine Users</mat-label>
                                 <input type="text"
                                     matInput
-                                    formControlName="rmUser"
                                     required
                                     [formControl]="rmAutoUser"
                                     [matAutocomplete]="autoUser">
                                 <mat-autocomplete #autoUser="matAutocomplete">
-                                    <!--<mat-optgroup *ngFor="let user of rmUsersOptions | async" [label]="user.letter">
-                                        <mat-option *ngFor="let name of user.names" [value]="name">
-                                            {{name}}
-                                        </mat-option>-->
-                                    <mat-option *ngFor="let user of usersFiltered$ | async" [value]="user.name">
-                                        {{user.name}}
-                                    </mat-option>
+                                    <mat-optgroup *ngFor="let group of usersFiltered$ | async" [label]="group.letter">
+                                        <mat-option *ngFor="let user of group.redmineUsers" [value]="user.name">
+                                            {{user.name}}
+                                        </mat-option>
+                                    </mat-optgroup>
                                 </mat-autocomplete>
                             </mat-form-field>
                         </tr>

@@ -5,6 +5,8 @@ import { RedmineUser } from './models/redmine-user.model';
 import { RedmineProject } from './models/redmine-project.model';
 import { RedmineUsersFilter } from './models/redmine-user-filter';
 import { RedmineProjectsFilter } from './models/redmine-project-filter';
+import { RedmineUserByLetter } from './models/redmine-user-letter-model';
+import { RedmineUsersByLetterFilter } from './models/redmine-user-letter-filter';
 
 export function initRedmineTrackers(state: State): State {
     const newState = _.cloneDeep(state);
@@ -28,6 +30,7 @@ export function initRedmineUsers(state: State): State {
 
 export function loadRedmineUsers(state: State, args: { redmineUsers: RedmineUser[] }): State {
     const newState: State = _.cloneDeep(state);
+    //console.dir(args.redmineUsers);
     newState.itemCreation.redmineUsers = args.redmineUsers;
     newState.itemCreation.redmineUsersFiltered = filterRedmineUsers(args.redmineUsers, newState.itemCreation.redmineUsersFilter);
     newState.itemCreation.redmineUsersLoaded = true;
@@ -46,6 +49,54 @@ function filterRedmineUsers(allUsers: RedmineUser[], filter: RedmineUsersFilter)
         if (filter.filter instanceof RedmineUser)
             return [filter.filter];
 
+        if (typeof filter.filter === 'string') {
+            let filterStr: string = filter.filter;
+            return allUsers.filter(u => u.name.toLocaleLowerCase().includes(filterStr.toLocaleLowerCase()));
+        }
+    }
+
+    return allUsers;
+}
+
+export function initRedmineUsersByLetter(state: State): State {
+    const newState = _.cloneDeep(state);
+    newState.itemCreation.redmineUsersByLetterLoaded = false;
+    return newState;
+}
+
+export function loadRedmineUsersByLetter(state: State, args: { redmineUsersByLetter: RedmineUserByLetter[] }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemCreation.redmineUsersByLetter = args.redmineUsersByLetter;
+    newState.itemCreation.redmineUsersByLetterFiltered = filterRedmineUsersGroup(args.redmineUsersByLetter, newState.itemCreation.redmineUsersByLetterFilter);
+    newState.itemCreation.redmineUsersByLetterLoaded = true;
+    return newState;
+}
+
+export function setRedmineUsersByLetterFilter(state: State, args: { redmineUsersByLetterFilter: RedmineUsersByLetterFilter }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemCreation.redmineUsersByLetterFilter = args.redmineUsersByLetterFilter;
+    newState.itemCreation.redmineUsersByLetterFiltered = filterRedmineUsersGroup(newState.itemCreation.redmineUsersByLetter, args.redmineUsersByLetterFilter);
+    return newState;
+}
+
+function filterRedmineUsersGroup(allUsers: RedmineUserByLetter[], filter: RedmineUsersByLetterFilter): RedmineUserByLetter[] {
+    if (filter.filter) {
+        if (filter.filter instanceof RedmineUserByLetter)
+            return [filter.filter];
+
+        if (typeof filter.filter === 'string') {
+            return allUsers.map(group => ({letter: group.letter, redmineUsers: filterRemineUserByLetter(group.redmineUsers, filter)})).filter(group => group.redmineUsers.length > 0);
+        }
+    }
+
+    return allUsers;
+}
+
+function filterRemineUserByLetter(allUsers: RedmineUser[], filter: RedmineUsersByLetterFilter): RedmineUser[] {
+    if (filter.filter && allUsers) {
+        if (filter.filter instanceof RedmineUser)
+            return [filter.filter];
+        
         if (typeof filter.filter === 'string') {
             let filterStr: string = filter.filter;
             return allUsers.filter(u => u.name.toLocaleLowerCase().includes(filterStr.toLocaleLowerCase()));
