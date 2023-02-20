@@ -9,7 +9,18 @@ a {
     font: 400 16px/24px Roboto, sans-serif;
     letter-spacing: .03125em;
     vertical-align: sub;
+    color: white;
 }
+
+.mat-expansion-panel {
+    background: #282828;
+}
+
+.material-symbols-rounded,
+.mat-expansion-panel-header,
+.mat-expansion-panel-header-title {
+    color: white;
+}   
 
 .menu-item-icon {
     vertical-align: middle;
