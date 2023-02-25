@@ -4,7 +4,7 @@ import * as fromItemsState from '../../../store/items.state';
 import * as fromItemsSelectors from '../../../store/items.selectors';
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers } from '../../../store/items.actions';
 import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model';
-import { RedmineUser } from 'src/app/items/store/models/redmine-user.model';
+import { RedmineUserByLetter } from 'src/app/items/store/models/redmine-user-letter-model';
 import { RedmineProject } from 'src/app/items/store/models/redmine-project.model';
 import { Observable, take } from 'rxjs';
 import { FormGroupState } from 'ngrx-forms';
@@ -17,7 +17,7 @@ import { FormGroupState } from 'ngrx-forms';
 export class ItemCreationPage implements OnInit {
 
   trackers$: Observable<RedmineTracker[]> | null = null;
-  usersFiltered$: Observable<RedmineUser[]> | null = null;
+  usersFiltered$: Observable<RedmineUserByLetter[]> | null = null;
   projectsFiltered$: Observable<RedmineProject[]> | null = null;
   formState$: Observable<FormGroupState<any>>;
 
@@ -40,7 +40,7 @@ export class ItemCreationPage implements OnInit {
         this.store.dispatch(initRedmineUsers());
     });
 
-    this.usersFiltered$ = this.store.select(fromItemsSelectors.getRedmineUsersFiltered);
+    this.usersFiltered$ = this.store.select(fromItemsSelectors.getRedmineUsersByLetterFiltered);
 
     this.store.select(fromItemsSelectors.getRedmineProjectsLoaded).pipe(take(1)).subscribe((loaded: boolean) => {
       if (!loaded)

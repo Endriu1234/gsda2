@@ -3,13 +3,16 @@ import { RedmineTracker } from "./models/redmine-tracker.model";
 import { RedmineUser } from "./models/redmine-user.model";
 import { createFormGroupState, FormGroupState } from "ngrx-forms";
 import { CRValidation } from "./models/cr-validation.model";
+import { RedmineUserByLetter } from "./models/redmine-user-letter-model";
 
 export interface ItemCreationSetupData {
     redmineTrackersLoaded: boolean;
     redmineTrackers: RedmineTracker[];
     redmineUsersLoaded: boolean;
     redmineUsers: RedmineUser[];
-    redmineUsersFiltered: RedmineUser[];
+    redmineUsersByLetterLoaded: boolean;
+    redmineUsersByLetter: RedmineUserByLetter[];
+    redmineUsersByLetterFiltered: RedmineUserByLetter[];
     redmineProjectsLoaded: boolean;
     redmineProjects: RedmineProject[];
     redmineProjectsFiltered: RedmineProject[];
@@ -41,7 +44,9 @@ export const initialState: State = {
         redmineTrackers: [],
         redmineUsersLoaded: false,
         redmineUsers: [],
-        redmineUsersFiltered: [],
+        redmineUsersByLetterLoaded: false,
+        redmineUsersByLetter: [],
+        redmineUsersByLetterFiltered: [],
         redmineProjectsLoaded: false,
         redmineProjects: [],
         redmineProjectsFiltered: [],

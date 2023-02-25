@@ -1,5 +1,5 @@
 import { createReducer, on, combineReducers } from '@ngrx/store';
-import { initRedmineTrackers, loadRedmineTrackers, initRedmineUsers, loadRedmineUsers, initRedmineProjects, loadRedmineProjects, setRedmineUsersFilter, setRedmineProjectsFilter, addValidatedCR } from './items.actions';
+import { initRedmineTrackers, loadRedmineTrackers, initRedmineUsers, loadRedmineUsers, initRedmineProjects, loadRedmineProjects, setRedmineProjectsFilter, addValidatedCR, setRedmineUsersByLetterFilter } from './items.actions';
 import { initialState, ItemCreationFromData, State } from './items.state';
 import * as fromReducerHanders from './items.reducer-handlers';
 import { onNgrxForms, wrapReducerWithFormStateUpdate, updateGroup, validate, ValidationErrors } from 'ngrx-forms';
@@ -25,9 +25,9 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
     on(loadRedmineTrackers, fromReducerHanders.loadRedmineTrackers),
     on(initRedmineUsers, fromReducerHanders.initRedmineUsers),
     on(loadRedmineUsers, fromReducerHanders.loadRedmineUsers),
+    on(setRedmineUsersByLetterFilter, fromReducerHanders.setRedmineUsersByLetterFilter),
     on(initRedmineProjects, fromReducerHanders.initRedmineProjects),
     on(loadRedmineProjects, fromReducerHanders.loadRedmineProjects),
-    on(setRedmineUsersFilter, fromReducerHanders.setRedmineUsersFilter),
     on(setRedmineProjectsFilter, fromReducerHanders.setRedmineProjectsFilter),
     on(addValidatedCR, fromReducerHanders.addValidatedCR));
 

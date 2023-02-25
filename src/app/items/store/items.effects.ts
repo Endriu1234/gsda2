@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
     initRedmineProjects, initRedmineTrackers, initRedmineUsers, loadRedmineProjects,
-    loadRedmineTrackers, loadRedmineUsers, noopAction, setRedmineProjectsFilter, setRedmineUsersFilter
+    loadRedmineTrackers, loadRedmineUsers, noopAction, setRedmineProjectsFilter, setRedmineUsersByLetterFilter
 } from './items.actions';
 import { from, map, of, startWith, switchMap } from "rxjs";
 import { HttpClient } from '@angular/common/http';
@@ -49,7 +49,7 @@ export class ItemsEffects {
                 return from(validateProject(this.store, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilter())));
 
             if (action.controlId === ITEM_CREATION_FORMID + '.user')
-                return from(validateUser(this.store, action.controlId, action.value).pipe(startWith(setRedmineUsersFilter())));
+                return from(validateUser(this.store, action.controlId, action.value).pipe(startWith(setRedmineUsersByLetterFilter())));
 
             if (action.controlId === ITEM_CREATION_FORMID + '.cr')
                 return from(validateCR(this.store, this.http, action.controlId, action.value));
