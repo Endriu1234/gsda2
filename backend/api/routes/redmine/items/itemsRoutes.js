@@ -3,9 +3,9 @@ const itemsController = require('../../../controllers/redmine/items/itemsControl
 const express = require('express');
 const router = express.Router();
 
-router.use('/get-redmine-trackers', itemsController.getRedmineTrackers);
-router.use('/get-redmine-users', itemsController.getRedmineUsers);
-router.use('/get-redmine-projects', itemsController.getRedmineProjects);
+router.get('/get-redmine-trackers', itemsController.getRedmineTrackers);
+router.get('/get-redmine-users', itemsController.getRedmineUsers);
+router.get('/get-redmine-projects', itemsController.getRedmineProjects);
 
 
 module.exports = router;

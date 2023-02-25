@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import * as fromRoot from '../../../../app.reducer';
+import * as fromItemsState from '../../../store/items.state';
 import * as fromItemsSelectors from '../../../store/items.selectors';
-import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, setRedmineUsersFilter, setRedmineProjectsFilter } from '../../../store/items.actions';
+import { initRedmineProjects, initRedmineTrackers, initRedmineUsers } from '../../../store/items.actions';
 import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model';
 import { RedmineUser } from 'src/app/items/store/models/redmine-user.model';
 import { RedmineProject } from 'src/app/items/store/models/redmine-project.model';
 import { Observable, take } from 'rxjs';
-import { FormControl } from '@angular/forms';
+import { FormGroupState } from 'ngrx-forms';
 
 @Component({
   selector: 'app-item-creation',
@@ -18,13 +18,13 @@ export class ItemCreationPage implements OnInit {
 
   trackers$: Observable<RedmineTracker[]> | null = null;
   usersFiltered$: Observable<RedmineUser[]> | null = null;
-  projects$: Observable<RedmineProject[]> | null = null;
   projectsFiltered$: Observable<RedmineProject[]> | null = null;
-  rmAutoProject = new FormControl('');
-  rmAutoUser = new FormControl('');
+  formState$: Observable<FormGroupState<any>>;
 
 
-  constructor(private store: Store<fromRoot.State>) { }
+  constructor(private store: Store<fromItemsState.State>) {
+    this.formState$ = this.store.select(fromItemsSelectors.getItemCreationFormState);
+  }
 
   ngOnInit(): void {
 
@@ -47,21 +47,7 @@ export class ItemCreationPage implements OnInit {
         this.store.dispatch(initRedmineProjects());
     });
 
-    this.projects$ = this.store.select(fromItemsSelectors.getRedmineProjects);
-
     this.projectsFiltered$ = this.store.select(fromItemsSelectors.getRedmineProjectsFiltered);
-
-    this.rmAutoUser.valueChanges
-      .subscribe(redmineUsersFilter => {
-        redmineUsersFilter
-        this.store.dispatch(setRedmineUsersFilter({ redmineUsersFilter: { filter: redmineUsersFilter } }))
-      });
-
-      this.rmAutoProject.valueChanges
-      .subscribe(redmineProjectsFilter => {
-        redmineProjectsFilter
-        this.store.dispatch(setRedmineProjectsFilter({ redmineProjectsFilter: { filter: redmineProjectsFilter } }))
-      });
   }
 
 }

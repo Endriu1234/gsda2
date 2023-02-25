@@ -3,91 +3,81 @@ import * as _ from 'lodash';
 import { RedmineTracker } from './models/redmine-tracker.model';
 import { RedmineUser } from './models/redmine-user.model';
 import { RedmineProject } from './models/redmine-project.model';
-import { RedmineUsersFilter } from './models/redmine-user-filter';
-import { RedmineProjectsFilter } from './models/redmine-project-filter';
+import { CRValidation } from './models/cr-validation.model';
 
 export function initRedmineTrackers(state: State): State {
     const newState = _.cloneDeep(state);
-    newState.itemCreation.redmineTrackersLoaded = false;
+    newState.itemCreationSetupData.redmineTrackersLoaded = false;
     return newState;
 }
 
 export function loadRedmineTrackers(state: State, args: { redmineTrackers: RedmineTracker[] }): State {
     const newState: State = _.cloneDeep(state);
-    newState.itemCreation.redmineTrackers = args.redmineTrackers;
-    newState.itemCreation.redmineTrackersLoaded = true;
+    newState.itemCreationSetupData.redmineTrackers = args.redmineTrackers;
+    newState.itemCreationSetupData.redmineTrackersLoaded = true;
     return newState;
 
 }
 
 export function initRedmineUsers(state: State): State {
     const newState = _.cloneDeep(state);
-    newState.itemCreation.redmineUsersLoaded = false;
+    newState.itemCreationSetupData.redmineUsersLoaded = false;
     return newState;
 }
 
 export function loadRedmineUsers(state: State, args: { redmineUsers: RedmineUser[] }): State {
     const newState: State = _.cloneDeep(state);
-    newState.itemCreation.redmineUsers = args.redmineUsers;
-    newState.itemCreation.redmineUsersFiltered = filterRedmineUsers(args.redmineUsers, newState.itemCreation.redmineUsersFilter);
-    newState.itemCreation.redmineUsersLoaded = true;
+    newState.itemCreationSetupData.redmineUsers = args.redmineUsers;
+    newState.itemCreationSetupData.redmineUsersFiltered = filterRedmineUsers(args.redmineUsers, newState.itemCreationFromData.value.user);
+    newState.itemCreationSetupData.redmineUsersLoaded = true;
     return newState;
 }
 
-export function setRedmineUsersFilter(state: State, args: { redmineUsersFilter: RedmineUsersFilter }): State {
+export function setRedmineUsersFilter(state: State): State {
     const newState: State = _.cloneDeep(state);
-    newState.itemCreation.redmineUsersFilter = args.redmineUsersFilter;
-    newState.itemCreation.redmineUsersFiltered = filterRedmineUsers(newState.itemCreation.redmineUsers, args.redmineUsersFilter);
+    newState.itemCreationSetupData.redmineUsersFiltered
+        = filterRedmineUsers(newState.itemCreationSetupData.redmineUsers, newState.itemCreationFromData.value.user);
     return newState;
 }
 
-function filterRedmineUsers(allUsers: RedmineUser[], filter: RedmineUsersFilter): RedmineUser[] {
-    if (filter.filter) {
-        if (filter.filter instanceof RedmineUser)
-            return [filter.filter];
-
-        if (typeof filter.filter === 'string') {
-            let filterStr: string = filter.filter;
-            return allUsers.filter(u => u.name.toLocaleLowerCase().includes(filterStr.toLocaleLowerCase()));
-        }
-    }
+function filterRedmineUsers(allUsers: RedmineUser[], filter: string): RedmineUser[] {
+    if (filter)
+        return allUsers.filter(u => u.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase()));
 
     return allUsers;
 }
 
 export function initRedmineProjects(state: State): State {
     const newState = _.cloneDeep(state);
-    newState.itemCreation.redmineUsersLoaded = false;
+    newState.itemCreationSetupData.redmineUsersLoaded = false;
     return newState;
 }
 
 export function loadRedmineProjects(state: State, args: { redmineProjects: RedmineProject[] }): State {
     const newState: State = _.cloneDeep(state);
-    newState.itemCreation.redmineProjects = args.redmineProjects;
-    newState.itemCreation.redmineProjectsFiltered = filterRedmineProjects(args.redmineProjects, newState.itemCreation.redmineProjectsFilter);
-    newState.itemCreation.redmineProjectsLoaded = true;
+    newState.itemCreationSetupData.redmineProjects = args.redmineProjects;
+    newState.itemCreationSetupData.redmineProjectsFiltered = filterRedmineProjects(args.redmineProjects, newState.itemCreationFromData.value.project);
+    newState.itemCreationSetupData.redmineProjectsLoaded = true;
     return newState;
 }
 
-export function setRedmineProjectsFilter(state: State, args: { redmineProjectsFilter: RedmineProjectsFilter }): State {
+export function addValidatedCR(state: State, args: { validatedCR: CRValidation }): State {
     const newState: State = _.cloneDeep(state);
-    newState.itemCreation.redmineProjectsFilter = args.redmineProjectsFilter;
-    newState.itemCreation.redmineProjectsFiltered = filterRedmineProjects(newState.itemCreation.redmineProjects, args.redmineProjectsFilter);
+    newState.itemCreationSetupData.validatedCRs.push(args.validatedCR);
     return newState;
 }
 
-function filterRedmineProjects(allProjects: RedmineProject[], filter: RedmineProjectsFilter): RedmineProject[] {
-    if (filter.filter) {
-        if (filter.filter instanceof RedmineProject)
-            return [filter.filter];
+export function setRedmineProjectsFilter(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemCreationSetupData.redmineProjectsFiltered
+        = filterRedmineProjects(newState.itemCreationSetupData.redmineProjects, newState.itemCreationFromData.value.project);
+    return newState;
+}
 
-        if (typeof filter.filter === 'string') {
-            let filterStr: string = filter.filter;
-            return allProjects.filter(u => u.name.toLocaleLowerCase().includes(filterStr.toLocaleLowerCase()));
-        }
-    }
+function filterRedmineProjects(allProjects: RedmineProject[], filter: string): RedmineProject[] {
+    if (filter)
+        return allProjects.filter(u => u.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase()));
 
     return allProjects;
 }
-
 

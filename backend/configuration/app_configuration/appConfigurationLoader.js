@@ -2,6 +2,7 @@ const express = require('express');
 const methodOverride = require('method-override');
 const mongoSanitize = require('express-mongo-sanitize');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
 function configurePATH() {
     process.env['PATH'] = `${process.env.ORACLE_CLIENT_PATH};` + process.env['PATH'];
@@ -16,6 +17,7 @@ async function connectToMongo() {
 }
 
 function setupMiddleWares(app) {
+    app.use(bodyParser.json());
     app.use(express.urlencoded({ extended: true }));
     app.use(methodOverride('_method'));
     app.use(mongoSanitize(

@@ -1,4 +1,5 @@
 const cacheValueProvider = require('../../cache/cacheValueProvider');
+const softDevValidator = require('../../softdev/validation/softDevValidator');
 
 module.exports.validateRedmineItem = async (req, res, next) => {
 
@@ -39,7 +40,7 @@ module.exports.validateRedmineItem = async (req, res, next) => {
     }
 
     if (req.body.item.cr) {
-        if (!new RegExp("^CR-[A-Z]{3,4}-[\\d]{1,9}I[T|S]$").test(req.body.item.cr)) {
+        if (!softDevValidator.checkCRMatchPattern(req.body.item.cr)) {
             req.flash('error', 'Cannot add Redmine Item. No proper CR provided.');
             return res.redirect(req.originalUrl);
         }
