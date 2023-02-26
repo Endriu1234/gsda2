@@ -8,6 +8,7 @@ import { WelcomePage } from './navigation/pages/welcome/welcome.page';
 import { MenuSwitchComponent } from './navigation/components/menu-switch/menu-switch.component';
 import { EffectsModule } from '@ngrx/effects';
 import { ItemsEffects } from './items/store/items.effects';
+import { ProjectsEffects } from './projects/store/projects.effects';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule, isDevMode } from '@angular/core';
 import { reducers } from './app.reducer';
@@ -15,6 +16,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -32,8 +34,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
+    MatDialogModule,
     StoreModule.forRoot(reducers),
-    EffectsModule.forRoot([ItemsEffects]),
+    EffectsModule.forRoot([ItemsEffects, ProjectsEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 25, // Retains last 25 states
       logOnly: !isDevMode(), // Restrict extension to log-only mode

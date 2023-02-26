@@ -121,7 +121,7 @@ function filterRemineUserByLetter(allUsers: RedmineUser[], filter: RedmineUsersB
 
 export function initRedmineProjects(state: State): State {
     const newState = _.cloneDeep(state);
-    newState.itemCreation.redmineUsersLoaded = false;
+    newState.itemCreation.redmineProjectsLoaded = false;
     return newState;
 }
 

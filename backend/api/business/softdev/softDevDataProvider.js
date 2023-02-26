@@ -51,7 +51,8 @@ module.exports.getVersions = async () => {
             AND product.prd_id = 'GENE'
             AND prd_version.prv_is_active = 'Y'
             AND proj.pj_version_aa = prd_version.aa_id
-            AND proj.pj_status not in ('Canceled', 'Closed', 'Delivered', 'Doc Reviewed', 'Doc Created', 'Finished', 'Scope Approved')`);
+            AND proj.pj_status not in ('Canceled', 'Closed', 'Delivered', 'Doc Reviewed', 'Doc Created', 'Finished', 'Scope Approved')
+            AND proj.pj_active = 'Y' `);
 };
 
 module.exports.getRegressionsFromVersion = async (softDevProjectName) => {
