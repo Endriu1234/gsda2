@@ -4,14 +4,18 @@ import { State } from './items.state';
 
 
 export const getItemsState = createFeatureSelector<State>(itemsReducerKey);
-export const getRedmineTrackers = createSelector(getItemsState, (state: State) => state.itemCreation.redmineTrackers);
-export const getRedmineTrackersLoaded = createSelector(getItemsState, (state: State) => state.itemCreation.redmineTrackersLoaded);
-export const getRedmineUsers = createSelector(getItemsState, (state: State) => state.itemCreation.redmineUsers);
-export const getRedmineUsersFiltered = createSelector(getItemsState, (state: State) => state.itemCreation.redmineUsersFiltered);
-export const getRedmineUsersLoaded = createSelector(getItemsState, (state: State) => state.itemCreation.redmineUsersLoaded);
-export const getRedmineProjects = createSelector(getItemsState, (state: State) => state.itemCreation.redmineProjects);
-export const getRedmineProjectsFiltered = createSelector(getItemsState, (state: State) => state.itemCreation.redmineProjectsFiltered);
-export const getRedmineProjectsLoaded = createSelector(getItemsState, (state: State) => state.itemCreation.redmineProjectsLoaded);
-export const getRedmineUsersByLetter = createSelector(getItemsState, (state: State) => state.itemCreation.redmineUsersByLetter);
-export const getRedmineUsersByLetterFiltered = createSelector(getItemsState, (state: State) => state.itemCreation.redmineUsersByLetterFiltered);
-export const getRedmineUsersByLetterLoaded = createSelector(getItemsState, (state: State) => state.itemCreation.redmineUsersByLetterLoaded);
+export const getItemCreationSetupData = createSelector(getItemsState, (state: State) => state.itemCreationSetupData);
+export const getRedmineTrackers = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineTrackers);
+export const getRedmineTrackersLoaded = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineTrackersLoaded);
+export const getRedmineUsers = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineUsers);
+export const getRedmineUsersLoaded = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineUsersLoaded);
+
+export const getRedmineUsersByLetter = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineUsersByLetter);
+export const getRedmineUsersByLetterFiltered = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineUsersByLetterFiltered);
+export const getRedmineUsersByLetterLoaded = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineUsersByLetterLoaded);
+
+export const getRedmineProjects = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineProjects);
+export const getRedmineProjectsFiltered = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineProjectsFiltered);
+export const getRedmineProjectsLoaded = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineProjectsLoaded);
+export const getValidatedCRs = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.validatedCRs);
+export const getItemCreationFormState = createSelector(getItemsState, (state: State) => state.itemCreationFromData);

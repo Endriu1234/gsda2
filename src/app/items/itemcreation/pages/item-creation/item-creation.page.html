@@ -1,16 +1,18 @@
-<form>
-    <div class="d-flex flex-md-row justify-content-md-between flex-column my-4 jkWidthMarg">
-        <mat-card-title>Item Creation</mat-card-title>
-        <mat-card-subtitle><button mat-raised-button>Fill From Id</button></mat-card-subtitle>
-    </div>
+<ng-container *ngIf="formState$ | async as formState">
+    <form novalidate [ngrxFormState]="formState">
+        <div class="d-flex flex-md-row justify-content-md-between flex-column my-4 jkWidthMarg">
+            <mat-card-title>Item Creation</mat-card-title>
+            <mat-card-subtitle><button mat-raised-button>Fill From Id</button></mat-card-subtitle>
+        </div>
         <mat-card class="mt-1">
             <mat-card-content>
+                <mat-error *ngIf="formState.isTouched && formState.errors._project?.$validateProjectError">
+                    Project is required
+                </mat-error>
                 <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
                     <mat-label>Redmine Project</mat-label>
-                    <input type="text"
+                    <input type="text" [ngrxFormControlState]="$any(formState).controls.project"
                         matInput
-                        required
-                        [formControl]="rmAutoProject"
                         [matAutocomplete]="autoProject">
                     <mat-autocomplete #autoProject="matAutocomplete">
                         <mat-option *ngFor="let project of (projectsFiltered$ | async)" [value]="project.name">
@@ -22,23 +24,33 @@
         </mat-card>
         <mat-card>
             <mat-card-content>
-                <mat-chip-listbox class="mb-3">
+                <mat-error *ngIf="formState.isTouched && formState.errors._tracker?.required">
+                    Tracker is required
+                </mat-error>
+                <mat-chip-listbox class="mb-3" [ngrxFormControlState]="$any(formState).controls.tracker">
                     <mat-chip-option *ngFor="let tracker of (trackers$ | async)">{{ tracker.name }}</mat-chip-option>
                 </mat-chip-listbox>
+                <mat-error *ngIf="formState.isTouched && formState.errors._subject?.required">
+                    Subject is required
+                </mat-error>
                 <mat-form-field appearance="outline" [style.width.%]=100>
                     <mat-label>Subject</mat-label>
-                    <input type="text" matInput placeholder="Subject of the item">
-                </mat-form-field>                  
+                    <input type="text" matInput placeholder="Subject of the item"  [ngrxFormControlState]="$any(formState).controls.subject">
+                </mat-form-field>
+                <mat-error *ngIf="formState.isTouched && formState.errors._description?.required">
+                    Description is required
+                </mat-error>
                 <mat-form-field appearance="outline" [style.width.%]=100>
                     <mat-label>Description</mat-label>
-                    <textarea type="text" matInput placeholder="Description"></textarea>
-                </mat-form-field>                       
+                    <textarea type="text" matInput placeholder="Description" [ngrxFormControlState]="$any(formState).controls.description"></textarea>
+                </mat-form-field>
+                <mat-error *ngIf="formState.isTouched && formState.errors._user?.$validateUserError">
+                    User not matched
+                </mat-error>
                 <mat-form-field appearance="outline" class="" [style.width.%]=100>
                     <mat-label>Redmine Users</mat-label>
-                    <input type="text"
+                    <input type="text"  [ngrxFormControlState]="$any(formState).controls.user"
                         matInput
-                        required
-                        [formControl]="rmAutoUser"
                         [matAutocomplete]="autoUser">
                     <mat-autocomplete #autoUser="matAutocomplete">
                         <mat-optgroup *ngFor="let group of usersFiltered$ | async" [label]="group.letter">
@@ -51,15 +63,18 @@
                 <div class="d-flex flex-md-row justify-content-md-between flex-column">
                     <mat-form-field appearance="outline" [style.width.%]=100 class="pe-md-2">
                         <mat-label>SD Issue#</mat-label>
-                        <input type="text" matInput placeholder="SoftDev Issue" pattern="^(I|i)(S|s)(S|s)-[a-zA-Z]+-\d{1,6}[a-zA-Z]{2}$">
+                        <input type="text" matInput placeholder="SoftDev Issue" [ngrxFormControlState]="$any(formState).controls.issue">
                     </mat-form-field>
+                    <mat-error *ngIf="formState.isTouched && formState.errors._cr?.$validateCRError">
+                        Invalid CR
+                    </mat-error>
                     <mat-form-field appearance="outline" [style.width.%]=100 class="px-md-2">
                         <mat-label>SD CR#</mat-label>
-                        <input type="text" matInput placeholder="SoftDev Change Request" pattern="^(c|C)(r|R)-[a-zA-Z]+-\d{1,6}[a-zA-Z]{2}$">
+                        <input type="text" matInput placeholder="SoftDev Change Request" [ngrxFormControlState]="$any(formState).controls.cr">
                     </mat-form-field>
                     <mat-form-field appearance="outline" [style.width.%]=100 class="ps-md-2">
                         <mat-label>iTMS</mat-label>
-                        <input type="text" matInput placeholder="iTMS Task" pattern="^[a-zA-Z]+-\d{5}$">
+                        <input type="text" matInput placeholder="iTMS Task">
                     </mat-form-field>
                 </div>
             </mat-card-content>
@@ -68,4 +83,5 @@
             <button mat-fab extended color="accent" class="me-4 my-2">Create and Open</button>
             <button mat-fab extended color="primary" class="me-3 my-2">Create</button>
         </mat-card-actions>
-</form>
+    </form>
+</ng-container>

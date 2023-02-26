@@ -7,6 +7,7 @@ import { ItemsRoutingModule } from './items-routing.module';
 import { BatchItemsCreationPage } from './batchitemscreation/pages/batch-items-creation/batch-items-creation.page';
 import { MaterialModule } from '../shared/components/material/material.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgrxFormsModule } from 'ngrx-forms';
 
 
 
@@ -20,7 +21,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     ItemsRoutingModule,
     MaterialModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgrxFormsModule
   ]
 })
 export class ItemsModule { }

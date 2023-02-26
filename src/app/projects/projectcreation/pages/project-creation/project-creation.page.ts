@@ -44,11 +44,11 @@ export class ProjectCreationPage implements OnInit {
 
     this.projectsFiltered$ = this.store.select(fromProjectsSelectors.getRedmineProjectsFiltered);
 
-    this.rmAutoProject.valueChanges
-      .subscribe(redmineProjectsFilter => {
-        redmineProjectsFilter
-        this.store.dispatch(setRedmineProjectsFilter({ redmineProjectsFilter: { filter: redmineProjectsFilter } }))
-      });
+    // this.rmAutoProject.valueChanges
+    //   .subscribe(redmineProjectsFilter => {
+    //     redmineProjectsFilter
+    //     this.store.dispatch(setRedmineProjectsFilter({ redmineProjectsFilter: { filter: redmineProjectsFilter } }))
+    //   });
   }
 
 }
