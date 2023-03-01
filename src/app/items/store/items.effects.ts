@@ -13,6 +13,8 @@ import { RedmineProject } from './models/redmine-project.model';
 import { SetValueAction } from 'ngrx-forms';
 import { ITEM_CREATION_FORMID } from './items.state';
 import * as fromItemsState from './items.state';
+import * as fromShared from '../../shared/store/shared.reducer';
+import * as fromSharedActions from '../../shared/store/shared.actions';
 
 import { Store } from '@ngrx/store';
 import { validateProject, validateUser, validateCR } from './items.validation';
@@ -22,7 +24,7 @@ const BACKEND_URL = environment.apiUrl + "/redmine/items/get-redmine-trackers";
 @Injectable()
 export class ItemsEffects {
 
-    constructor(private actions$: Actions, private store: Store<fromItemsState.State>, private http: HttpClient) { }
+    constructor(private actions$: Actions, private store: Store<fromItemsState.State>, private sharedStore: Store<fromShared.State>, private http: HttpClient) { }
 
     initRedmineTrackers$ = createEffect(() => this.actions$.pipe(ofType(initRedmineTrackers),
         switchMap(() => {

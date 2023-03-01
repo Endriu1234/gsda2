@@ -80,8 +80,8 @@
             </mat-card-content>
         </mat-card>
         <mat-card-actions [align]="'end'" class="jkWidthMarg">
-            <button mat-fab extended color="accent" class="me-4 my-2">Create and Open</button>
-            <button mat-fab extended color="primary" class="me-3 my-2">Create</button>
+            <button mat-fab extended color="accent" class="me-4 my-2" (click)="createAndOpenItem()">Create and Open</button>
+            <button mat-fab extended color="primary" class="me-3 my-2" (click)="createItem()">Create</button>
         </mat-card-actions>
     </form>
 </ng-container>

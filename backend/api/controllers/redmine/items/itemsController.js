@@ -14,3 +14,7 @@ module.exports.getRedmineProjects = async (req, res) => {
     const projects = await cacheValueProvider.getValue('redmine_projects');
     return res.status(200).json(projects);
 }
+
+module.exports.createRedmineItem = async (req, res) => {
+    return res.status(200).send('OK');
+}

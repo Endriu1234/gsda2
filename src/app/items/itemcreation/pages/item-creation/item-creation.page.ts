@@ -8,6 +8,8 @@ import { RedmineUserByLetter } from 'src/app/items/store/models/redmine-user-let
 import { RedmineProject } from 'src/app/items/store/models/redmine-project.model';
 import { Observable, take } from 'rxjs';
 import { FormGroupState } from 'ngrx-forms';
+import * as fromShared from '../../../../shared/store/shared.reducer';
+import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 
 @Component({
   selector: 'app-item-creation',
@@ -22,7 +24,7 @@ export class ItemCreationPage implements OnInit {
   formState$: Observable<FormGroupState<any>>;
 
 
-  constructor(private store: Store<fromItemsState.State>) {
+  constructor(private store: Store<fromItemsState.State>, private sharedStore: Store<fromShared.State>) {
     this.formState$ = this.store.select(fromItemsSelectors.getItemCreationFormState);
   }
 
@@ -50,4 +52,17 @@ export class ItemCreationPage implements OnInit {
     this.projectsFiltered$ = this.store.select(fromItemsSelectors.getRedmineProjectsFiltered);
   }
 
+  notifications = ['Notification 1', 'Notification 2', 'Notification 3', 'Notification 4', 'Notification 5', 'Notification 6', 'Notification 7', 'Notification 8'];
+
+  createItem() {
+    const nextNot = this.notifications.shift();
+    if (nextNot)
+      this.sharedStore.dispatch(addSnackbarNotification({ notification: nextNot }));
+  }
+
+  createAndOpenItem() {
+
+  }
+
 }
+

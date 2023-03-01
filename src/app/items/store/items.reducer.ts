@@ -1,5 +1,8 @@
-import { createReducer, on, combineReducers } from '@ngrx/store';
-import { initRedmineTrackers, loadRedmineTrackers, initRedmineUsers, loadRedmineUsers, initRedmineProjects, loadRedmineProjects, setRedmineProjectsFilter, addValidatedCR, setRedmineUsersByLetterFilter } from './items.actions';
+import { createReducer, on } from '@ngrx/store';
+import {
+    initRedmineTrackers, loadRedmineTrackers, initRedmineUsers, loadRedmineUsers, initRedmineProjects, loadRedmineProjects,
+    setRedmineProjectsFilter, addValidatedCR, setRedmineUsersByLetterFilter
+} from './items.actions';
 import { initialState, ItemCreationFromData, State } from './items.state';
 import * as fromReducerHanders from './items.reducer-handlers';
 import { onNgrxForms, wrapReducerWithFormStateUpdate, updateGroup, validate, ValidationErrors } from 'ngrx-forms';
