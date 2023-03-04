@@ -15,9 +15,16 @@ import { ITEM_CREATION_FORMID } from './items.state';
 import * as fromItemsState from './items.state';
 
 import { Store } from '@ngrx/store';
-import { validateProject, validateUser, validateCR } from './items.validation';
+import { validateProject, validateUser, validateCR, validateIssue, validateTms, validateFromId } from './items.validation';
 
 const BACKEND_URL = environment.apiUrl + "/redmine/items/get-redmine-trackers";
+
+export const validateUserError = "validateUserError";
+export const validateCRError = "validateCRError";
+export const validateIssueError = "validateIssueError";
+export const validateTmsError = "validateTmsError";
+export const validateFromIdError = "validateFromIdError";
+export const validateProjectError = "validateProjectError";
 
 @Injectable()
 export class ItemsEffects {
@@ -46,13 +53,22 @@ export class ItemsEffects {
         ofType(SetValueAction.TYPE),
         switchMap((action: SetValueAction<any>) => {
             if (action.controlId === ITEM_CREATION_FORMID + '.project')
-                return from(validateProject(this.store, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilter())));
+                return from(validateProject(this.store, validateUserError, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilter())));
 
             if (action.controlId === ITEM_CREATION_FORMID + '.user')
-                return from(validateUser(this.store, action.controlId, action.value).pipe(startWith(setRedmineUsersByLetterFilter())));
+                return from(validateUser(this.store, validateUserError, action.controlId, action.value).pipe(startWith(setRedmineUsersByLetterFilter())));
 
             if (action.controlId === ITEM_CREATION_FORMID + '.cr')
-                return from(validateCR(this.store, this.http, action.controlId, action.value));
+                return from(validateCR(this.store, this.http, validateCRError, action.controlId, action.value));
+
+            if (action.controlId === ITEM_CREATION_FORMID + '.issue') 
+                return from(validateIssue(this.store, this.http, validateIssueError, action.controlId, action.value));
+
+            if (action.controlId === ITEM_CREATION_FORMID + '.tms')
+                return from(validateTms(this.store, this.http, validateTmsError, action.controlId, action.value));
+
+            if (action.controlId === ITEM_CREATION_FORMID + '.fromId')
+                return from(validateFromId(this.store, this.http, validateFromIdError, action.controlId, action.value));
 
             return of(noopAction());
         })

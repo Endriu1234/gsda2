@@ -7,7 +7,10 @@ import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model
 import { RedmineUserByLetter } from 'src/app/items/store/models/redmine-user-letter-model';
 import { RedmineProject } from 'src/app/items/store/models/redmine-project.model';
 import { Observable, take } from 'rxjs';
-import { FormGroupState } from 'ngrx-forms';
+import { FormGroupState} from 'ngrx-forms';
+import { trimUpperConverter } from '../../../../shared/tools/validators/ngrxValueConverters';
+import { ItemCreationFromId} from "../item-creation-from-id/item-creation-from-id";
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-item-creation',
@@ -20,10 +23,24 @@ export class ItemCreationPage implements OnInit {
   usersFiltered$: Observable<RedmineUserByLetter[]> | null = null;
   projectsFiltered$: Observable<RedmineProject[]> | null = null;
   formState$: Observable<FormGroupState<any>>;
+  trimUpper = trimUpperConverter;
 
-
-  constructor(private store: Store<fromItemsState.State>) {
+  constructor(private store: Store<fromItemsState.State>, public dialog: MatDialog) {
     this.formState$ = this.store.select(fromItemsSelectors.getItemCreationFormState);
+  }
+
+  openFromIdDialog(): void {
+    const dialogRef = this.dialog.open(ItemCreationFromId, {
+      width: '65%',
+      disableClose: true,
+      enterAnimationDuration: 500,
+      exitAnimationDuration: 500,
+      restoreFocus: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
   }
 
   ngOnInit(): void {

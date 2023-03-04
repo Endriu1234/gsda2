@@ -3,6 +3,9 @@ import { RedmineTracker } from "./models/redmine-tracker.model";
 import { RedmineUser } from "./models/redmine-user.model";
 import { createFormGroupState, FormGroupState } from "ngrx-forms";
 import { CRValidation } from "./models/cr-validation.model";
+import { IssueValidation } from "./models/issue-validation.model";
+import { TmsValidation } from "./models/tms-validation.model";
+import { FromIdValidation } from "./models/fromId-validation.model";
 import { RedmineUserByLetter } from "./models/redmine-user-letter-model";
 
 export interface ItemCreationSetupData {
@@ -17,6 +20,9 @@ export interface ItemCreationSetupData {
     redmineProjects: RedmineProject[];
     redmineProjectsFiltered: RedmineProject[];
     validatedCRs: CRValidation[];
+    validatedIssues: IssueValidation[];
+    validatedTms: TmsValidation[];
+    validatedFromId: FromIdValidation[];
 }
 
 export interface ItemCreationFromData {
@@ -28,6 +34,7 @@ export interface ItemCreationFromData {
     issue: string;
     cr: string;
     tms: string;
+    fromId: string;
 }
 
 export interface State {
@@ -50,7 +57,10 @@ export const initialState: State = {
         redmineProjectsLoaded: false,
         redmineProjects: [],
         redmineProjectsFiltered: [],
-        validatedCRs: []
+        validatedCRs: [],
+        validatedIssues: [],
+        validatedTms: [],
+        validatedFromId: []
     },
     itemCreationFromData: createFormGroupState<ItemCreationFromData>(ITEM_CREATION_FORMID, {
         project: '',
@@ -60,6 +70,7 @@ export const initialState: State = {
         issue: '',
         user: '',
         cr: '',
-        tms: ''
+        tms: '',
+        fromId: ''
     })
 }

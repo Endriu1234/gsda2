@@ -1,5 +1,8 @@
 import { createAction, props } from '@ngrx/store';
 import { CRValidation } from './models/cr-validation.model';
+import { IssueValidation } from "./models/issue-validation.model";
+import { TmsValidation } from "./models/tms-validation.model";
+import { FromIdValidation } from "./models/fromId-validation.model";
 import { RedmineProject } from './models/redmine-project.model';
 import { RedmineTracker } from './models/redmine-tracker.model';
 import { RedmineUser } from './models/redmine-user.model';
@@ -13,4 +16,7 @@ export const initRedmineProjects = createAction('[Items Component] Init Redmine 
 export const loadRedmineProjects = createAction('[Items Component] Load Redmine Projects', props<{ redmineProjects: RedmineProject[] }>());
 export const setRedmineProjectsFilter = createAction('[Items Component] Set Redmine Projects Filter');
 export const addValidatedCR = createAction('[Items Component] Add Validated CR', props<{ validatedCR: CRValidation }>());
+export const addValidatedIssue = createAction('[Items Component] Add Validated Issue', props<{ validatedIssue: IssueValidation }>());
+export const addValidatedTms = createAction('[Items Component] Add Validated Tms', props<{ validatedTms: TmsValidation }>());
+export const addValidatedFromId = createAction('[Items Component] Add Validated FromId', props<{ validatedFromId: FromIdValidation }>());
 export const noopAction = createAction('[Items Component] Noop Action');

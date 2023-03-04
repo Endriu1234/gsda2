@@ -21,7 +21,7 @@ export class ProjectCreationPage implements OnInit {
 
   constructor(private store: Store<fromRoot.State>, public dialog: MatDialog) { }
 
-  openDialog(): void {
+  openFromIdDialog(): void {
     const dialogRef = this.dialog.open(ProjectCreationFromId, {
       width: '65%',
       disableClose: true,

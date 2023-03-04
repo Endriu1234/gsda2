@@ -18,4 +18,7 @@ export const getRedmineProjects = createSelector(getItemsState, (state: State) =
 export const getRedmineProjectsFiltered = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineProjectsFiltered);
 export const getRedmineProjectsLoaded = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineProjectsLoaded);
 export const getValidatedCRs = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.validatedCRs);
+export const getValidatedIssues = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.validatedIssues);
+export const getValidatedTms = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.validatedTms);
+export const getValidatedFromId = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.validatedFromId);
 export const getItemCreationFormState = createSelector(getItemsState, (state: State) => state.itemCreationFromData);

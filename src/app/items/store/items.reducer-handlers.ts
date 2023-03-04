@@ -4,6 +4,9 @@ import { RedmineTracker } from './models/redmine-tracker.model';
 import { RedmineUser } from './models/redmine-user.model';
 import { RedmineProject } from './models/redmine-project.model';
 import { CRValidation } from './models/cr-validation.model';
+import { IssueValidation } from "./models/issue-validation.model";
+import { TmsValidation } from "./models/tms-validation.model";
+import { FromIdValidation } from "./models/fromId-validation.model";
 import { RedmineUserByLetter } from './models/redmine-user-letter-model';
 
 export function initRedmineTrackers(state: State): State {
@@ -98,6 +101,24 @@ export function loadRedmineProjects(state: State, args: { redmineProjects: Redmi
 export function addValidatedCR(state: State, args: { validatedCR: CRValidation }): State {
     const newState: State = _.cloneDeep(state);
     newState.itemCreationSetupData.validatedCRs.push(args.validatedCR);
+    return newState;
+}
+
+export function addValidatedIssue(state: State, args: { validatedIssue: IssueValidation }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemCreationSetupData.validatedIssues.push(args.validatedIssue);
+    return newState;
+}
+
+export function addValidatedTms(state: State, args: { validatedTms: TmsValidation }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemCreationSetupData.validatedTms.push(args.validatedTms);
+    return newState;
+}
+
+export function addValidatedFromId(state: State, args: { validatedFromId: FromIdValidation }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemCreationSetupData.validatedFromId.push(args.validatedFromId);
     return newState;
 }
 

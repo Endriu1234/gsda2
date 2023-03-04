@@ -2,7 +2,7 @@
     <form novalidate [ngrxFormState]="formState">
         <div class="d-flex flex-md-row justify-content-md-between flex-column my-4 jkWidthMarg">
             <mat-card-title>Item Creation</mat-card-title>
-            <mat-card-subtitle><button mat-raised-button>Fill From Id</button></mat-card-subtitle>
+            <mat-card-subtitle><button mat-raised-button (click)="openFromIdDialog()">Fill From Id</button></mat-card-subtitle>
         </div>
         <mat-card class="mt-1">
             <mat-card-content>
@@ -63,19 +63,32 @@
                 <div class="d-flex flex-md-row justify-content-md-between flex-column">
                     <mat-form-field appearance="outline" [style.width.%]=100 class="pe-md-2">
                         <mat-label>SD Issue#</mat-label>
-                        <input type="text" matInput placeholder="SoftDev Issue" [ngrxFormControlState]="$any(formState).controls.issue">
+                        <input type="text" 
+                                matInput placeholder="SoftDev Issue" 
+                                [ngrxFormControlState]="$any(formState).controls.issue"
+                                [ngrxValueConverter]="trimUpper">
                     </mat-form-field>
-                    <mat-error *ngIf="formState.isTouched && formState.errors._cr?.$validateCRError">
-                        Invalid CR
-                    </mat-error>
                     <mat-form-field appearance="outline" [style.width.%]=100 class="px-md-2">
                         <mat-label>SD CR#</mat-label>
-                        <input type="text" matInput placeholder="SoftDev Change Request" [ngrxFormControlState]="$any(formState).controls.cr">
+                        <input type="text" 
+                            matInput 
+                            placeholder="SoftDev Change Request" 
+                            [ngrxFormControlState]="$any(formState).controls.cr"
+                            [ngrxValueConverter]="trimUpper">
                     </mat-form-field>
                     <mat-form-field appearance="outline" [style.width.%]=100 class="ps-md-2">
                         <mat-label>iTMS</mat-label>
-                        <input type="text" matInput placeholder="iTMS Task">
+                        <input type="text" 
+                            matInput 
+                            placeholder="iTMS Task" 
+                            [ngrxFormControlState]="$any(formState).controls.tms"
+                            [ngrxValueConverter]="trimUpper">
                     </mat-form-field>
+                </div>
+                <div class="d-flex flex-md-row justify-content-md-between flex-column">
+                    <mat-error [style.width.%]=100 class="pe-md-2" [style.visibility]="(formState.isTouched && formState.errors._issue?.$validateIssueError)?'visible':'hidden'">Invalid Issue</mat-error>
+                    <mat-error [style.width.%]=100 class="px-md-2" [style.visibility]="(formState.isTouched && formState.errors._cr?.$validateCRError)?'visible':'hidden'">Invalid CR</mat-error>
+                    <mat-error [style.width.%]=100 class="ps-md-2" [style.visibility]="(formState.isTouched && formState.errors._tms?.$validateTmsError)?'visible':'hidden'">Invalid TMS value</mat-error>
                 </div>
             </mat-card-content>
         </mat-card>

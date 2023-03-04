@@ -8,6 +8,8 @@ import { BatchItemsCreationPage } from './batchitemscreation/pages/batch-items-c
 import { MaterialModule } from '../shared/components/material/material.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgrxFormsModule } from 'ngrx-forms';
+import { ItemCreationFromId } from './itemcreation/pages/item-creation-from-id/item-creation-from-id';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 
@@ -15,14 +17,16 @@ import { NgrxFormsModule } from 'ngrx-forms';
   declarations: [
     BatchItemsCreationPage,
     ItemViewEditPage,
-    ItemCreationPage
+    ItemCreationPage,
+    ItemCreationFromId
   ],
   imports: [
     CommonModule,
     ItemsRoutingModule,
     MaterialModule,
     ReactiveFormsModule,
-    NgrxFormsModule
+    NgrxFormsModule,
+    MatDialogModule
   ]
 })
 export class ItemsModule { }
