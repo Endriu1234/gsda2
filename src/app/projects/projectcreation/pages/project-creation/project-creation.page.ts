@@ -19,7 +19,7 @@ export class ProjectCreationPage implements OnInit {
   projectsFiltered$: Observable<RedmineProject[]> | null = null;
   rmAutoProject = new FormControl('');
 
-  constructor(private store: Store<fromRoot.State>, public dialog: MatDialog) { }
+  constructor(private store: Store<fromRoot.State>, private dialog: MatDialog) { }
 
   openFromIdDialog(): void {
     const dialogRef = this.dialog.open(ProjectCreationFromId, {

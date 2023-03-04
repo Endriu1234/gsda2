@@ -27,7 +27,7 @@ export class ItemCreationPage implements OnInit {
   formState$: Observable<FormGroupState<any>>;
   trimUpper = trimUpperConverter;
 
-  constructor(private store: Store<fromItemsState.State>, private sharedStore: Store<fromShared.State>, public dialog: MatDialog) {
+  constructor(private store: Store<fromItemsState.State>, private sharedStore: Store<fromShared.State>, private dialog: MatDialog) {
     this.formState$ = this.store.select(fromItemsSelectors.getItemCreationFormState);
   }
 

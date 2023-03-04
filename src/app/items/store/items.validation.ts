@@ -145,10 +145,9 @@ export function validateFromId(store: Store<State>, http: HttpClient, validateFr
     
     if (!fromId)
         return of(new StartAsyncValidationAction(controlId, validateFromIdError), new ClearAsyncErrorAction(controlId, validateFromIdError));
-    console.log("Valid: " + fromId);
+
     if (new RegExp("^\\d").test(fromId))
-        return of(new StartAsyncValidationAction(controlId, validateFromIdError), new SetAsyncErrorAction(controlId, validateFromIdError, "Invalid Id"));
-    console.log("Valid2: " + fromId);   
+        return of(new StartAsyncValidationAction(controlId, validateFromIdError), new SetAsyncErrorAction(controlId, validateFromIdError, "Invalid Id"));  
 
     if (fromId.startsWith('ISS'))
         return validateIssue(store, http, validateFromIdError, controlId, fromId);
