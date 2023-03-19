@@ -2,22 +2,26 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
     initRedmineProjects, initRedmineTrackers, initRedmineUsers, loadRedmineProjects,
-    loadRedmineTrackers, loadRedmineUsers, noopAction, setRedmineProjectsFilter, setRedmineUsersByLetterFilter
+    loadRedmineTrackers, loadRedmineUsers, noopAction, setRedmineProjectsFilter, setRedmineUsersByLetterFilter,
+    findItemById
 } from './items.actions';
-import { from, map, of, startWith, switchMap } from "rxjs";
-import { HttpClient } from '@angular/common/http';
+import { catchError, from, map, mergeMap, of, startWith, switchMap } from "rxjs";
+import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { RedmineTracker } from './models/redmine-tracker.model';
 import { environment } from 'src/environments/environment';
 import { RedmineUser } from './models/redmine-user.model';
 import { RedmineProject } from './models/redmine-project.model';
-import { SetValueAction } from 'ngrx-forms';
-import { ITEM_CREATION_FORMID } from './items.state';
+import { SetAsyncErrorAction, SetValueAction } from 'ngrx-forms';
+import { ITEM_CREATION_FORMID, ITEM_CREATION_DIALOG } from './items.state';
 import * as fromItemsState from './items.state';
 import * as fromShared from '../../shared/store/shared.reducer';
 import * as fromSharedActions from '../../shared/store/shared.actions';
 
 import { Store } from '@ngrx/store';
 import { validateProject, validateUser, validateCR, validateIssue, validateTms, validateFromId } from './items.validation';
+import { Item } from './models/item.model';
+import { addSnackbarNotification } from '../../shared/store/shared.actions';
+import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 
 const BACKEND_URL = environment.apiUrl + "/redmine/items/get-redmine-trackers";
 
@@ -69,12 +73,32 @@ export class ItemsEffects {
             if (action.controlId === ITEM_CREATION_FORMID + '.tms')
                 return from(validateTms(this.store, this.http, validateTmsError, action.controlId, action.value));
 
-            if (action.controlId === ITEM_CREATION_FORMID + '.fromId')
+            if (action.controlId === ITEM_CREATION_DIALOG + '.fromId')
                 return from(validateFromId(this.store, this.http, validateFromIdError, action.controlId, action.value));
 
             return of(noopAction());
         })
     ));
 
+    getItemById$ = createEffect(() => this.actions$.pipe(
+        ofType(findItemById), 
+        switchMap((action: { id: string }) => {
+            let params = new HttpParams();
+            params = params.append("id", action.id);
+            let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
+
+            return this.http.get<Item>(environment.apiUrl + '/softdev/items/get-item-by-id', { params, context }).pipe(mergeMap(item => {
+                return of(new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.subject', item.item_summary), 
+                          new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.description', item.item_description),
+                          new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.issue', item.issue_id), 
+                          new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.cr', item.cr_id), 
+                          new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.tms', item.tms_id))
+            }), catchError(error => {
+                console.log(error);
+                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during defaulting" }));
+                return of(noopAction());
+            }))
+        })
+    ));
 
 }

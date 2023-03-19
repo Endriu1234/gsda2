@@ -69,3 +69,35 @@ module.exports.getIssueValidationQuery = (issue) => {
 module.exports.getTmsValidationQuery = (tmsClient, tmsId) => {
     return `select count(*) as existence from SD_LIVE.tms_problem_v tms where tms.client = '${tmsClient}' and tms.id = '${tmsId}' and rownum = 1`;
 };
+
+module.exports.getItemDataByIssue = (issue) => {
+    return `SELECT ''             as cr_id,
+                aa_uf_id          as issue_id,
+                iss_summary       as item_summary,
+                iss_desc          as item_description,
+                iss_user_18       as tms_id
+            FROM sd_live.issue       issue
+            WHERE issue.aa_uf_id = '${issue}'`;
+}
+
+module.exports.getItemDataByCR = (cr) => {
+    return `SELECT cr.aa_uf_id      as cr_id,
+                cr.iss_uf_id        as issue_id,
+                cr.iss_summary      as item_description,
+                cr.cr_summary       as item_summary,
+                cr.iss_user_18      as tms_id
+            FROM sd_live.change_request_v cr
+            WHERE cr.aa_uf_id = '${cr}'`;
+}
+
+module.exports.getItemDataByTms = (tmsClient, tmsId) => {
+    return `SELECT ''                           as cr_id,
+                tms.softdev_id                  as issue_id,
+                txt.problemfulltext             as item_description,
+                tms.client || '-' || tms.id     as item_summary,
+                tms.client || '-' || tms.id     as tms_id
+            FROM SD_LIVE.Tms_Problem_v tms, SD_LIVE.Tms_Problem_Full_Text txt
+            WHERE txt.TASK_AA_ID = tms.aa_id
+                AND tms.client = '${tmsClient}' 
+                AND tms.id = '${tmsId}'`;
+}

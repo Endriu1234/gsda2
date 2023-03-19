@@ -10,6 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NgrxFormsModule } from 'ngrx-forms';
 import { ItemCreationFromId } from './itemcreation/pages/item-creation-from-id/item-creation-from-id';
 import { MatDialogModule } from '@angular/material/dialog';
+import { SmallSpinnerComponent } from '../shared/spinner/small-spinner/small-spinner.component';
 
 
 
@@ -18,7 +19,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     BatchItemsCreationPage,
     ItemViewEditPage,
     ItemCreationPage,
-    ItemCreationFromId
+    ItemCreationFromId,
+    SmallSpinnerComponent
   ],
   imports: [
     CommonModule,

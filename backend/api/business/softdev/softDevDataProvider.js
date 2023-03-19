@@ -56,3 +56,18 @@ module.exports.isTmsInDB = async (tms) => {
     
     return await executeSoftDevQuery(softdevQueries.getTmsValidationQuery(tmsTable.at(0), tmsTable.at(1)));
 }
+
+module.exports.getItemById = async (id) => {
+    if (id) {
+        if (id.startsWith('ISS')) {
+            return await executeSoftDevQuery(softdevQueries.getItemDataByIssue(id));
+        }
+
+        if (id.startsWith('CR')) {
+            return await executeSoftDevQuery(softdevQueries.getItemDataByCR(id));
+        }
+
+        let tmsTable = id.split("-");
+        return await executeSoftDevQuery(softdevQueries.getItemDataByTms(tmsTable.at(0), tmsTable.at(1)));
+    }
+}

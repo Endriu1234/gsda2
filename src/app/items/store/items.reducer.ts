@@ -1,7 +1,7 @@
 import { createReducer, on, combineReducers } from '@ngrx/store';
 import { 
     initRedmineTrackers, loadRedmineTrackers, initRedmineUsers, loadRedmineUsers, initRedmineProjects, loadRedmineProjects, setRedmineProjectsFilter, 
-    addValidatedCR, addValidatedIssue, addValidatedTms, setRedmineUsersByLetterFilter, addValidatedFromId 
+    addValidatedCR, addValidatedIssue, addValidatedTms, setRedmineUsersByLetterFilter, addValidatedFromId
 } from './items.actions';
 import { initialState, ItemCreationFromData, State } from './items.state';
 import * as fromReducerHanders from './items.reducer-handlers';

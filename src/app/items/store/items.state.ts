@@ -34,6 +34,9 @@ export interface ItemCreationFromData {
     issue: string;
     cr: string;
     tms: string;
+}
+
+export interface ItemCreationFromIdDialog {
     fromId: string;
 }
 
@@ -41,9 +44,11 @@ export interface State {
 
     itemCreationSetupData: ItemCreationSetupData;
     itemCreationFromData: FormGroupState<ItemCreationFromData>;
+    itemCreationFromIdDialog: FormGroupState<ItemCreationFromIdDialog>;
 }
 
 export const ITEM_CREATION_FORMID = "ITEM_CREATION_FORMID";
+export const ITEM_CREATION_DIALOG = "ITEM_CREATION_DIALOG";
 
 export const initialState: State = {
     itemCreationSetupData: {
@@ -70,7 +75,9 @@ export const initialState: State = {
         issue: '',
         user: '',
         cr: '',
-        tms: '',
+        tms: ''
+    }),
+    itemCreationFromIdDialog: createFormGroupState<ItemCreationFromIdDialog>(ITEM_CREATION_DIALOG, {
         fromId: ''
     })
 }
