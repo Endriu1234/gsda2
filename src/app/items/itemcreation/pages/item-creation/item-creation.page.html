@@ -6,12 +6,13 @@
         </div>
         <mat-card class="mt-1">
             <mat-card-content>
-                <mat-error *ngIf="formState.isTouched && formState.errors._project?.$validateProjectError">
+                <mat-error *ngIf="formState.isTouched && (formState.errors._project?.$validateProjectError || formState.errors._project?.required)">
                     Project is required
                 </mat-error>
                 <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
                     <mat-label>Redmine Project</mat-label>
-                    <input type="text" [ngrxFormControlState]="$any(formState).controls.project"
+                    <input type="text" 
+                        [ngrxFormControlState]="$any(formState).controls.project"
                         matInput
                         [matAutocomplete]="autoProject">
                     <mat-autocomplete #autoProject="matAutocomplete">
@@ -24,27 +25,27 @@
         </mat-card>
         <mat-card>
             <mat-card-content>
-                <mat-error *ngIf="formState.isTouched && formState.errors._tracker?.required">
+                <mat-error [style.visibility]="(formState.isTouched && formState.errors._tracker?.required)?'visible':'hidden'">
                     Tracker is required
                 </mat-error>
                 <mat-chip-listbox class="mb-3" [ngrxFormControlState]="$any(formState).controls.tracker">
                     <mat-chip-option *ngFor="let tracker of (trackers$ | async)">{{ tracker.name }}</mat-chip-option>
                 </mat-chip-listbox>
-                <mat-error *ngIf="formState.isTouched && formState.errors._subject?.required">
+                <mat-error [style.visibility]="(formState.isTouched && formState.errors._subject?.required)?'visible':'hidden'">
                     Subject is required
                 </mat-error>
                 <mat-form-field appearance="outline" [style.width.%]=100>
                     <mat-label>Subject</mat-label>
                     <input type="text" matInput placeholder="Subject of the item"  [ngrxFormControlState]="$any(formState).controls.subject">
                 </mat-form-field>
-                <mat-error *ngIf="formState.isTouched && formState.errors._description?.required">
+                <mat-error [style.visibility]="(formState.isTouched && formState.errors._description?.required)?'visible':'hidden'">
                     Description is required
                 </mat-error>
                 <mat-form-field appearance="outline" [style.width.%]=100>
                     <mat-label>Description</mat-label>
                     <textarea type="text" matInput placeholder="Description" [ngrxFormControlState]="$any(formState).controls.description"></textarea>
                 </mat-form-field>
-                <mat-error *ngIf="formState.isTouched && formState.errors._user?.$validateUserError">
+                <mat-error [style.visibility]="(formState.isTouched && formState.errors._user?.$validateUserError)?'visible':'hidden'">
                     User not matched
                 </mat-error>
                 <mat-form-field appearance="outline" class="" [style.width.%]=100>
@@ -60,7 +61,7 @@
                         </mat-optgroup>
                     </mat-autocomplete>
                 </mat-form-field>
-                <div class="d-flex flex-md-row justify-content-md-between flex-column">
+                <div class="d-flex flex-md-row justify-content-md-between flex-column mt-3">
                     <mat-form-field appearance="outline" [style.width.%]=100 class="pe-md-2">
                         <mat-label>SD Issue#</mat-label>
                         <input type="text" 
@@ -86,9 +87,18 @@
                     </mat-form-field>
                 </div>
                 <div class="d-flex flex-md-row justify-content-md-between flex-column">
-                    <mat-error [style.width.%]=100 class="pe-md-2" [style.visibility]="(formState.isTouched && formState.errors._issue?.$validateIssueError)?'visible':'hidden'">Invalid Issue</mat-error>
-                    <mat-error [style.width.%]=100 class="px-md-2" [style.visibility]="(formState.isTouched && formState.errors._cr?.$validateCRError)?'visible':'hidden'">Invalid CR</mat-error>
-                    <mat-error [style.width.%]=100 class="ps-md-2" [style.visibility]="(formState.isTouched && formState.errors._tms?.$validateTmsError)?'visible':'hidden'">Invalid TMS value</mat-error>
+                    <mat-error [style.width.%]=100 class="pe-md-2" [style.visibility]="(formState.isTouched && formState.errors._issue?.$validateIssueError)?'visible':'hidden'">
+                        <app-small-spinner class="float-start ms-4" *ngIf="formState.controls.issue.isValidationPending"></app-small-spinner>
+                        <span *ngIf="!formState.controls.issue.isValidationPending">Invalid Issue</span>
+                    </mat-error>
+                    <mat-error [style.width.%]=100 class="px-md-2" [style.visibility]="(formState.isTouched && formState.errors._cr?.$validateCRError)?'visible':'hidden'">
+                        <app-small-spinner class="float-start ms-4" *ngIf="formState.controls.cr.isValidationPending"></app-small-spinner>
+                        <span *ngIf="!formState.controls.cr.isValidationPending">Invalid CR</span>
+                    </mat-error>
+                    <mat-error [style.width.%]=100 class="ps-md-2" [style.visibility]="(formState.isTouched && formState.errors._tms?.$validateTmsError)?'visible':'hidden'">
+                        <app-small-spinner class="float-start ms-4" *ngIf="formState.controls.tms.isValidationPending"></app-small-spinner>
+                        <span *ngIf="!formState.controls.tms.isValidationPending">Invalid TMS value</span>
+                    </mat-error>
                 </div>
             </mat-card-content>
         </mat-card>

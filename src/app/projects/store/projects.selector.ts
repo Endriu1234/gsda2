@@ -4,9 +4,11 @@ import { State } from './projects.state';
 
 
 export const getProjectsState = createFeatureSelector<State>(projectsReducerKey);
-export const getRedmineProjects = createSelector(getProjectsState, (state: State) => state.projectCreation.redmineProjects);
-export const getRedmineProjectsFiltered = createSelector(getProjectsState, (state: State) => state.projectCreation.redmineProjectsFiltered);
-export const getRedmineProjectsLoaded = createSelector(getProjectsState, (state: State) => state.projectCreation.redmineProjectsLoaded);
-export const getSoftDevProjects = createSelector(getProjectsState, (state: State) => state.projectCreation.softdevProjects);
-export const getSoftDevProjectsFiltered = createSelector(getProjectsState, (state: State) => state.projectCreation.softdevProjectsFiltered);
-export const getSoftDevProjectsLoaded = createSelector(getProjectsState, (state: State) => state.projectCreation.softdevProjectsLoaded);
+export const getRedmineProjects = createSelector(getProjectsState, (state: State) => state.projectCreationSetupData.redmineProjects);
+export const getRedmineProjectsFiltered = createSelector(getProjectsState, (state: State) => state.projectCreationSetupData.redmineProjectsFiltered);
+export const getRedmineProjectsLoaded = createSelector(getProjectsState, (state: State) => state.projectCreationSetupData.redmineProjectsLoaded);
+export const getSoftDevProjects = createSelector(getProjectsState, (state: State) => state.projectCreationSetupData.softdevProjects);
+export const getSoftDevProjectsFiltered = createSelector(getProjectsState, (state: State) => state.projectCreationSetupData.softdevProjectsFiltered);
+export const getSoftDevProjectsLoaded = createSelector(getProjectsState, (state: State) => state.projectCreationSetupData.softdevProjectsLoaded);
+export const getProjectCreationFormState = createSelector(getProjectsState, (state: State) => state.projectCreationFromData);
+export const getProjectCreationDialogState = createSelector(getProjectsState, (state: State) => state.projectCreationFromIdDialog);

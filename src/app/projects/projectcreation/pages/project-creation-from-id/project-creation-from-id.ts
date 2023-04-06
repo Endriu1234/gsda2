@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { FormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable, take } from 'rxjs';
-import * as fromRoot from '../../../../app.reducer';
+import * as fromProjectsState from '../../../store/projects.state';
 import * as fromProjectsSelectors from "../../../../projects/store/projects.selector";
 import { SoftDevProject } from "src/app/projects/store/models/softdev-project.model";
-import { initSoftDevProjects, setSoftDevProjectsFilter } from 'src/app/projects/store/projects.actions';
+import { findProjectById, initSoftDevProjects} from 'src/app/projects/store/projects.actions';
+import { FormGroupState } from 'ngrx-forms';
 
 @Component({
   selector: 'app-project-creation-from-id',
@@ -16,9 +15,11 @@ import { initSoftDevProjects, setSoftDevProjectsFilter } from 'src/app/projects/
 export class ProjectCreationFromId implements OnInit {
 
   sdProjectsFiltered$: Observable<SoftDevProject[]> | null = null;
-  sdAutoProject = new FormControl('');
+  dialogState$: Observable<FormGroupState<any>>;
 
-  constructor (private store: Store<fromRoot.State>, public dialogRef: MatDialogRef<ProjectCreationFromId>) {}
+  constructor (private store: Store<fromProjectsState.State>) {
+    this.dialogState$ = this.store.select(fromProjectsSelectors.getProjectCreationDialogState); 
+  }
 
   ngOnInit(): void {
 
@@ -28,12 +29,13 @@ export class ProjectCreationFromId implements OnInit {
     });
 
     this.sdProjectsFiltered$ = this.store.select(fromProjectsSelectors.getSoftDevProjectsFiltered);
+  }
 
-    this.sdAutoProject.valueChanges
-      .subscribe(softdevProjectsFilter => {
-        softdevProjectsFilter
-        this.store.dispatch(setSoftDevProjectsFilter({ softdevProjectsFilter: { filter: softdevProjectsFilter } }))
-      });
+  fillByProject() {
+    let id = "";
+    this.dialogState$.subscribe(group => id = group.controls.projectId.value );
+    
+    this.store.dispatch(findProjectById({id}));
   }
 
 }

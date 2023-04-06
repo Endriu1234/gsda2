@@ -9,16 +9,17 @@
                     <mat-label>Issue#/CR#/TMS</mat-label>
                     <input cdkFocusInitial 
                             type="text" 
-                            matInput placeholder="SoftDev Issue or SoftDev CR or TMS" 
+                            matInput 
+                            placeholder="SoftDev Issue or SoftDev CR or TMS" 
                             [ngrxFormControlState]="$any(dialogState).controls.fromId"
                             [ngrxValueConverter]="trimUpper" 
                             #fromIdValue
                     >
                 </mat-form-field>  
-                <mat-error *ngIf="dialogState.isTouched && dialogState.errors._fromId?.$validateFromIdError && !dialogState.isValidationPending">
-                    Wrong Id
+                <mat-error [style.visibility]="(dialogState.isTouched && dialogState.errors._fromId?.$validateFromIdError)?'visible':'hidden'">
+                    <app-small-spinner class="float-start ms-4" *ngIf="dialogState.isValidationPending"></app-small-spinner>
+                    <span *ngIf="!dialogState.isValidationPending">Wrong Id</span>
                 </mat-error>
-                <app-small-spinner class="float-start ms-4" *ngIf="dialogState.isValidationPending"></app-small-spinner>
             </mat-card-content>
             <mat-card-actions [align]="'end'" class="jkWidthMarg">
                 <button mat-fab extended color="accent" mat-dialog-close class="me-4 my-2">Cancel</button>

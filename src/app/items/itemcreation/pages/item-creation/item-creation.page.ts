@@ -5,7 +5,7 @@ import * as fromItemsSelectors from '../../../store/items.selectors';
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers } from '../../../store/items.actions';
 import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model';
 import { RedmineUserByLetter } from 'src/app/items/store/models/redmine-user-letter-model';
-import { RedmineProject } from 'src/app/items/store/models/redmine-project.model';
+import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 import { Observable, take } from 'rxjs';
 import { FormGroupState } from 'ngrx-forms';
 import { trimUpperConverter } from '../../../../shared/tools/validators/ngrxValueConverters';

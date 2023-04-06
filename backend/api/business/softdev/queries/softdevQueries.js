@@ -1,7 +1,8 @@
 module.exports.getSDActiveProjectsQuery = () => { 
 return `SELECT 
     prd_version.aa_id AS product_version_id,
-    prd_version.prv_version AS product_version_name, 
+    prd_version.prv_version AS product_version_name,
+    proj.pj_name AS project_name, 
     proj.pj_svn_branch AS product_branch,
     proj.pj_release_candidate AS product_release_candidate,
     proj.pj_dev_start AS product_dev_start,

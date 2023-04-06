@@ -1,4 +1,4 @@
-import { RedmineProject } from "./models/redmine-project.model";
+import { RedmineProject } from "../../shared/store/models/redmine-project.model";
 import { RedmineTracker } from "./models/redmine-tracker.model";
 import { RedmineUser } from "./models/redmine-user.model";
 import { createFormGroupState, FormGroupState } from "ngrx-forms";

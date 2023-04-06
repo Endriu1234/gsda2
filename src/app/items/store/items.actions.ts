@@ -3,10 +3,10 @@ import { CRValidation } from './models/cr-validation.model';
 import { IssueValidation } from "./models/issue-validation.model";
 import { TmsValidation } from "./models/tms-validation.model";
 import { FromIdValidation } from "./models/fromId-validation.model";
-import { RedmineProject } from './models/redmine-project.model';
 import { RedmineTracker } from './models/redmine-tracker.model';
 import { RedmineUser } from './models/redmine-user.model';
 import { Item } from './models/item.model';
+import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 
 export const initRedmineTrackers = createAction('[Items Component] Init Redmine Trackers');
 export const loadRedmineTrackers = createAction('[Items Component] Load Redmine Trackers', props<{ redmineTrackers: RedmineTracker[] }>());

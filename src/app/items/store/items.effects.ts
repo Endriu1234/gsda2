@@ -10,7 +10,6 @@ import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { RedmineTracker } from './models/redmine-tracker.model';
 import { environment } from 'src/environments/environment';
 import { RedmineUser } from './models/redmine-user.model';
-import { RedmineProject } from './models/redmine-project.model';
 import { SetAsyncErrorAction, SetValueAction } from 'ngrx-forms';
 import { ITEM_CREATION_FORMID, ITEM_CREATION_DIALOG } from './items.state';
 import * as fromItemsState from './items.state';
@@ -22,6 +21,7 @@ import { validateProject, validateUser, validateCR, validateIssue, validateTms, 
 import { Item } from './models/item.model';
 import { addSnackbarNotification } from '../../shared/store/shared.actions';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
+import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 
 const BACKEND_URL = environment.apiUrl + "/redmine/items/get-redmine-trackers";
 
@@ -59,7 +59,7 @@ export class ItemsEffects {
         ofType(SetValueAction.TYPE),
         switchMap((action: SetValueAction<any>) => {
             if (action.controlId === ITEM_CREATION_FORMID + '.project')
-                return from(validateProject(this.store, validateUserError, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilter())));
+                return from(validateProject(this.store, validateProjectError, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilter())));
 
             if (action.controlId === ITEM_CREATION_FORMID + '.user')
                 return from(validateUser(this.store, validateUserError, action.controlId, action.value).pipe(startWith(setRedmineUsersByLetterFilter())));

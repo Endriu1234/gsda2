@@ -1,21 +1,36 @@
-<mat-dialog-content class="mat-typography">
-    <div>
-        <mat-card-title>Select the SoftDev project</mat-card-title>
-    </div>
-    <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
-        <mat-label>SoftDev Project</mat-label>
-        <input type="text"
-            matInput
-            [formControl]="sdAutoProject"
-            [matAutocomplete]="autoSdProject">
-        <mat-autocomplete #autoSdProject="matAutocomplete">
-            <mat-option *ngFor="let project of (sdProjectsFiltered$ | async)" [value]="project.PRODUCT_VERSION_NAME">
-                {{project.PRODUCT_VERSION_NAME}}
-            </mat-option>
-        </mat-autocomplete>
-    </mat-form-field>  
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Fill the data</button>
-</mat-dialog-actions>
+<ng-container *ngIf="dialogState$ | async as dialogState">
+    <form novalidate [ngrxFormState]="dialogState">
+        <mat-card class="mt-1">
+            <mat-card-content>
+                <div>
+                    <mat-card-title>Select the SoftDev project</mat-card-title>
+                </div>
+                <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                    <mat-label>SoftDev Project</mat-label>
+                    <input type="text"
+                        matInput
+                        [ngrxFormControlState]="$any(dialogState).controls.projectId"
+                        [matAutocomplete]="autoSdProject"
+                        #projectValue>
+                    <mat-autocomplete #autoSdProject="matAutocomplete">
+                        <mat-option *ngFor="let project of (sdProjectsFiltered$ | async)" [value]="project.PRODUCT_VERSION_NAME">
+                            {{project.PRODUCT_VERSION_NAME}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field> 
+                <mat-error [style.visibility]="(dialogState.isTouched && dialogState.errors._projectId?.$validateSDProjectError)?'visible':'hidden'">
+                    <span *ngIf="!dialogState.isValidationPending">Wrong Project</span>
+                </mat-error>
+            </mat-card-content>
+            <mat-card-actions [align]="'end'" class="jkWidthMarg"> 
+                <button mat-fab extended color="accent" mat-dialog-close class="me-4 my-2">Cancel</button>
+                <button mat-fab extended 
+                    color="primary" 
+                    class="me-3 my-2" 
+                    mat-dialog-close 
+                    (click)="fillByProject()"
+                    [disabled]="!projectValue.value || dialogState.isValidationPending || dialogState.isInvalid">Fill the data</button>
+            </mat-card-actions>
+        </mat-card>
+    </form>
+</ng-container>

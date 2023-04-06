@@ -1,3 +1,4 @@
+import { RedmineProject } from "./models/redmine-project.model";
 import { State } from "./shared.reducer";
 
 export function addSnackbarNotification(state: State, args: { notification: string }): State {
@@ -11,3 +12,10 @@ export function clearDisplayedSnackbarNotifications(state: State, args: { timest
     newState.snackbarNotifications = newState.snackbarNotifications.filter(n => n.timestamp > args.timestamp);
     return newState;
 };
+
+export function filterRedmineProjects(allProjects: RedmineProject[], filter: string): RedmineProject[] {
+    if (filter)
+        return allProjects.filter(u => u.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase()));
+
+    return allProjects;
+}

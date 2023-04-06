@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, take } from 'rxjs';
-import * as fromRoot from '../../../../app.reducer';
+import { FormGroupState } from 'ngrx-forms';
 import * as fromProjectsSelectors from "../../../store/projects.selector";
-import { initRedmineProjects, setRedmineProjectsFilter } from "../../../store/projects.actions"
-import { RedmineProject } from '../../../store/models/redmine-project.model';
+import * as fromProjectsState from '../../../store/projects.state';
+import * as fromShared from '../../../../shared/store/shared.reducer';
+import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 import { FormControl } from '@angular/forms';
 import { ProjectCreationFromId} from "../project-creation-from-id/project-creation-from-id";
 import { MatDialog } from '@angular/material/dialog';
+import { initRedmineProjects } from 'src/app/projects/store/projects.actions';
 
 @Component({
   selector: 'app-project-creation',
@@ -17,9 +19,12 @@ import { MatDialog } from '@angular/material/dialog';
 export class ProjectCreationPage implements OnInit {
 
   projectsFiltered$: Observable<RedmineProject[]> | null = null;
+  formState$: Observable<FormGroupState<any>>;
   rmAutoProject = new FormControl('');
 
-  constructor(private store: Store<fromRoot.State>, private dialog: MatDialog) { }
+  constructor(private store: Store<fromProjectsState.State>, private sharedStore: Store<fromShared.State>, private dialog: MatDialog) { 
+    this.formState$ = this.store.select(fromProjectsSelectors.getProjectCreationFormState);
+  }
 
   openFromIdDialog(): void {
     const dialogRef = this.dialog.open(ProjectCreationFromId, {
@@ -28,10 +33,6 @@ export class ProjectCreationPage implements OnInit {
       enterAnimationDuration: 500,
       exitAnimationDuration: 500,
       restoreFocus: false
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
     });
   }
 
@@ -44,11 +45,6 @@ export class ProjectCreationPage implements OnInit {
 
     this.projectsFiltered$ = this.store.select(fromProjectsSelectors.getRedmineProjectsFiltered);
 
-    // this.rmAutoProject.valueChanges
-    //   .subscribe(redmineProjectsFilter => {
-    //     redmineProjectsFilter
-    //     this.store.dispatch(setRedmineProjectsFilter({ redmineProjectsFilter: { filter: redmineProjectsFilter } }))
-    //   });
   }
 
 }

@@ -1,6 +1,7 @@
 export class SoftDevProject {
     public PRODUCT_VERSION_ID: number;
     public PRODUCT_VERSION_NAME: string;
+    public PROJECT_NAME: string;
     public PRODUCT_BRANCH: string;
     public PRODUCT_RELEASE_CANDIDATE: string;
     public PRODUCT_DEV_START: string;
@@ -12,11 +13,12 @@ export class SoftDevProject {
     public PRODUCT_PROGRAMMING_MGR: string;
     public PRODUCT_PROJECT_MGR: string;
 
-    constructor(PRODUCT_VERSION_ID: number, PRODUCT_VERSION_NAME: string, PRODUCT_BRANCH: string, PRODUCT_RELEASE_CANDIDATE: string,
+    constructor(PRODUCT_VERSION_ID: number, PRODUCT_VERSION_NAME: string, PROJECT_NAME: string, PRODUCT_BRANCH: string, PRODUCT_RELEASE_CANDIDATE: string,
         PRODUCT_DEV_START: string, PRODUCT_DEV_END: string, PRODUCT_TEST_START: string, PRODUCT_TEST_END: string,
         PRODUCT_DELIVERY_DATE: string, PRODUCT_TESTING_MGR: string, PRODUCT_PROGRAMMING_MGR: string, PRODUCT_PROJECT_MGR: string) {
         this.PRODUCT_VERSION_ID = PRODUCT_VERSION_ID;
         this.PRODUCT_VERSION_NAME = PRODUCT_VERSION_NAME;
+        this.PROJECT_NAME = PROJECT_NAME;
         this.PRODUCT_BRANCH = PRODUCT_BRANCH;
         this.PRODUCT_RELEASE_CANDIDATE = PRODUCT_RELEASE_CANDIDATE;
         this.PRODUCT_DEV_START = PRODUCT_DEV_START;
