@@ -29,7 +29,10 @@
                     Tracker is required
                 </mat-error>
                 <mat-chip-listbox class="mb-3" [ngrxFormControlState]="$any(formState).controls.tracker">
-                    <mat-chip-option *ngFor="let tracker of (trackers$ | async)">{{ tracker.name }}</mat-chip-option>
+                    <mat-chip-option 
+                        *ngFor="let tracker of (trackers$ | async)" 
+                        [selected]="($any(formState).controls.tracker.value == tracker.name)?true:false"
+                    >{{ tracker.name }}</mat-chip-option>
                 </mat-chip-listbox>
                 <mat-error [style.visibility]="(formState.isTouched && formState.errors._subject?.required)?'visible':'hidden'">
                     Subject is required
@@ -103,8 +106,22 @@
             </mat-card-content>
         </mat-card>
         <mat-card-actions [align]="'end'" class="jkWidthMarg">
-            <button mat-fab extended color="accent" class="me-4 my-2" (click)="createAndOpenItem()">Create and Open</button>
-            <button mat-fab extended color="primary" class="me-3 my-2" (click)="createItem()">Create</button>
+            <button 
+                mat-fab 
+                extended 
+                color="accent" 
+                class="me-4 my-2" 
+                (click)="createAndOpenItem()"
+                [disabled]="!formState.value || formState.isValidationPending || formState.isInvalid"
+            >Create and Open</button>
+            <button 
+                mat-fab 
+                extended 
+                color="primary" 
+                class="me-3 my-2" 
+                (click)="createItem()"
+                [disabled]="!formState.value || formState.isValidationPending || formState.isInvalid"
+            >Create</button>
         </mat-card-actions>
     </form>
 </ng-container>

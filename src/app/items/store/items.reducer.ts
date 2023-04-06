@@ -14,6 +14,7 @@ const validationReducer = updateGroup<ItemCreationFromData>({
     tracker: validate(required),
     subject: validate(required),
     description: validate(required),
+    project: validate(required)
     // user: (state, parentState) => {
     //     //     // return disable(state);
     //     //return validate(required);
