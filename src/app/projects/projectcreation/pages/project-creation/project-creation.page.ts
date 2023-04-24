@@ -4,10 +4,10 @@ import { Observable, take } from 'rxjs';
 import { FormGroupState } from 'ngrx-forms';
 import * as fromProjectsSelectors from "../../../store/projects.selector";
 import * as fromProjectsState from '../../../store/projects.state';
-import * as fromShared from '../../../../shared/store/shared.reducer';
+import * as fromSharedState from '../../../../shared/store/shared.state';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 import { FormControl } from '@angular/forms';
-import { ProjectCreationFromId} from "../project-creation-from-id/project-creation-from-id";
+import { ProjectCreationFromId } from "../project-creation-from-id/project-creation-from-id";
 import { MatDialog } from '@angular/material/dialog';
 import { initRedmineProjects } from 'src/app/projects/store/projects.actions';
 
@@ -22,7 +22,7 @@ export class ProjectCreationPage implements OnInit {
   formState$: Observable<FormGroupState<any>>;
   rmAutoProject = new FormControl('');
 
-  constructor(private store: Store<fromProjectsState.State>, private sharedStore: Store<fromShared.State>, private dialog: MatDialog) { 
+  constructor(private store: Store<fromProjectsState.State>, private sharedStore: Store<fromSharedState.State>, private dialog: MatDialog) {
     this.formState$ = this.store.select(fromProjectsSelectors.getProjectCreationFormState);
   }
 

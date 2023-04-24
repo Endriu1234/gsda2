@@ -10,9 +10,8 @@ import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { RedmineTracker } from './models/redmine-tracker.model';
 import { environment } from 'src/environments/environment';
 import { RedmineUser } from './models/redmine-user.model';
-import { RedmineProject } from './models/redmine-project.model';
-import { SetValueAction } from 'ngrx-forms';
-import { ITEM_CREATION_FORMID } from './items.state';
+import { SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
+import { ITEM_CREATION_FORMID, ITEM_CREATION_DIALOG } from './items.state';
 import * as fromItemsState from './items.state';
 import * as fromSharedState from '../../shared/store/shared.state';
 
@@ -80,8 +79,42 @@ export class ItemsEffects {
         })
     ));
 
+    itemCreationFormSetUserDefinedValue$ = createEffect(() => this.actions$.pipe(
+        ofType(SetUserDefinedPropertyAction.TYPE),
+        switchMap((action: SetUserDefinedPropertyAction) => {
+
+            if (action.controlId == ITEM_CREATION_FORMID) {
+                if (action.name == fromSharedState.FORM_SAVE_STATE) {
+                    if (action.value == fromSharedState.FormSaveState.Saving) {
+                        console.log("Savujemy!!!");
+                    }
+                }
+            }
 
             return of(noopAction());
         })
     ));
+
+
+    getItemById$ = createEffect(() => this.actions$.pipe(
+        ofType(findItemById),
+        switchMap((action: { id: string }) => {
+            let params = new HttpParams();
+            params = params.append("id", action.id);
+            let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
+
+            return this.http.get<Item>(environment.apiUrl + '/softdev/items/get-item-by-id', { params, context }).pipe(mergeMap(item => {
+                return of(new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.subject', item.item_summary),
+                    new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.description', item.item_description),
+                    new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.issue', item.issue_id),
+                    new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.cr', item.cr_id),
+                    new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.tms', item.tms_id))
+            }), catchError(error => {
+                console.log(error);
+                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during defaulting" }));
+                return of(noopAction());
+            }))
+        })
+    ));
+
 }

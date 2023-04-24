@@ -9,7 +9,7 @@ import { SoftDevProject } from './models/softdev-project.model';
 import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 import { Store } from '@ngrx/store';
 import * as fromProjectsState from './projects.state';
-import * as fromShared from '../../shared/store/shared.reducer';
+import * as fromSharedState from '../../shared/store/shared.state';
 import { SetValueAction } from 'ngrx-forms';
 import { PROJECT_CREATION_DIALOG, PROJECT_CREATION_FORMID } from './projects.state';
 import { validateProject, validateSDProject } from './projects.validation';
@@ -25,7 +25,7 @@ export const validateSDProjectError = "validateSDProjectError";
 @Injectable()
 export class ProjectsEffects {
 
-    constructor(private actions$: Actions, private store: Store<fromProjectsState.State>, private sharedStore: Store<fromShared.State>, private http: HttpClient) { }
+    constructor(private actions$: Actions, private store: Store<fromProjectsState.State>, private sharedStore: Store<fromSharedState.State>, private http: HttpClient) { }
 
     initRedmineProjects$ = createEffect(() => this.actions$.pipe(ofType(initRedmineProjects),
         switchMap(() => {
@@ -44,7 +44,7 @@ export class ProjectsEffects {
         switchMap((action: SetValueAction<any>) => {
             if (action.controlId === PROJECT_CREATION_FORMID + '.redmineProject')
                 return from(validateProject(this.store, validateProjectError, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilter())));
-            
+
             if (action.controlId === PROJECT_CREATION_DIALOG + '.projectId')
                 return from(validateSDProject(this.store, validateSDProjectError, action.controlId, action.value).pipe(startWith(setSoftDevProjectsFilter())));
 
@@ -53,24 +53,24 @@ export class ProjectsEffects {
     ));
 
     getProjectById$ = createEffect(() => this.actions$.pipe(
-        ofType(findProjectById), 
+        ofType(findProjectById),
         switchMap((action: { id: string }) => {
             return this.store.select(getSoftDevProjects).pipe(mergeMap(sdProjects => {
                 let sdProject = sdProjects.find(sd => sd.PRODUCT_VERSION_NAME == action.id);
                 if (sdProject) {
                     return of(new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.identifier', sdProject.PRODUCT_VERSION_NAME.replace(/\./g, "_").toLocaleLowerCase()),
-                            new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.name', sdProject.PRODUCT_VERSION_NAME), 
-                            new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.description', this.createDescription(sdProject)),
-                            new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.wiki', this.createWikiInformation(sdProject)))
+                        new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.name', sdProject.PRODUCT_VERSION_NAME),
+                        new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.description', this.createDescription(sdProject)),
+                        new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.wiki', this.createWikiInformation(sdProject)))
                 }
-                            
+
                 return of(noopAction());
             })
-            , catchError(error => {
-                console.log(error);
-                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during defaulting" }));
-                return of(noopAction());
-            }))
+                , catchError(error => {
+                    console.log(error);
+                    this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during defaulting" }));
+                    return of(noopAction());
+                }))
         })
     ));
 
@@ -101,7 +101,7 @@ export class ProjectsEffects {
  */
     private createWikiInformation(sdProject: SoftDevProject): string {
         let sWiki: string = "";
-        
+
         sWiki += `h1. Important info \n\n`;
         sWiki += `h2. Dates \n\n`;
         sWiki += `* *Dev Start: ${formatDate(sdProject.PRODUCT_DEV_START, "MM/dd/yyyy", 'en-US')}* \n`;
@@ -121,7 +121,7 @@ export class ProjectsEffects {
 
     private createDescription(sdProject: SoftDevProject): string {
         let sDesc: string = sdProject.PROJECT_NAME;
-        
+
         if (sdProject.PRODUCT_VERSION_NAME) {
             let hfPos = sdProject.PRODUCT_VERSION_NAME.indexOf("HF");
             if (hfPos >= 0) {
@@ -133,7 +133,7 @@ export class ProjectsEffects {
                     sDesc += sdProject.PRODUCT_VERSION_NAME.substring(index + 1, sdProject.PRODUCT_VERSION_NAME.indexOf("_", index + 1));
                     sDesc += " client";
                 }
-            } 
+            }
         }
 
         return sDesc;

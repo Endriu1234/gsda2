@@ -7,12 +7,11 @@ import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model
 import { RedmineUserByLetter } from 'src/app/items/store/models/redmine-user-letter-model';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 import { Observable, take } from 'rxjs';
-import { FormGroupState } from 'ngrx-forms';
+import { FormGroupState, SetUserDefinedPropertyAction } from 'ngrx-forms';
 import { trimUpperConverter } from '../../../../shared/tools/validators/ngrxValueConverters';
 import { ItemCreationFromId } from "../item-creation-from-id/item-creation-from-id";
 import { MatDialog } from '@angular/material/dialog';
-import * as fromShared from '../../../../shared/store/shared.reducer';
-import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
+import { FormSaveState, FORM_SAVE_STATE } from 'src/app/shared/store/shared.state';
 
 @Component({
   selector: 'app-item-creation',
@@ -27,8 +26,7 @@ export class ItemCreationPage implements OnInit {
   formState$: Observable<FormGroupState<any>>;
   trimUpper = trimUpperConverter;
 
-
-  constructor(private store: Store<fromItemsState.State>, private sharedStore: Store<fromShared.State>) {
+  constructor(private store: Store<fromItemsState.State>, private dialog: MatDialog) {
     this.formState$ = this.store.select(fromItemsSelectors.getItemCreationFormState);
   }
 
@@ -67,8 +65,9 @@ export class ItemCreationPage implements OnInit {
     this.projectsFiltered$ = this.store.select(fromItemsSelectors.getRedmineProjectsFiltered);
   }
 
+
   createItem() {
-    this.store.dispatch(new SetUserDefinedPropertyAction(fromItemsState.ITEM_CREATION_FORMID, fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.Saving));
+    this.store.dispatch(new SetUserDefinedPropertyAction(fromItemsState.ITEM_CREATION_FORMID, FORM_SAVE_STATE, FormSaveState.Saving))
   }
 
   createAndOpenItem() {
@@ -76,4 +75,3 @@ export class ItemCreationPage implements OnInit {
   }
 
 }
-
