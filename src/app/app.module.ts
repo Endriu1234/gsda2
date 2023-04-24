@@ -17,6 +17,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
+import { SpinnerComponent } from './shared/spinner/spinner.component';
+import { httpInterceptProviders } from './shared/components/interceptors-providers.module';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     HeaderComponent,
     SidenavListComponent,
     WelcomePage,
-    MenuSwitchComponent
+    MenuSwitchComponent,
+    SpinnerComponent
   ],
   imports: [
     BrowserModule,
@@ -46,7 +49,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     }),
 
   ],
-  providers: [],
+  providers: [httpInterceptProviders],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

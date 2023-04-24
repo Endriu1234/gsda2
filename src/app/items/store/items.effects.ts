@@ -2,23 +2,35 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
     initRedmineProjects, initRedmineTrackers, initRedmineUsers, loadRedmineProjects,
-    loadRedmineTrackers, loadRedmineUsers, noopAction, setRedmineProjectsFilter, setRedmineUsersByLetterFilter
+    loadRedmineTrackers, loadRedmineUsers, noopAction, setRedmineProjectsFilter, setRedmineUsersByLetterFilter,
+    findItemById
 } from './items.actions';
-import { from, map, of, startWith, switchMap } from "rxjs";
-import { HttpClient } from '@angular/common/http';
+import { catchError, from, map, mergeMap, of, startWith, switchMap } from "rxjs";
+import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { RedmineTracker } from './models/redmine-tracker.model';
 import { environment } from 'src/environments/environment';
 import { RedmineUser } from './models/redmine-user.model';
 import { RedmineProject } from './models/redmine-project.model';
-import { SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
+import { SetValueAction } from 'ngrx-forms';
 import { ITEM_CREATION_FORMID } from './items.state';
 import * as fromItemsState from './items.state';
 import * as fromSharedState from '../../shared/store/shared.state';
 
 import { Store } from '@ngrx/store';
-import { validateProject, validateUser, validateCR } from './items.validation';
+import { validateProject, validateUser, validateCR, validateIssue, validateTms, validateFromId } from './items.validation';
+import { Item } from './models/item.model';
+import { addSnackbarNotification } from '../../shared/store/shared.actions';
+import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
+import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 
 const BACKEND_URL = environment.apiUrl + "/redmine/items/get-redmine-trackers";
+
+export const validateUserError = "validateUserError";
+export const validateCRError = "validateCRError";
+export const validateIssueError = "validateIssueError";
+export const validateTmsError = "validateTmsError";
+export const validateFromIdError = "validateFromIdError";
+export const validateProjectError = "validateProjectError";
 
 @Injectable()
 export class ItemsEffects {
@@ -47,29 +59,27 @@ export class ItemsEffects {
         ofType(SetValueAction.TYPE),
         switchMap((action: SetValueAction<any>) => {
             if (action.controlId === ITEM_CREATION_FORMID + '.project')
-                return from(validateProject(this.store, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilter())));
+                return from(validateProject(this.store, validateProjectError, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilter())));
 
             if (action.controlId === ITEM_CREATION_FORMID + '.user')
-                return from(validateUser(this.store, action.controlId, action.value).pipe(startWith(setRedmineUsersByLetterFilter())));
+                return from(validateUser(this.store, validateUserError, action.controlId, action.value).pipe(startWith(setRedmineUsersByLetterFilter())));
 
             if (action.controlId === ITEM_CREATION_FORMID + '.cr')
-                return from(validateCR(this.store, this.http, action.controlId, action.value));
+                return from(validateCR(this.store, this.http, validateCRError, action.controlId, action.value));
+
+            if (action.controlId === ITEM_CREATION_FORMID + '.issue')
+                return from(validateIssue(this.store, this.http, validateIssueError, action.controlId, action.value));
+
+            if (action.controlId === ITEM_CREATION_FORMID + '.tms')
+                return from(validateTms(this.store, this.http, validateTmsError, action.controlId, action.value));
+
+            if (action.controlId === ITEM_CREATION_DIALOG + '.fromId')
+                return from(validateFromId(this.store, this.http, validateFromIdError, action.controlId, action.value));
 
             return of(noopAction());
         })
     ));
 
-    itemCreationFormSetUserDefinedValue$ = createEffect(() => this.actions$.pipe(
-        ofType(SetUserDefinedPropertyAction.TYPE),
-        switchMap((action: SetUserDefinedPropertyAction) => {
-
-            if (action.controlId == ITEM_CREATION_FORMID) {
-                if (action.name == fromSharedState.FORM_SAVE_STATE) {
-                    if (action.value == fromSharedState.FormSaveState.Saving) {
-                        console.log("Savujemy!!!");
-                    }
-                }
-            }
 
             return of(noopAction());
         })

@@ -5,10 +5,14 @@ import * as fromItemsSelectors from '../../../store/items.selectors';
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers } from '../../../store/items.actions';
 import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model';
 import { RedmineUserByLetter } from 'src/app/items/store/models/redmine-user-letter-model';
-import { RedmineProject } from 'src/app/items/store/models/redmine-project.model';
+import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 import { Observable, take } from 'rxjs';
-import { FormGroupState, SetUserDefinedPropertyAction } from 'ngrx-forms';
-import * as fromSharedState from '../../../../shared/store/shared.state';
+import { FormGroupState } from 'ngrx-forms';
+import { trimUpperConverter } from '../../../../shared/tools/validators/ngrxValueConverters';
+import { ItemCreationFromId } from "../item-creation-from-id/item-creation-from-id";
+import { MatDialog } from '@angular/material/dialog';
+import * as fromShared from '../../../../shared/store/shared.reducer';
+import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 
 @Component({
   selector: 'app-item-creation',
@@ -21,10 +25,22 @@ export class ItemCreationPage implements OnInit {
   usersFiltered$: Observable<RedmineUserByLetter[]> | null = null;
   projectsFiltered$: Observable<RedmineProject[]> | null = null;
   formState$: Observable<FormGroupState<any>>;
+  trimUpper = trimUpperConverter;
 
 
-  constructor(private store: Store<fromItemsState.State>) {
+  constructor(private store: Store<fromItemsState.State>, private sharedStore: Store<fromShared.State>) {
     this.formState$ = this.store.select(fromItemsSelectors.getItemCreationFormState);
+  }
+
+  openFromIdDialog(): void {
+    const dialogRef = this.dialog.open(ItemCreationFromId, {
+      width: '65%',
+      disableClose: true,
+      enterAnimationDuration: 500,
+      exitAnimationDuration: 500,
+      restoreFocus: false
+    });
+
   }
 
   ngOnInit(): void {

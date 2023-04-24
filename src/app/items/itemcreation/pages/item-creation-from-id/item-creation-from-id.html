@@ -1,0 +1,35 @@
+<ng-container *ngIf="dialogState$ | async as dialogState">
+    <form novalidate [ngrxFormState]="dialogState">
+        <mat-card class="mt-1">
+            <mat-card-content>
+                <div>
+                    <mat-card-title>Enter SoftDev Issue# or SoftDev CR# or iTMS</mat-card-title>
+                </div>
+                <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                    <mat-label>Issue#/CR#/TMS</mat-label>
+                    <input cdkFocusInitial 
+                            type="text" 
+                            matInput 
+                            placeholder="SoftDev Issue or SoftDev CR or TMS" 
+                            [ngrxFormControlState]="$any(dialogState).controls.fromId"
+                            [ngrxValueConverter]="trimUpper" 
+                            #fromIdValue
+                    >
+                </mat-form-field>  
+                <mat-error [style.visibility]="(dialogState.isTouched && dialogState.errors._fromId?.$validateFromIdError)?'visible':'hidden'">
+                    <app-small-spinner class="float-start ms-4" *ngIf="dialogState.isValidationPending"></app-small-spinner>
+                    <span *ngIf="!dialogState.isValidationPending">Wrong Id</span>
+                </mat-error>
+            </mat-card-content>
+            <mat-card-actions [align]="'end'" class="jkWidthMarg">
+                <button mat-fab extended color="accent" mat-dialog-close class="me-4 my-2">Cancel</button>
+                <button mat-fab extended 
+                        color="primary" 
+                        class="me-3 my-2" 
+                        mat-dialog-close 
+                        (click)="fillById()"
+                        [disabled]="!fromIdValue.value || dialogState.isValidationPending || dialogState.isInvalid">Fill the data</button>
+            </mat-card-actions>
+        </mat-card>
+    </form>
+</ng-container>

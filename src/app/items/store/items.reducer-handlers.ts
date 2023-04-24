@@ -2,9 +2,13 @@ import { State } from './items.state';
 import * as _ from 'lodash';
 import { RedmineTracker } from './models/redmine-tracker.model';
 import { RedmineUser } from './models/redmine-user.model';
-import { RedmineProject } from './models/redmine-project.model';
 import { CRValidation } from './models/cr-validation.model';
+import { IssueValidation } from "./models/issue-validation.model";
+import { TmsValidation } from "./models/tms-validation.model";
+import { FromIdValidation } from "./models/fromId-validation.model";
 import { RedmineUserByLetter } from './models/redmine-user-letter-model';
+import { filterRedmineProjects } from 'src/app/shared/store/shared.reducer-handlers';
+import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 
 export function initRedmineTrackers(state: State): State {
     const newState = _.cloneDeep(state);
@@ -80,7 +84,6 @@ function filterRedmineUsersGroup(allUsers: RedmineUserByLetter[], filter: string
     return allUsers;
 }
 
-
 export function initRedmineProjects(state: State): State {
     const newState = _.cloneDeep(state);
     newState.itemCreationSetupData.redmineProjectsLoaded = false;
@@ -95,12 +98,6 @@ export function loadRedmineProjects(state: State, args: { redmineProjects: Redmi
     return newState;
 }
 
-export function addValidatedCR(state: State, args: { validatedCR: CRValidation }): State {
-    const newState: State = _.cloneDeep(state);
-    newState.itemCreationSetupData.validatedCRs.push(args.validatedCR);
-    return newState;
-}
-
 export function setRedmineProjectsFilter(state: State): State {
     const newState: State = _.cloneDeep(state);
     newState.itemCreationSetupData.redmineProjectsFiltered
@@ -108,11 +105,28 @@ export function setRedmineProjectsFilter(state: State): State {
     return newState;
 }
 
-function filterRedmineProjects(allProjects: RedmineProject[], filter: string): RedmineProject[] {
-    if (filter)
-        return allProjects.filter(u => u.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase()));
+export function addValidatedCR(state: State, args: { validatedCR: CRValidation }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemCreationSetupData.validatedCRs.push(args.validatedCR);
+    return newState;
+}
 
-    return allProjects;
+export function addValidatedIssue(state: State, args: { validatedIssue: IssueValidation }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemCreationSetupData.validatedIssues.push(args.validatedIssue);
+    return newState;
+}
+
+export function addValidatedTms(state: State, args: { validatedTms: TmsValidation }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemCreationSetupData.validatedTms.push(args.validatedTms);
+    return newState;
+}
+
+export function addValidatedFromId(state: State, args: { validatedFromId: FromIdValidation }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemCreationSetupData.validatedFromId.push(args.validatedFromId);
+    return newState;
 }
 
 
