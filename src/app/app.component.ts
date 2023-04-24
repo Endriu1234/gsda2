@@ -4,10 +4,12 @@ import * as fromNavigation from './navigation/store/navigation.reducer';
 import { changeSidenavOpened } from './navigation/store/navigation.actions';
 import { Observable } from 'rxjs';
 import { MatSnackBar, MatSnackBarRef, TextOnlySnackBar } from '@angular/material/snack-bar';
-import * as fromShared from './shared/store/shared.reducer';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { clearDisplayedSnackbarNotifications } from './shared/store/shared.actions';
+import * as fromSharedState from './shared/store/shared.state';
+import * as fromShared from './shared/store/shared.reducer';
+
 
 @Component({
   selector: 'app-root',
@@ -18,14 +20,14 @@ export class AppComponent implements OnInit, OnDestroy {
   isSidenavOpened$: Observable<boolean>;
   readedNotificationTimestamp: number = 0;
   notificationSub: Subscription | null = null;
-  notDisplayedNotifications: fromShared.SnackbarNotification[] = [];
+  notDisplayedNotifications: fromSharedState.SnackbarNotification[] = [];
   snackBarRef: MatSnackBarRef<TextOnlySnackBar> | null = null;
   snackBarSub: Subscription | null = null;
 
   title = 'GSDA';
 
   constructor(private navigationStore: Store<fromNavigation.State>,
-    private sharedStore: Store<fromShared.State>,
+    private sharedStore: Store<fromSharedState.State>,
     private snackBar: MatSnackBar) {
     this.isSidenavOpened$ = this.navigationStore.select(fromNavigation.getSidenavOpened);
   }

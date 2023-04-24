@@ -10,11 +10,10 @@ import { RedmineTracker } from './models/redmine-tracker.model';
 import { environment } from 'src/environments/environment';
 import { RedmineUser } from './models/redmine-user.model';
 import { RedmineProject } from './models/redmine-project.model';
-import { SetValueAction } from 'ngrx-forms';
+import { SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
 import { ITEM_CREATION_FORMID } from './items.state';
 import * as fromItemsState from './items.state';
-import * as fromShared from '../../shared/store/shared.reducer';
-import * as fromSharedActions from '../../shared/store/shared.actions';
+import * as fromSharedState from '../../shared/store/shared.state';
 
 import { Store } from '@ngrx/store';
 import { validateProject, validateUser, validateCR } from './items.validation';
@@ -24,7 +23,7 @@ const BACKEND_URL = environment.apiUrl + "/redmine/items/get-redmine-trackers";
 @Injectable()
 export class ItemsEffects {
 
-    constructor(private actions$: Actions, private store: Store<fromItemsState.State>, private sharedStore: Store<fromShared.State>, private http: HttpClient) { }
+    constructor(private actions$: Actions, private store: Store<fromItemsState.State>, private sharedStore: Store<fromSharedState.State>, private http: HttpClient) { }
 
     initRedmineTrackers$ = createEffect(() => this.actions$.pipe(ofType(initRedmineTrackers),
         switchMap(() => {
@@ -60,5 +59,19 @@ export class ItemsEffects {
         })
     ));
 
+    itemCreationFormSetUserDefinedValue$ = createEffect(() => this.actions$.pipe(
+        ofType(SetUserDefinedPropertyAction.TYPE),
+        switchMap((action: SetUserDefinedPropertyAction) => {
 
+            if (action.controlId == ITEM_CREATION_FORMID) {
+                if (action.name == fromSharedState.FORM_SAVE_STATE) {
+                    if (action.value == fromSharedState.FormSaveState.Saving) {
+                        console.log("Savujemy!!!");
+                    }
+                }
+            }
+
+            return of(noopAction());
+        })
+    ));
 }

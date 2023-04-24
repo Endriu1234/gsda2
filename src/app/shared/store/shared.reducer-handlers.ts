@@ -1,4 +1,4 @@
-import { State } from "./shared.reducer";
+import { State } from "./shared.state";
 
 export function addSnackbarNotification(state: State, args: { notification: string }): State {
     const newState: State = { ...state, snackbarNotifications: [...state.snackbarNotifications] };

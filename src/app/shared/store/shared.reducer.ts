@@ -1,19 +1,8 @@
 import { createFeatureSelector, createReducer, createSelector, on } from '@ngrx/store';
 import { addSnackbarNotification, clearDisplayedSnackbarNotifications } from './shared.actions';
 import * as fromReducerHanders from './shared.reducer-handlers';
+import { initialState, State } from './shared.state';
 
-export interface SnackbarNotification {
-    timestamp: number;
-    notification: string;
-}
-
-export interface State {
-    snackbarNotifications: SnackbarNotification[];
-}
-
-const initialState: State = {
-    snackbarNotifications: []
-}
 
 export const sharedReducerKey = 'shared';
 

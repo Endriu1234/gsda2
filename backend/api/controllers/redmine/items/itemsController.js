@@ -16,5 +16,6 @@ module.exports.getRedmineProjects = async (req, res) => {
 }
 
 module.exports.createRedmineItem = async (req, res) => {
+
     return res.status(200).send('OK');
 }
