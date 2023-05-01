@@ -5,7 +5,7 @@ import {
     loadRedmineTrackers, loadRedmineUsers, noopAction, setRedmineProjectsFilter, setRedmineUsersByLetterFilter,
     findItemById
 } from './items.actions';
-import { catchError, from, map, mergeMap, of, startWith, switchMap } from "rxjs";
+import { catchError, from, map, mergeMap, of, startWith, switchMap, take } from "rxjs";
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { RedmineTracker } from './models/redmine-tracker.model';
 import { environment } from 'src/environments/environment';
@@ -21,6 +21,8 @@ import { Item } from './models/item.model';
 import { addSnackbarNotification } from '../../shared/store/shared.actions';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
+import { getItemCreationFormState } from './items.selectors';
+import { GsdaHttpResponse } from 'src/app/shared/http/model/gsda-http-response.model';
 
 const BACKEND_URL = environment.apiUrl + "/redmine/items/get-redmine-trackers";
 
@@ -86,7 +88,28 @@ export class ItemsEffects {
             if (action.controlId == ITEM_CREATION_FORMID) {
                 if (action.name == fromSharedState.FORM_SAVE_STATE) {
                     if (action.value == fromSharedState.FormSaveState.Saving) {
-                        console.log("Savujemy!!!");
+
+                        return this.store.select(getItemCreationFormState).pipe(take(1), switchMap(formData => {
+                            console.log("Saving form data:");
+                            return this.http.post<GsdaHttpResponse>(environment.apiUrl + '/redmine/items/create-redmine-item', formData.value).pipe(switchMap(response => {
+                                if (response.success) {
+                                    this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item saved' }));
+                                    return of(new SetUserDefinedPropertyAction(fromItemsState.ITEM_CREATION_FORMID,
+                                        fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingSuccessful));
+                                }
+                                else {
+                                    console.log(response.errorMessage);
+                                    this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage }));
+                                    return of(new SetUserDefinedPropertyAction(fromItemsState.ITEM_CREATION_FORMID,
+                                        fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingFailed));
+                                }
+                            }), catchError(error => {
+                                console.log(error);
+                                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Error during adding item" }));
+                                return of(new SetUserDefinedPropertyAction(fromItemsState.ITEM_CREATION_FORMID,
+                                    fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingFailed));
+                            }))
+                        }))
                     }
                 }
             }
