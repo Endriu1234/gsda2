@@ -60,14 +60,17 @@ module.exports.getRedmineData = async (endPoint, isPaginated) => {
 }
 
 module.exports.postRedmineJsonData = async (endpoint, jsonData) => {
-    let success = true;
+    const retVal = {
+        success: true,
+        redmineLink: ''
+    }
 
-    const creationResult = await axios.post(getRedmineAddress(endpoint), jsonData, getRedmineApiConfiguration()).catch((error) => {
-        success = false;
+    retVal.redmineResponse = await axios.post(getRedmineAddress(endpoint), jsonData, getRedmineApiConfiguration()).catch((error) => {
+        retVal.success = false;
         logError(error);
     });
 
-    return success;
+    return retVal;
 }
 
 module.exports.putRedmineJsonData = async (endpoint, jsonData) => {
@@ -77,6 +80,7 @@ module.exports.putRedmineJsonData = async (endpoint, jsonData) => {
         success = false;
         logError(error);
     });
+
 
     return success;
 }

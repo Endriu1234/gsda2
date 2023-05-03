@@ -3,14 +3,15 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
     initRedmineProjects, initRedmineTrackers, initRedmineUsers, loadRedmineProjects,
     loadRedmineTrackers, loadRedmineUsers, noopAction, setRedmineProjectsFilter, setRedmineUsersByLetterFilter,
-    findItemById
+    findItemById,
+    resetItemCreationForm
 } from './items.actions';
 import { catchError, from, map, mergeMap, of, startWith, switchMap, take } from "rxjs";
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { RedmineTracker } from './models/redmine-tracker.model';
 import { environment } from 'src/environments/environment';
 import { RedmineUser } from './models/redmine-user.model';
-import { SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
+import { ResetAction, SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
 import { ITEM_CREATION_FORMID, ITEM_CREATION_DIALOG } from './items.state';
 import * as fromItemsState from './items.state';
 import * as fromSharedState from '../../shared/store/shared.state';
@@ -22,9 +23,7 @@ import { addSnackbarNotification } from '../../shared/store/shared.actions';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 import { getItemCreationFormState } from './items.selectors';
-import { GsdaHttpResponse } from 'src/app/shared/http/model/gsda-http-response.model';
-
-const BACKEND_URL = environment.apiUrl + "/redmine/items/get-redmine-trackers";
+import { GsdaRedmineHttpResponse } from 'src/app/shared/http/model/gsda-redmine-http-response.model';
 
 export const validateUserError = "validateUserError";
 export const validateCRError = "validateCRError";
@@ -36,7 +35,10 @@ export const validateProjectError = "validateProjectError";
 @Injectable()
 export class ItemsEffects {
 
-    constructor(private actions$: Actions, private store: Store<fromItemsState.State>, private sharedStore: Store<fromSharedState.State>, private http: HttpClient) { }
+    constructor(private actions$: Actions,
+        private store: Store<fromItemsState.State>,
+        private sharedStore: Store<fromSharedState.State>,
+        private http: HttpClient) { }
 
     initRedmineTrackers$ = createEffect(() => this.actions$.pipe(ofType(initRedmineTrackers),
         switchMap(() => {
@@ -87,15 +89,22 @@ export class ItemsEffects {
 
             if (action.controlId == ITEM_CREATION_FORMID) {
                 if (action.name == fromSharedState.FORM_SAVE_STATE) {
-                    if (action.value == fromSharedState.FormSaveState.Saving) {
+                    if (action.value == fromSharedState.FormSaveState.Saving || action.value == fromSharedState.FormSaveState.SavingWithRedirect) {
 
                         return this.store.select(getItemCreationFormState).pipe(take(1), switchMap(formData => {
                             console.log("Saving form data:");
-                            return this.http.post<GsdaHttpResponse>(environment.apiUrl + '/redmine/items/create-redmine-item', formData.value).pipe(switchMap(response => {
+                            return this.http.post<GsdaRedmineHttpResponse>(environment.apiUrl + '/redmine/items/create-redmine-item', formData.value).pipe(switchMap(response => {
                                 if (response.success) {
+                                    if (action.value == fromSharedState.FormSaveState.SavingWithRedirect && response.redmineLink) {
+
+                                        window.location.href = response.redmineLink;
+                                    }
+
                                     this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item saved' }));
-                                    return of(new SetUserDefinedPropertyAction(fromItemsState.ITEM_CREATION_FORMID,
-                                        fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingSuccessful));
+                                    return of(
+                                        resetItemCreationForm(),
+                                        new SetUserDefinedPropertyAction(fromItemsState.ITEM_CREATION_FORMID,
+                                            fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingSuccessful));
                                 }
                                 else {
                                     console.log(response.errorMessage);
@@ -115,6 +124,20 @@ export class ItemsEffects {
             }
 
             return of(noopAction());
+        })
+    ));
+
+    resetItemCreationForm$ = createEffect(() => this.actions$.pipe(ofType(resetItemCreationForm),
+        switchMap(() => {
+            return of(new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.project', ''),
+                new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.tracker', ''),
+                new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.subject', ''),
+                new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.description', ''),
+                new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.user', ''),
+                new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.issue', ''),
+                new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.cr', ''),
+                new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.tms', ''),
+                new ResetAction(fromItemsState.ITEM_CREATION_FORMID));
         })
     ));
 

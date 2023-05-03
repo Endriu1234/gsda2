@@ -44,12 +44,12 @@ module.exports.validateRedmineItem = async (item) => {
         return retVal;
     }
 
-    if (item.assignee) {
+    if (item.user) {
         const users = await cacheValueProvider.getValue('redmine_users');
 
-        if (users.filter(u => u.name === item.assignee).length == 0) {
+        if (users.filter(u => u.name === item.user).length == 0) {
             retVal.isValid = false;
-            retVal.errorMsg = 'Cannot add Redmine Item. Wrong assignee provided.';
+            retVal.errorMsg = 'Cannot add Redmine Item. Wrong user provided.';
             return retVal;
         }
     }
@@ -72,7 +72,8 @@ module.exports.validateRedmineItem = async (item) => {
     if (item.issue) {
         let isValid = false;
         if (softDevValidator.checkIssueMatchPattern(item.issue.trim())) {
-            let isIssueInDb = await softDevDataProvider.isChangeRequestInDB(item.issue.trim().toUpperCase());
+            let isIssueInDb = await softDevDataProvider.isIssueInDB(item.issue.trim().toUpperCase());
+
             if (isIssueInDb && isIssueInDb.length > 0 && isIssueInDb[0].EXISTENCE === 1)
                 isValid = true;
         }
@@ -86,7 +87,7 @@ module.exports.validateRedmineItem = async (item) => {
     if (item.tms) {
         let isValid = false;
         if (softDevValidator.checkTmsMatchPattern(item.tms.trim())) {
-            let isTmsInDb = await softDevDataProvider.isChangeRequestInDB(item.tms.trim().toUpperCase());
+            let isTmsInDb = await softDevDataProvider.isTmsInDB(item.tms.trim().toUpperCase());
             if (isTmsInDb && isTmsInDb.length > 0 && isTmsInDb[0].EXISTENCE === 1)
                 isValid = true;
         }

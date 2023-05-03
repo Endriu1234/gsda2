@@ -64,14 +64,14 @@ export function validateCR(store: Store<State>, http: HttpClient, validateCRErro
 
 
 export function validateIssue(store: Store<State>, http: HttpClient, validateIssueError: string, controlId: string, issue: string): Observable<any> {
-    
+
     if (!issue)
         return of(new StartAsyncValidationAction(controlId, validateIssueError), new ClearAsyncErrorAction(controlId, validateIssueError));
 
     if (!new RegExp("^(I|i)(S|s)(S|s)-[a-zA-Z]+-\\d{1,6}[a-zA-Z]{2}$").test(issue))
         return of(new StartAsyncValidationAction(controlId, validateIssueError), new SetAsyncErrorAction(controlId, validateIssueError, "Issue invalid"));
 
-    
+
 
     return store.select(getValidatedIssues).pipe(delay(300), take(1), switchMap(validatedIssues => {
         const alreadyValidatedIssue = validatedIssues.find(iv => iv.issue === issue);
@@ -104,7 +104,7 @@ export function validateIssue(store: Store<State>, http: HttpClient, validateIss
 
 
 export function validateTms(store: Store<State>, http: HttpClient, validateTmsError: string, controlId: string, tms: string): Observable<any> {
-    
+
     if (!tms)
         return of(new StartAsyncValidationAction(controlId, validateTmsError), new ClearAsyncErrorAction(controlId, validateTmsError));
 
@@ -142,12 +142,12 @@ export function validateTms(store: Store<State>, http: HttpClient, validateTmsEr
 
 
 export function validateFromId(store: Store<State>, http: HttpClient, validateFromIdError: string, controlId: string, fromId: string): Observable<any> {
-    
+
     if (!fromId)
         return of(new StartAsyncValidationAction(controlId, validateFromIdError), new ClearAsyncErrorAction(controlId, validateFromIdError));
 
     if (new RegExp("^\\d").test(fromId))
-        return of(new StartAsyncValidationAction(controlId, validateFromIdError), new SetAsyncErrorAction(controlId, validateFromIdError, "Invalid Id"));  
+        return of(new StartAsyncValidationAction(controlId, validateFromIdError), new SetAsyncErrorAction(controlId, validateFromIdError, "Invalid Id"));
 
     if (fromId.startsWith('ISS'))
         return validateIssue(store, http, validateFromIdError, controlId, fromId);

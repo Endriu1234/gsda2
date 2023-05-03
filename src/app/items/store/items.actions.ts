@@ -5,7 +5,6 @@ import { TmsValidation } from "./models/tms-validation.model";
 import { FromIdValidation } from "./models/fromId-validation.model";
 import { RedmineTracker } from './models/redmine-tracker.model';
 import { RedmineUser } from './models/redmine-user.model';
-import { Item } from './models/item.model';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 
 export const initRedmineTrackers = createAction('[Items Component] Init Redmine Trackers');
@@ -21,4 +20,5 @@ export const addValidatedIssue = createAction('[Items Component] Add Validated I
 export const addValidatedTms = createAction('[Items Component] Add Validated Tms', props<{ validatedTms: TmsValidation }>());
 export const addValidatedFromId = createAction('[Items Component Dialog] Add Validated FromId', props<{ validatedFromId: FromIdValidation }>());
 export const findItemById = createAction('[Items Component] Find The Item By Id', props<{ id: string }>());
+export const resetItemCreationForm = createAction('[Items Component] Reset Item Creation From');
 export const noopAction = createAction('[Items Component] Noop Action');

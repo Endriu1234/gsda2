@@ -1,7 +1,8 @@
 const cacheValueProvider = require('../../../business/cache/cacheValueProvider');
 const redmineItemValidator = require('../../../business/redmine/validation/redmineItemValidator');
 const { convertFormItemObjectToJSON } = require('../../../business/redmine/tools/formItemObjectToJSONConverter');
-const { postRedmineJsonData } = require('../../../business/redmine/tools/redmineConnectionTools');
+const { postRedmineJsonData, getRedmineAddress } = require('../../../business/redmine/tools/redmineConnectionTools');
+
 
 module.exports.getRedmineTrackers = async (req, res) => {
     const trackers = await cacheValueProvider.getValue('redmine_trackers');
@@ -27,17 +28,15 @@ module.exports.createRedmineItem = async (req, res) => {
     const validationResult = await redmineItemValidator.validateRedmineItem(req.body);
 
     if (validationResult.isValid) {
-        console.log('before conversion:');
-        console.dir(req.body);
         const itemJson = await convertFormItemObjectToJSON(req.body);
-        console.log('after conversion');
-        console.dir(itemJson);
-        const success = await postRedmineJsonData('issues.json', itemJson);
+        const result = await postRedmineJsonData('issues.json', itemJson);
 
-        if (!success) {
+        if (!result.success) {
             retVal.success = false;
             retVal.errorMessage = 'Redmine Item not created. Save failed.';
         }
+        else
+            retVal.redmineLink = `${getRedmineAddress(`issues/${result.redmineResponse.data.issue.id}`)}`;
     }
     else {
         retVal.success = false;

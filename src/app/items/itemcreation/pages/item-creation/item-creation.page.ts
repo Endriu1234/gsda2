@@ -71,7 +71,7 @@ export class ItemCreationPage implements OnInit {
   }
 
   createAndOpenItem() {
-
+    this.store.dispatch(new SetUserDefinedPropertyAction(fromItemsState.ITEM_CREATION_FORMID, FORM_SAVE_STATE, FormSaveState.SavingWithRedirect))
   }
 
 }
