@@ -22,3 +22,36 @@ export const getValidatedIssues = createSelector(getItemsState, (state: State) =
 export const getValidatedTms = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.validatedTms);
 export const getItemCreationDialogState = createSelector(getItemsState, (state: State) => state.itemCreationFromIdDialog);
 export const getItemCreationFormState = createSelector(getItemsState, (state: State) => state.itemCreationFromData);
+export const getItemCreationFormTmsControl = createSelector(getItemsState, (state: State) => state.itemCreationFromData.controls.tms);
+export const getItemCreationFormCRControl = createSelector(getItemsState, (state: State) => state.itemCreationFromData.controls.cr);
+export const getItemCreationFormIssueControl = createSelector(getItemsState, (state: State) => state.itemCreationFromData.controls.issue);
+export const getItemCreationFormDescriptionControl = createSelector(getItemsState, (state: State) => state.itemCreationFromData.controls.description);
+export const getItemCreationFormSubjectControl = createSelector(getItemsState, (state: State) => state.itemCreationFromData.controls.subject);
+
+export const getItemCreationFormSuitableForDefault = createSelector(getItemCreationFormTmsControl, getItemCreationFormCRControl,
+    getItemCreationFormIssueControl, getItemCreationFormDescriptionControl, getItemCreationFormSubjectControl,
+    (tmsControl, crControl, issueControl, descriptionControl, subjectControl) => {
+        if (descriptionControl.value || subjectControl.value)
+            return false;
+
+        if (tmsControl.value) {
+            if (crControl.value || issueControl.value)
+                return false;
+
+            return tmsControl.isTouched && !tmsControl.isValidationPending && tmsControl.isValid;
+        }
+        else if (crControl.value) {
+            if (issueControl.value || tmsControl.value)
+                return false;
+
+            return crControl.isTouched && !crControl.isValidationPending && crControl.isValid;
+        }
+        else if (issueControl.value) {
+            if (crControl.value || tmsControl.value)
+                return false;
+
+            return issueControl.isTouched && !issueControl.isValidationPending && issueControl.isValid;
+        }
+
+        return false;
+    });

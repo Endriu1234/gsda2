@@ -7,7 +7,7 @@ import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model
 import { RedmineUserByLetter } from 'src/app/items/store/models/redmine-user-letter-model';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 import { Observable, take } from 'rxjs';
-import { FormGroupState, SetUserDefinedPropertyAction } from 'ngrx-forms';
+import { FormControlState, FormGroupState, SetUserDefinedPropertyAction } from 'ngrx-forms';
 import { trimUpperConverter } from '../../../../shared/tools/validators/ngrxValueConverters';
 import { ItemCreationFromId } from "../item-creation-from-id/item-creation-from-id";
 import { MatDialog } from '@angular/material/dialog';
@@ -24,6 +24,7 @@ export class ItemCreationPage implements OnInit {
   usersFiltered$: Observable<RedmineUserByLetter[]> | null = null;
   projectsFiltered$: Observable<RedmineProject[]> | null = null;
   formState$: Observable<FormGroupState<any>>;
+  getItemCreationFormSuitableForDefault$: Observable<boolean> | null = null;
   trimUpper = trimUpperConverter;
 
   constructor(private store: Store<fromItemsState.State>, private dialog: MatDialog) {
@@ -63,6 +64,8 @@ export class ItemCreationPage implements OnInit {
     });
 
     this.projectsFiltered$ = this.store.select(fromItemsSelectors.getRedmineProjectsFiltered);
+
+    this.getItemCreationFormSuitableForDefault$ = this.store.select(fromItemsSelectors.getItemCreationFormSuitableForDefault);
   }
 
 
