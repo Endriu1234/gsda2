@@ -1,6 +1,7 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { itemsReducerKey } from './items.reducer';
 import { State } from './items.state';
+import { canItemCreationFormBeSaved, isItemCreationFormSuitableForDefault } from './items.selectors-handlers';
 
 
 export const getItemsState = createFeatureSelector<State>(itemsReducerKey);
@@ -30,28 +31,5 @@ export const getItemCreationFormSubjectControl = createSelector(getItemsState, (
 
 export const getItemCreationFormSuitableForDefault = createSelector(getItemCreationFormTmsControl, getItemCreationFormCRControl,
     getItemCreationFormIssueControl, getItemCreationFormDescriptionControl, getItemCreationFormSubjectControl,
-    (tmsControl, crControl, issueControl, descriptionControl, subjectControl) => {
-        if (descriptionControl.value || subjectControl.value)
-            return false;
-
-        if (tmsControl.value) {
-            if (crControl.value || issueControl.value)
-                return false;
-
-            return tmsControl.isTouched && !tmsControl.isValidationPending && tmsControl.isValid;
-        }
-        else if (crControl.value) {
-            if (issueControl.value || tmsControl.value)
-                return false;
-
-            return crControl.isTouched && !crControl.isValidationPending && crControl.isValid;
-        }
-        else if (issueControl.value) {
-            if (crControl.value || tmsControl.value)
-                return false;
-
-            return issueControl.isTouched && !issueControl.isValidationPending && issueControl.isValid;
-        }
-
-        return false;
-    });
+    isItemCreationFormSuitableForDefault);
+export const getItemCreationFormCanActivateSave = createSelector(getItemCreationFormState, canItemCreationFormBeSaved);
