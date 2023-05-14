@@ -93,7 +93,8 @@ export class ItemsEffects {
 
                         return this.store.select(getItemCreationFormState).pipe(take(1), switchMap(formData => {
                             console.log("Saving form data:");
-                            return this.http.post<GsdaRedmineHttpResponse>(environment.apiUrl + '/redmine/items/create-redmine-item', formData.value).pipe(switchMap(response => {
+                            let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
+                            return this.http.post<GsdaRedmineHttpResponse>(environment.apiUrl + '/redmine/items/create-redmine-item', formData.value, {context}).pipe(switchMap(response => {
                                 if (response.success) {
                                     if (action.value == fromSharedState.FormSaveState.SavingWithRedirect && response.redmineLink) {
 

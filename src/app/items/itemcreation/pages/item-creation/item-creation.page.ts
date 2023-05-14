@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromItemsState from '../../../store/items.state';
 import * as fromItemsSelectors from '../../../store/items.selectors';
-import { initRedmineProjects, initRedmineTrackers, initRedmineUsers } from '../../../store/items.actions';
+import { findItemById, initRedmineProjects, initRedmineTrackers, initRedmineUsers } from '../../../store/items.actions';
 import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model';
 import { RedmineUserByLetter } from 'src/app/items/store/models/redmine-user-letter-model';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
@@ -25,6 +25,7 @@ export class ItemCreationPage implements OnInit {
   projectsFiltered$: Observable<RedmineProject[]> | null = null;
   formState$: Observable<FormGroupState<any>>;
   getItemCreationFormSuitableForDefault$: Observable<boolean> | null = null;
+  getItemCreationFormCanActivateSave$: Observable<boolean> | null = null;
   trimUpper = trimUpperConverter;
 
   constructor(private store: Store<fromItemsState.State>, private dialog: MatDialog) {
@@ -40,6 +41,29 @@ export class ItemCreationPage implements OnInit {
       restoreFocus: false
     });
 
+  }
+
+  fillById() {
+    let fillFromId = false;
+    this.getItemCreationFormSuitableForDefault$?.subscribe(val => fillFromId = val);
+    if (!fillFromId) {
+      this.openFromIdDialog();
+    } else {
+      let id: string = "";
+      this.formState$.subscribe(formState => {
+        if (formState.controls.issue && formState.controls.issue.value) {
+          id = formState.controls.issue.value;
+        } else if (formState.controls.cr && formState.controls.cr.value) {
+          id = formState.controls.cr.value;
+        } else if (formState.controls.tms && formState.controls.tms.value) {
+          id = formState.controls.tms.value;
+        }
+      });
+      this.store.dispatch(findItemById({id}));
+    }
+    console.log(fillFromId);
+    //this.dialogState$.subscribe(group => id = group.controls.fromId.value);
+    //this.store.dispatch(findItemById({id}));
   }
 
   ngOnInit(): void {
@@ -66,6 +90,7 @@ export class ItemCreationPage implements OnInit {
     this.projectsFiltered$ = this.store.select(fromItemsSelectors.getRedmineProjectsFiltered);
 
     this.getItemCreationFormSuitableForDefault$ = this.store.select(fromItemsSelectors.getItemCreationFormSuitableForDefault);
+    this.getItemCreationFormCanActivateSave$ = this.store.select(fromItemsSelectors.getItemCreationFormCanActivateSave);
   }
 
 
