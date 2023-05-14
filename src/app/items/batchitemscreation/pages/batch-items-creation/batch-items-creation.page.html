@@ -3,12 +3,79 @@
         <form novalidate>
             <mat-card>
                 <mat-card-content>
-
+                    <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                        <mat-label>SoftDev Source Project / Packet</mat-label>
+                        <input type="text"  matInput>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                        <mat-label>Redmine Target Project</mat-label>
+                        <input type="text"  matInput>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Item Level</mat-label>
+                        <mat-select>
+                            <mat-option value="issue">Issue</mat-option>
+                            <mat-option value="cr">CR</mat-option>
+                            <mat-option value="possible_cr">Possible CR</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-checkbox>Show Created</mat-checkbox>
+                    <button
+                    mat-fab
+                    extended
+                    color="primary"
+                    class="me-3 my-2"
+                >Find</button>
                 </mat-card-content>
             </mat-card>
         </form>
-
     </mat-tab>
-    <mat-tab label="TMS Task"> TMS Task criteria </mat-tab>
-    <mat-tab label="Redmine"> Redmine criteria </mat-tab>
+    <mat-tab label="TMS Task">
+        <form novalidate>
+            <mat-card>
+                <mat-card-content>
+                    <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                        <mat-label>Client</mat-label>
+                        <input type="text"  matInput>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                        <mat-label>Redmine Target Project</mat-label>
+                        <input type="text"  matInput>
+                    </mat-form-field>
+                    <mat-checkbox>Show Closed</mat-checkbox>
+                    <mat-checkbox>Show Task in Client / Processing bin</mat-checkbox>
+                    <mat-checkbox>Show Created</mat-checkbox>
+                    <button
+                    mat-fab
+                    extended
+                    color="primary"
+                    class="me-3 my-2"
+                >Find</button>
+                </mat-card-content>
+            </mat-card>
+        </form>
+    </mat-tab>
+    <mat-tab label="Redmine">
+        <form novalidate>
+            <mat-card>
+                <mat-card-content>
+                    <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                        <mat-label>Redmine Source Project</mat-label>
+                        <input type="text"  matInput>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                        <mat-label>Redmine Target Project</mat-label>
+                        <input type="text"  matInput>
+                    </mat-form-field>
+                    <mat-checkbox>Show Created</mat-checkbox>
+                    <button
+                    mat-fab
+                    extended
+                    color="primary"
+                    class="me-3 my-2"
+                >Find</button>
+                </mat-card-content>
+            </mat-card>
+        </form>
+    </mat-tab>
 </mat-tab-group>
