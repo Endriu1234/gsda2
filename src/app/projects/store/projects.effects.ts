@@ -1,26 +1,29 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, from, map, mergeMap, of, startWith, switchMap } from "rxjs";
-import { HttpClient } from '@angular/common/http';
+import { catchError, from, map, mergeMap, of, startWith, switchMap, take } from "rxjs";
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { initRedmineProjects, loadRedmineProjects, initSoftDevProjects, loadSoftDevProjects, findProjectById, noopAction, setRedmineProjectsFilter, setSoftDevProjectsFilter } from './projects.actions';
+import { initRedmineProjects, loadRedmineProjects, initSoftDevProjects, loadSoftDevProjects, findProjectById, noopAction, setRedmineProjectsFilter, setSoftDevProjectsFilter, resetProjectCreationForm } from './projects.actions';
 import { RedmineProject } from '../../shared/store/models/redmine-project.model';
 import { SoftDevProject } from './models/softdev-project.model';
 import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 import { Store } from '@ngrx/store';
 import * as fromProjectsState from './projects.state';
 import * as fromSharedState from '../../shared/store/shared.state';
-import { SetValueAction } from 'ngrx-forms';
+import { ResetAction, SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
 import { PROJECT_CREATION_DIALOG, PROJECT_CREATION_FORMID } from './projects.state';
-import { validateProject, validateSDProject } from './projects.validation';
-import { getSoftDevProjects } from './projects.selector';
+import { validateIdentifier, validateProject, validateSDProject } from './projects.validation';
+import { getProjectCreationFormState, getSoftDevProjects } from './projects.selectors';
 import { formatDate } from '@angular/common';
+import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
+import { GsdaRedmineHttpResponse } from 'src/app/shared/http/model/gsda-redmine-http-response.model';
 
 const GET_SD_PROJECTS_URL = environment.apiUrl + '/softdev/projects/get-softdev-projects';
 const GET_REDMINE_PROJECTS_URL = environment.apiUrl + '/redmine/items/get-redmine-projects';
 
 export const validateProjectError = "validateProjectError";
 export const validateSDProjectError = "validateSDProjectError";
+export const validateIdentifierError = "validateIdentifierError";
 
 @Injectable()
 export class ProjectsEffects {
@@ -42,13 +45,71 @@ export class ProjectsEffects {
     projectCreationFormSetValue$ = createEffect(() => this.actions$.pipe(
         ofType(SetValueAction.TYPE),
         switchMap((action: SetValueAction<any>) => {
-            if (action.controlId === PROJECT_CREATION_FORMID + '.redmineProject')
+            if (action.controlId === PROJECT_CREATION_FORMID + '.parent_project')
                 return from(validateProject(this.store, validateProjectError, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilter())));
+
+            if (action.controlId === PROJECT_CREATION_FORMID + '.identifier')
+                return from(validateIdentifier(this.store, this.http, validateIdentifierError, action.controlId, action.value));
 
             if (action.controlId === PROJECT_CREATION_DIALOG + '.projectId')
                 return from(validateSDProject(this.store, validateSDProjectError, action.controlId, action.value).pipe(startWith(setSoftDevProjectsFilter())));
 
             return of(noopAction());
+        })
+    ));
+
+    projectCreationFormSetUserDefinedValue$ = createEffect(() => this.actions$.pipe(
+        ofType(SetUserDefinedPropertyAction.TYPE),
+        switchMap((action: SetUserDefinedPropertyAction) => {
+
+            if (action.controlId == PROJECT_CREATION_FORMID) {
+                if (action.name == fromSharedState.FORM_SAVE_STATE) {
+                    if (action.value == fromSharedState.FormSaveState.Saving || action.value == fromSharedState.FormSaveState.SavingWithRedirect) {
+
+                        return this.store.select(getProjectCreationFormState).pipe(take(1), switchMap(formData => {
+                            let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
+                            return this.http.post<GsdaRedmineHttpResponse>(environment.apiUrl + '/redmine/projects/create-redmine-project', formData.value, {context}).pipe(switchMap(response => {
+                                if (response.success) {
+                                    if (action.value == fromSharedState.FormSaveState.SavingWithRedirect && response.redmineLink) {
+                                        window.location.href = response.redmineLink;
+                                    }
+
+                                    this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Project saved' }));
+                                    return of(
+                                        resetProjectCreationForm(),
+                                        new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID,
+                                            fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingSuccessful));
+                                }
+                                else {
+                                    console.log(response.errorMessage);
+                                    this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage }));
+                                    return of(new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID,
+                                        fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingFailed));
+                                }
+                            }), catchError(error => {
+                                console.log(error);
+                                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Error during adding project" }));
+                                return of(new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID,
+                                    fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingFailed));
+                            }))
+                        }))
+                    }
+                }
+            }
+
+            return of(noopAction());
+        })
+    ));
+
+    resetProjectCreationForm$ = createEffect(() => this.actions$.pipe(ofType(resetProjectCreationForm),
+        switchMap(() => {
+            return of(new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.name', ''),
+                new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.identifier', ''),
+                new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.description', ''),
+                new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.wiki', ''),
+                new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.parent_project', ''),
+                new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.inherit_public', ''),
+                new ResetAction(fromProjectsState.PROJECT_CREATION_FORMID));
         })
     ));
 

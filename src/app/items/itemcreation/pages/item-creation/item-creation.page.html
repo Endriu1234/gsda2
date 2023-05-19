@@ -125,7 +125,7 @@
                 color="accent"
                 class="me-4 my-2"
                 (click)="createAndOpenItem()"
-                [disabled]="!formState.value || formState.isValidationPending || formState.isInvalid"
+                [disabled]="!(getItemCreationFormCanActivateSave$ | async)"
             >Create and Open</button>
             <button
                 mat-fab

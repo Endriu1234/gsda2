@@ -14,7 +14,7 @@ export function initRedmineProjects(state: State): State {
 export function loadRedmineProjects(state: State, args: { redmineProjects: RedmineProject[] }): State {
     const newState: State = _.cloneDeep(state);
     newState.projectCreationSetupData.redmineProjects = args.redmineProjects;
-    newState.projectCreationSetupData.redmineProjectsFiltered = filterRedmineProjects(args.redmineProjects, newState.projectCreationFromData.value.redmineProject);
+    newState.projectCreationSetupData.redmineProjectsFiltered = filterRedmineProjects(args.redmineProjects, newState.projectCreationFromData.value.parent_project);
     newState.projectCreationSetupData.redmineProjectsLoaded = true;
     return newState;
 }
@@ -22,7 +22,7 @@ export function loadRedmineProjects(state: State, args: { redmineProjects: Redmi
 export function setRedmineProjectsFilter(state: State): State {
     const newState: State = _.cloneDeep(state);
     newState.projectCreationSetupData.redmineProjectsFiltered 
-        = filterRedmineProjects(newState.projectCreationSetupData.redmineProjects, newState.projectCreationFromData.value.redmineProject);
+        = filterRedmineProjects(newState.projectCreationSetupData.redmineProjects, newState.projectCreationFromData.value.parent_project);
     return newState;
 }
 

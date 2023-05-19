@@ -10,8 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NgrxFormsModule } from 'ngrx-forms';
 import { ItemCreationFromId } from './itemcreation/pages/item-creation-from-id/item-creation-from-id';
 import { MatDialogModule } from '@angular/material/dialog';
-import { SmallSpinnerComponent } from '../shared/spinner/small-spinner/small-spinner.component';
-
+import { SmallSpinnerModule } from '../shared/components/small-spinner.module';
 
 
 @NgModule({
@@ -19,8 +18,7 @@ import { SmallSpinnerComponent } from '../shared/spinner/small-spinner/small-spi
     BatchItemsCreationPage,
     ItemViewEditPage,
     ItemCreationPage,
-    ItemCreationFromId,
-    SmallSpinnerComponent
+    ItemCreationFromId
   ],
   imports: [
     CommonModule,
@@ -28,7 +26,8 @@ import { SmallSpinnerComponent } from '../shared/spinner/small-spinner/small-spi
     MaterialModule,
     ReactiveFormsModule,
     NgrxFormsModule,
-    MatDialogModule
+    MatDialogModule,
+    SmallSpinnerModule
   ]
 })
 export class ItemsModule { }

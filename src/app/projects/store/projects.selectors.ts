@@ -1,6 +1,7 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { projectsReducerKey } from './projects.reducer';
 import { State } from './projects.state';
+import { canProjectCreationFormBeSaved } from './projects.selectors-handlers';
 
 
 export const getProjectsState = createFeatureSelector<State>(projectsReducerKey);
@@ -10,5 +11,7 @@ export const getRedmineProjectsLoaded = createSelector(getProjectsState, (state:
 export const getSoftDevProjects = createSelector(getProjectsState, (state: State) => state.projectCreationSetupData.softdevProjects);
 export const getSoftDevProjectsFiltered = createSelector(getProjectsState, (state: State) => state.projectCreationSetupData.softdevProjectsFiltered);
 export const getSoftDevProjectsLoaded = createSelector(getProjectsState, (state: State) => state.projectCreationSetupData.softdevProjectsLoaded);
+export const getValidatedIdentifiers = createSelector(getProjectsState, (state: State) => state.projectCreationSetupData.validatedIdentifiers);
 export const getProjectCreationFormState = createSelector(getProjectsState, (state: State) => state.projectCreationFromData);
 export const getProjectCreationDialogState = createSelector(getProjectsState, (state: State) => state.projectCreationFromIdDialog);
+export const getProjectCreationFormCanActivateSave = createSelector(getProjectCreationFormState, canProjectCreationFormBeSaved);

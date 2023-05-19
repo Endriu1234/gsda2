@@ -12,19 +12,24 @@
                 <mat-form-field class="jk-form-field" appearance="outline" [style.width.%]=100>
                     <mat-label>Name</mat-label>
                     <input type="text" matInput [ngrxFormControlState]="$any(formState).controls.name" placeholder="Name of the project">
-                </mat-form-field>  
-                <mat-error class="jk-error" [style.visibility]="(formState.isTouched && formState.errors._identifier?.required)?'visible':'hidden'">
-                    Identifier is required
+                </mat-form-field> 
+                <mat-error class="jk-error" [style.visibility]="(formState.isTouched && (formState.errors._identifier?.required || formState.errors._identifier?.$validateIdentifierError))?'visible':'hidden'">
+                    <app-small-spinner *ngIf="formState.controls.identifier.isValidationPending"></app-small-spinner>
+                    <span *ngIf="!formState.controls.identifier.isValidationPending">Identifier is required, must be unique and in correct format (without spaces and special characters)</span>
                 </mat-error>       
                 <mat-form-field class="jk-form-field" appearance="outline" [style.width.%]=100>
                     <mat-label>Identifier</mat-label>
                     <input type="text" matInput [ngrxFormControlState]="$any(formState).controls.identifier" placeholder="Identifier of the project">
-                </mat-form-field>  
+                </mat-form-field> 
+                <mat-error
+                    *ngIf="formState.isTouched && formState.errors._parent_project?.$validateProjectError">
+                    Project is incorrect
+                </mat-error> 
                 <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
                     <mat-label>Parent Project</mat-label>
                     <input type="text"
                         matInput
-                        [ngrxFormControlState]="$any(formState).controls.redmineProject"
+                        [ngrxFormControlState]="$any(formState).controls.parent_project"
                         [matAutocomplete]="autoProject">
                     <mat-autocomplete #autoProject="matAutocomplete">
                         <mat-option *ngFor="let project of (projectsFiltered$ | async)" [value]="project.name">
@@ -36,7 +41,7 @@
                     <mat-label>Description</mat-label>
                     <textarea type="text" matInput [ngrxFormControlState]="$any(formState).controls.description" placeholder="Description"></textarea>
                 </mat-form-field>                       
-                <mat-chip-listbox class="mb-3" multiple>
+                <mat-chip-listbox class="mb-3" multiple  [ngrxFormControlState]="$any(formState).controls.inherit_public">
                     <mat-chip-option>Public</mat-chip-option>
                     <mat-chip-option>Inherit members</mat-chip-option> 
                 </mat-chip-listbox>
@@ -53,8 +58,22 @@
             </mat-card-content>
         </mat-card>
         <mat-card-actions [align]="'end'" class="jkWidthMarg">
-            <button mat-fab extended color="accent" class="me-4 my-2">Create and Open</button>
-            <button mat-fab extended color="primary" class="me-3 my-2">Create</button>
+            <button 
+                mat-fab 
+                extended 
+                color="accent" 
+                class="me-4 my-2"
+                (click)="createAndOpenProject()"
+                [disabled]="!(getProjectCreationFormCanActivateSave$ | async)"
+            >Create and Open</button>
+            <button 
+                mat-fab 
+                extended 
+                color="primary" 
+                class="me-3 my-2"
+                (click)="createProject()"
+                [disabled]="!(getProjectCreationFormCanActivateSave$ | async)"
+            >Create</button>
         </mat-card-actions>
     </form>
 </ng-container>

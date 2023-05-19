@@ -1,4 +1,5 @@
 import { RedmineProject } from "../../shared/store/models/redmine-project.model";
+import { IdentifierValidation } from "./models/identifier-validation.model";
 import { SoftDevProject } from "./models/softdev-project.model";
 import { createFormGroupState, FormGroupState } from "ngrx-forms";
 
@@ -12,13 +13,15 @@ export interface ProjectCreationSetupData {
     softdevProjectsLoaded: boolean;
     softdevProjects: SoftDevProject[];
     softdevProjectsFiltered: SoftDevProject[];
+    validatedIdentifiers: IdentifierValidation[];
 }
 
 export interface ProjectCreationFromData {
-    redmineProject: string;
+    parent_project: string;
     name: string;
     identifier: string;
     description: string;
+    inherit_public: string;
     wiki: string;
 }
 
@@ -40,13 +43,15 @@ export const initialState: State = {
         redmineProjectsFiltered: [],
         softdevProjectsLoaded: false,
         softdevProjects: [],
-        softdevProjectsFiltered: []
+        softdevProjectsFiltered: [],
+        validatedIdentifiers: []
     },
     projectCreationFromData: createFormGroupState<ProjectCreationFromData>(PROJECT_CREATION_FORMID, {
-        redmineProject: '',
+        parent_project: '',
         name: '',
         identifier: '',
         description: '',
+        inherit_public: '',
         wiki: ''
     }),
     projectCreationFromIdDialog: createFormGroupState<ProjectCreationFromIdDialog>(PROJECT_CREATION_DIALOG, {
