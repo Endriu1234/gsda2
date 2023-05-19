@@ -13,7 +13,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete'
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
-
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
     imports: [
@@ -31,7 +31,8 @@ import { MatTabsModule } from '@angular/material/tabs';
         MatFormFieldModule,
         MatInputModule,
         MatSnackBarModule,
-        MatTabsModule
+        MatTabsModule,
+        MatCheckboxModule
     ],
     exports: [
         MatButtonModule,
@@ -48,7 +49,8 @@ import { MatTabsModule } from '@angular/material/tabs';
         MatFormFieldModule,
         MatInputModule,
         MatSnackBarModule,
-        MatTabsModule
+        MatTabsModule,
+        MatCheckboxModule
     ]
 })
 export class MaterialModule { }
