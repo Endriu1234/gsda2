@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, take } from 'rxjs';
-import { FormGroupState } from 'ngrx-forms';
-import * as fromProjectsSelectors from "../../../store/projects.selector";
+import { FormGroupState, SetUserDefinedPropertyAction } from 'ngrx-forms';
+import * as fromProjectsSelectors from "../../../store/projects.selectors";
 import * as fromProjectsState from '../../../store/projects.state';
 import * as fromSharedState from '../../../../shared/store/shared.state';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
@@ -10,6 +10,7 @@ import { FormControl } from '@angular/forms';
 import { ProjectCreationFromId } from "../project-creation-from-id/project-creation-from-id";
 import { MatDialog } from '@angular/material/dialog';
 import { initRedmineProjects } from 'src/app/projects/store/projects.actions';
+import { FORM_SAVE_STATE, FormSaveState } from '../../../../shared/store/shared.state';
 
 @Component({
   selector: 'app-project-creation',
@@ -20,6 +21,7 @@ export class ProjectCreationPage implements OnInit {
 
   projectsFiltered$: Observable<RedmineProject[]> | null = null;
   formState$: Observable<FormGroupState<any>>;
+  getProjectCreationFormCanActivateSave$: Observable<boolean> | null = null;
   rmAutoProject = new FormControl('');
 
   constructor(private store: Store<fromProjectsState.State>, private sharedStore: Store<fromSharedState.State>, private dialog: MatDialog) {
@@ -45,6 +47,15 @@ export class ProjectCreationPage implements OnInit {
 
     this.projectsFiltered$ = this.store.select(fromProjectsSelectors.getRedmineProjectsFiltered);
 
+    this.getProjectCreationFormCanActivateSave$ = this.store.select(fromProjectsSelectors.getProjectCreationFormCanActivateSave);
+  }
+
+  createProject() {
+    this.store.dispatch(new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID, FORM_SAVE_STATE, FormSaveState.Saving))
+  }
+
+  createAndOpenProject() {
+    this.store.dispatch(new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID, FORM_SAVE_STATE, FormSaveState.SavingWithRedirect))
   }
 
 }

@@ -5,8 +5,12 @@ module.exports.convertFormProjectObjectToJSON = async function convertFormProjec
 
     redmineProject.project.name = formProject.name;
     redmineProject.project.identifier = formProject.identifier;
-    redmineProject.project.is_public = formProject.public === 'true' ? true : false;
-    redmineProject.project.inherit_members = formProject.inherit_members === 'true' ? true : false;
+    redmineProject.project.is_public = false;
+    redmineProject.project.inherit_members = false;
+    if (formProject.inherit_public) {
+        redmineProject.project.is_public = formProject.inherit_public.value.filter(v => v === "Public").length > 0 ? true : false;
+        redmineProject.project.inherit_members = formProject.inherit_public.value.filter(v => v === "Inherit members").length > 0 ? true : false;
+    }
 
     if (formProject.description)
         redmineProject.project.description = formProject.description;

@@ -18,6 +18,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
+import { SmallSpinnerModule } from './shared/components/small-spinner.module';
 import { httpInterceptProviders } from './shared/components/interceptors-providers.module';
 
 @NgModule({
@@ -38,6 +39,7 @@ import { httpInterceptProviders } from './shared/components/interceptors-provide
     FormsModule,
     ReactiveFormsModule,
     MatDialogModule,
+    SmallSpinnerModule,
     StoreModule.forRoot(reducers),
     EffectsModule.forRoot([ItemsEffects, ProjectsEffects]),
     StoreDevtoolsModule.instrument({

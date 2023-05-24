@@ -8,6 +8,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NgrxFormsModule } from 'ngrx-forms';
 import { ProjectCreationFromId } from './projectcreation/pages/project-creation-from-id/project-creation-from-id';
 import { MatDialogModule } from '@angular/material/dialog';
+import { SmallSpinnerModule } from '../shared/components/small-spinner.module';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     MaterialModule,
     ReactiveFormsModule,
     NgrxFormsModule,
-    MatDialogModule
+    MatDialogModule,
+    SmallSpinnerModule
   ]
 })
 export class ProjectsModule { }

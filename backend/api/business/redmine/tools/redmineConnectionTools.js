@@ -36,24 +36,28 @@ function logError(error) {
 module.exports.getRedmineAddress = getRedmineAddress;
 
 module.exports.getRedmineData = async (endPoint, isPaginated) => {
-    let dataToReturn;
+    let dataToReturn = undefined;
 
     if (isPaginated) {
         const limitPrefix = endPoint.includes("?") ? "&" : "?";
         let result = await axios.get(`${getRedmineAddress(endPoint)}${limitPrefix}limit=100`, getRedmineApiConfiguration()).catch(logError);
 
-        dataToReturn = result.data;
-        let colectionName = Object.keys(dataToReturn)[0];
+        if (result) {
+            dataToReturn = result.data;
+            let colectionName = Object.keys(dataToReturn)[0];
 
-        while ((result.data.limit + result.data.offset) < result.data.total_count) {
-            let url = `${getRedmineAddress(endPoint)}${limitPrefix}limit=100&offset=${result.data.limit + result.data.offset}`;
-            result = await axios.get(url, getRedmineApiConfiguration()).catch(logError);
-            dataToReturn[colectionName] = dataToReturn[colectionName].concat(result.data[colectionName]);
+            while ((result.data.limit + result.data.offset) < result.data.total_count) {
+                let url = `${getRedmineAddress(endPoint)}${limitPrefix}limit=100&offset=${result.data.limit + result.data.offset}`;
+                result = await axios.get(url, getRedmineApiConfiguration()).catch(logError);
+                dataToReturn[colectionName] = dataToReturn[colectionName].concat(result.data[colectionName]);
+            }
         }
     }
     else {
         const result = await axios.get(getRedmineAddress(endPoint), getRedmineApiConfiguration()).catch(logError);
-        dataToReturn = result.data;
+        if (result) {
+            dataToReturn = result.data;
+        }
     }
 
     return dataToReturn;

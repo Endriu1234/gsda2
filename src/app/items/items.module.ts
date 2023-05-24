@@ -34,7 +34,8 @@ import { BatchItemsCreationPage } from './batchitemscreation/pages/batch-items-c
     MaterialModule,
     ReactiveFormsModule,
     NgrxFormsModule,
-    MatDialogModule
+    MatDialogModule,
+    SmallSpinnerModule
   ]
 })
 export class ItemsModule { }

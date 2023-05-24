@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, take } from 'rxjs';
 import * as fromProjectsState from '../../../store/projects.state';
-import * as fromProjectsSelectors from "../../../../projects/store/projects.selector";
+import * as fromProjectsSelectors from "../../../store/projects.selectors";
 import { SoftDevProject } from "src/app/projects/store/models/softdev-project.model";
 import { findProjectById, initSoftDevProjects} from 'src/app/projects/store/projects.actions';
 import { FormGroupState } from 'ngrx-forms';
