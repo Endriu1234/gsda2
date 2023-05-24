@@ -1,0 +1,47 @@
+<mat-card>
+    <mat-card-content>
+        <!-- <form novalidate> -->
+        <div class="container-fluid">
+            <div class="row">
+                <!-- <div class="col-3">
+                        <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                            <mat-label>SoftDev Source Project / Packet</mat-label>
+                            <input type="text"
+                            matInput
+                           >
+
+                        </mat-form-field>
+                    </div> -->
+                <div class="col-3">
+
+                    <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                        <mat-label>Redmine Target Project</mat-label>
+                        <input type="text"
+                            matInput
+                            [matAutocomplete]="autoProject">
+                        <mat-autocomplete #autoProject="matAutocomplete">
+                            <mat-option *ngFor="let project of (projectsFiltered$ | async)" [value]="project.name">
+                                {{project.name}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </div>
+                <!-- <div class="col-3">
+                        <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                            <mat-label>Item Level</mat-label>
+                            <mat-select>
+                                <mat-option value="issue">Issue</mat-option>
+                                <mat-option value="cr">CR</mat-option>
+                                <mat-option value="possible_cr">Possible CR</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-3">
+                        <mat-checkbox>Show Created</mat-checkbox>
+                        <button mat-fab extended color="primary">Find</button>
+                    </div> -->
+            </div>
+        </div>
+        <!-- </form> -->
+    </mat-card-content>
+</mat-card>

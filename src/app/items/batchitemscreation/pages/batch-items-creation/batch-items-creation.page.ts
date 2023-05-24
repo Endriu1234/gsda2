@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
+
 @Component({
   selector: 'app-batch-items-creation',
   templateUrl: './batch-items-creation.page.html',
@@ -7,9 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BatchItemsCreationPage implements OnInit {
 
+
   constructor() { }
 
   ngOnInit(): void {
+
   }
 
 }
