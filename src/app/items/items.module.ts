@@ -9,11 +9,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NgrxFormsModule } from 'ngrx-forms';
 import { ItemCreationFromId } from './itemcreation/pages/item-creation-from-id/item-creation-from-id';
 import { MatDialogModule } from '@angular/material/dialog';
-import { SmallSpinnerComponent } from '../shared/spinner/small-spinner/small-spinner.component';
 import { BatchCreationSDCriteriaComponent } from './batchitemscreation/components/batch-creation-sdcriteria/batch-creation-sdcriteria.component';
 import { BatchCreationTMSCriteriaComponent } from './batchitemscreation/components/batch-creation-tmscriteria/batch-creation-tmscriteria.component';
 import { BatchCreationRedmineCriteriaComponent } from './batchitemscreation/components/batch-creation-redmine-criteria/batch-creation-redmine-criteria.component';
 import { BatchItemsCreationPage } from './batchitemscreation/pages/batch-items-creation/batch-items-creation.page';
+import { SmallSpinnerModule } from '../shared/components/small-spinner.module';
 
 
 
@@ -23,7 +23,7 @@ import { BatchItemsCreationPage } from './batchitemscreation/pages/batch-items-c
     ItemViewEditPage,
     ItemCreationPage,
     ItemCreationFromId,
-    SmallSpinnerComponent,
+
     BatchCreationSDCriteriaComponent,
     BatchCreationTMSCriteriaComponent,
     BatchCreationRedmineCriteriaComponent
@@ -36,6 +36,7 @@ import { BatchItemsCreationPage } from './batchitemscreation/pages/batch-items-c
     NgrxFormsModule,
     MatDialogModule,
     SmallSpinnerModule
+
   ]
 })
 export class ItemsModule { }
