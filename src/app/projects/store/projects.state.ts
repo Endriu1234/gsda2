@@ -1,7 +1,7 @@
 import { RedmineProject } from "../../shared/store/models/redmine-project.model";
 import { IdentifierValidation } from "./models/identifier-validation.model";
 import { SoftDevProject } from "./models/softdev-project.model";
-import { createFormGroupState, FormGroupState } from "ngrx-forms";
+import { createFormGroupState, FormGroupState, Boxed, box } from "ngrx-forms";
 
 export const PROJECT_CREATION_FORMID = "PROJECT_CREATION_FORMID";
 export const PROJECT_CREATION_DIALOG = "PROJECT_CREATION_DIALOG";
@@ -21,7 +21,7 @@ export interface ProjectCreationFromData {
     name: string;
     identifier: string;
     description: string;
-    inherit_public: string;
+    inherit_public: Boxed<string[]>;
     wiki: string;
 }
 
@@ -51,7 +51,7 @@ export const initialState: State = {
         name: '',
         identifier: '',
         description: '',
-        inherit_public: '',
+        inherit_public: box(['Public']),
         wiki: ''
     }),
     projectCreationFromIdDialog: createFormGroupState<ProjectCreationFromIdDialog>(PROJECT_CREATION_DIALOG, {

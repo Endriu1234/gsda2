@@ -42,7 +42,7 @@
                     <textarea type="text" matInput [ngrxFormControlState]="$any(formState).controls.description" placeholder="Description"></textarea>
                 </mat-form-field>                       
                 <mat-chip-listbox class="mb-3" multiple  [ngrxFormControlState]="$any(formState).controls.inherit_public">
-                    <mat-chip-option>Public</mat-chip-option>
+                    <mat-chip-option selected>Public</mat-chip-option>
                     <mat-chip-option>Inherit members</mat-chip-option> 
                 </mat-chip-listbox>
                 <mat-form-field appearance="outline" [style.width.%]=100>

@@ -10,7 +10,7 @@ import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 import { Store } from '@ngrx/store';
 import * as fromProjectsState from './projects.state';
 import * as fromSharedState from '../../shared/store/shared.state';
-import { ResetAction, SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
+import { ResetAction, SetUserDefinedPropertyAction, SetValueAction, box } from 'ngrx-forms';
 import { PROJECT_CREATION_DIALOG, PROJECT_CREATION_FORMID } from './projects.state';
 import { validateIdentifier, validateProject, validateSDProject } from './projects.validation';
 import { getProjectCreationFormState, getSoftDevProjects } from './projects.selectors';
@@ -103,12 +103,13 @@ export class ProjectsEffects {
 
     resetProjectCreationForm$ = createEffect(() => this.actions$.pipe(ofType(resetProjectCreationForm),
         switchMap(() => {
-            return of(new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.name', ''),
+            return of(new SetValueAction(fromProjectsState.PROJECT_CREATION_DIALOG + '.projectId', ''),
+                new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.name', ''),
                 new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.identifier', ''),
                 new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.description', ''),
                 new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.wiki', ''),
                 new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.parent_project', ''),
-                new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.inherit_public', ''),
+                new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.inherit_public', box(['Public'])),
                 new ResetAction(fromProjectsState.PROJECT_CREATION_FORMID));
         })
     ));
@@ -122,16 +123,15 @@ export class ProjectsEffects {
                     return of(new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.identifier', sdProject.PRODUCT_VERSION_NAME.replace(/\./g, "_").toLocaleLowerCase()),
                         new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.name', sdProject.PRODUCT_VERSION_NAME),
                         new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.description', this.createDescription(sdProject)),
-                        new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.wiki', this.createWikiInformation(sdProject)))
+                        new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.wiki', this.createWikiInformation(sdProject)));
                 }
 
                 return of(noopAction());
-            })
-                , catchError(error => {
+            }), catchError(error => {
                     console.log(error);
                     this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during defaulting" }));
                     return of(noopAction());
-                }))
+            }))
         })
     ));
 
@@ -169,7 +169,7 @@ export class ProjectsEffects {
         sWiki += `* *Dev End: ${formatDate(sdProject.PRODUCT_DEV_END, "MM/dd/yyyy", 'en-US')}* \n\n`;
         sWiki += `Test Start: ${formatDate(sdProject.PRODUCT_TEST_START, "MM/dd/yyyy", 'en-US')} \n`;
         sWiki += `Test End: ${formatDate(sdProject.PRODUCT_TEST_END, "MM/dd/yyyy", 'en-US')} \n\n`;
-        sWiki += `* Delivery Date: ${formatDate(sdProject.PRODUCT_DELIVERY_DATE, "MM/dd/yyyy", 'en-US')}* \n\n`;
+        sWiki += `* *Delivery Date: ${formatDate(sdProject.PRODUCT_DELIVERY_DATE, "MM/dd/yyyy", 'en-US')}* \n\n`;
         sWiki += `h2. Release Candidate \n\n`;
         sWiki += `* *${sdProject.PRODUCT_RELEASE_CANDIDATE}* \n\n`;
         sWiki += `h2. Project Name \n\n`;

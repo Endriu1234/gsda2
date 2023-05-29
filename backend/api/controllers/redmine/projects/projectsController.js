@@ -32,9 +32,9 @@ module.exports.createRedmineProject = async (req, res) => {
         if (result.success) {
             retVal.redmineLink = `${getRedmineAddress(`projects/${result.redmineResponse.data.project.id}`)}`;
             const wikiJson = await convertFormProjectWikiObjectToJSON(req.body);
-            result = await putRedmineJsonData(`projects/${result.redmineResponse.data.project.identifier}/wiki/wiki.json`, wikiJson);
+            let wikiResult = await putRedmineJsonData(`projects/${result.redmineResponse.data.project.identifier}/wiki/wiki.json`, wikiJson);
 
-            if (!result) {
+            if (!wikiResult) {
                 retVal.errorMessage = 'Redmine Project was created but without wiki. Something went wrong!';
             }
         }

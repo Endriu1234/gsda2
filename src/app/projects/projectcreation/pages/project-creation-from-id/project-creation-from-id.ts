@@ -33,7 +33,7 @@ export class ProjectCreationFromId implements OnInit {
 
   fillByProject() {
     let id = "";
-    this.dialogState$.subscribe(group => id = group.controls.projectId.value );
+    this.dialogState$.subscribe(group => id = group.controls.projectId.value);
     
     this.store.dispatch(findProjectById({id}));
   }
