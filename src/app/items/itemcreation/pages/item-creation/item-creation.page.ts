@@ -7,7 +7,7 @@ import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model
 import { RedmineUserByLetter } from 'src/app/items/store/models/redmine-user-letter-model';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 import { Observable, take } from 'rxjs';
-import { FormControlState, FormGroupState, SetUserDefinedPropertyAction } from 'ngrx-forms';
+import { FormGroupState, SetUserDefinedPropertyAction } from 'ngrx-forms';
 import { trimUpperConverter } from '../../../../shared/tools/validators/ngrxValueConverters';
 import { ItemCreationFromId } from "../item-creation-from-id/item-creation-from-id";
 import { MatDialog } from '@angular/material/dialog';
@@ -59,7 +59,7 @@ export class ItemCreationPage implements OnInit {
           id = formState.controls.tms.value;
         }
       });
-      this.store.dispatch(findItemById({id}));
+      this.store.dispatch(findItemById({ id }));
     }
     console.log(fillFromId);
     //this.dialogState$.subscribe(group => id = group.controls.fromId.value);
