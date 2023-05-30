@@ -4,7 +4,7 @@ import { Observable, take } from 'rxjs';
 import * as fromProjectsState from '../../../store/projects.state';
 import * as fromProjectsSelectors from "../../../store/projects.selectors";
 import { SoftDevProject } from "src/app/projects/store/models/softdev-project.model";
-import { findProjectById, initSoftDevProjects} from 'src/app/projects/store/projects.actions';
+import { findProjectById, initSoftDevProjects } from 'src/app/projects/store/projects.actions';
 import { FormGroupState } from 'ngrx-forms';
 
 @Component({
@@ -17,8 +17,8 @@ export class ProjectCreationFromId implements OnInit {
   sdProjectsFiltered$: Observable<SoftDevProject[]> | null = null;
   dialogState$: Observable<FormGroupState<any>>;
 
-  constructor (private store: Store<fromProjectsState.State>) {
-    this.dialogState$ = this.store.select(fromProjectsSelectors.getProjectCreationDialogState); 
+  constructor(private store: Store<fromProjectsState.State>) {
+    this.dialogState$ = this.store.select(fromProjectsSelectors.getProjectCreationDialogState);
   }
 
   ngOnInit(): void {
@@ -31,11 +31,11 @@ export class ProjectCreationFromId implements OnInit {
     this.sdProjectsFiltered$ = this.store.select(fromProjectsSelectors.getSoftDevProjectsFiltered);
   }
 
-  fillByProject() {
+  fillByProjectyProject() {
     let id = "";
     this.dialogState$.subscribe(group => id = group.controls.projectId.value);
-    
-    this.store.dispatch(findProjectById({id}));
+
+    this.store.dispatch(findProjectById({ id }));
   }
 
 }
