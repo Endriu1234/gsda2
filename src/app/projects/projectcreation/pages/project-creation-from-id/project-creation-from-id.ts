@@ -31,7 +31,7 @@ export class ProjectCreationFromId implements OnInit {
     this.sdProjectsFiltered$ = this.store.select(fromProjectsSelectors.getSoftDevProjectsFiltered);
   }
 
-  fillByProjectyProject() {
+  fillByProject() {
     let id = "";
     this.dialogState$.subscribe(group => id = group.controls.projectId.value);
 
