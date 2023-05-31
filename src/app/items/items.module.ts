@@ -14,6 +14,9 @@ import { BatchCreationTMSCriteriaComponent } from './batchitemscreation/componen
 import { BatchCreationRedmineCriteriaComponent } from './batchitemscreation/components/batch-creation-redmine-criteria/batch-creation-redmine-criteria.component';
 import { BatchItemsCreationPage } from './batchitemscreation/pages/batch-items-creation/batch-items-creation.page';
 import { SmallSpinnerModule } from '../shared/components/small-spinner.module';
+import { BatchCreationIdscriteriaComponent } from './batchitemscreation/components/batch-creation-idscriteria/batch-creation-idscriteria.component';
+import { EffectsModule } from '@ngrx/effects';
+import { ItemsEffects } from './store/items.effects';
 
 
 
@@ -26,7 +29,8 @@ import { SmallSpinnerModule } from '../shared/components/small-spinner.module';
 
     BatchCreationSDCriteriaComponent,
     BatchCreationTMSCriteriaComponent,
-    BatchCreationRedmineCriteriaComponent
+    BatchCreationRedmineCriteriaComponent,
+    BatchCreationIdscriteriaComponent
   ],
   imports: [
     CommonModule,
@@ -35,7 +39,8 @@ import { SmallSpinnerModule } from '../shared/components/small-spinner.module';
     ReactiveFormsModule,
     NgrxFormsModule,
     MatDialogModule,
-    SmallSpinnerModule
+    SmallSpinnerModule,
+    EffectsModule.forFeature([ItemsEffects])
 
   ]
 })

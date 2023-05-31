@@ -68,7 +68,7 @@ export class ProjectsEffects {
 
                         return this.store.select(getProjectCreationFormState).pipe(take(1), switchMap(formData => {
                             let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
-                            return this.http.post<GsdaRedmineHttpResponse>(environment.apiUrl + '/redmine/projects/create-redmine-project', formData.value, {context}).pipe(switchMap(response => {
+                            return this.http.post<GsdaRedmineHttpResponse>(environment.apiUrl + '/redmine/projects/create-redmine-project', formData.value, { context }).pipe(switchMap(response => {
                                 if (response.success) {
                                     if (action.value == fromSharedState.FormSaveState.SavingWithRedirect && response.redmineLink) {
                                         window.location.href = response.redmineLink;
@@ -103,6 +103,7 @@ export class ProjectsEffects {
 
     resetProjectCreationForm$ = createEffect(() => this.actions$.pipe(ofType(resetProjectCreationForm),
         switchMap(() => {
+            console.log('idzie reset dla projectu');
             return of(new SetValueAction(fromProjectsState.PROJECT_CREATION_DIALOG + '.projectId', ''),
                 new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.name', ''),
                 new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.identifier', ''),
@@ -131,9 +132,9 @@ export class ProjectsEffects {
                     return of(noopAction());
                 }))
             }), catchError(error => {
-                    console.log(error);
-                    this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during defaulting" }));
-                    return of(noopAction());
+                console.log(error);
+                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during defaulting" }));
+                return of(noopAction());
             }))
         })
     ));

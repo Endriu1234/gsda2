@@ -17,8 +17,8 @@ export class ProjectCreationFromId implements OnInit {
   sdProjectsFiltered$: Observable<SoftDevProject[]> | null = null;
   dialogState$: Observable<FormGroupState<any>>;
 
-  constructor (private store: Store<fromProjectsState.State>) {
-    this.dialogState$ = this.store.select(fromProjectsSelectors.getProjectCreationDialogState); 
+  constructor(private store: Store<fromProjectsState.State>) {
+    this.dialogState$ = this.store.select(fromProjectsSelectors.getProjectCreationDialogState);
   }
 
   ngOnInit(): void {

@@ -9,6 +9,8 @@ import { NgrxFormsModule } from 'ngrx-forms';
 import { ProjectCreationFromId } from './projectcreation/pages/project-creation-from-id/project-creation-from-id';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SmallSpinnerModule } from '../shared/components/small-spinner.module';
+import { EffectsModule } from '@ngrx/effects';
+import { ProjectsEffects } from './store/projects.effects';
 
 
 @NgModule({
@@ -24,7 +26,8 @@ import { SmallSpinnerModule } from '../shared/components/small-spinner.module';
     ReactiveFormsModule,
     NgrxFormsModule,
     MatDialogModule,
-    SmallSpinnerModule
+    SmallSpinnerModule,
+    EffectsModule.forFeature([ProjectsEffects]),
   ]
 })
 export class ProjectsModule { }
