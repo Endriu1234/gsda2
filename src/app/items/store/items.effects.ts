@@ -3,8 +3,9 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
     initRedmineProjects, initRedmineTrackers, initRedmineUsers, loadRedmineProjects,
     loadRedmineTrackers, loadRedmineUsers, noopAction, setRedmineProjectsFilter, setRedmineUsersByLetterFilter,
-    findItemById,
-    resetItemCreationForm
+    fillItemById,
+    resetItemCreationForm,
+    identifyAndFillItemById
 } from './items.actions';
 import { catchError, from, map, mergeMap, of, startWith, switchMap, take } from "rxjs";
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
@@ -22,7 +23,7 @@ import { Item } from './models/item.model';
 import { addSnackbarNotification } from '../../shared/store/shared.actions';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
-import { getItemCreationFormState } from './items.selectors';
+import { getItemCreationDialogState, getItemCreationFormState } from './items.selectors';
 import { GsdaRedmineHttpResponse } from 'src/app/shared/http/model/gsda-redmine-http-response.model';
 
 export const validateUserError = "validateUserError";
@@ -144,18 +145,20 @@ export class ItemsEffects {
 
 
     getItemById$ = createEffect(() => this.actions$.pipe(
-        ofType(findItemById),
-        switchMap((action: { id: string }) => {
-            let params = new HttpParams();
-            params = params.append("id", action.id);
-            let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
+        ofType(fillItemById),
+        switchMap(() => {
+            return this.store.select(getItemCreationDialogState).pipe(take(1), switchMap(dialogData => {
+                let params = new HttpParams();
+                params = params.append("id", dialogData.controls.fromId.value);
+                let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
 
-            return this.http.get<Item>(environment.apiUrl + '/softdev/items/get-item-by-id', { params, context }).pipe(mergeMap(item => {
-                return of(new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.subject', item.item_summary),
-                    new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.description', item.item_description),
-                    new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.issue', item.issue_id),
-                    new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.cr', item.cr_id),
-                    new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.tms', item.tms_id))
+                return this.http.get<Item>(environment.apiUrl + '/softdev/items/get-item-by-id', { params, context }).pipe(mergeMap(item => {
+                    return of(new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.subject', item.item_summary),
+                        new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.description', item.item_description),
+                        new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.issue', item.issue_id),
+                        new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.cr', item.cr_id),
+                        new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.tms', item.tms_id))
+                }))
             }), catchError(error => {
                 console.log(error);
                 this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during defaulting" }));
@@ -163,5 +166,37 @@ export class ItemsEffects {
             }))
         })
     ));
+
+    identifyAndFillItemById$ = createEffect(() => this.actions$.pipe(
+        ofType(identifyAndFillItemById),
+        switchMap(() => {
+            return this.store.select(getItemCreationFormState).pipe(take(1), switchMap(formData => {
+                let params = new HttpParams();
+                let id = "";
+                if (formData.controls.issue && formData.controls.issue.value) {
+                    id = formData.controls.issue.value;
+                } else if (formData.controls.cr && formData.controls.cr.value) {
+                    id = formData.controls.cr.value;
+                } else if (formData.controls.tms && formData.controls.tms.value) {
+                    id = formData.controls.tms.value;
+                }
+                params = params.append("id", id);
+                let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
+
+                return this.http.get<Item>(environment.apiUrl + '/softdev/items/get-item-by-id', { params, context }).pipe(mergeMap(item => {
+                    return of(new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.subject', item.item_summary),
+                        new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.description', item.item_description),
+                        new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.issue', item.issue_id),
+                        new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.cr', item.cr_id),
+                        new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.tms', item.tms_id))
+                }))
+            }), catchError(error => {
+                console.log(error);
+                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during defaulting" }));
+                return of(noopAction());
+            }))
+        })
+    ));
+    
 
 }

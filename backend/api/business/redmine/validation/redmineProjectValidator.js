@@ -20,9 +20,9 @@ module.exports.validateRedmineProject = async (project) => {
         return retVal;
     }
 
-    if (!project.identifier || project.identifier === 0 || !new RegExp("^[_\\-0-9a-z]{1,100}$").test(project.identifier)) {
+    if (!project.identifier || project.identifier === 0 || !new RegExp("^[_\\-0-9a-z]{1,100}$").test(project.identifier) || new RegExp("^\\d*$").test(project.identifier)) {
         retVal.isValid = false;
-        retVal.errorMsg = 'Cannot add Redmine Project. Identifier is missing.';
+        retVal.errorMsg = 'Cannot add Redmine Project. Identifier is missing or in incorrect format.';
         return retVal;
     } else {
         const rmIdentifier = await getRedmineData(`projects/${project.identifier}.json`, false);

@@ -40,7 +40,7 @@ export function validateIdentifier(store: Store<State>, http: HttpClient, valida
         return of(new StartAsyncValidationAction(controlId, validateIdentifierError), new SetAsyncErrorAction(controlId, validateIdentifierError, "Identifier invalid"));
     }
     
-    if (!new RegExp("^\\S+$").test(identifier))
+    if (!new RegExp("^[_\\-0-9a-z]{1,100}$").test(identifier) || new RegExp("^\\d*$").test(identifier))
         return of(new StartAsyncValidationAction(controlId, validateIdentifierError), new SetAsyncErrorAction(controlId, validateIdentifierError, "Identifier invalid"));
 
     return store.select(getValidatedIdentifiers).pipe(delay(300), take(1), switchMap(validatedIdentifiers => {
