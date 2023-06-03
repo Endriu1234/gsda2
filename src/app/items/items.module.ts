@@ -16,7 +16,9 @@ import { BatchItemsCreationPage } from './batchitemscreation/pages/batch-items-c
 import { SmallSpinnerModule } from '../shared/components/small-spinner.module';
 import { BatchCreationIdscriteriaComponent } from './batchitemscreation/components/batch-creation-idscriteria/batch-creation-idscriteria.component';
 import { EffectsModule } from '@ngrx/effects';
-import { ItemsEffects } from './store/items.effects';
+import { ItemsGeneralEffects } from './store/items.general-effects';
+import { ItemsItemCreationEffects } from './store/items.item-creation-effects';
+import { ItemsBatchItemCreationEffects } from './store/items.batch-item-creation-effects';
 
 
 
@@ -40,8 +42,7 @@ import { ItemsEffects } from './store/items.effects';
     NgrxFormsModule,
     MatDialogModule,
     SmallSpinnerModule,
-    EffectsModule.forFeature([ItemsEffects])
-
+    EffectsModule.forFeature([ItemsGeneralEffects, ItemsItemCreationEffects, ItemsBatchItemCreationEffects])
   ]
 })
 export class ItemsModule { }

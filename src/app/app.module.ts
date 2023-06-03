@@ -7,8 +7,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { WelcomePage } from './navigation/pages/welcome/welcome.page';
 import { MenuSwitchComponent } from './navigation/components/menu-switch/menu-switch.component';
 import { EffectsModule } from '@ngrx/effects';
-import { ItemsEffects } from './items/store/items.effects';
-import { ProjectsEffects } from './projects/store/projects.effects';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule, isDevMode } from '@angular/core';
 import { reducers } from './app.reducer';

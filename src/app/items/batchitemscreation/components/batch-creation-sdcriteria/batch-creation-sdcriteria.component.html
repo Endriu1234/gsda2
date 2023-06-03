@@ -1,9 +1,10 @@
-<mat-card>
-    <mat-card-content>
-        <!-- <form novalidate> -->
-        <div class="container-fluid">
-            <div class="row">
-                <!-- <div class="col-3">
+<ng-container *ngIf="formState$ | async as formState">
+    <mat-card>
+        <mat-card-content>
+            <form novalidate [ngrxFormState]="formState">
+                <div class="container-fluid">
+                    <div class="row">
+                        <!-- <div class="col-3">
                         <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
                             <mat-label>SoftDev Source Project / Packet</mat-label>
                             <input type="text"
@@ -12,21 +13,23 @@
 
                         </mat-form-field>
                     </div> -->
-                <div class="col-3">
+                        <div class="col-3">
 
-                    <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
-                        <mat-label>Redmine Target Project</mat-label>
-                        <input type="text"
+                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                                <mat-label>Redmine Target Project</mat-label>
+                                <input type="text"
                             matInput
+                            [ngrxFormControlState]="$any(formState).controls.targetRedmineProject"
                             [matAutocomplete]="autoProject">
-                        <mat-autocomplete #autoProject="matAutocomplete">
-                            <mat-option *ngFor="let project of (projectsFiltered$ | async)" [value]="project.name">
-                                {{project.name}}
-                            </mat-option>
-                        </mat-autocomplete>
-                    </mat-form-field>
-                </div>
-                <!-- <div class="col-3">
+                                <mat-autocomplete #autoProject="matAutocomplete">
+                                    <mat-option *ngFor="let project of (projectsFiltered$ | async)"
+                                        [value]="project.name">
+                                        {{project.name}}
+                                    </mat-option>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                        </div>
+                        <!-- <div class="col-3">
                         <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
                             <mat-label>Item Level</mat-label>
                             <mat-select>
@@ -40,8 +43,9 @@
                         <mat-checkbox>Show Created</mat-checkbox>
                         <button mat-fab extended color="primary">Find</button>
                     </div> -->
-            </div>
-        </div>
-        <!-- </form> -->
-    </mat-card-content>
-</mat-card>
+                    </div>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</ng-container>

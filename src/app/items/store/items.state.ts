@@ -8,6 +8,11 @@ import { TmsValidation } from "./models/tms-validation.model";
 import { FromIdValidation } from "./models/fromId-validation.model";
 import { RedmineUserByLetter } from "./models/redmine-user-letter-model";
 
+export interface ItemsSetupData {
+    redmineProjectsLoaded: boolean;
+    redmineProjects: RedmineProject[];
+}
+
 export interface ItemCreationSetupData {
     redmineTrackersLoaded: boolean;
     redmineTrackers: RedmineTracker[];
@@ -16,8 +21,6 @@ export interface ItemCreationSetupData {
     redmineUsersByLetterLoaded: boolean;
     redmineUsersByLetter: RedmineUserByLetter[];
     redmineUsersByLetterFiltered: RedmineUserByLetter[];
-    redmineProjectsLoaded: boolean;
-    redmineProjects: RedmineProject[];
     redmineProjectsFiltered: RedmineProject[];
     validatedCRs: CRValidation[];
     validatedIssues: IssueValidation[];
@@ -40,17 +43,32 @@ export interface ItemCreationFromIdDialog {
     fromId: string;
 }
 
-export interface State {
+export interface BatchItemCreationSdCriteriaSetupData {
+    redmineProjectsFiltered: RedmineProject[];
+}
 
+export interface BatchItemCreationSdCriteriaFormData {
+    targetRedmineProject: string
+}
+
+export interface State {
+    itemsSetupData: ItemsSetupData;
     itemCreationSetupData: ItemCreationSetupData;
+    batchItemCreationSdCriteriaSetupData: BatchItemCreationSdCriteriaSetupData;
     itemCreationFromData: FormGroupState<ItemCreationFromData>;
     itemCreationFromIdDialog: FormGroupState<ItemCreationFromIdDialog>;
+    batchItemCreationSdCriteriaFormData: FormGroupState<BatchItemCreationSdCriteriaFormData>;
 }
 
 export const ITEM_CREATION_FORMID = "ITEM_CREATION_FORMID";
 export const ITEM_CREATION_DIALOG = "ITEM_CREATION_DIALOG";
+export const BATCH_ITEM_CREATION_SDCRITERIA_FORMID = "BATCH_ITEM_CREATION_SDCRITERIA_FORMID";
 
 export const initialState: State = {
+    itemsSetupData: {
+        redmineProjectsLoaded: false,
+        redmineProjects: []
+    },
     itemCreationSetupData: {
         redmineTrackersLoaded: false,
         redmineTrackers: [],
@@ -59,13 +77,14 @@ export const initialState: State = {
         redmineUsersByLetterLoaded: false,
         redmineUsersByLetter: [],
         redmineUsersByLetterFiltered: [],
-        redmineProjectsLoaded: false,
-        redmineProjects: [],
         redmineProjectsFiltered: [],
         validatedCRs: [],
         validatedIssues: [],
         validatedTms: [],
         validatedFromId: []
+    },
+    batchItemCreationSdCriteriaSetupData: {
+        redmineProjectsFiltered: []
     },
     itemCreationFromData: createFormGroupState<ItemCreationFromData>(ITEM_CREATION_FORMID, {
         project: '',
@@ -79,5 +98,8 @@ export const initialState: State = {
     }),
     itemCreationFromIdDialog: createFormGroupState<ItemCreationFromIdDialog>(ITEM_CREATION_DIALOG, {
         fromId: ''
-    })
+    }),
+    batchItemCreationSdCriteriaFormData: createFormGroupState<BatchItemCreationSdCriteriaFormData>(BATCH_ITEM_CREATION_SDCRITERIA_FORMID, {
+        targetRedmineProject: ''
+    }),
 }

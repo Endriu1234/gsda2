@@ -15,14 +15,16 @@ export const getRedmineUsersByLetter = createSelector(getItemsState, (state: Sta
 export const getRedmineUsersByLetterFiltered = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineUsersByLetterFiltered);
 export const getRedmineUsersByLetterLoaded = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineUsersByLetterLoaded);
 
-export const getRedmineProjects = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineProjects);
-export const getRedmineProjectsFiltered = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineProjectsFiltered);
-export const getRedmineProjectsLoaded = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineProjectsLoaded);
+export const getRedmineProjects = createSelector(getItemsState, (state: State) => state.itemsSetupData.redmineProjects);
+export const getRedmineProjectsFilteredForItemCreation = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineProjectsFiltered);
+export const getRedmineProjectsFilteredForBatchItemCreation = createSelector(getItemsState, (state: State) => state.batchItemCreationSdCriteriaSetupData.redmineProjectsFiltered);
+export const getRedmineProjectsLoaded = createSelector(getItemsState, (state: State) => state.itemsSetupData.redmineProjectsLoaded);
 export const getValidatedCRs = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.validatedCRs);
 export const getValidatedIssues = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.validatedIssues);
 export const getValidatedTms = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.validatedTms);
 export const getItemCreationDialogState = createSelector(getItemsState, (state: State) => state.itemCreationFromIdDialog);
 export const getItemCreationFormState = createSelector(getItemsState, (state: State) => state.itemCreationFromData);
+export const getBatchItemCreationSdCriteriaFormState = createSelector(getItemsState, (state: State) => state.batchItemCreationSdCriteriaFormData);
 export const getItemCreationFormTmsControl = createSelector(getItemsState, (state: State) => state.itemCreationFromData.controls.tms);
 export const getItemCreationFormCRControl = createSelector(getItemsState, (state: State) => state.itemCreationFromData.controls.cr);
 export const getItemCreationFormIssueControl = createSelector(getItemsState, (state: State) => state.itemCreationFromData.controls.issue);

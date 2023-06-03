@@ -87,7 +87,7 @@ export class ItemCreationPage implements OnInit {
         this.store.dispatch(initRedmineProjects());
     });
 
-    this.projectsFiltered$ = this.store.select(fromItemsSelectors.getRedmineProjectsFiltered);
+    this.projectsFiltered$ = this.store.select(fromItemsSelectors.getRedmineProjectsFilteredForItemCreation);
 
     this.getItemCreationFormSuitableForDefault$ = this.store.select(fromItemsSelectors.getItemCreationFormSuitableForDefault);
     this.getItemCreationFormCanActivateSave$ = this.store.select(fromItemsSelectors.getItemCreationFormCanActivateSave);

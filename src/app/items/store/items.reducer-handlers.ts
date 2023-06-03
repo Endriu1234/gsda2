@@ -86,22 +86,32 @@ function filterRedmineUsersGroup(allUsers: RedmineUserByLetter[], filter: string
 
 export function initRedmineProjects(state: State): State {
     const newState = _.cloneDeep(state);
-    newState.itemCreationSetupData.redmineProjectsLoaded = false;
+    newState.itemsSetupData.redmineProjectsLoaded = false;
     return newState;
 }
 
 export function loadRedmineProjects(state: State, args: { redmineProjects: RedmineProject[] }): State {
     const newState: State = _.cloneDeep(state);
-    newState.itemCreationSetupData.redmineProjects = args.redmineProjects;
-    newState.itemCreationSetupData.redmineProjectsFiltered = filterRedmineProjects(args.redmineProjects, newState.itemCreationFromData.value.project);
-    newState.itemCreationSetupData.redmineProjectsLoaded = true;
+    newState.itemsSetupData.redmineProjects = args.redmineProjects;
+    newState.itemsSetupData.redmineProjectsLoaded = true;
+    newState.itemCreationSetupData.redmineProjectsFiltered
+        = filterRedmineProjects(args.redmineProjects, newState.itemCreationFromData.value.project);
+    newState.batchItemCreationSdCriteriaSetupData.redmineProjectsFiltered
+        = filterRedmineProjects(args.redmineProjects, newState.batchItemCreationSdCriteriaFormData.value.targetRedmineProject);
     return newState;
 }
 
-export function setRedmineProjectsFilter(state: State): State {
+export function setRedmineProjectsFilterForItemCreation(state: State): State {
     const newState: State = _.cloneDeep(state);
     newState.itemCreationSetupData.redmineProjectsFiltered
-        = filterRedmineProjects(newState.itemCreationSetupData.redmineProjects, newState.itemCreationFromData.value.project);
+        = filterRedmineProjects(newState.itemsSetupData.redmineProjects, newState.itemCreationFromData.value.project);
+    return newState;
+}
+
+export function setRedmineProjectsFilterForBatchItemCreationSdCriteria(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreationSdCriteriaSetupData.redmineProjectsFiltered
+        = filterRedmineProjects(newState.itemsSetupData.redmineProjects, newState.batchItemCreationSdCriteriaFormData.value.targetRedmineProject);
     return newState;
 }
 
