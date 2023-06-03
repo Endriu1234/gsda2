@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromItemsState from '../../../store/items.state';
 import * as fromItemsSelectors from '../../../store/items.selectors';
-import { findItemById, initRedmineProjects, initRedmineTrackers, initRedmineUsers } from '../../../store/items.actions';
+import { identifyAndFillItemById, initRedmineProjects, initRedmineTrackers, initRedmineUsers } from '../../../store/items.actions';
 import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model';
 import { RedmineUserByLetter } from 'src/app/items/store/models/redmine-user-letter-model';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
@@ -59,11 +59,8 @@ export class ItemCreationPage implements OnInit {
           id = formState.controls.tms.value;
         }
       });
-      this.store.dispatch(findItemById({ id }));
+      this.store.dispatch(identifyAndFillItemById());
     }
-    console.log(fillFromId);
-    //this.dialogState$.subscribe(group => id = group.controls.fromId.value);
-    //this.store.dispatch(findItemById({id}));
   }
 
   ngOnInit(): void {

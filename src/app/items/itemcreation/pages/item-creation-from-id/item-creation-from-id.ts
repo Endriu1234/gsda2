@@ -5,7 +5,7 @@ import { Observable} from 'rxjs';
 import * as fromItemsSelectors from "../../../store/items.selectors";
 import * as fromItemsState from '../../../store/items.state';
 import { trimUpperConverter } from '../../../../shared/tools/validators/ngrxValueConverters';
-import { findItemById } from '../../../store/items.actions';
+import { fillItemById } from '../../../store/items.actions';
 
 @Component({
   selector: 'app-item-creation-from-id',
@@ -26,9 +26,8 @@ export class ItemCreationFromId implements OnInit {
   }
 
   fillById() {
-    let id = "";
-    this.dialogState$.subscribe(group => id = group.controls.fromId.value);
-    this.store.dispatch(findItemById({id}));
+
+    this.store.dispatch(fillItemById());
   }
 
 }

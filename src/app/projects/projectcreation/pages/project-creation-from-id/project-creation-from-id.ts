@@ -4,7 +4,7 @@ import { Observable, take } from 'rxjs';
 import * as fromProjectsState from '../../../store/projects.state';
 import * as fromProjectsSelectors from "../../../store/projects.selectors";
 import { SoftDevProject } from "src/app/projects/store/models/softdev-project.model";
-import { findProjectById, initSoftDevProjects } from 'src/app/projects/store/projects.actions';
+import { fillProjectById, initSoftDevProjects} from 'src/app/projects/store/projects.actions';
 import { FormGroupState } from 'ngrx-forms';
 
 @Component({
@@ -32,10 +32,8 @@ export class ProjectCreationFromId implements OnInit {
   }
 
   fillByProject() {
-    let id = "";
-    this.dialogState$.subscribe(group => id = group.controls.projectId.value);
-
-    this.store.dispatch(findProjectById({ id }));
+       
+    this.store.dispatch(fillProjectById());
   }
 
 }

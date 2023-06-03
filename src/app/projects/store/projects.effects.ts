@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, from, map, mergeMap, of, startWith, switchMap, take } from "rxjs";
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { initRedmineProjects, loadRedmineProjects, initSoftDevProjects, loadSoftDevProjects, findProjectById, noopAction, setRedmineProjectsFilter, setSoftDevProjectsFilter, resetProjectCreationForm } from './projects.actions';
+import { initRedmineProjects, loadRedmineProjects, initSoftDevProjects, loadSoftDevProjects, fillProjectById, noopAction, setRedmineProjectsFilter, setSoftDevProjectsFilter, resetProjectCreationForm } from './projects.actions';
 import { RedmineProject } from '../../shared/store/models/redmine-project.model';
 import { SoftDevProject } from './models/softdev-project.model';
 import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
@@ -13,7 +13,7 @@ import * as fromSharedState from '../../shared/store/shared.state';
 import { ResetAction, SetUserDefinedPropertyAction, SetValueAction, box } from 'ngrx-forms';
 import { PROJECT_CREATION_DIALOG, PROJECT_CREATION_FORMID } from './projects.state';
 import { validateIdentifier, validateProject, validateSDProject } from './projects.validation';
-import { getProjectCreationFormState, getSoftDevProjects } from './projects.selectors';
+import { getProjectCreationDialogState, getProjectCreationFormState, getSoftDevProjects } from './projects.selectors';
 import { formatDate } from '@angular/common';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { GsdaRedmineHttpResponse } from 'src/app/shared/http/model/gsda-redmine-http-response.model';
@@ -116,18 +116,21 @@ export class ProjectsEffects {
     ));
 
     getProjectById$ = createEffect(() => this.actions$.pipe(
-        ofType(findProjectById),
-        switchMap((action: { id: string }) => {
-            return this.store.select(getSoftDevProjects).pipe(take(1), mergeMap(sdProjects => {
-                let sdProject = sdProjects.find(sd => sd.PRODUCT_VERSION_NAME == action.id);
-                if (sdProject) {
-                    return of(new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.identifier', sdProject.PRODUCT_VERSION_NAME.replace(/\./g, "_").toLocaleLowerCase()),
-                        new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.name', sdProject.PRODUCT_VERSION_NAME),
-                        new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.description', this.createDescription(sdProject)),
-                        new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.wiki', this.createWikiInformation(sdProject)));
-                }
+        ofType(fillProjectById),
+        switchMap(() => {
+            return this.store.select(getProjectCreationDialogState).pipe(take(1), switchMap(dialogData => {
+                return this.store.select(getSoftDevProjects).pipe(take(1), mergeMap(sdProjects => {
+                    let sdProject = sdProjects.find(sd => sd.PRODUCT_VERSION_NAME == dialogData.controls.projectId.value);
+                    if (sdProject) {
+                        console.log('Wypelniam forme z przycisku');
+                        return of(new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.identifier', sdProject.PRODUCT_VERSION_NAME.replace(/\./g, "_").toLocaleLowerCase()),
+                            new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.name', sdProject.PRODUCT_VERSION_NAME),
+                            new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.description', this.createDescription(sdProject)),
+                            new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.wiki', this.createWikiInformation(sdProject)));
+                    }
 
-                return of(noopAction());
+                    return of(noopAction());
+                }))
             }), catchError(error => {
                 console.log(error);
                 this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during defaulting" }));
