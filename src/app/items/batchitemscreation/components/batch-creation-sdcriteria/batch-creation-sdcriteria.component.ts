@@ -4,8 +4,9 @@ import { Observable, take } from 'rxjs';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 import * as fromItemsState from '../../../store/items.state';
 import * as fromItemsSelectors from '../../../store/items.selectors';
-import { initRedmineProjects } from 'src/app/items/store/items.actions';
+import { initRedmineProjects, initSoftDevProjects } from 'src/app/items/store/items.actions';
 import { FormGroupState } from 'ngrx-forms';
+import { SoftDevProject } from 'src/app/shared/store/models/softdev-project.model';
 
 @Component({
   selector: 'app-batch-creation-sdcriteria',
@@ -13,7 +14,8 @@ import { FormGroupState } from 'ngrx-forms';
   styleUrls: ['./batch-creation-sdcriteria.component.scss']
 })
 export class BatchCreationSDCriteriaComponent implements OnInit {
-  projectsFiltered$: Observable<RedmineProject[]> | null = null;
+  redmineProjectsFiltered$: Observable<RedmineProject[]> | null = null;
+  softDevProjectsFiltered$: Observable<SoftDevProject[]> | null = null;
   formState$: Observable<FormGroupState<any>>;
 
   constructor(private store: Store<fromItemsState.State>) {
@@ -26,7 +28,12 @@ export class BatchCreationSDCriteriaComponent implements OnInit {
         this.store.dispatch(initRedmineProjects());
     });
 
-    this.projectsFiltered$ = this.store.select(fromItemsSelectors.getRedmineProjectsFilteredForBatchItemCreation);
+    this.store.select(fromItemsSelectors.getSoftDevProjectsLoaded).pipe(take(1)).subscribe((loaded: boolean) => {
+      if (!loaded)
+        this.store.dispatch(initSoftDevProjects());
+    });
 
+    this.redmineProjectsFiltered$ = this.store.select(fromItemsSelectors.getRedmineProjectsFilteredForBatchItemCreation);
+    this.softDevProjectsFiltered$ = this.store.select(fromItemsSelectors.getSoftDevProjectsFilteredForBatchItemCreation);
   }
 }

@@ -6,6 +6,7 @@ import { FromIdValidation } from "./models/fromId-validation.model";
 import { RedmineTracker } from './models/redmine-tracker.model';
 import { RedmineUser } from './models/redmine-user.model';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
+import { SoftDevProject } from 'src/app/shared/store/models/softdev-project.model';
 
 export const initRedmineTrackers = createAction('[Items Component] Init Redmine Trackers');
 export const loadRedmineTrackers = createAction('[Items Component] Load Redmine Trackers', props<{ redmineTrackers: RedmineTracker[] }>());
@@ -14,8 +15,11 @@ export const loadRedmineUsers = createAction('[Items Component] Load Redmine Use
 export const setRedmineUsersByLetterFilter = createAction('[Items Component] Set Redmine Users With Letter Filter');
 export const initRedmineProjects = createAction('[Items Component] Init Redmine Projects');
 export const loadRedmineProjects = createAction('[Items Component] Load Redmine Projects', props<{ redmineProjects: RedmineProject[] }>());
+export const initSoftDevProjects = createAction('[Items Component] Init SoftDev Projects');
+export const loadSoftDevProjects = createAction('[Items Component] Load SoftDev Projects', props<{ softDevProjects: SoftDevProject[] }>());
 export const setRedmineProjectsFilterForItemCreation = createAction('[Items Component] Set Redmine Projects Filter For Item Creation');
 export const setRedmineProjectsFilterForBatchItemCreationSdCriteria = createAction('[Items Component] Set Redmine Projects Filter For Batch Item Creation Sd Criteria');
+export const setSoftDevProjectsFilterForBatchItemCreationSdCriteria = createAction('[Items Component] Set SoftDev Projects Filter For Batch Item Creation Sd Criteria');
 export const addValidatedCR = createAction('[Items Component] Add Validated CR', props<{ validatedCR: CRValidation }>());
 export const addValidatedIssue = createAction('[Items Component] Add Validated Issue', props<{ validatedIssue: IssueValidation }>());
 export const addValidatedTms = createAction('[Items Component] Add Validated Tms', props<{ validatedTms: TmsValidation }>());

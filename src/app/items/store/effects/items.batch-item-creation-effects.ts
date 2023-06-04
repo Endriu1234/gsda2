@@ -1,12 +1,12 @@
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import * as fromItemsState from './items.state';
-import * as fromSharedState from '../../shared/store/shared.state';
+import * as fromItemsState from '../items.state';
+import * as fromSharedState from '../../../shared/store/shared.state';
 import { Store } from '@ngrx/store';
 import { catchError, from, map, mergeMap, of, startWith, switchMap, take } from "rxjs";
 import { ResetAction, SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
-import { noopAction, setRedmineProjectsFilterForBatchItemCreationSdCriteria } from './items.actions';
+import { noopAction, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria } from '../items.actions';
 
 @Injectable()
 export class ItemsBatchItemCreationEffects {
@@ -20,6 +20,9 @@ export class ItemsBatchItemCreationEffects {
         switchMap((action: SetValueAction<any>) => {
             if (action.controlId === fromItemsState.BATCH_ITEM_CREATION_SDCRITERIA_FORMID + '.targetRedmineProject') {
                 return of(setRedmineProjectsFilterForBatchItemCreationSdCriteria())
+            }
+            if (action.controlId === fromItemsState.BATCH_ITEM_CREATION_SDCRITERIA_FORMID + '.sourceSoftDevProject') {
+                return of(setSoftDevProjectsFilterForBatchItemCreationSdCriteria())
             }
             //return from(validateProject(this.store, validateProjectError, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilterForItemCreation())));
 

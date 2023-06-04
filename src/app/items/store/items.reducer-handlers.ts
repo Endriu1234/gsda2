@@ -7,8 +7,10 @@ import { IssueValidation } from "./models/issue-validation.model";
 import { TmsValidation } from "./models/tms-validation.model";
 import { FromIdValidation } from "./models/fromId-validation.model";
 import { RedmineUserByLetter } from './models/redmine-user-letter-model';
-import { filterRedmineProjects } from 'src/app/shared/store/shared.reducer-handlers';
+import { filterRedmineProjects, filterSoftDevProjects } from 'src/app/shared/store/shared.reducer-handlers';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
+import { SoftDevProject } from 'src/app/shared/store/models/softdev-project.model';
+
 
 export function initRedmineTrackers(state: State): State {
     const newState = _.cloneDeep(state);
@@ -90,6 +92,12 @@ export function initRedmineProjects(state: State): State {
     return newState;
 }
 
+export function initSoftDevProjects(state: State): State {
+    const newState = _.cloneDeep(state);
+    newState.itemsSetupData.softDevProjectsLoaded = false;
+    return newState;
+}
+
 export function loadRedmineProjects(state: State, args: { redmineProjects: RedmineProject[] }): State {
     const newState: State = _.cloneDeep(state);
     newState.itemsSetupData.redmineProjects = args.redmineProjects;
@@ -98,6 +106,15 @@ export function loadRedmineProjects(state: State, args: { redmineProjects: Redmi
         = filterRedmineProjects(args.redmineProjects, newState.itemCreationFromData.value.project);
     newState.batchItemCreationSdCriteriaSetupData.redmineProjectsFiltered
         = filterRedmineProjects(args.redmineProjects, newState.batchItemCreationSdCriteriaFormData.value.targetRedmineProject);
+    return newState;
+}
+
+export function loadSoftDevProjects(state: State, args: { softDevProjects: SoftDevProject[] }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemsSetupData.softDevProjects = args.softDevProjects;
+    newState.itemsSetupData.softDevProjectsLoaded = true;
+    newState.batchItemCreationSdCriteriaSetupData.softDevProjectsFiltered
+        = filterSoftDevProjects(args.softDevProjects, newState.batchItemCreationSdCriteriaFormData.value.targetRedmineProject);
     return newState;
 }
 
@@ -112,6 +129,13 @@ export function setRedmineProjectsFilterForBatchItemCreationSdCriteria(state: St
     const newState: State = _.cloneDeep(state);
     newState.batchItemCreationSdCriteriaSetupData.redmineProjectsFiltered
         = filterRedmineProjects(newState.itemsSetupData.redmineProjects, newState.batchItemCreationSdCriteriaFormData.value.targetRedmineProject);
+    return newState;
+}
+
+export function setSoftDevProjectsFilterForBatchItemCreationSdCriteria(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreationSdCriteriaSetupData.softDevProjectsFiltered
+        = filterSoftDevProjects(newState.itemsSetupData.softDevProjects, newState.batchItemCreationSdCriteriaFormData.value.sourceSoftDevProject);
     return newState;
 }
 

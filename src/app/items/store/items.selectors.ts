@@ -18,7 +18,9 @@ export const getRedmineUsersByLetterLoaded = createSelector(getItemsState, (stat
 export const getRedmineProjects = createSelector(getItemsState, (state: State) => state.itemsSetupData.redmineProjects);
 export const getRedmineProjectsFilteredForItemCreation = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineProjectsFiltered);
 export const getRedmineProjectsFilteredForBatchItemCreation = createSelector(getItemsState, (state: State) => state.batchItemCreationSdCriteriaSetupData.redmineProjectsFiltered);
+export const getSoftDevProjectsFilteredForBatchItemCreation = createSelector(getItemsState, (state: State) => state.batchItemCreationSdCriteriaSetupData.softDevProjectsFiltered);
 export const getRedmineProjectsLoaded = createSelector(getItemsState, (state: State) => state.itemsSetupData.redmineProjectsLoaded);
+export const getSoftDevProjectsLoaded = createSelector(getItemsState, (state: State) => state.itemsSetupData.softDevProjectsLoaded);
 export const getValidatedCRs = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.validatedCRs);
 export const getValidatedIssues = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.validatedIssues);
 export const getValidatedTms = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.validatedTms);

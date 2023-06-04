@@ -4,15 +4,21 @@
             <form novalidate [ngrxFormState]="formState">
                 <div class="container-fluid">
                     <div class="row">
-                        <!-- <div class="col-3">
-                        <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
-                            <mat-label>SoftDev Source Project / Packet</mat-label>
-                            <input type="text"
+                        <div class="col-3">
+                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                                <mat-label>SoftDev Source Project / Packet</mat-label>
+                                <input type="text"
                             matInput
-                           >
-
-                        </mat-form-field>
-                    </div> -->
+                            [ngrxFormControlState]="$any(formState).controls.sourceSoftDevProject"
+                            [matAutocomplete]="autoSoftDevProject">
+                                <mat-autocomplete #autoSoftDevProject="matAutocomplete">
+                                    <mat-option *ngFor="let project of (softDevProjectsFiltered$ | async)"
+                                        [value]="project.PROJECT_NAME">
+                                        {{project.PROJECT_NAME}}
+                                    </mat-option>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                        </div>
                         <div class="col-3">
 
                             <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
@@ -20,9 +26,9 @@
                                 <input type="text"
                             matInput
                             [ngrxFormControlState]="$any(formState).controls.targetRedmineProject"
-                            [matAutocomplete]="autoProject">
-                                <mat-autocomplete #autoProject="matAutocomplete">
-                                    <mat-option *ngFor="let project of (projectsFiltered$ | async)"
+                            [matAutocomplete]="autoRedmineProject">
+                                <mat-autocomplete #autoRedmineProject="matAutocomplete">
+                                    <mat-option *ngFor="let project of (redmineProjectsFiltered$ | async)"
                                         [value]="project.name">
                                         {{project.name}}
                                     </mat-option>

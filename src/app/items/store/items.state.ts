@@ -7,10 +7,13 @@ import { IssueValidation } from "./models/issue-validation.model";
 import { TmsValidation } from "./models/tms-validation.model";
 import { FromIdValidation } from "./models/fromId-validation.model";
 import { RedmineUserByLetter } from "./models/redmine-user-letter-model";
+import { SoftDevProject } from "src/app/shared/store/models/softdev-project.model";
 
 export interface ItemsSetupData {
     redmineProjectsLoaded: boolean;
     redmineProjects: RedmineProject[];
+    softDevProjectsLoaded: boolean;
+    softDevProjects: SoftDevProject[];
 }
 
 export interface ItemCreationSetupData {
@@ -45,10 +48,12 @@ export interface ItemCreationFromIdDialog {
 
 export interface BatchItemCreationSdCriteriaSetupData {
     redmineProjectsFiltered: RedmineProject[];
+    softDevProjectsFiltered: SoftDevProject[];
 }
 
 export interface BatchItemCreationSdCriteriaFormData {
-    targetRedmineProject: string
+    targetRedmineProject: string,
+    sourceSoftDevProject: string
 }
 
 export interface State {
@@ -67,7 +72,9 @@ export const BATCH_ITEM_CREATION_SDCRITERIA_FORMID = "BATCH_ITEM_CREATION_SDCRIT
 export const initialState: State = {
     itemsSetupData: {
         redmineProjectsLoaded: false,
-        redmineProjects: []
+        redmineProjects: [],
+        softDevProjectsLoaded: false,
+        softDevProjects: []
     },
     itemCreationSetupData: {
         redmineTrackersLoaded: false,
@@ -84,7 +91,8 @@ export const initialState: State = {
         validatedFromId: []
     },
     batchItemCreationSdCriteriaSetupData: {
-        redmineProjectsFiltered: []
+        redmineProjectsFiltered: [],
+        softDevProjectsFiltered: []
     },
     itemCreationFromData: createFormGroupState<ItemCreationFromData>(ITEM_CREATION_FORMID, {
         project: '',
@@ -100,6 +108,7 @@ export const initialState: State = {
         fromId: ''
     }),
     batchItemCreationSdCriteriaFormData: createFormGroupState<BatchItemCreationSdCriteriaFormData>(BATCH_ITEM_CREATION_SDCRITERIA_FORMID, {
-        targetRedmineProject: ''
+        targetRedmineProject: '',
+        sourceSoftDevProject: ''
     }),
 }

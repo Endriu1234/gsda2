@@ -1,4 +1,5 @@
 import { RedmineProject } from "./models/redmine-project.model";
+import { SoftDevProject } from "./models/softdev-project.model";
 import { State } from "./shared.state";
 
 export function addSnackbarNotification(state: State, args: { notification: string }): State {
@@ -16,6 +17,13 @@ export function clearDisplayedSnackbarNotifications(state: State, args: { timest
 export function filterRedmineProjects(allProjects: RedmineProject[], filter: string): RedmineProject[] {
     if (filter)
         return allProjects.filter(u => u.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase()));
+
+    return allProjects;
+}
+
+export function filterSoftDevProjects(allProjects: SoftDevProject[], filter: string): SoftDevProject[] {
+    if (filter)
+        return allProjects.filter(u => u.PROJECT_NAME.toLocaleLowerCase().includes(filter.toLocaleLowerCase()));
 
     return allProjects;
 }

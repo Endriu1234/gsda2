@@ -1,20 +1,20 @@
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import * as fromItemsState from './items.state';
-import * as fromSharedState from '../../shared/store/shared.state';
+import * as fromItemsState from '../items.state';
+import * as fromSharedState from '../../../shared/store/shared.state';
 import { Store } from '@ngrx/store';
 import { catchError, from, map, mergeMap, of, startWith, switchMap, take } from "rxjs";
-import { validateProject, validateUser, validateCR, validateIssue, validateTms, validateFromId } from './items.validation';
-import { ITEM_CREATION_FORMID, ITEM_CREATION_DIALOG } from './items.state';
+import { validateProject, validateUser, validateCR, validateIssue, validateTms, validateFromId } from '../items.validation';
+import { ITEM_CREATION_FORMID, ITEM_CREATION_DIALOG } from '../items.state';
 import { ResetAction, SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
-import { fillItemById, identifyAndFillItemById, noopAction, resetItemCreationForm, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter } from './items.actions';
+import { fillItemById, identifyAndFillItemById, noopAction, resetItemCreationForm, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter } from '../items.actions';
 import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
-import { getItemCreationDialogState, getItemCreationFormState } from './items.selectors';
+import { getItemCreationDialogState, getItemCreationFormState } from '../items.selectors';
 import { GsdaRedmineHttpResponse } from 'src/app/shared/http/model/gsda-redmine-http-response.model';
 import { environment } from 'src/environments/environment';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
-import { Item } from './models/item.model';
+import { Item } from '../models/item.model';
 
 
 

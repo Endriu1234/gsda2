@@ -1,7 +1,7 @@
 import { createReducer, on, combineReducers } from '@ngrx/store';
 import {
     initRedmineTrackers, loadRedmineTrackers, initRedmineUsers, loadRedmineUsers, initRedmineProjects, loadRedmineProjects,
-    addValidatedCR, addValidatedIssue, addValidatedTms, setRedmineUsersByLetterFilter, addValidatedFromId, setRedmineProjectsFilterForItemCreation, setRedmineProjectsFilterForBatchItemCreationSdCriteria
+    addValidatedCR, addValidatedIssue, addValidatedTms, setRedmineUsersByLetterFilter, addValidatedFromId, setRedmineProjectsFilterForItemCreation, setRedmineProjectsFilterForBatchItemCreationSdCriteria, initSoftDevProjects, loadSoftDevProjects, setSoftDevProjectsFilterForBatchItemCreationSdCriteria
 } from './items.actions';
 import { initialState, ItemCreationFromData, State } from './items.state';
 import * as fromReducerHanders from './items.reducer-handlers';
@@ -32,8 +32,11 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
     on(setRedmineUsersByLetterFilter, fromReducerHanders.setRedmineUsersByLetterFilter),
     on(initRedmineProjects, fromReducerHanders.initRedmineProjects),
     on(loadRedmineProjects, fromReducerHanders.loadRedmineProjects),
+    on(initSoftDevProjects, fromReducerHanders.initSoftDevProjects),
+    on(loadSoftDevProjects, fromReducerHanders.loadSoftDevProjects),
     on(setRedmineProjectsFilterForItemCreation, fromReducerHanders.setRedmineProjectsFilterForItemCreation),
     on(setRedmineProjectsFilterForBatchItemCreationSdCriteria, fromReducerHanders.setRedmineProjectsFilterForBatchItemCreationSdCriteria),
+    on(setSoftDevProjectsFilterForBatchItemCreationSdCriteria, fromReducerHanders.setSoftDevProjectsFilterForBatchItemCreationSdCriteria),
     on(addValidatedCR, fromReducerHanders.addValidatedCR),
     on(addValidatedIssue, fromReducerHanders.addValidatedIssue),
     on(addValidatedTms, fromReducerHanders.addValidatedTms),
