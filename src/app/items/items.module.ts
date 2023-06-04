@@ -16,7 +16,7 @@ import { BatchItemsCreationPage } from './batchitemscreation/pages/batch-items-c
 import { SmallSpinnerModule } from '../shared/components/small-spinner.module';
 import { BatchCreationIdscriteriaComponent } from './batchitemscreation/components/batch-creation-idscriteria/batch-creation-idscriteria.component';
 import { EffectsModule } from '@ngrx/effects';
-import { ItemsGeneralEffects } from './store/effects/items.general-effects';
+import { ItemsGeneralEffects } from './store/effects/items.common-effects';
 import { ItemsItemCreationEffects } from './store/effects/items.item-creation-effects';
 import { ItemsBatchItemCreationEffects } from './store/effects/items.batch-item-creation-effects';
 

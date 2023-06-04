@@ -1,10 +1,15 @@
-import { createReducer, on, combineReducers } from '@ngrx/store';
+import { createReducer, on } from '@ngrx/store';
 import {
     initRedmineTrackers, loadRedmineTrackers, initRedmineUsers, loadRedmineUsers, initRedmineProjects, loadRedmineProjects,
-    addValidatedCR, addValidatedIssue, addValidatedTms, setRedmineUsersByLetterFilter, addValidatedFromId, setRedmineProjectsFilterForItemCreation, setRedmineProjectsFilterForBatchItemCreationSdCriteria, initSoftDevProjects, loadSoftDevProjects, setSoftDevProjectsFilterForBatchItemCreationSdCriteria
+    addValidatedCR, addValidatedIssue, addValidatedTms, setRedmineUsersByLetterFilter,
+    addValidatedFromId, setRedmineProjectsFilterForItemCreation, setRedmineProjectsFilterForBatchItemCreationSdCriteria,
+    initSoftDevProjects, loadSoftDevProjects, setSoftDevProjectsFilterForBatchItemCreationSdCriteria
 } from './items.actions';
 import { initialState, ItemCreationFromData, State } from './items.state';
-import * as fromReducerHanders from './items.reducer-handlers';
+import * as fromCommonReducerHanders from './reducer-handlers/items.common-reducer-handlers';
+import * as fromItemCreationReducerHanders from './reducer-handlers/items.item-creation-reducer-handlers';
+import * as fromBatchItemCreationReducerHanders from './reducer-handlers/items.batch-item-creation-reducer-handlers';
+
 import { onNgrxForms, wrapReducerWithFormStateUpdate, updateGroup, validate, ValidationErrors } from 'ngrx-forms';
 import { required } from 'ngrx-forms/validation';
 
@@ -15,32 +20,28 @@ const validationReducer = updateGroup<ItemCreationFromData>({
     subject: validate(required),
     description: validate(required),
     project: validate(required)
-    // user: (state, parentState) => {
-    //     //     // return disable(state);
-    //     //return validate(required);
-    //     //     // return updateGroup<ItemCreationFromData['user']>(state, { user: setValue('1') });
-    //     state = validate(state, validateUser);
-    //     return state;
-    // }
 });
 
 export const regularReducer = createReducer(initialState, onNgrxForms(),
-    on(initRedmineTrackers, fromReducerHanders.initRedmineTrackers),
-    on(loadRedmineTrackers, fromReducerHanders.loadRedmineTrackers),
-    on(initRedmineUsers, fromReducerHanders.initRedmineUsers),
-    on(loadRedmineUsers, fromReducerHanders.loadRedmineUsers),
-    on(setRedmineUsersByLetterFilter, fromReducerHanders.setRedmineUsersByLetterFilter),
-    on(initRedmineProjects, fromReducerHanders.initRedmineProjects),
-    on(loadRedmineProjects, fromReducerHanders.loadRedmineProjects),
-    on(initSoftDevProjects, fromReducerHanders.initSoftDevProjects),
-    on(loadSoftDevProjects, fromReducerHanders.loadSoftDevProjects),
-    on(setRedmineProjectsFilterForItemCreation, fromReducerHanders.setRedmineProjectsFilterForItemCreation),
-    on(setRedmineProjectsFilterForBatchItemCreationSdCriteria, fromReducerHanders.setRedmineProjectsFilterForBatchItemCreationSdCriteria),
-    on(setSoftDevProjectsFilterForBatchItemCreationSdCriteria, fromReducerHanders.setSoftDevProjectsFilterForBatchItemCreationSdCriteria),
-    on(addValidatedCR, fromReducerHanders.addValidatedCR),
-    on(addValidatedIssue, fromReducerHanders.addValidatedIssue),
-    on(addValidatedTms, fromReducerHanders.addValidatedTms),
-    on(addValidatedFromId, fromReducerHanders.addValidatedFromId));
+    on(loadRedmineProjects, fromCommonReducerHanders.loadRedmineProjects),
+    on(initRedmineTrackers, fromCommonReducerHanders.initRedmineTrackers),
+    on(loadRedmineTrackers, fromCommonReducerHanders.loadRedmineTrackers),
+    on(initRedmineUsers, fromCommonReducerHanders.initRedmineUsers),
+    on(loadRedmineUsers, fromCommonReducerHanders.loadRedmineUsers),
+    on(setRedmineUsersByLetterFilter, fromCommonReducerHanders.setRedmineUsersByLetterFilter),
+    on(initRedmineProjects, fromCommonReducerHanders.initRedmineProjects),
+    on(initSoftDevProjects, fromCommonReducerHanders.initSoftDevProjects),
+    on(loadSoftDevProjects, fromCommonReducerHanders.loadSoftDevProjects),
+
+    on(setRedmineProjectsFilterForItemCreation, fromItemCreationReducerHanders.setRedmineProjectsFilterForItemCreation),
+    on(addValidatedCR, fromItemCreationReducerHanders.addValidatedCR),
+    on(addValidatedIssue, fromItemCreationReducerHanders.addValidatedIssue),
+    on(addValidatedTms, fromItemCreationReducerHanders.addValidatedTms),
+    on(addValidatedFromId, fromItemCreationReducerHanders.addValidatedFromId),
+
+    on(setRedmineProjectsFilterForBatchItemCreationSdCriteria, fromBatchItemCreationReducerHanders.setRedmineProjectsFilterForBatchItemCreationSdCriteria),
+    on(setSoftDevProjectsFilterForBatchItemCreationSdCriteria, fromBatchItemCreationReducerHanders.setSoftDevProjectsFilterForBatchItemCreationSdCriteria),
+);
 
 export const itemsReducer = wrapReducerWithFormStateUpdate(
     regularReducer,
