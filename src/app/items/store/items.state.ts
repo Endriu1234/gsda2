@@ -53,7 +53,9 @@ export interface BatchItemCreationSdCriteriaSetupData {
 
 export interface BatchItemCreationSdCriteriaFormData {
     targetRedmineProject: string,
-    sourceSoftDevProject: string
+    sourceSoftDevProject: string,
+    itemLevel: string,
+    showCreated: boolean
 }
 
 export interface State {
@@ -109,6 +111,8 @@ export const initialState: State = {
     }),
     batchItemCreationSdCriteriaFormData: createFormGroupState<BatchItemCreationSdCriteriaFormData>(BATCH_ITEM_CREATION_SDCRITERIA_FORMID, {
         targetRedmineProject: '',
-        sourceSoftDevProject: ''
+        sourceSoftDevProject: '',
+        itemLevel: '',
+        showCreated: false
     }),
 }

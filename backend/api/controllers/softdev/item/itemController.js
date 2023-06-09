@@ -16,3 +16,15 @@ module.exports.getItemById = async (req, res) => {
 
     return res.status(200).json(retVal);
 }
+
+module.exports.getPotentialRedmineItemsFromSDProject = async (req, res) => {
+    const retVal = {
+        success: true,
+        errorMessage: ''
+    };
+
+    console.dir(req.query);
+
+    return res.status(200).json(retVal);
+
+}

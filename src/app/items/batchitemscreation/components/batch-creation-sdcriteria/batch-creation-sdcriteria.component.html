@@ -35,20 +35,22 @@
                                 </mat-autocomplete>
                             </mat-form-field>
                         </div>
-                        <!-- <div class="col-3">
-                        <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
-                            <mat-label>Item Level</mat-label>
-                            <mat-select>
-                                <mat-option value="issue">Issue</mat-option>
-                                <mat-option value="cr">CR</mat-option>
-                                <mat-option value="possible_cr">Possible CR</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-                    <div class="col-3">
-                        <mat-checkbox>Show Created</mat-checkbox>
-                        <button mat-fab extended color="primary">Find</button>
-                    </div> -->
+                        <div class="col-3">
+                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                                <mat-label>Item Level</mat-label>
+                                <mat-select [ngrxFormControlState]="$any(formState).controls.itemLevel">
+
+                                    <mat-option value="issue">Issue</mat-option>
+                                    <mat-option value="cr">CR</mat-option>
+                                    <mat-option value="possible_cr">Possible CR</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-3">
+                            <mat-checkbox [ngrxFormControlState]="$any(formState).controls.showCreated">Show
+                                Created</mat-checkbox>
+                            <button mat-fab extended color="primary" (click)="search()">Find</button>
+                        </div>
                     </div>
                 </div>
             </form>

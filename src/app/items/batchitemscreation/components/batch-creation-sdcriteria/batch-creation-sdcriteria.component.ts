@@ -5,8 +5,9 @@ import { RedmineProject } from 'src/app/shared/store/models/redmine-project.mode
 import * as fromItemsState from '../../../store/items.state';
 import * as fromItemsSelectors from '../../../store/items.selectors';
 import { initRedmineProjects, initSoftDevProjects } from 'src/app/items/store/items.actions';
-import { FormGroupState } from 'ngrx-forms';
+import { FormGroupState, SetUserDefinedPropertyAction } from 'ngrx-forms';
 import { SoftDevProject } from 'src/app/shared/store/models/softdev-project.model';
+import { FORM_SEARCH_STATE, FormSearchState } from 'src/app/shared/store/shared.state';
 
 @Component({
   selector: 'app-batch-creation-sdcriteria',
@@ -35,5 +36,9 @@ export class BatchCreationSDCriteriaComponent implements OnInit {
 
     this.redmineProjectsFiltered$ = this.store.select(fromItemsSelectors.getRedmineProjectsFilteredForBatchItemCreation);
     this.softDevProjectsFiltered$ = this.store.select(fromItemsSelectors.getSoftDevProjectsFilteredForBatchItemCreation);
+  }
+
+  search(): void {
+    this.store.dispatch(new SetUserDefinedPropertyAction(fromItemsState.BATCH_ITEM_CREATION_SDCRITERIA_FORMID, FORM_SEARCH_STATE, FormSearchState.Searching))
   }
 }

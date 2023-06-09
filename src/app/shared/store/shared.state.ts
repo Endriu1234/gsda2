@@ -8,6 +8,16 @@ export enum FormSaveState {
     SavingSuccessful = "SavingSuccessful",
 }
 
+export const FORM_SEARCH_STATE = "FORM_SEARCH_STATE";
+
+export enum FormSearchState {
+    New = "New",
+    Searching = "Searching",
+    SearchSuccessful = "SearchSuccessful",
+    SearchFailed = "SearchFailed"
+}
+
+
 export interface SnackbarNotification {
     timestamp: number;
     notification: string;

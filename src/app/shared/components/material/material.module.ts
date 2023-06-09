@@ -10,10 +10,13 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete'
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { NgrxMatSelectViewAdapter } from "./mat-select-view-adapter";
+import { CustomErrorStateMatcherDirective } from "./error-state-matcher";
+import { MatListOptionFixDirective } from "./mat-list-option-fix";
 
 @NgModule({
     imports: [
@@ -34,6 +37,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
         MatTabsModule,
         MatCheckboxModule
     ],
+    declarations: [
+        NgrxMatSelectViewAdapter,
+        CustomErrorStateMatcherDirective,
+        MatListOptionFixDirective
+    ],
     exports: [
         MatButtonModule,
         MatIconModule,
@@ -50,7 +58,13 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
         MatInputModule,
         MatSnackBarModule,
         MatTabsModule,
-        MatCheckboxModule
-    ]
+        MatCheckboxModule,
+        NgrxMatSelectViewAdapter,
+        CustomErrorStateMatcherDirective,
+        MatListOptionFixDirective
+    ],
+    providers: [
+        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { float: 'always' } },
+    ],
 })
 export class MaterialModule { }
