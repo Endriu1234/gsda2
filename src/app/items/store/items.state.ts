@@ -8,6 +8,7 @@ import { TmsValidation } from "./models/tms-validation.model";
 import { FromIdValidation } from "./models/fromId-validation.model";
 import { RedmineUserByLetter } from "./models/redmine-user-letter-model";
 import { SoftDevProject } from "src/app/shared/store/models/softdev-project.model";
+import { ProposedItem } from "./models/batchitemcreation/proposed-item.model";
 
 export interface ItemsSetupData {
     redmineProjectsLoaded: boolean;
@@ -51,6 +52,11 @@ export interface BatchItemCreationSdCriteriaSetupData {
     softDevProjectsFiltered: SoftDevProject[];
 }
 
+export interface BatchItemCreationRecords {
+    currentIndex: number;
+    proposedItems: ProposedItem[];
+}
+
 export interface BatchItemCreationSdCriteriaFormData {
     targetRedmineProject: string,
     sourceSoftDevProject: string,
@@ -65,6 +71,7 @@ export interface State {
     itemCreationFromData: FormGroupState<ItemCreationFromData>;
     itemCreationFromIdDialog: FormGroupState<ItemCreationFromIdDialog>;
     batchItemCreationSdCriteriaFormData: FormGroupState<BatchItemCreationSdCriteriaFormData>;
+    batchItemCreationRecords: BatchItemCreationRecords;
 }
 
 export const ITEM_CREATION_FORMID = "ITEM_CREATION_FORMID";
@@ -95,6 +102,10 @@ export const initialState: State = {
     batchItemCreationSdCriteriaSetupData: {
         redmineProjectsFiltered: [],
         softDevProjectsFiltered: []
+    },
+    batchItemCreationRecords: {
+        currentIndex: -1,
+        proposedItems: []
     },
     itemCreationFromData: createFormGroupState<ItemCreationFromData>(ITEM_CREATION_FORMID, {
         project: '',

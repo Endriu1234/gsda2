@@ -43,6 +43,14 @@ module.exports.getRegressionsFromVersion = async (softDevProjectName) => {
     }
 }
 
+module.exports.getSDProjectPotentialRedmineItems = async (softDevProjectName) => {
+    const softDevProjects = await cacheValueProvider.getValue('softdev_projects');
+    const project = softDevProjects.find(p => p.PROJECT_NAME === softDevProjectName);
+
+    if (project)
+        return await executeSoftDevQuery(softdevQueries.getSDProjectPotentialRedmineItemsQuery(project.PRODUCT_VERSION_NAME.endsWith('_Packet')), [project.PRODUCT_VERSION_ID]);
+}
+
 module.exports.isChangeRequestInDB = async (changeRequest) => {
     return await executeSoftDevQuery(softdevQueries.getCRValidationQuery(), [changeRequest]);
 }
@@ -53,7 +61,7 @@ module.exports.isIssueInDB = async (issue) => {
 
 module.exports.isTmsInDB = async (tms) => {
     let tmsTable = tms.split("-");
-    
+
     return await executeSoftDevQuery(softdevQueries.getTmsValidationQuery(), [tmsTable.at(0), tmsTable.at(1)]);
 }
 
@@ -68,6 +76,6 @@ module.exports.getItemById = async (id) => {
         }
 
         let tmsTable = id.split("-");
-        return await executeSoftDevQuery(softdevQueries.getItemDataByTms(),[tmsTable.at(0), tmsTable.at(1)]);
+        return await executeSoftDevQuery(softdevQueries.getItemDataByTms(), [tmsTable.at(0), tmsTable.at(1)]);
     }
 }
