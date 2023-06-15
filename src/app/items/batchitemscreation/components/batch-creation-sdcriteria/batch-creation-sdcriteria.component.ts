@@ -4,10 +4,10 @@ import { Observable, take } from 'rxjs';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 import * as fromItemsState from '../../../store/items.state';
 import * as fromItemsSelectors from '../../../store/items.selectors';
-import { initRedmineProjects, initSoftDevProjects } from 'src/app/items/store/items.actions';
 import { FormGroupState, SetUserDefinedPropertyAction } from 'ngrx-forms';
 import { SoftDevProject } from 'src/app/shared/store/models/softdev-project.model';
 import { FORM_SEARCH_STATE, FormSearchState } from 'src/app/shared/store/shared.state';
+import { initRedmineProjects, initSoftDevProjects } from 'src/app/items/store/actions/items.common-actions';
 
 @Component({
   selector: 'app-batch-creation-sdcriteria',

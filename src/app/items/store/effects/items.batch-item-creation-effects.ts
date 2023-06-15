@@ -5,13 +5,14 @@ import * as fromItemsState from '../items.state';
 import * as fromSharedState from '../../../shared/store/shared.state';
 import { Store } from '@ngrx/store';
 import { catchError, from, map, mergeMap, of, startWith, switchMap, take } from "rxjs";
-import { ResetAction, SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
-import { noopAction, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria } from '../items.actions';
+import { SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
 import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 import { getBatchItemCreationSDCriteriaSearchFormState } from '../items.selectors';
 import { environment } from 'src/environments/environment';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { BatchItemSearchHttpResponse } from '../models/batchitemcreation/batch-item-search-http-response.model';
+import { setBatchItemCreationRecords, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria } from '../actions/items.batch-item-creation-actions';
+import { noopAction } from '../actions/items.common-actions';
 
 @Injectable()
 export class ItemsBatchItemCreationEffects {
@@ -54,11 +55,9 @@ export class ItemsBatchItemCreationEffects {
                                 { params })
                                 .pipe(switchMap(response => {
                                     if (response.success) {
-                                        console.dir(response);
 
                                         this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item saved' }));
-                                        return of(
-
+                                        return of(setBatchItemCreationRecords({ proposedItems: response.records }),
                                             new SetUserDefinedPropertyAction(fromItemsState.BATCH_ITEM_CREATION_SDCRITERIA_FORMID,
                                                 fromSharedState.FORM_SEARCH_STATE, fromSharedState.FormSearchState.SearchSuccessful));
                                     }

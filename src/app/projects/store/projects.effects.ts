@@ -103,7 +103,6 @@ export class ProjectsEffects {
 
     resetProjectCreationForm$ = createEffect(() => this.actions$.pipe(ofType(resetProjectCreationForm),
         switchMap(() => {
-            console.log('idzie reset dla projectu');
             return of(new SetValueAction(fromProjectsState.PROJECT_CREATION_DIALOG + '.projectId', ''),
                 new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.name', ''),
                 new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.identifier', ''),

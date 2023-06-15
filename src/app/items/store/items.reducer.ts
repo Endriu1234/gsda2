@@ -1,10 +1,4 @@
 import { createReducer, on } from '@ngrx/store';
-import {
-    initRedmineTrackers, loadRedmineTrackers, initRedmineUsers, loadRedmineUsers, initRedmineProjects, loadRedmineProjects,
-    addValidatedCR, addValidatedIssue, addValidatedTms, setRedmineUsersByLetterFilter,
-    addValidatedFromId, setRedmineProjectsFilterForItemCreation, setRedmineProjectsFilterForBatchItemCreationSdCriteria,
-    initSoftDevProjects, loadSoftDevProjects, setSoftDevProjectsFilterForBatchItemCreationSdCriteria
-} from './items.actions';
 import { initialState, ItemCreationFromData, State } from './items.state';
 import * as fromCommonReducerHanders from './reducer-handlers/items.common-reducer-handlers';
 import * as fromItemCreationReducerHanders from './reducer-handlers/items.item-creation-reducer-handlers';
@@ -12,6 +6,9 @@ import * as fromBatchItemCreationReducerHanders from './reducer-handlers/items.b
 
 import { onNgrxForms, wrapReducerWithFormStateUpdate, updateGroup, validate, ValidationErrors } from 'ngrx-forms';
 import { required } from 'ngrx-forms/validation';
+import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, initSoftDevProjects, loadRedmineProjects, loadRedmineTrackers, loadRedmineUsers, loadSoftDevProjects } from './actions/items.common-actions';
+import { addValidatedCR, addValidatedFromId, addValidatedIssue, addValidatedTms, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter } from './actions/items.item-creation-actions';
+import { setBatchItemCreationRecords, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria } from './actions/items.batch-item-creation-actions';
 
 export const itemsReducerKey = 'items';
 
@@ -41,6 +38,7 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
 
     on(setRedmineProjectsFilterForBatchItemCreationSdCriteria, fromBatchItemCreationReducerHanders.setRedmineProjectsFilterForBatchItemCreationSdCriteria),
     on(setSoftDevProjectsFilterForBatchItemCreationSdCriteria, fromBatchItemCreationReducerHanders.setSoftDevProjectsFilterForBatchItemCreationSdCriteria),
+    on(setBatchItemCreationRecords, fromBatchItemCreationReducerHanders.setBatchItemCreationRecords),
 );
 
 export const itemsReducer = wrapReducerWithFormStateUpdate(

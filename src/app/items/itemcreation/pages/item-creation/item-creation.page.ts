@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromItemsState from '../../../store/items.state';
 import * as fromItemsSelectors from '../../../store/items.selectors';
-import { identifyAndFillItemById, initRedmineProjects, initRedmineTrackers, initRedmineUsers } from '../../../store/items.actions';
 import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model';
 import { RedmineUserByLetter } from 'src/app/items/store/models/redmine-user-letter-model';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
@@ -12,6 +11,8 @@ import { trimUpperConverter } from '../../../../shared/tools/validators/ngrxValu
 import { ItemCreationFromId } from "../item-creation-from-id/item-creation-from-id";
 import { MatDialog } from '@angular/material/dialog';
 import { FormSaveState, FORM_SAVE_STATE } from 'src/app/shared/store/shared.state';
+import { initRedmineProjects, initRedmineTrackers, initRedmineUsers } from 'src/app/items/store/actions/items.common-actions';
+import { identifyAndFillItemById } from 'src/app/items/store/actions/items.item-creation-actions';
 
 @Component({
   selector: 'app-item-creation',

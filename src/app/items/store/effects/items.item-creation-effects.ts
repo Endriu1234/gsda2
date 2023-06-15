@@ -8,13 +8,14 @@ import { catchError, from, map, mergeMap, of, startWith, switchMap, take } from 
 import { validateProject, validateUser, validateCR, validateIssue, validateTms, validateFromId } from '../items.validation';
 import { ITEM_CREATION_FORMID, ITEM_CREATION_DIALOG } from '../items.state';
 import { ResetAction, SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
-import { fillItemById, identifyAndFillItemById, noopAction, resetItemCreationForm, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter } from '../items.actions';
 import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 import { getItemCreationDialogState, getItemCreationFormState } from '../items.selectors';
 import { GsdaRedmineHttpResponse } from 'src/app/shared/http/model/gsda-redmine-http-response.model';
 import { environment } from 'src/environments/environment';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { Item } from '../models/item.model';
+import { fillItemById, identifyAndFillItemById, resetItemCreationForm, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter } from '../actions/items.item-creation-actions';
+import { noopAction } from '../actions/items.common-actions';
 
 
 
@@ -68,7 +69,6 @@ export class ItemsItemCreationEffects {
                     if (action.value == fromSharedState.FormSaveState.Saving || action.value == fromSharedState.FormSaveState.SavingWithRedirect) {
 
                         return this.store.select(getItemCreationFormState).pipe(take(1), switchMap(formData => {
-                            console.log("Saving form data:");
                             let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
                             return this.http.post<GsdaRedmineHttpResponse>(environment.apiUrl + '/redmine/items/create-redmine-item', formData.value, { context }).pipe(switchMap(response => {
                                 if (response.success) {
