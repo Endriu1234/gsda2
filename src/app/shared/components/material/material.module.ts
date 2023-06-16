@@ -17,6 +17,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NgrxMatSelectViewAdapter } from "./mat-select-view-adapter";
 import { CustomErrorStateMatcherDirective } from "./error-state-matcher";
 import { MatListOptionFixDirective } from "./mat-list-option-fix";
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
     imports: [
@@ -35,7 +36,8 @@ import { MatListOptionFixDirective } from "./mat-list-option-fix";
         MatInputModule,
         MatSnackBarModule,
         MatTabsModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        MatTableModule
     ],
     declarations: [
         NgrxMatSelectViewAdapter,
@@ -61,7 +63,8 @@ import { MatListOptionFixDirective } from "./mat-list-option-fix";
         MatCheckboxModule,
         NgrxMatSelectViewAdapter,
         CustomErrorStateMatcherDirective,
-        MatListOptionFixDirective
+        MatListOptionFixDirective,
+        MatTableModule
     ],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { float: 'always' } },

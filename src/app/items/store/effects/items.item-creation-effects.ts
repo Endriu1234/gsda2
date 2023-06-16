@@ -9,13 +9,13 @@ import { validateProject, validateUser, validateCR, validateIssue, validateTms, 
 import { ITEM_CREATION_FORMID, ITEM_CREATION_DIALOG } from '../items.state';
 import { ResetAction, SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
 import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
-import { getItemCreationDialogState, getItemCreationFormState } from '../items.selectors';
 import { GsdaRedmineHttpResponse } from 'src/app/shared/http/model/gsda-redmine-http-response.model';
 import { environment } from 'src/environments/environment';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { Item } from '../models/item.model';
 import { fillItemById, identifyAndFillItemById, resetItemCreationForm, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter } from '../actions/items.item-creation-actions';
 import { noopAction } from '../actions/items.common-actions';
+import { getItemCreationDialogState, getItemCreationFormState } from '../selectors/items.item-creation-selectors';
 
 
 

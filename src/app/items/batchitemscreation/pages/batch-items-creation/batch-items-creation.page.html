@@ -1,14 +1,50 @@
-<mat-tab-group>
-    <mat-tab label="SD Project / Packet">
-        <app-batch-creation-sdcriteria></app-batch-creation-sdcriteria>
-    </mat-tab>
-    <mat-tab label="TMS Task">
-        <!-- <app-batch-creation-tmscriteria></app-batch-creation-tmscriteria> -->
-    </mat-tab>
-    <mat-tab label="Redmine">
-        <!-- <app-batch-creation-redmine-criteria></app-batch-creation-redmine-criteria> -->
-    </mat-tab>
-    <mat-tab label="SD / TMS Ids">
-        <!-- <app-batch-creation-idscriteria></app-batch-creation-idscriteria> -->
-    </mat-tab>
-</mat-tab-group>
+<div class="container-fluid">
+    <div class="row">
+        <mat-tab-group>
+            <mat-tab label="SD Project / Packet">
+                <app-batch-creation-sdcriteria></app-batch-creation-sdcriteria>
+            </mat-tab>
+            <mat-tab label="TMS Task">
+                <!-- <app-batch-creation-tmscriteria></app-batch-creation-tmscriteria> -->
+            </mat-tab>
+            <mat-tab label="Redmine">
+                <!-- <app-batch-creation-redmine-criteria></app-batch-creation-redmine-criteria> -->
+            </mat-tab>
+            <mat-tab label="SD / TMS Ids">
+                <!-- <app-batch-creation-idscriteria></app-batch-creation-idscriteria> -->
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+    <div class="row">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+            <!-- Checkbox Column -->
+            <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+                    </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+                    </mat-checkbox>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="subject">
+                <th mat-header-cell *matHeaderCellDef> Subject </th>
+                <td mat-cell *matCellDef="let element"> {{element.SUBJECT}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="issue">
+                <th mat-header-cell *matHeaderCellDef> Issue </th>
+                <td mat-cell *matCellDef="let element"> {{element.ISSUE}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">
+            </tr>
+        </table>
+    </div>
+</div>

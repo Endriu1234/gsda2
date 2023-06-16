@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromItemsState from '../../../store/items.state';
-import * as fromItemsSelectors from '../../../store/items.selectors';
+import * as fromItemCreationSelectors from '../../../store/selectors/items.item-creation-selectors';
+import * as fromCommonItemsSelectors from '../../../store/selectors/items.common-selectors';
 import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model';
 import { RedmineUserByLetter } from 'src/app/items/store/models/redmine-user-letter-model';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
@@ -30,7 +31,7 @@ export class ItemCreationPage implements OnInit {
   trimUpper = trimUpperConverter;
 
   constructor(private store: Store<fromItemsState.State>, private dialog: MatDialog) {
-    this.formState$ = this.store.select(fromItemsSelectors.getItemCreationFormState);
+    this.formState$ = this.store.select(fromItemCreationSelectors.getItemCreationFormState);
   }
 
   openFromIdDialog(): void {
@@ -66,29 +67,29 @@ export class ItemCreationPage implements OnInit {
 
   ngOnInit(): void {
 
-    this.store.select(fromItemsSelectors.getRedmineTrackersLoaded).pipe(take(1)).subscribe((loaded: boolean) => {
+    this.store.select(fromCommonItemsSelectors.getRedmineTrackersLoaded).pipe(take(1)).subscribe((loaded: boolean) => {
       if (!loaded)
         this.store.dispatch(initRedmineTrackers());
     });
 
-    this.trackers$ = this.store.select(fromItemsSelectors.getRedmineTrackers);
+    this.trackers$ = this.store.select(fromCommonItemsSelectors.getRedmineTrackers);
 
-    this.store.select(fromItemsSelectors.getRedmineUsersLoaded).pipe(take(1)).subscribe((loaded: boolean) => {
+    this.store.select(fromCommonItemsSelectors.getRedmineUsersLoaded).pipe(take(1)).subscribe((loaded: boolean) => {
       if (!loaded)
         this.store.dispatch(initRedmineUsers());
     });
 
-    this.usersFiltered$ = this.store.select(fromItemsSelectors.getRedmineUsersByLetterFiltered);
+    this.usersFiltered$ = this.store.select(fromItemCreationSelectors.getRedmineUsersByLetterFiltered);
 
-    this.store.select(fromItemsSelectors.getRedmineProjectsLoaded).pipe(take(1)).subscribe((loaded: boolean) => {
+    this.store.select(fromCommonItemsSelectors.getRedmineProjectsLoaded).pipe(take(1)).subscribe((loaded: boolean) => {
       if (!loaded)
         this.store.dispatch(initRedmineProjects());
     });
 
-    this.projectsFiltered$ = this.store.select(fromItemsSelectors.getRedmineProjectsFilteredForItemCreation);
+    this.projectsFiltered$ = this.store.select(fromItemCreationSelectors.getRedmineProjectsFilteredForItemCreation);
 
-    this.getItemCreationFormSuitableForDefault$ = this.store.select(fromItemsSelectors.getItemCreationFormSuitableForDefault);
-    this.getItemCreationFormCanActivateSave$ = this.store.select(fromItemsSelectors.getItemCreationFormCanActivateSave);
+    this.getItemCreationFormSuitableForDefault$ = this.store.select(fromItemCreationSelectors.getItemCreationFormSuitableForDefault);
+    this.getItemCreationFormCanActivateSave$ = this.store.select(fromItemCreationSelectors.getItemCreationFormCanActivateSave);
   }
 
 

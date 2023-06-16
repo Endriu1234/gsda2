@@ -7,12 +7,12 @@ import { Store } from '@ngrx/store';
 import { catchError, from, map, mergeMap, of, startWith, switchMap, take } from "rxjs";
 import { SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
 import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
-import { getBatchItemCreationSDCriteriaSearchFormState } from '../items.selectors';
 import { environment } from 'src/environments/environment';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { BatchItemSearchHttpResponse } from '../models/batchitemcreation/batch-item-search-http-response.model';
 import { setBatchItemCreationRecords, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria } from '../actions/items.batch-item-creation-actions';
 import { noopAction } from '../actions/items.common-actions';
+import { getBatchItemCreationSDCriteriaSearchFormState } from '../selectors/items.batch-item-creation-selectors';
 
 @Injectable()
 export class ItemsBatchItemCreationEffects {
