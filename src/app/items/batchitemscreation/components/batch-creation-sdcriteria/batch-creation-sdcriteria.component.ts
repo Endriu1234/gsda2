@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, take } from 'rxjs';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
-import * as fromItemsState from '../../../store/items.state';
+import * as fromItemsState from '../../../store/state/items.state';
 import * as fromBatchItemsSelectors from '../../../store/selectors/items.batch-item-creation-selectors';
 import * as fromCommonItemsSelectors from '../../../store/selectors/items.common-selectors';
 import { FormGroupState, SetUserDefinedPropertyAction } from 'ngrx-forms';
 import { SoftDevProject } from 'src/app/shared/store/models/softdev-project.model';
 import { FORM_SEARCH_STATE, FormSearchState } from 'src/app/shared/store/shared.state';
 import { initRedmineProjects, initSoftDevProjects } from 'src/app/items/store/actions/items.common-actions';
+import { BATCH_ITEM_CREATION_SDCRITERIA_FORMID } from 'src/app/items/store/state/items.batch-item-creation-state';
 
 @Component({
   selector: 'app-batch-creation-sdcriteria',
@@ -40,6 +41,6 @@ export class BatchCreationSDCriteriaComponent implements OnInit {
   }
 
   search(): void {
-    this.store.dispatch(new SetUserDefinedPropertyAction(fromItemsState.BATCH_ITEM_CREATION_SDCRITERIA_FORMID, FORM_SEARCH_STATE, FormSearchState.Searching))
+    this.store.dispatch(new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_SDCRITERIA_FORMID, FORM_SEARCH_STATE, FormSearchState.Searching))
   }
 }

@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { State } from '../items.state';
+import { State } from '../state/items.state';
 import { RedmineProject } from "src/app/shared/store/models/redmine-project.model";
 import { filterRedmineProjects, filterSoftDevProjects } from "src/app/shared/store/shared.reducer-handlers";
 import { RedmineTracker } from '../models/redmine-tracker.model';

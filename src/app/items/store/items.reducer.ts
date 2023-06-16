@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { initialState, ItemCreationFromData, State } from './items.state';
+import { initialState, State } from './state/items.state';
 import * as fromCommonReducerHanders from './reducer-handlers/items.common-reducer-handlers';
 import * as fromItemCreationReducerHanders from './reducer-handlers/items.item-creation-reducer-handlers';
 import * as fromBatchItemCreationReducerHanders from './reducer-handlers/items.batch-item-creation-reducer-handlers';
@@ -9,6 +9,7 @@ import { required } from 'ngrx-forms/validation';
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, initSoftDevProjects, loadRedmineProjects, loadRedmineTrackers, loadRedmineUsers, loadSoftDevProjects } from './actions/items.common-actions';
 import { addValidatedCR, addValidatedFromId, addValidatedIssue, addValidatedTms, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter } from './actions/items.item-creation-actions';
 import { setBatchItemCreationRecords, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria } from './actions/items.batch-item-creation-actions';
+import { ItemCreationFromData } from './state/items.item-creation-state';
 
 export const itemsReducerKey = 'items';
 

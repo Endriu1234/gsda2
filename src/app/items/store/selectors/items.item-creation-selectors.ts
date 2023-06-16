@@ -1,7 +1,8 @@
 import { createSelector } from '@ngrx/store';
-import { ItemCreationFromData, State } from './../items.state';
+import { State } from '../state/items.state';
 import { getItemsState } from './items.common-selectors';
 import { FormControlState, FormGroupState } from 'ngrx-forms';
+import { ItemCreationFromData } from '../state/items.item-creation-state';
 
 export const getItemCreationSetupData = createSelector(getItemsState, (state: State) => state.itemCreationSetupData);
 export const getRedmineProjectsFilteredForItemCreation = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineProjectsFiltered);

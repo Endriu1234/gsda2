@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import { filterRedmineProjects } from "src/app/shared/store/shared.reducer-handlers";
-import { State } from "../items.state";
+import { State } from "../state/items.state";
 import { CRValidation } from '../models/cr-validation.model';
 import { IssueValidation } from '../models/issue-validation.model';
 import { TmsValidation } from '../models/tms-validation.model';

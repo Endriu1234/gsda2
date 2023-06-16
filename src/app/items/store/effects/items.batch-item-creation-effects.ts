@@ -1,10 +1,10 @@
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import * as fromItemsState from '../items.state';
+import * as fromItemsState from '../state/items.state';
 import * as fromSharedState from '../../../shared/store/shared.state';
 import { Store } from '@ngrx/store';
-import { catchError, from, map, mergeMap, of, startWith, switchMap, take } from "rxjs";
+import { catchError, of, switchMap, take } from "rxjs";
 import { SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
 import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 import { environment } from 'src/environments/environment';
@@ -13,6 +13,7 @@ import { BatchItemSearchHttpResponse } from '../models/batchitemcreation/batch-i
 import { setBatchItemCreationRecords, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria } from '../actions/items.batch-item-creation-actions';
 import { noopAction } from '../actions/items.common-actions';
 import { getBatchItemCreationSDCriteriaSearchFormState } from '../selectors/items.batch-item-creation-selectors';
+import { BATCH_ITEM_CREATION_SDCRITERIA_FORMID } from '../state/items.batch-item-creation-state';
 
 @Injectable()
 export class ItemsBatchItemCreationEffects {
@@ -24,10 +25,10 @@ export class ItemsBatchItemCreationEffects {
     batchItemCreationSDCriteriaFormSetValue$ = createEffect(() => this.actions$.pipe(
         ofType(SetValueAction.TYPE),
         switchMap((action: SetValueAction<any>) => {
-            if (action.controlId === fromItemsState.BATCH_ITEM_CREATION_SDCRITERIA_FORMID + '.targetRedmineProject') {
+            if (action.controlId === BATCH_ITEM_CREATION_SDCRITERIA_FORMID + '.targetRedmineProject') {
                 return of(setRedmineProjectsFilterForBatchItemCreationSdCriteria())
             }
-            if (action.controlId === fromItemsState.BATCH_ITEM_CREATION_SDCRITERIA_FORMID + '.sourceSoftDevProject') {
+            if (action.controlId === BATCH_ITEM_CREATION_SDCRITERIA_FORMID + '.sourceSoftDevProject') {
                 return of(setSoftDevProjectsFilterForBatchItemCreationSdCriteria())
             }
             //return from(validateProject(this.store, validateProjectError, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilterForItemCreation())));
@@ -40,7 +41,7 @@ export class ItemsBatchItemCreationEffects {
         ofType(SetUserDefinedPropertyAction.TYPE),
         switchMap((action: SetUserDefinedPropertyAction) => {
 
-            if (action.controlId == fromItemsState.BATCH_ITEM_CREATION_SDCRITERIA_FORMID) {
+            if (action.controlId == BATCH_ITEM_CREATION_SDCRITERIA_FORMID) {
                 if (action.name == fromSharedState.FORM_SEARCH_STATE) {
                     if (action.value == fromSharedState.FormSearchState.Searching) {
 
@@ -58,19 +59,19 @@ export class ItemsBatchItemCreationEffects {
 
                                         this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item saved' }));
                                         return of(setBatchItemCreationRecords({ proposedItems: response.records }),
-                                            new SetUserDefinedPropertyAction(fromItemsState.BATCH_ITEM_CREATION_SDCRITERIA_FORMID,
+                                            new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_SDCRITERIA_FORMID,
                                                 fromSharedState.FORM_SEARCH_STATE, fromSharedState.FormSearchState.SearchSuccessful));
                                     }
                                     else {
                                         console.log(response.errorMessage);
                                         this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage }));
-                                        return of(new SetUserDefinedPropertyAction(fromItemsState.BATCH_ITEM_CREATION_SDCRITERIA_FORMID,
+                                        return of(new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_SDCRITERIA_FORMID,
                                             fromSharedState.FORM_SEARCH_STATE, fromSharedState.FormSearchState.SearchFailed));
                                     }
                                 }), catchError(error => {
                                     console.log(error);
                                     this.sharedStore.dispatch(addSnackbarNotification({ notification: "Error during Batch Item Creation SD Criteria Search" }));
-                                    return of(new SetUserDefinedPropertyAction(fromItemsState.BATCH_ITEM_CREATION_SDCRITERIA_FORMID,
+                                    return of(new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_SDCRITERIA_FORMID,
                                         fromSharedState.FORM_SEARCH_STATE, fromSharedState.FormSearchState.SearchFailed));
                                 }))
                         }))

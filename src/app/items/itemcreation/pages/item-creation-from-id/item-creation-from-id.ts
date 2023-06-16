@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { FormGroupState } from 'ngrx-forms';
 import { Observable } from 'rxjs';
 import * as fromItemCreationSelectors from "../../../store/selectors/items.item-creation-selectors";
-import * as fromItemsState from '../../../store/items.state';
+import * as fromItemsState from '../../../store/state/items.state';
 import { trimUpperConverter } from '../../../../shared/tools/validators/ngrxValueConverters';
 import { fillItemById } from 'src/app/items/store/actions/items.item-creation-actions';
 

@@ -1,12 +1,11 @@
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import * as fromItemsState from '../items.state';
+import * as fromItemsState from '../state/items.state';
 import * as fromSharedState from '../../../shared/store/shared.state';
 import { Store } from '@ngrx/store';
 import { catchError, from, map, mergeMap, of, startWith, switchMap, take } from "rxjs";
 import { validateProject, validateUser, validateCR, validateIssue, validateTms, validateFromId } from '../items.validation';
-import { ITEM_CREATION_FORMID, ITEM_CREATION_DIALOG } from '../items.state';
 import { ResetAction, SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
 import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 import { GsdaRedmineHttpResponse } from 'src/app/shared/http/model/gsda-redmine-http-response.model';
@@ -16,6 +15,7 @@ import { Item } from '../models/item.model';
 import { fillItemById, identifyAndFillItemById, resetItemCreationForm, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter } from '../actions/items.item-creation-actions';
 import { noopAction } from '../actions/items.common-actions';
 import { getItemCreationDialogState, getItemCreationFormState } from '../selectors/items.item-creation-selectors';
+import { ITEM_CREATION_DIALOG, ITEM_CREATION_FORMID } from '../state/items.item-creation-state';
 
 
 
@@ -80,19 +80,19 @@ export class ItemsItemCreationEffects {
                                     this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item saved' }));
                                     return of(
                                         resetItemCreationForm(),
-                                        new SetUserDefinedPropertyAction(fromItemsState.ITEM_CREATION_FORMID,
+                                        new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID,
                                             fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingSuccessful));
                                 }
                                 else {
                                     console.log(response.errorMessage);
                                     this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage }));
-                                    return of(new SetUserDefinedPropertyAction(fromItemsState.ITEM_CREATION_FORMID,
+                                    return of(new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID,
                                         fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingFailed));
                                 }
                             }), catchError(error => {
                                 console.log(error);
                                 this.sharedStore.dispatch(addSnackbarNotification({ notification: "Error during adding item" }));
-                                return of(new SetUserDefinedPropertyAction(fromItemsState.ITEM_CREATION_FORMID,
+                                return of(new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID,
                                     fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingFailed));
                             }))
                         }))
@@ -106,15 +106,15 @@ export class ItemsItemCreationEffects {
 
     resetItemCreationForm$ = createEffect(() => this.actions$.pipe(ofType(resetItemCreationForm),
         switchMap(() => {
-            return of(new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.project', ''),
-                new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.tracker', ''),
-                new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.subject', ''),
-                new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.description', ''),
-                new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.user', ''),
-                new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.issue', ''),
-                new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.cr', ''),
-                new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.tms', ''),
-                new ResetAction(fromItemsState.ITEM_CREATION_FORMID));
+            return of(new SetValueAction(ITEM_CREATION_FORMID + '.project', ''),
+                new SetValueAction(ITEM_CREATION_FORMID + '.tracker', ''),
+                new SetValueAction(ITEM_CREATION_FORMID + '.subject', ''),
+                new SetValueAction(ITEM_CREATION_FORMID + '.description', ''),
+                new SetValueAction(ITEM_CREATION_FORMID + '.user', ''),
+                new SetValueAction(ITEM_CREATION_FORMID + '.issue', ''),
+                new SetValueAction(ITEM_CREATION_FORMID + '.cr', ''),
+                new SetValueAction(ITEM_CREATION_FORMID + '.tms', ''),
+                new ResetAction(ITEM_CREATION_FORMID));
         })
     ));
 
@@ -127,11 +127,11 @@ export class ItemsItemCreationEffects {
                 let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
 
                 return this.http.get<Item>(environment.apiUrl + '/softdev/items/get-item-by-id', { params, context }).pipe(mergeMap(item => {
-                    return of(new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.subject', item.item_summary),
-                        new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.description', item.item_description),
-                        new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.issue', item.issue_id),
-                        new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.cr', item.cr_id),
-                        new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.tms', item.tms_id))
+                    return of(new SetValueAction(ITEM_CREATION_FORMID + '.subject', item.item_summary),
+                        new SetValueAction(ITEM_CREATION_FORMID + '.description', item.item_description),
+                        new SetValueAction(ITEM_CREATION_FORMID + '.issue', item.issue_id),
+                        new SetValueAction(ITEM_CREATION_FORMID + '.cr', item.cr_id),
+                        new SetValueAction(ITEM_CREATION_FORMID + '.tms', item.tms_id))
                 }))
             }), catchError(error => {
                 console.log(error);
@@ -158,11 +158,11 @@ export class ItemsItemCreationEffects {
                 let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
 
                 return this.http.get<Item>(environment.apiUrl + '/softdev/items/get-item-by-id', { params, context }).pipe(mergeMap(item => {
-                    return of(new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.subject', item.item_summary),
-                        new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.description', item.item_description),
-                        new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.issue', item.issue_id),
-                        new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.cr', item.cr_id),
-                        new SetValueAction(fromItemsState.ITEM_CREATION_FORMID + '.tms', item.tms_id))
+                    return of(new SetValueAction(ITEM_CREATION_FORMID + '.subject', item.item_summary),
+                        new SetValueAction(ITEM_CREATION_FORMID + '.description', item.item_description),
+                        new SetValueAction(ITEM_CREATION_FORMID + '.issue', item.issue_id),
+                        new SetValueAction(ITEM_CREATION_FORMID + '.cr', item.cr_id),
+                        new SetValueAction(ITEM_CREATION_FORMID + '.tms', item.tms_id))
                 }))
             }), catchError(error => {
                 console.log(error);

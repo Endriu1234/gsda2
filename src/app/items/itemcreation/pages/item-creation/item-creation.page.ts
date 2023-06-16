@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import * as fromItemsState from '../../../store/items.state';
+import * as fromItemsState from '../../../store/state/items.state';
 import * as fromItemCreationSelectors from '../../../store/selectors/items.item-creation-selectors';
 import * as fromCommonItemsSelectors from '../../../store/selectors/items.common-selectors';
 import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model';
@@ -14,6 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { FormSaveState, FORM_SAVE_STATE } from 'src/app/shared/store/shared.state';
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers } from 'src/app/items/store/actions/items.common-actions';
 import { identifyAndFillItemById } from 'src/app/items/store/actions/items.item-creation-actions';
+import { ITEM_CREATION_FORMID } from 'src/app/items/store/state/items.item-creation-state';
 
 @Component({
   selector: 'app-item-creation',
@@ -94,11 +95,11 @@ export class ItemCreationPage implements OnInit {
 
 
   createItem() {
-    this.store.dispatch(new SetUserDefinedPropertyAction(fromItemsState.ITEM_CREATION_FORMID, FORM_SAVE_STATE, FormSaveState.Saving))
+    this.store.dispatch(new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID, FORM_SAVE_STATE, FormSaveState.Saving))
   }
 
   createAndOpenItem() {
-    this.store.dispatch(new SetUserDefinedPropertyAction(fromItemsState.ITEM_CREATION_FORMID, FORM_SAVE_STATE, FormSaveState.SavingWithRedirect))
+    this.store.dispatch(new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID, FORM_SAVE_STATE, FormSaveState.SavingWithRedirect))
   }
 
 }
