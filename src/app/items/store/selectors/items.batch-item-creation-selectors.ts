@@ -1,5 +1,4 @@
-import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { itemsReducerKey } from './../items.reducer';
+import { createSelector } from '@ngrx/store';
 import { State } from '../state/items.state';
 import { getItemsState } from './items.common-selectors';
 
@@ -8,3 +7,7 @@ export const getBatchItemCreationSdCriteriaFormState = createSelector(getItemsSt
 
 export const getRedmineProjectsFilteredForBatchItemCreation = createSelector(getItemsState, (state: State) => state.batchItemCreationSdCriteriaSetupData.redmineProjectsFiltered);
 export const getSoftDevProjectsFilteredForBatchItemCreation = createSelector(getItemsState, (state: State) => state.batchItemCreationSdCriteriaSetupData.softDevProjectsFiltered);
+
+export const getBatchItemCreationRecords = createSelector(getItemsState, (state: State) => state.batchItemCreationRecords);
+
+
