@@ -8,18 +8,27 @@ import * as fromItemsState from '../../../store/state/items.state';
 import { getBatchItemCreationRecords } from 'src/app/items/store/selectors/items.batch-item-creation-selectors';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { toggleAllPropsedItemsSelection, togglePropsedItemSelection } from 'src/app/items/store/actions/items.batch-item-creation-actions';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-batch-items-creation',
   templateUrl: './batch-items-creation.page.html',
-  styleUrls: ['./batch-items-creation.page.scss']
+  styleUrls: ['./batch-items-creation.page.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class BatchItemsCreationPage implements OnInit, OnDestroy {
 
-  displayedColumns: string[] = ['select', 'subject', 'issue'];
+  displayedColumns: string[] = ['select', 'subject', 'issue', 'cr', 'expand'];
   dataSource: MatTableDataSource<ProposedItem> = new MatTableDataSource<ProposedItem>([]);
   selection = new SelectionModel<ProposedItem>(true, []);
   recordsSubscription: Subscription | null = null;
+  expandedElement: ProposedItem | null = null;
 
   constructor(private store: Store<fromItemsState.State>) {
 
