@@ -61,6 +61,7 @@ module.exports.getSDRegressionQuery = (bForPacket) => {
 
 module.exports.getSDProjectPotentialRedmineItemsQuery = (bForPacket) => {
     let query = `SELECT 
+                    'true' AS selected,
                     '' AS redmine_project,
                     'bug' AS tracker,
                     iss_summary AS subject,
@@ -93,7 +94,6 @@ module.exports.getSDProjectPotentialRedmineItemsQuery = (bForPacket) => {
     else
         query += `AND iss_detection_version_aa = :productVersionId `;
 
-    console.log(query);
     return query;
 };
 

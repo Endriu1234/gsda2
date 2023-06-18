@@ -11,7 +11,6 @@ module.exports.loadRouting = (app) => {
 
 
     app.use((err, req, res, next) => {
-        console.log('poszlo 500');
         const { statusCode = 500 } = err;
 
         if (!err.message)

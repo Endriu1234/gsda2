@@ -7,6 +7,7 @@ import { Store } from '@ngrx/store';
 import * as fromItemsState from '../../../store/state/items.state';
 import { getBatchItemCreationRecords } from 'src/app/items/store/selectors/items.batch-item-creation-selectors';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { toggleAllPropsedItemsSelection, togglePropsedItemSelection } from 'src/app/items/store/actions/items.batch-item-creation-actions';
 
 @Component({
   selector: 'app-batch-items-creation',
@@ -31,34 +32,30 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+
     this.recordsSubscription?.unsubscribe();
   }
 
-  /** Whether the number of selected elements matches the total number of rows. */
+  toggleRowSelection(row: ProposedItem) {
+    this.store.dispatch(togglePropsedItemSelection({ proposedItem: row }));
+  }
+
   isAllSelected() {
-    // const numSelected = this.selection.selected.length;
-    //  const numRows = this.dataSource.data.length;
-    //  return numSelected === numRows;
-    return false;
+
+    const selectionCount = this.dataSource.data.reduce(function (n, item) {
+
+      if (item.SELECTED)
+        return n + 1;
+      else
+        return n;
+
+    }, 0);
+
+    return selectionCount > 0 && selectionCount === this.dataSource.data.length;
   }
 
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
   toggleAllRows() {
-    //if (this.isAllSelected()) {
-    //  this.selection.clear();
-    //    return;
-    //  }
 
-    // this.selection.select(...this.dataSource.data);
+    this.store.dispatch(toggleAllPropsedItemsSelection());
   }
-
-  /** The label for the checkbox on the passed row */
-  checkboxLabel(row?: ProposedItem): string {
-    // if (!row) {
-    //   return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
-    // }
-    // return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
-    return 'deselect';
-  }
-
 }

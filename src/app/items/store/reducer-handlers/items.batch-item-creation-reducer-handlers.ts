@@ -25,3 +25,40 @@ export function setBatchItemCreationRecords(state: State, args: { proposedItems:
     }
     return newState;
 }
+
+export function togglePropsedItemSelection(state: State, args: { proposedItem: ProposedItem }): State {
+    const index = state.batchItemCreationRecords.proposedItems.findIndex(i => {
+        return i.SUBJECT === args.proposedItem.SUBJECT
+            && i.DESCRIPTION === args.proposedItem.DESCRIPTION
+            && i.ISSUE === args.proposedItem.ISSUE
+            && i.CR === args.proposedItem.CR
+            && i.TMS === args.proposedItem.TMS
+            && i.ASSIGNEE === args.proposedItem.ASSIGNEE
+            && i.TRACKER === args.proposedItem.TRACKER;
+    });
+
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreationRecords.proposedItems = _.cloneDeep(newState.batchItemCreationRecords.proposedItems);
+    const newItem = newState.batchItemCreationRecords.proposedItems[index];
+    newItem.SELECTED = !newItem.SELECTED;
+    return newState;
+}
+
+export function toggleAllPropsedItemsSelection(state: State): State {
+
+    if (state.batchItemCreationRecords.proposedItems.length === 0)
+        return state;
+
+    const selectionCount = state.batchItemCreationRecords.proposedItems.reduce(function (n, item) {
+
+        if (item.SELECTED)
+            return n + 1;
+        else
+            return n;
+    }, 0);
+
+    const newState: State = _.cloneDeep(state);
+    const selectionNewVal = !(selectionCount === state.batchItemCreationRecords.proposedItems.length);
+    newState.batchItemCreationRecords.proposedItems.forEach(item => item.SELECTED = selectionNewVal);
+    return newState;
+}
