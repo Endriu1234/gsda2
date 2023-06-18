@@ -18,6 +18,8 @@ import { NgrxMatSelectViewAdapter } from "./mat-select-view-adapter";
 import { CustomErrorStateMatcherDirective } from "./error-state-matcher";
 import { MatListOptionFixDirective } from "./mat-list-option-fix";
 import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
     imports: [
@@ -37,7 +39,9 @@ import { MatTableModule } from '@angular/material/table';
         MatSnackBarModule,
         MatTabsModule,
         MatCheckboxModule,
-        MatTableModule
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule
     ],
     declarations: [
         NgrxMatSelectViewAdapter,
@@ -64,7 +68,9 @@ import { MatTableModule } from '@angular/material/table';
         NgrxMatSelectViewAdapter,
         CustomErrorStateMatcherDirective,
         MatListOptionFixDirective,
-        MatTableModule
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule
     ],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { float: 'always' } },
