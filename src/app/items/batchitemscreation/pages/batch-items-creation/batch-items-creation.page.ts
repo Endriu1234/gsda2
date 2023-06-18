@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ProposedItem } from 'src/app/items/store/models/batchitemcreation/proposed-item.model';
-import { SelectionModel } from '@angular/cdk/collections';
 import { Store } from '@ngrx/store';
 import * as fromItemsState from '../../../store/state/items.state';
 import { getBatchItemCreationRecords } from 'src/app/items/store/selectors/items.batch-item-creation-selectors';
@@ -10,6 +9,7 @@ import { toggleAllPropsedItemsSelection, togglePropsedItemSelection } from 'src/
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { CdkDragDrop, CdkDrag, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-batch-items-creation',
@@ -27,7 +27,6 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
 
   displayedColumns: string[] = ['SELECT', 'SUBJECT', 'ISSUE', 'CR', 'expand'];
   dataSource: MatTableDataSource<ProposedItem> = new MatTableDataSource<ProposedItem>([]);
-  selection = new SelectionModel<ProposedItem>(true, []);
   recordsSubscription: Subscription | null = null;
   expandedElement: ProposedItem | null = null;
 
@@ -52,6 +51,14 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+
+  removeColumn(column: string) {
+    this.displayedColumns = this.displayedColumns.filter(colName => colName !== column);
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
   }
 
   toggleRowSelection(row: ProposedItem) {

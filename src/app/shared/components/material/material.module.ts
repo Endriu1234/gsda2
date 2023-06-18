@@ -20,6 +20,7 @@ import { MatListOptionFixDirective } from "./mat-list-option-fix";
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
     imports: [
@@ -41,7 +42,8 @@ import { MatSortModule } from '@angular/material/sort';
         MatCheckboxModule,
         MatTableModule,
         MatPaginatorModule,
-        MatSortModule
+        MatSortModule,
+        DragDropModule
     ],
     declarations: [
         NgrxMatSelectViewAdapter,
@@ -70,7 +72,8 @@ import { MatSortModule } from '@angular/material/sort';
         MatListOptionFixDirective,
         MatTableModule,
         MatPaginatorModule,
-        MatSortModule
+        MatSortModule,
+        DragDropModule
     ],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { float: 'always' } },
