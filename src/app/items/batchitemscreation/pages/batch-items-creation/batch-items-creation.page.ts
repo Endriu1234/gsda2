@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ProposedItem } from 'src/app/items/store/models/batchitemcreation/proposed-item.model';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -25,7 +25,7 @@ import { MatSort } from '@angular/material/sort';
 })
 export class BatchItemsCreationPage implements OnInit, OnDestroy {
 
-  displayedColumns: string[] = ['select', 'subject', 'issue', 'cr', 'expand'];
+  displayedColumns: string[] = ['SELECT', 'SUBJECT', 'ISSUE', 'CR', 'expand'];
   dataSource: MatTableDataSource<ProposedItem> = new MatTableDataSource<ProposedItem>([]);
   selection = new SelectionModel<ProposedItem>(true, []);
   recordsSubscription: Subscription | null = null;
@@ -40,9 +40,7 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.recordsSubscription = this.store.select(getBatchItemCreationRecords).subscribe(records => {
-      this.dataSource = new MatTableDataSource<ProposedItem>(records.proposedItems);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
+      this.dataSource.data = records.proposedItems;
     });
   }
 
@@ -52,8 +50,8 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    // this.dataSource.paginator = this.paginator;
-    // this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   toggleRowSelection(row: ProposedItem) {
