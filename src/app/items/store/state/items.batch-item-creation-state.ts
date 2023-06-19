@@ -44,3 +44,16 @@ export function getBatchItemCreationRecordsInitialState(): BatchItemCreationReco
         proposedItems: []
     }
 }
+
+export interface BatchItemCreationFormData {
+    skipCreationForm: boolean;
+}
+
+export const BATCH_ITEM_CREATION_FORMID = "BATCH_ITEM_CREATION_FORMID";
+
+export function getBatchItemCreationFormDataInitialState(): FormGroupState<BatchItemCreationFormData> {
+    return createFormGroupState<BatchItemCreationFormData>(BATCH_ITEM_CREATION_FORMID, {
+        skipCreationForm: false
+    });
+}
+

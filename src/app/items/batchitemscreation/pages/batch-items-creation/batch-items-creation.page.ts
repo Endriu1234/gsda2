@@ -3,13 +3,15 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ProposedItem } from 'src/app/items/store/models/batchitemcreation/proposed-item.model';
 import { Store } from '@ngrx/store';
 import * as fromItemsState from '../../../store/state/items.state';
-import { getBatchItemCreationRecords } from 'src/app/items/store/selectors/items.batch-item-creation-selectors';
+import { getBatchItemCreationFormData, getBatchItemCreationRecords } from 'src/app/items/store/selectors/items.batch-item-creation-selectors';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { toggleAllPropsedItemsSelection, togglePropsedItemSelection } from 'src/app/items/store/actions/items.batch-item-creation-actions';
+import { startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection } from 'src/app/items/store/actions/items.batch-item-creation-actions';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { CdkDragDrop, CdkDrag, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
+import { Observable } from 'rxjs';
+import { FormGroupState } from 'ngrx-forms';
 
 @Component({
   selector: 'app-batch-items-creation',
@@ -29,12 +31,13 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
   dataSource: MatTableDataSource<ProposedItem> = new MatTableDataSource<ProposedItem>([]);
   recordsSubscription: Subscription | null = null;
   expandedElement: ProposedItem | null = null;
+  formState$: Observable<FormGroupState<any>>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private store: Store<fromItemsState.State>) {
-
+    this.formState$ = this.store.select(getBatchItemCreationFormData);
   }
 
   ngOnInit(): void {
@@ -80,7 +83,6 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
   }
 
   toggleAllRows() {
-
     this.store.dispatch(toggleAllPropsedItemsSelection());
   }
 
@@ -90,5 +92,9 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
 
     if (this.dataSource.paginator)
       this.dataSource.paginator.firstPage();
+  }
+
+  createBatch() {
+    this.store.dispatch(startBatchItemsCreation());
   }
 }

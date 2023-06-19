@@ -62,3 +62,7 @@ export function toggleAllPropsedItemsSelection(state: State): State {
     newState.batchItemCreationRecords.proposedItems.forEach(item => item.SELECTED = selectionNewVal);
     return newState;
 }
+
+export function startBatchItemsCreation(state: State): State {
+    return state;
+}

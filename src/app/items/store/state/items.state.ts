@@ -1,5 +1,5 @@
 import { FormGroupState } from "ngrx-forms";
-import { BatchItemCreationRecords, BatchItemCreationSdCriteriaFormData, BatchItemCreationSdCriteriaSetupData, getBatchItemCreationRecordsInitialState, getBatchItemCreationSdCriteriaFormDataInitialState, getBatchItemCreationSdCriteriaSetupDataInitialState } from "./items.batch-item-creation-state";
+import { BatchItemCreationFormData, BatchItemCreationRecords, BatchItemCreationSdCriteriaFormData, BatchItemCreationSdCriteriaSetupData, getBatchItemCreationFormDataInitialState, getBatchItemCreationRecordsInitialState, getBatchItemCreationSdCriteriaFormDataInitialState, getBatchItemCreationSdCriteriaSetupDataInitialState } from "./items.batch-item-creation-state";
 import { getItemCreationFromDataInitialState, getItemCreationFromIdDialogInitialState, getItemCreationSetupDataInitialState, ItemCreationFromData, ItemCreationFromIdDialog, ItemCreationSetupData } from "./items.item-creation-state";
 import { ItemsSetupData, getItemsSetupDataInitialState } from "./items.common-state";
 
@@ -11,6 +11,7 @@ export interface State {
     itemCreationFromIdDialog: FormGroupState<ItemCreationFromIdDialog>;
     batchItemCreationSdCriteriaFormData: FormGroupState<BatchItemCreationSdCriteriaFormData>;
     batchItemCreationRecords: BatchItemCreationRecords;
+    batchItemCreationFormData: FormGroupState<BatchItemCreationFormData>;
 }
 
 export const initialState: State = {
@@ -23,4 +24,5 @@ export const initialState: State = {
     batchItemCreationSdCriteriaSetupData: getBatchItemCreationSdCriteriaSetupDataInitialState(),
     batchItemCreationRecords: getBatchItemCreationRecordsInitialState(),
     batchItemCreationSdCriteriaFormData: getBatchItemCreationSdCriteriaFormDataInitialState(),
+    batchItemCreationFormData: getBatchItemCreationFormDataInitialState()
 }

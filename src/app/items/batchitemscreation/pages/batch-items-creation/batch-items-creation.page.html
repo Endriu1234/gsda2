@@ -97,4 +97,18 @@
         </table>
         <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
     </div>
+
+    <ng-container *ngIf="formState$ | async as formState">
+        <div class="row">
+            <mat-card>
+                <mat-card-content>
+                    <form novalidate [ngrxFormState]="formState">
+                        <mat-checkbox [ngrxFormControlState]="$any(formState).controls.skipCreationForm">Skip Creation
+                            Form</mat-checkbox>
+                        <button mat-fab extended color="primary" (click)="createBatch()">Create Batch</button>
+                    </form>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </ng-container>
 </div>

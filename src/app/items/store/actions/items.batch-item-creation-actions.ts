@@ -6,3 +6,4 @@ export const setSoftDevProjectsFilterForBatchItemCreationSdCriteria = createActi
 export const setBatchItemCreationRecords = createAction('[Items Component] Set Batch Item Creation Records', props<{ proposedItems: ProposedItem[] }>());
 export const togglePropsedItemSelection = createAction('[Items Component] Toggle Proposed Item Selection', props<{ proposedItem: ProposedItem }>());
 export const toggleAllPropsedItemsSelection = createAction('[Items Component] Toggle All Proposed Items Selection');
+export const startBatchItemsCreation = createAction('[Items Component] Start Batch Items Creation');

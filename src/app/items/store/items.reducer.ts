@@ -8,7 +8,7 @@ import { onNgrxForms, wrapReducerWithFormStateUpdate, updateGroup, validate, Val
 import { required } from 'ngrx-forms/validation';
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, initSoftDevProjects, loadRedmineProjects, loadRedmineTrackers, loadRedmineUsers, loadSoftDevProjects } from './actions/items.common-actions';
 import { addValidatedCR, addValidatedFromId, addValidatedIssue, addValidatedTms, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter } from './actions/items.item-creation-actions';
-import { setBatchItemCreationRecords, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, toggleAllPropsedItemsSelection, togglePropsedItemSelection } from './actions/items.batch-item-creation-actions';
+import { setBatchItemCreationRecords, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection } from './actions/items.batch-item-creation-actions';
 import { ItemCreationFromData } from './state/items.item-creation-state';
 
 export const itemsReducerKey = 'items';
@@ -41,7 +41,8 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
     on(setSoftDevProjectsFilterForBatchItemCreationSdCriteria, fromBatchItemCreationReducerHanders.setSoftDevProjectsFilterForBatchItemCreationSdCriteria),
     on(setBatchItemCreationRecords, fromBatchItemCreationReducerHanders.setBatchItemCreationRecords),
     on(togglePropsedItemSelection, fromBatchItemCreationReducerHanders.togglePropsedItemSelection),
-    on(toggleAllPropsedItemsSelection, fromBatchItemCreationReducerHanders.toggleAllPropsedItemsSelection)
+    on(toggleAllPropsedItemsSelection, fromBatchItemCreationReducerHanders.toggleAllPropsedItemsSelection),
+    on(startBatchItemsCreation, fromBatchItemCreationReducerHanders.startBatchItemsCreation)
 );
 
 export const itemsReducer = wrapReducerWithFormStateUpdate(
