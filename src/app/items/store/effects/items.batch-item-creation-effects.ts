@@ -12,6 +12,7 @@ import { getBatchItemCreationSDCriteriaSearchFormState } from '../items.selector
 import { environment } from 'src/environments/environment';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { BatchItemSearchHttpResponse } from '../models/batchitemcreation/batch-item-search-http-response.model';
+import { SnackBarIcon } from '../../../shared/store/shared.state';
 
 @Injectable()
 export class ItemsBatchItemCreationEffects {
@@ -56,7 +57,8 @@ export class ItemsBatchItemCreationEffects {
                                     if (response.success) {
                                         console.dir(response);
 
-                                        this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item saved' }));
+                                        this.sharedStore.dispatch(addSnackbarNotification({ notification: '<b>Item saved</b>', icon: SnackBarIcon.Success }));
+
                                         return of(
 
                                             new SetUserDefinedPropertyAction(fromItemsState.BATCH_ITEM_CREATION_SDCRITERIA_FORMID,
@@ -64,13 +66,13 @@ export class ItemsBatchItemCreationEffects {
                                     }
                                     else {
                                         console.log(response.errorMessage);
-                                        this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage }));
+                                        this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage, icon: SnackBarIcon.Error }));
                                         return of(new SetUserDefinedPropertyAction(fromItemsState.BATCH_ITEM_CREATION_SDCRITERIA_FORMID,
                                             fromSharedState.FORM_SEARCH_STATE, fromSharedState.FormSearchState.SearchFailed));
                                     }
                                 }), catchError(error => {
                                     console.log(error);
-                                    this.sharedStore.dispatch(addSnackbarNotification({ notification: "Error during Batch Item Creation SD Criteria Search" }));
+                                    this.sharedStore.dispatch(addSnackbarNotification({ notification: "Error during Batch Item Creation SD Criteria Search", icon: SnackBarIcon.Error }));
                                     return of(new SetUserDefinedPropertyAction(fromItemsState.BATCH_ITEM_CREATION_SDCRITERIA_FORMID,
                                         fromSharedState.FORM_SEARCH_STATE, fromSharedState.FormSearchState.SearchFailed));
                                 }))

@@ -3,12 +3,12 @@ import { Store } from '@ngrx/store';
 import * as fromNavigation from './navigation/store/navigation.reducer';
 import { changeSidenavOpened } from './navigation/store/navigation.actions';
 import { Observable } from 'rxjs';
-import { MatSnackBar, MatSnackBarRef, TextOnlySnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { clearDisplayedSnackbarNotifications } from './shared/store/shared.actions';
 import * as fromSharedState from './shared/store/shared.state';
 import * as fromShared from './shared/store/shared.reducer';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -16,19 +16,18 @@ import * as fromShared from './shared/store/shared.reducer';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
+
 export class AppComponent implements OnInit, OnDestroy {
   isSidenavOpened$: Observable<boolean>;
+  isNotificationDisplayed: boolean = false;
   readedNotificationTimestamp: number = 0;
   notificationSub: Subscription | null = null;
   notDisplayedNotifications: fromSharedState.SnackbarNotification[] = [];
-  snackBarRef: MatSnackBarRef<TextOnlySnackBar> | null = null;
-  snackBarSub: Subscription | null = null;
 
   title = 'GSDA';
 
   constructor(private navigationStore: Store<fromNavigation.State>,
-    private sharedStore: Store<fromSharedState.State>,
-    private snackBar: MatSnackBar) {
+    private sharedStore: Store<fromSharedState.State>) {
     this.isSidenavOpened$ = this.navigationStore.select(fromNavigation.getSidenavOpened);
   }
 
@@ -49,19 +48,43 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   runSnackbarLogic() {
-    if (!this.snackBarRef) {
+    if (!this.isNotificationDisplayed) {
       const notification = this.notDisplayedNotifications.shift();
 
       if (notification) {
-        this.snackBarRef = this.snackBar.open(notification.notification, 'OK', { duration: environment.snackbarDuration });
+        this.isNotificationDisplayed = true;
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'bottom',
+          //heightAuto: true,
+          showConfirmButton: false,
+          showCloseButton: true,
+          timer: environment.snackbarDuration,
+          timerProgressBar: true,
+          customClass: {
+            popup: 'colored-toast',
+          },
+          showClass: {
+            popup: 'animate__animated animate__bounceIn'
+          },
+          hideClass: {
+            popup: 'animate__animated animate__flipOutX'
+          },
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          },
+          padding: '0.2em 0.2em 1em 0.2em'
+        })
 
-        this.snackBarSub = this.snackBarRef.afterDismissed().subscribe(() => {
-          this.snackBarSub?.unsubscribe();
-          this.snackBarSub = null;
-          this.snackBarRef = null;
-
+        Toast.fire({
+          icon: notification.icon,
+          title: '<div style="width: 50%; margin: 0px auto;">' + notification.icon.toUpperCase() + '</div>',
+          html: notification.notification
+        }).then(() => {
+          this.isNotificationDisplayed = false;
           this.runSnackbarLogic();
-        });
+        })
 
         if (this.notDisplayedNotifications.length === 0)
           this.sharedStore.dispatch(clearDisplayedSnackbarNotifications({ timestamp: notification.timestamp }));

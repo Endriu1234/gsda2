@@ -25,6 +25,7 @@
     "@ngrx/store": "^15.2.1",
     "@ngrx/store-devtools": "^15.2.1",
     "@types/lodash": "^4.14.191",
+    "animate.css": "^4.1.1",
     "axios": "^1.2.2",
     "body-parser": "^1.20.1",
     "bootstrap": "^5.3.0-alpha1",
@@ -38,6 +39,7 @@
     "node-cache": "^5.1.2",
     "oracledb": "^5.5.0",
     "rxjs": "~7.5.0",
+    "sweetalert2": "^11.4.8",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {

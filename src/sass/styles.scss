@@ -1,4 +1,5 @@
 @import 'variables';
+@import '~animate.css/animate.min.css';
 
 @font-face {
     font-family: 'Material Symbols Rounded';
@@ -37,3 +38,48 @@ body {
 .navigation-menu-item .mat-expansion-panel-body {
     padding: 0 24px 16px 10px;
 }
+
+
+
+.colored-toast.swal2-icon-success {
+    //background-color: #e1ecdb !important;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgb(107, 187, 107);
+    border-radius: 10px;
+    width: 60%; margin: 0px auto;
+  }
+  
+  .colored-toast.swal2-icon-error {
+    //background-color: #f27474 !important;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgb(187, 107, 107);
+    border-radius: 10px;
+  }
+  
+  .colored-toast.swal2-icon-warning {
+    //background-color: #f8bb86 !important;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgb(187, 137, 107);
+    border-radius: 10px;
+  }
+  
+  .colored-toast.swal2-icon-info {
+    //background-color: #3fc3ee !important;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgb(107, 187, 187);
+    border-radius: 10px;
+  }
+  
+  .colored-toast.swal2-icon-question {
+    //background-color: #87adbd !important;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgb(137, 167, 187);
+    border-radius: 10px;
+  }
+  
+  

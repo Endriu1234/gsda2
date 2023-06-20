@@ -15,6 +15,7 @@ import { GsdaRedmineHttpResponse } from 'src/app/shared/http/model/gsda-redmine-
 import { environment } from 'src/environments/environment';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { Item } from '../models/item.model';
+import { SnackBarIcon } from '../../../shared/store/shared.state';
 
 
 
@@ -77,7 +78,7 @@ export class ItemsItemCreationEffects {
                                         window.location.href = response.redmineLink;
                                     }
 
-                                    this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item saved' }));
+                                    this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item saved', icon: SnackBarIcon.Success }));
                                     return of(
                                         resetItemCreationForm(),
                                         new SetUserDefinedPropertyAction(fromItemsState.ITEM_CREATION_FORMID,
@@ -85,13 +86,13 @@ export class ItemsItemCreationEffects {
                                 }
                                 else {
                                     console.log(response.errorMessage);
-                                    this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage }));
+                                    this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage, icon: SnackBarIcon.Error }));
                                     return of(new SetUserDefinedPropertyAction(fromItemsState.ITEM_CREATION_FORMID,
                                         fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingFailed));
                                 }
                             }), catchError(error => {
                                 console.log(error);
-                                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Error during adding item" }));
+                                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Error during adding item", icon: SnackBarIcon.Error }));
                                 return of(new SetUserDefinedPropertyAction(fromItemsState.ITEM_CREATION_FORMID,
                                     fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingFailed));
                             }))
@@ -135,7 +136,7 @@ export class ItemsItemCreationEffects {
                 }))
             }), catchError(error => {
                 console.log(error);
-                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during defaulting" }));
+                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during defaulting", icon: SnackBarIcon.Error }));
                 return of(noopAction());
             }))
         })
@@ -166,7 +167,7 @@ export class ItemsItemCreationEffects {
                 }))
             }), catchError(error => {
                 console.log(error);
-                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during defaulting" }));
+                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during defaulting", icon: SnackBarIcon.Error }));
                 return of(noopAction());
             }))
         })

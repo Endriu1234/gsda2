@@ -17,6 +17,7 @@ import { getProjectCreationDialogState, getProjectCreationFormState, getSoftDevP
 import { formatDate } from '@angular/common';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { GsdaRedmineHttpResponse } from 'src/app/shared/http/model/gsda-redmine-http-response.model';
+import { SnackBarIcon } from '../../shared/store/shared.state';
 
 const GET_SD_PROJECTS_URL = environment.apiUrl + '/softdev/projects/get-softdev-projects';
 const GET_REDMINE_PROJECTS_URL = environment.apiUrl + '/redmine/items/get-redmine-projects';
@@ -74,7 +75,7 @@ export class ProjectsEffects {
                                         window.location.href = response.redmineLink;
                                     }
 
-                                    this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Project saved' }));
+                                    this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Project saved', icon: SnackBarIcon.Success }));
                                     return of(
                                         resetProjectCreationForm(),
                                         new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID,
@@ -82,13 +83,13 @@ export class ProjectsEffects {
                                 }
                                 else {
                                     console.log(response.errorMessage);
-                                    this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage }));
+                                    this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage, icon: SnackBarIcon.Error }));
                                     return of(new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID,
                                         fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingFailed));
                                 }
                             }), catchError(error => {
                                 console.log(error);
-                                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Error during adding project" }));
+                                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Error during adding project", icon: SnackBarIcon.Error }));
                                 return of(new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID,
                                     fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingFailed));
                             }))
@@ -133,7 +134,7 @@ export class ProjectsEffects {
                 }))
             }), catchError(error => {
                 console.log(error);
-                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during defaulting" }));
+                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during defaulting", icon: SnackBarIcon.Error }));
                 return of(noopAction());
             }))
         })

@@ -17,10 +17,18 @@ export enum FormSearchState {
     SearchFailed = "SearchFailed"
 }
 
+export enum SnackBarIcon {
+    Success = "success",
+    Error = "error",
+    Warning = "warning",
+    Info = "info",
+    Question = "question"
+}
 
 export interface SnackbarNotification {
     timestamp: number;
     notification: string;
+    icon: SnackBarIcon;
 }
 
 export interface State {

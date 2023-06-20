@@ -1,10 +1,10 @@
 import { RedmineProject } from "./models/redmine-project.model";
 import { SoftDevProject } from "./models/softdev-project.model";
-import { State } from "./shared.state";
+import { SnackBarIcon, State } from "./shared.state";
 
-export function addSnackbarNotification(state: State, args: { notification: string }): State {
+export function addSnackbarNotification(state: State, args: { notification: string, icon: SnackBarIcon }): State {
     const newState: State = { ...state, snackbarNotifications: [...state.snackbarNotifications] };
-    newState.snackbarNotifications.push({ timestamp: Date.now(), notification: args.notification });
+    newState.snackbarNotifications.push({ timestamp: Date.now(), notification: args.notification, icon: args.icon });
     return newState;
 }
 
