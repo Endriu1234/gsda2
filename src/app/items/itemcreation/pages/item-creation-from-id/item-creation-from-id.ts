@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { FormGroupState} from 'ngrx-forms';
-import { Observable} from 'rxjs';
-import * as fromItemsSelectors from "../../../store/items.selectors";
-import * as fromItemsState from '../../../store/items.state';
+import { FormGroupState } from 'ngrx-forms';
+import { Observable } from 'rxjs';
+import * as fromItemCreationSelectors from "../../../store/selectors/items.item-creation-selectors";
+import * as fromItemsState from '../../../store/state/items.state';
 import { trimUpperConverter } from '../../../../shared/tools/validators/ngrxValueConverters';
-import { fillItemById } from '../../../store/items.actions';
+import { fillItemById } from 'src/app/items/store/actions/items.item-creation-actions';
 
 @Component({
   selector: 'app-item-creation-from-id',
@@ -18,8 +18,8 @@ export class ItemCreationFromId implements OnInit {
   dialogState$: Observable<FormGroupState<any>>;
   trimUpper = trimUpperConverter;
 
-  constructor (private store: Store<fromItemsState.State>) {
-    this.dialogState$ = this.store.select(fromItemsSelectors.getItemCreationDialogState); 
+  constructor(private store: Store<fromItemsState.State>) {
+    this.dialogState$ = this.store.select(fromItemCreationSelectors.getItemCreationDialogState);
   }
 
   ngOnInit(): void {

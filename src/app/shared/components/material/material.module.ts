@@ -17,6 +17,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NgrxMatSelectViewAdapter } from "./mat-select-view-adapter";
 import { CustomErrorStateMatcherDirective } from "./error-state-matcher";
 import { MatListOptionFixDirective } from "./mat-list-option-fix";
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
     imports: [
@@ -35,7 +39,11 @@ import { MatListOptionFixDirective } from "./mat-list-option-fix";
         MatInputModule,
         MatSnackBarModule,
         MatTabsModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
+        DragDropModule
     ],
     declarations: [
         NgrxMatSelectViewAdapter,
@@ -61,7 +69,11 @@ import { MatListOptionFixDirective } from "./mat-list-option-fix";
         MatCheckboxModule,
         NgrxMatSelectViewAdapter,
         CustomErrorStateMatcherDirective,
-        MatListOptionFixDirective
+        MatListOptionFixDirective,
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
+        DragDropModule
     ],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { float: 'always' } },

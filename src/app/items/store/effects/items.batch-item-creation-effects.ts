@@ -1,17 +1,19 @@
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import * as fromItemsState from '../items.state';
+import * as fromItemsState from '../state/items.state';
 import * as fromSharedState from '../../../shared/store/shared.state';
 import { Store } from '@ngrx/store';
-import { catchError, from, map, mergeMap, of, startWith, switchMap, take } from "rxjs";
-import { ResetAction, SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
-import { noopAction, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria } from '../items.actions';
+import { catchError, of, switchMap, take } from "rxjs";
+import { SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
 import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
-import { getBatchItemCreationSDCriteriaSearchFormState } from '../items.selectors';
 import { environment } from 'src/environments/environment';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { BatchItemSearchHttpResponse } from '../models/batchitemcreation/batch-item-search-http-response.model';
+import { setBatchItemCreationRecords, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria } from '../actions/items.batch-item-creation-actions';
+import { noopAction } from '../actions/items.common-actions';
+import { getBatchItemCreationSDCriteriaSearchFormState } from '../selectors/items.batch-item-creation-selectors';
+import { BATCH_ITEM_CREATION_SDCRITERIA_FORMID } from '../state/items.batch-item-creation-state';
 import { SnackBarIcon } from '../../../shared/store/shared.state';
 
 @Injectable()
@@ -24,10 +26,10 @@ export class ItemsBatchItemCreationEffects {
     batchItemCreationSDCriteriaFormSetValue$ = createEffect(() => this.actions$.pipe(
         ofType(SetValueAction.TYPE),
         switchMap((action: SetValueAction<any>) => {
-            if (action.controlId === fromItemsState.BATCH_ITEM_CREATION_SDCRITERIA_FORMID + '.targetRedmineProject') {
+            if (action.controlId === BATCH_ITEM_CREATION_SDCRITERIA_FORMID + '.targetRedmineProject') {
                 return of(setRedmineProjectsFilterForBatchItemCreationSdCriteria())
             }
-            if (action.controlId === fromItemsState.BATCH_ITEM_CREATION_SDCRITERIA_FORMID + '.sourceSoftDevProject') {
+            if (action.controlId === BATCH_ITEM_CREATION_SDCRITERIA_FORMID + '.sourceSoftDevProject') {
                 return of(setSoftDevProjectsFilterForBatchItemCreationSdCriteria())
             }
             //return from(validateProject(this.store, validateProjectError, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilterForItemCreation())));
@@ -40,7 +42,7 @@ export class ItemsBatchItemCreationEffects {
         ofType(SetUserDefinedPropertyAction.TYPE),
         switchMap((action: SetUserDefinedPropertyAction) => {
 
-            if (action.controlId == fromItemsState.BATCH_ITEM_CREATION_SDCRITERIA_FORMID) {
+            if (action.controlId == BATCH_ITEM_CREATION_SDCRITERIA_FORMID) {
                 if (action.name == fromSharedState.FORM_SEARCH_STATE) {
                     if (action.value == fromSharedState.FormSearchState.Searching) {
 
@@ -55,25 +57,22 @@ export class ItemsBatchItemCreationEffects {
                                 { params })
                                 .pipe(switchMap(response => {
                                     if (response.success) {
-                                        console.dir(response);
 
-                                        this.sharedStore.dispatch(addSnackbarNotification({ notification: '<b>Item saved</b>', icon: SnackBarIcon.Success }));
-
-                                        return of(
-
-                                            new SetUserDefinedPropertyAction(fromItemsState.BATCH_ITEM_CREATION_SDCRITERIA_FORMID,
+                                        this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item saved', icon: SnackBarIcon.Success }));
+                                        return of(setBatchItemCreationRecords({ proposedItems: response.records }),
+                                            new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_SDCRITERIA_FORMID,
                                                 fromSharedState.FORM_SEARCH_STATE, fromSharedState.FormSearchState.SearchSuccessful));
                                     }
                                     else {
                                         console.log(response.errorMessage);
                                         this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage, icon: SnackBarIcon.Error }));
-                                        return of(new SetUserDefinedPropertyAction(fromItemsState.BATCH_ITEM_CREATION_SDCRITERIA_FORMID,
+                                        return of(new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_SDCRITERIA_FORMID,
                                             fromSharedState.FORM_SEARCH_STATE, fromSharedState.FormSearchState.SearchFailed));
                                     }
                                 }), catchError(error => {
                                     console.log(error);
                                     this.sharedStore.dispatch(addSnackbarNotification({ notification: "Error during Batch Item Creation SD Criteria Search", icon: SnackBarIcon.Error }));
-                                    return of(new SetUserDefinedPropertyAction(fromItemsState.BATCH_ITEM_CREATION_SDCRITERIA_FORMID,
+                                    return of(new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_SDCRITERIA_FORMID,
                                         fromSharedState.FORM_SEARCH_STATE, fromSharedState.FormSearchState.SearchFailed));
                                 }))
                         }))

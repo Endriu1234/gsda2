@@ -1,14 +1,15 @@
 import { Store } from "@ngrx/store";
 import { ClearAsyncErrorAction, SetAsyncErrorAction, StartAsyncValidationAction, ValidationErrors } from "ngrx-forms";
-import { State } from "./items.state";
-import { getRedmineProjects, getRedmineUsers, getValidatedCRs, getValidatedIssues, getValidatedTms } from "./items.selectors";
+import { State } from "./state/items.state";
 import { catchError, concat, delay, mergeMap, Observable, of, switchMap, take, tap } from 'rxjs';
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { CRValidation } from "./models/cr-validation.model";
 import { IssueValidation } from "./models/issue-validation.model";
 import { TmsValidation } from "./models/tms-validation.model";
-import { addValidatedCR, addValidatedIssue, addValidatedTms } from "./items.actions";
 import { environment } from 'src/environments/environment';
+import { addValidatedCR, addValidatedIssue, addValidatedTms } from "./actions/items.item-creation-actions";
+import { getRedmineProjects, getRedmineUsers } from "./selectors/items.common-selectors";
+import { getValidatedCRs, getValidatedIssues, getValidatedTms } from "./selectors/items.item-creation-selectors";
 
 
 export function validateUser(store: Store<State>, validateUserError: string, controlId: string, userName: string): Observable<any> {

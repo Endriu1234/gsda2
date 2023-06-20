@@ -1,5 +1,5 @@
-module.exports.getSDActiveProjectsQuery = () => { 
-return `SELECT 
+module.exports.getSDActiveProjectsQuery = () => {
+    return `SELECT 
     prd_version.aa_id AS product_version_id,
     prd_version.prv_version AS product_version_name,
     proj.pj_name AS project_name, 
@@ -52,10 +52,48 @@ module.exports.getSDRegressionQuery = (bForPacket) => {
                     prj.aa_id = prjlnk.pjl_project_aa
                     AND pckt.aa_id = prjlnk.pjl_parent_proj_aa
                     AND pckt.pj_version_aa = :productVersionId) `;
-        }
-        else
-            query += `AND iss_detection_version_aa = :productVersionId `;
-    
+    }
+    else
+        query += `AND iss_detection_version_aa = :productVersionId `;
+
+    return query;
+};
+
+module.exports.getSDProjectPotentialRedmineItemsQuery = (bForPacket) => {
+    let query = `SELECT 
+                    'true' AS selected,
+                    '' AS redmine_project,
+                    'bug' AS tracker,
+                    iss_summary AS subject,
+                    iss_desc AS description,
+                    aa_uf_id AS issue,
+                    '' AS cr,
+                    '' AS tms,
+                    '' AS assignee
+                FROM 
+                    sd_live.issue issue, 
+                    sd_live.issue_source source,
+                    sd_live.product product
+                WHERE 
+                    issue.aa_id = source.isr_issue_aa
+                    AND issue.iss_product_aa = product.aa_id
+                    AND product.prd_id = 'GENE'
+                    AND iss_is_active = 'Y' 
+                    AND iss_status <> 'Canceled' `;
+
+    if (bForPacket) {
+        query += `AND iss_detection_version_aa IN (SELECT
+                    prj.pj_version_aa
+                FROM 
+                    sd_live.project prj, sd_live.project pckt, sd_live.project_link prjlnk
+                WHERE
+                    prj.aa_id = prjlnk.pjl_project_aa
+                    AND pckt.aa_id = prjlnk.pjl_parent_proj_aa
+                    AND pckt.pj_version_aa = :productVersionId) `;
+    }
+    else
+        query += `AND iss_detection_version_aa = :productVersionId `;
+
     return query;
 };
 

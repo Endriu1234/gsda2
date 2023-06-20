@@ -1,3 +1,4 @@
+const { errorMonitor } = require('node-cache');
 const softDevDataProvider = require('../../../business/softdev/softDevDataProvider');
 
 module.exports.getItemById = async (req, res) => {
@@ -20,10 +21,28 @@ module.exports.getItemById = async (req, res) => {
 module.exports.getPotentialRedmineItemsFromSDProject = async (req, res) => {
     const retVal = {
         success: true,
-        errorMessage: ''
+        errorMessage: '',
+        records: null
     };
 
-    console.dir(req.query);
+    if (!req.query.sourceSoftDevProject) {
+        retVal.success = false;
+        retVal.errorMessage = "Missing sourceSoftDevProject";
+    }
+
+    if (!req.query.targetRedmineProject) {
+        retVal.success = false;
+        retVal.errorMessage = "Missing targetRedmineProject";
+    }
+
+    if (!req.query.itemLevel) {
+        retVal.success = false;
+        retVal.errorMessage = "Missing itemLevel";
+    }
+
+    const queryResults = await softDevDataProvider.getSDProjectPotentialRedmineItems(req.query.sourceSoftDevProject);
+
+    retVal.records = queryResults;
 
     return res.status(200).json(retVal);
 

@@ -1,20 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import {
-    initRedmineProjects, initRedmineTrackers, initRedmineUsers, initSoftDevProjects, loadRedmineProjects,
-    loadRedmineTrackers, loadRedmineUsers, loadSoftDevProjects
-} from '../items.actions';
 import { from, map, switchMap } from "rxjs";
 import { HttpClient } from '@angular/common/http';
 import { RedmineTracker } from '../models/redmine-tracker.model';
 import { environment } from 'src/environments/environment';
 import { RedmineUser } from '../models/redmine-user.model';
-import * as fromItemsState from '../items.state';
+import * as fromItemsState from '../state/items.state';
 import * as fromSharedState from '../../../shared/store/shared.state';
 
 import { Store } from '@ngrx/store';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 import { SoftDevProject } from 'src/app/shared/store/models/softdev-project.model';
+import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, initSoftDevProjects, loadRedmineProjects, loadRedmineTrackers, loadRedmineUsers, loadSoftDevProjects } from '../actions/items.common-actions';
 
 @Injectable()
 export class ItemsGeneralEffects {
