@@ -43,12 +43,12 @@ module.exports.getRegressionsFromVersion = async (softDevProjectName) => {
     }
 }
 
-module.exports.getSDProjectPotentialRedmineItems = async (softDevProjectName) => {
+module.exports.getSDProjectPotentialRedmineItems = async (softDevProjectName, targetRedmineProject) => {
     const softDevProjects = await cacheValueProvider.getValue('softdev_projects');
     const project = softDevProjects.find(p => p.PROJECT_NAME === softDevProjectName);
 
     if (project)
-        return await executeSoftDevQuery(softdevQueries.getSDProjectPotentialRedmineItemsQuery(project.PRODUCT_VERSION_NAME.endsWith('_Packet')), [project.PRODUCT_VERSION_ID]);
+        return await executeSoftDevQuery(softdevQueries.getSDProjectPotentialRedmineItemsQuery(project.PRODUCT_VERSION_NAME.endsWith('_Packet')), [targetRedmineProject, project.PRODUCT_VERSION_ID]);
 }
 
 module.exports.isChangeRequestInDB = async (changeRequest) => {

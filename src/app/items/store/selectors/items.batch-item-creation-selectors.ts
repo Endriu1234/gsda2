@@ -11,4 +11,3 @@ export const getSoftDevProjectsFilteredForBatchItemCreation = createSelector(get
 export const getBatchItemCreationRecords = createSelector(getItemsState, (state: State) => state.batchItemCreationRecords);
 export const getBatchItemCreationFormData = createSelector(getItemsState, (state: State) => state.batchItemCreationFormData);
 
-

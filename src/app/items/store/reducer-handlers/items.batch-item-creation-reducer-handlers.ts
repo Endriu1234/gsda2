@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import { State } from "../state/items.state";
 import { filterRedmineProjects, filterSoftDevProjects } from 'src/app/shared/store/shared.reducer-handlers';
 import { ProposedItem } from '../models/batchitemcreation/proposed-item.model';
+import { ItemCreationMode } from '../state/items.item-creation-state';
 
 export function setRedmineProjectsFilterForBatchItemCreationSdCriteria(state: State): State {
     const newState: State = _.cloneDeep(state);
@@ -64,5 +65,41 @@ export function toggleAllPropsedItemsSelection(state: State): State {
 }
 
 export function startBatchItemsCreation(state: State): State {
-    return state;
+    const newState = _.cloneDeep(state);
+
+    if (newState.batchItemCreationFormData.value.skipCreationForm)
+        newState.itemCreationSetupData.mode = ItemCreationMode.BatchItemWithoutGUI;
+    else
+        newState.itemCreationSetupData.mode = ItemCreationMode.BatchItemWithGUI;
+
+
+    newState.batchItemCreationRecords.currentIndex = newState.batchItemCreationRecords.proposedItems.findIndex(p => p.SELECTED);
+
+    return newState;
 }
+
+export function continueBatchItemsCreation(state: State): State {
+    console.log('paliky continue');
+    const newState = _.cloneDeep(state);
+    console.log(`before index ${newState.batchItemCreationRecords.currentIndex}`);
+    newState.batchItemCreationRecords.currentIndex = newState.batchItemCreationRecords.proposedItems.findIndex(p => p.SELECTED);
+    console.log(`after index ${newState.batchItemCreationRecords.currentIndex}`);
+    return newState;
+}
+
+export function forceEndBatchItemCreation(state: State): State {
+    const newState = _.cloneDeep(state);
+    newState.batchItemCreationRecords.currentIndex = -1;
+    return newState;
+}
+
+export function setLinkToCurrentProposedItemAndUnselect(state: State, args: { redmineLink: string }): State {
+    console.log('odelectowujemy');
+    const newState: State = _.cloneDeep(state);
+    const proposedItem = newState.batchItemCreationRecords.proposedItems[newState.batchItemCreationRecords.currentIndex];
+    proposedItem.SELECTED = false;
+    proposedItem.REDMINE_LINK = args.redmineLink;
+    console.dir(proposedItem);
+    return newState;
+}
+

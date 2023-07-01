@@ -12,11 +12,12 @@ import { GsdaRedmineHttpResponse } from 'src/app/shared/http/model/gsda-redmine-
 import { environment } from 'src/environments/environment';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { Item } from '../models/item.model';
-import { fillItemById, identifyAndFillItemById, resetItemCreationForm, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter } from '../actions/items.item-creation-actions';
+import { endResetItemCreationForm, fillItemById, identifyAndFillItemById, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startResetItemCreationForm } from '../actions/items.item-creation-actions';
 import { noopAction } from '../actions/items.common-actions';
-import { getItemCreationDialogState, getItemCreationFormState } from '../selectors/items.item-creation-selectors';
-import { ITEM_CREATION_DIALOG, ITEM_CREATION_FORMID } from '../state/items.item-creation-state';
+import { getItemCreationDialogState, getItemCreationFormState, getItemCreationFormWithSetup } from '../selectors/items.item-creation-selectors';
+import { ITEM_CREATION_DIALOG, ITEM_CREATION_FORMID, ItemCreationMode } from '../state/items.item-creation-state';
 import { SnackBarIcon } from '../../../shared/store/shared.state';
+import { continueBatchItemsCreation, forceEndBatchItemCreation, setLinkToCurrentProposedItemAndUnselect } from '../actions/items.batch-item-creation-actions';
 
 
 
@@ -68,33 +69,66 @@ export class ItemsItemCreationEffects {
             if (action.controlId == ITEM_CREATION_FORMID) {
                 if (action.name == fromSharedState.FORM_SAVE_STATE) {
                     if (action.value == fromSharedState.FormSaveState.Saving || action.value == fromSharedState.FormSaveState.SavingWithRedirect) {
+                        console.log('zaczelismy savowanie');
 
-                        return this.store.select(getItemCreationFormState).pipe(take(1), switchMap(formData => {
+                        return this.store.select(getItemCreationFormWithSetup).pipe(take(1), switchMap(formData => {
                             let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
-                            return this.http.post<GsdaRedmineHttpResponse>(environment.apiUrl + '/redmine/items/create-redmine-item', formData.value, { context }).pipe(switchMap(response => {
+                            return this.http.post<GsdaRedmineHttpResponse>(environment.apiUrl + '/redmine/items/create-redmine-item', formData.creationFormState.value, { context }).pipe(switchMap(response => {
                                 if (response.success) {
-                                    if (action.value == fromSharedState.FormSaveState.SavingWithRedirect && response.redmineLink) {
+                                    console.log('zaczelismy wrocil success');
+                                    if (formData.creationFormSetupState.mode === ItemCreationMode.SingleItem) {
+                                        console.log('obslugujemy success dla single moda');
 
-                                        window.location.href = response.redmineLink;
+                                        if (action.value == fromSharedState.FormSaveState.SavingWithRedirect && response.redmineLink) {
+
+                                            window.location.href = response.redmineLink;
+                                        }
+
+                                        this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item saved', icon: SnackBarIcon.Success }));
+
+                                        return of(
+                                            startResetItemCreationForm(),
+                                            new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID,
+                                                fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingSuccessful));
+                                    }
+                                    else if (formData.creationFormSetupState.mode === ItemCreationMode.BatchItemWithGUI) {
+                                        console.log('obslugujemy success dla single batch gui');
+
+                                        this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item saved', icon: SnackBarIcon.Success }));
+                                        console.log('obslugujemy success dla single batch gui bo snacu');
+                                        return of(
+                                            //new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID,
+                                            //fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingSuccessful),
+                                            setLinkToCurrentProposedItemAndUnselect({ redmineLink: response.redmineLink }), continueBatchItemsCreation());
+                                    }
+                                    else if (formData.creationFormSetupState.mode === ItemCreationMode.BatchItemWithoutGUI) {
+                                        console.log('obslugujemy success dla batch No Gui');
                                     }
 
-                                    this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item saved', icon: SnackBarIcon.Success }));
-                                    return of(
-                                        resetItemCreationForm(),
-                                        new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID,
-                                            fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingSuccessful));
+                                    console.log('No tu to doscj nie powinno !!');
+                                    return of(noopAction());
                                 }
                                 else {
                                     console.log(response.errorMessage);
                                     this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage, icon: SnackBarIcon.Error }));
-                                    return of(new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID,
-                                        fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingFailed));
+
+                                    if (formData.creationFormSetupState.mode === ItemCreationMode.SingleItem) {
+                                        return of(new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID,
+                                            fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingFailed));
+                                    }
+
+                                    return of(forceEndBatchItemCreation());
                                 }
                             }), catchError(error => {
                                 console.log(error);
                                 this.sharedStore.dispatch(addSnackbarNotification({ notification: "Error during adding item", icon: SnackBarIcon.Error }));
-                                return of(new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID,
-                                    fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingFailed));
+
+                                if (formData.creationFormSetupState.mode === ItemCreationMode.SingleItem) {
+                                    return of(new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID,
+                                        fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingFailed));
+                                }
+
+                                return of(forceEndBatchItemCreation());
                             }))
                         }))
                     }
@@ -105,7 +139,7 @@ export class ItemsItemCreationEffects {
         })
     ));
 
-    resetItemCreationForm$ = createEffect(() => this.actions$.pipe(ofType(resetItemCreationForm),
+    startResetItemCreationForm$ = createEffect(() => this.actions$.pipe(ofType(startResetItemCreationForm),
         switchMap(() => {
             return of(new SetValueAction(ITEM_CREATION_FORMID + '.project', ''),
                 new SetValueAction(ITEM_CREATION_FORMID + '.tracker', ''),
@@ -115,7 +149,9 @@ export class ItemsItemCreationEffects {
                 new SetValueAction(ITEM_CREATION_FORMID + '.issue', ''),
                 new SetValueAction(ITEM_CREATION_FORMID + '.cr', ''),
                 new SetValueAction(ITEM_CREATION_FORMID + '.tms', ''),
-                new ResetAction(ITEM_CREATION_FORMID));
+                new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID,
+                    fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New),
+                new ResetAction(ITEM_CREATION_FORMID), endResetItemCreationForm());
         })
     ));
 

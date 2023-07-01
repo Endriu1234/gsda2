@@ -7,8 +7,8 @@ import * as fromBatchItemCreationReducerHanders from './reducer-handlers/items.b
 import { onNgrxForms, wrapReducerWithFormStateUpdate, updateGroup, validate, ValidationErrors } from 'ngrx-forms';
 import { required } from 'ngrx-forms/validation';
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, initSoftDevProjects, loadRedmineProjects, loadRedmineTrackers, loadRedmineUsers, loadSoftDevProjects } from './actions/items.common-actions';
-import { addValidatedCR, addValidatedFromId, addValidatedIssue, addValidatedTms, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter } from './actions/items.item-creation-actions';
-import { setBatchItemCreationRecords, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection } from './actions/items.batch-item-creation-actions';
+import { addValidatedCR, addValidatedFromId, addValidatedIssue, addValidatedTms, endResetItemCreationForm, setItemCreationFormMode, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startResetItemCreationForm } from './actions/items.item-creation-actions';
+import { continueBatchItemsCreation, forceEndBatchItemCreation, setBatchItemCreationRecords, setLinkToCurrentProposedItemAndUnselect, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection } from './actions/items.batch-item-creation-actions';
 import { ItemCreationFromData } from './state/items.item-creation-state';
 
 export const itemsReducerKey = 'items';
@@ -21,6 +21,7 @@ const validationReducer = updateGroup<ItemCreationFromData>({
 });
 
 export const regularReducer = createReducer(initialState, onNgrxForms(),
+
     on(loadRedmineProjects, fromCommonReducerHanders.loadRedmineProjects),
     on(initRedmineTrackers, fromCommonReducerHanders.initRedmineTrackers),
     on(loadRedmineTrackers, fromCommonReducerHanders.loadRedmineTrackers),
@@ -31,18 +32,25 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
     on(initSoftDevProjects, fromCommonReducerHanders.initSoftDevProjects),
     on(loadSoftDevProjects, fromCommonReducerHanders.loadSoftDevProjects),
 
+
     on(setRedmineProjectsFilterForItemCreation, fromItemCreationReducerHanders.setRedmineProjectsFilterForItemCreation),
     on(addValidatedCR, fromItemCreationReducerHanders.addValidatedCR),
     on(addValidatedIssue, fromItemCreationReducerHanders.addValidatedIssue),
     on(addValidatedTms, fromItemCreationReducerHanders.addValidatedTms),
     on(addValidatedFromId, fromItemCreationReducerHanders.addValidatedFromId),
+    on(startResetItemCreationForm, fromItemCreationReducerHanders.startResetItemCreationForm),
+    on(endResetItemCreationForm, fromItemCreationReducerHanders.endResetItemCreationForm),
+    on(setItemCreationFormMode, fromItemCreationReducerHanders.setItemCreationFormMode),
 
     on(setRedmineProjectsFilterForBatchItemCreationSdCriteria, fromBatchItemCreationReducerHanders.setRedmineProjectsFilterForBatchItemCreationSdCriteria),
     on(setSoftDevProjectsFilterForBatchItemCreationSdCriteria, fromBatchItemCreationReducerHanders.setSoftDevProjectsFilterForBatchItemCreationSdCriteria),
     on(setBatchItemCreationRecords, fromBatchItemCreationReducerHanders.setBatchItemCreationRecords),
     on(togglePropsedItemSelection, fromBatchItemCreationReducerHanders.togglePropsedItemSelection),
     on(toggleAllPropsedItemsSelection, fromBatchItemCreationReducerHanders.toggleAllPropsedItemsSelection),
-    on(startBatchItemsCreation, fromBatchItemCreationReducerHanders.startBatchItemsCreation)
+    on(startBatchItemsCreation, fromBatchItemCreationReducerHanders.startBatchItemsCreation),
+    on(continueBatchItemsCreation, fromBatchItemCreationReducerHanders.continueBatchItemsCreation),
+    on(setLinkToCurrentProposedItemAndUnselect, fromBatchItemCreationReducerHanders.setLinkToCurrentProposedItemAndUnselect),
+    on(forceEndBatchItemCreation, fromBatchItemCreationReducerHanders.forceEndBatchItemCreation)
 );
 
 export const itemsReducer = wrapReducerWithFormStateUpdate(

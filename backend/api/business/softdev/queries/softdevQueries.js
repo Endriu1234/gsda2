@@ -62,14 +62,15 @@ module.exports.getSDRegressionQuery = (bForPacket) => {
 module.exports.getSDProjectPotentialRedmineItemsQuery = (bForPacket) => {
     let query = `SELECT 
                     'true' AS selected,
-                    '' AS redmine_project,
-                    'bug' AS tracker,
+                    :targetRedmineProject AS redmine_project,
+                    'Bug' AS tracker,
                     iss_summary AS subject,
                     iss_desc AS description,
                     aa_uf_id AS issue,
                     '' AS cr,
                     '' AS tms,
-                    '' AS assignee
+                    '' AS assignee,
+                    '' AS redmine_link
                 FROM 
                     sd_live.issue issue, 
                     sd_live.issue_source source,
