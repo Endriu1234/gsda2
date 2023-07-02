@@ -121,7 +121,6 @@ export class ProjectsEffects {
                 return this.store.select(getSoftDevProjects).pipe(take(1), mergeMap(sdProjects => {
                     let sdProject = sdProjects.find(sd => sd.PRODUCT_VERSION_NAME == dialogData.controls.projectId.value);
                     if (sdProject) {
-                        console.log('Wypelniam forme z przycisku');
                         return of(new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.identifier', sdProject.PRODUCT_VERSION_NAME.replace(/\./g, "_").toLocaleLowerCase()),
                             new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.name', sdProject.PRODUCT_VERSION_NAME),
                             new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.description', this.createDescription(sdProject)),

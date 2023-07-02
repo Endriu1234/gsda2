@@ -12,7 +12,7 @@ import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/
 import { BatchItemSearchHttpResponse } from '../models/batchitemcreation/batch-item-search-http-response.model';
 import { continueBatchItemsCreation, forceEndBatchItemCreation, setBatchItemCreationRecords, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation } from '../actions/items.batch-item-creation-actions';
 import { noopAction } from '../actions/items.common-actions';
-import { getBatchItemCreationRecords, getBatchItemCreationSDCriteriaSearchFormState } from '../selectors/items.batch-item-creation-selectors';
+import { getBatchItemCreationRecords, getBatchItemCreationSDCriteriaSearchFormState, getBatchItemsRecordsWithFormData } from '../selectors/items.batch-item-creation-selectors';
 import { BATCH_ITEM_CREATION_SDCRITERIA_FORMID } from '../state/items.batch-item-creation-state';
 import { SnackBarIcon } from '../../../shared/store/shared.state';
 import { Router } from '@angular/router';
@@ -45,9 +45,6 @@ export class ItemsBatchItemCreationEffects {
     batchItemCreationSDCriteriaSetUserDefinedValue$ = createEffect(() => this.actions$.pipe(
         ofType(SetUserDefinedPropertyAction.TYPE),
         switchMap((action: SetUserDefinedPropertyAction) => {
-
-            console.log('batchItemCreationSDCriteriaSetUserDefinedValue$ boslugujemy: ');
-            console.dir(action);
 
             if (action.controlId == BATCH_ITEM_CREATION_SDCRITERIA_FORMID) {
                 if (action.name == fromSharedState.FORM_SEARCH_STATE) {
@@ -94,12 +91,11 @@ export class ItemsBatchItemCreationEffects {
         ofType(startBatchItemsCreation),
         switchMap(() => {
 
-            this.router.navigate(['/items/itemcreation']);
+            return this.store.select(getBatchItemsRecordsWithFormData).pipe(take(1), switchMap(batchRecordsWithFormData => {
 
-            return this.store.select(getBatchItemCreationRecords).pipe(take(1), switchMap(batchRecords => {
-                let currentItem = batchRecords.proposedItems[batchRecords.currentIndex];
+                let currentItem = batchRecordsWithFormData.batchRecords.proposedItems[batchRecordsWithFormData.batchRecords.currentIndex];
 
-                return of(
+                const actions: any[] = [
                     new ResetAction(ITEM_CREATION_FORMID),
                     new SetValueAction(ITEM_CREATION_FORMID + '.project', currentItem.REDMINE_PROJECT),
                     new SetValueAction(ITEM_CREATION_FORMID + '.tracker', currentItem.TRACKER),
@@ -108,8 +104,17 @@ export class ItemsBatchItemCreationEffects {
                     new SetValueAction(ITEM_CREATION_FORMID + '.user', currentItem.ASSIGNEE),
                     new SetValueAction(ITEM_CREATION_FORMID + '.issue', currentItem.ISSUE),
                     new SetValueAction(ITEM_CREATION_FORMID + '.cr', currentItem.CR),
-                    new SetValueAction(ITEM_CREATION_FORMID + '.tms', currentItem.TMS),
-                );
+                    new SetValueAction(ITEM_CREATION_FORMID + '.tms', currentItem.TMS)
+                ];
+
+                if (batchRecordsWithFormData.batchFormData.value.skipCreationForm) {
+                    actions.push(new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID, fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.Saving));
+                    return actions;
+                }
+                else {
+                    this.router.navigate(['/items/itemcreation']);
+                    return actions;
+                }
             }));
         })
     ));
@@ -118,20 +123,18 @@ export class ItemsBatchItemCreationEffects {
         ofType(continueBatchItemsCreation),
         switchMap(() => {
 
-            return this.store.select(getBatchItemCreationRecords).pipe(take(1), switchMap(batchRecords => {
+            return this.store.select(getBatchItemsRecordsWithFormData).pipe(take(1), switchMap(batchRecordsWithFormData => {
 
-                if (batchRecords.currentIndex < 0) {
+                if (batchRecordsWithFormData.batchRecords.currentIndex < 0) {
                     this.router.navigate(['/items/batchitemscreation']);
 
                     return of(startResetItemCreationForm());
                 }
 
-                let currentItem = batchRecords.proposedItems[batchRecords.currentIndex];
+                let currentItem = batchRecordsWithFormData.batchRecords.proposedItems[batchRecordsWithFormData.batchRecords.currentIndex];
 
-                return of(
+                const actions: any[] = [
                     new ResetAction(ITEM_CREATION_FORMID),
-                    new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID,
-                        fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New),
                     new SetValueAction(ITEM_CREATION_FORMID + '.project', currentItem.REDMINE_PROJECT),
                     new SetValueAction(ITEM_CREATION_FORMID + '.tracker', currentItem.TRACKER),
                     new SetValueAction(ITEM_CREATION_FORMID + '.subject', currentItem.SUBJECT),
@@ -139,7 +142,13 @@ export class ItemsBatchItemCreationEffects {
                     new SetValueAction(ITEM_CREATION_FORMID + '.user', currentItem.ASSIGNEE),
                     new SetValueAction(ITEM_CREATION_FORMID + '.issue', currentItem.ISSUE),
                     new SetValueAction(ITEM_CREATION_FORMID + '.cr', currentItem.CR),
-                    new SetValueAction(ITEM_CREATION_FORMID + '.tms', currentItem.TMS));
+                    new SetValueAction(ITEM_CREATION_FORMID + '.tms', currentItem.TMS)
+                ];
+
+                if (batchRecordsWithFormData.batchFormData.value.skipCreationForm)
+                    actions.push(new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID, fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.Saving));
+
+                return actions;
             }));
         })
     ));

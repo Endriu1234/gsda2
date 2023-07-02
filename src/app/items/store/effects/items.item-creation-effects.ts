@@ -66,21 +66,16 @@ export class ItemsItemCreationEffects {
         ofType(SetUserDefinedPropertyAction.TYPE),
         switchMap((action: SetUserDefinedPropertyAction) => {
 
-            console.log('itemCreationFormSetUserDefinedValue$ obsluguje: ');
-
-
             if (action.controlId == ITEM_CREATION_FORMID) {
                 if (action.name == fromSharedState.FORM_SAVE_STATE) {
                     if (action.value == fromSharedState.FormSaveState.Saving || action.value == fromSharedState.FormSaveState.SavingWithRedirect) {
-                        console.log('zaczelismy savowanie');
 
                         return this.store.select(getItemCreationFormWithSetup).pipe(take(1), switchMap(formData => {
                             let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
                             return this.http.post<GsdaRedmineHttpResponse>(environment.apiUrl + '/redmine/items/create-redmine-item', formData.creationFormState.value, { context }).pipe(switchMap(response => {
                                 if (response.success) {
-                                    console.log('zaczelismy wrocil success');
+
                                     if (formData.creationFormSetupState.mode === ItemCreationMode.SingleItem) {
-                                        console.log('obslugujemy success dla single moda');
 
                                         if (action.value == fromSharedState.FormSaveState.SavingWithRedirect && response.redmineLink) {
 
@@ -91,19 +86,15 @@ export class ItemsItemCreationEffects {
 
                                         return of(startResetItemCreationForm());
                                     }
-                                    else if (formData.creationFormSetupState.mode === ItemCreationMode.BatchItemWithGUI) {
-                                        console.log('obslugujemy success dla single batch gui');
+                                    else if (formData.creationFormSetupState.mode === ItemCreationMode.BatchItemWithGUI
+                                        || formData.creationFormSetupState.mode === ItemCreationMode.BatchItemWithoutGUI) {
 
-                                        this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item saved', icon: SnackBarIcon.Success }));
-                                        console.log('obslugujemy success dla single batch gui bo snacu');
+                                        if (formData.creationFormSetupState.mode === ItemCreationMode.BatchItemWithGUI)
+                                            this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item saved', icon: SnackBarIcon.Success }));
+
                                         return of(setLinkToCurrentProposedItemAndUnselect({ redmineLink: response.redmineLink }), continueBatchItemsCreation());
-
-                                    }
-                                    else if (formData.creationFormSetupState.mode === ItemCreationMode.BatchItemWithoutGUI) {
-                                        console.log('obslugujemy success dla batch No Gui');
                                     }
 
-                                    console.log('No tu to doscj nie powinno !!');
                                     return of(noopAction());
                                 }
                                 else {

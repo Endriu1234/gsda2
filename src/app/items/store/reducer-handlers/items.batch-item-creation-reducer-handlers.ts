@@ -72,22 +72,18 @@ export function startBatchItemsCreation(state: State): State {
     else
         newState.itemCreationSetupData.mode = ItemCreationMode.BatchItemWithGUI;
 
-
     newState.batchItemCreationRecords.currentIndex = newState.batchItemCreationRecords.proposedItems.findIndex(p => p.SELECTED);
 
     return newState;
 }
 
 export function continueBatchItemsCreation(state: State): State {
-    console.log('paliky continue');
     const newState = _.cloneDeep(state);
-    console.log(`before index ${newState.batchItemCreationRecords.currentIndex}`);
     newState.batchItemCreationRecords.currentIndex = newState.batchItemCreationRecords.proposedItems.findIndex(p => p.SELECTED);
 
     if (newState.batchItemCreationRecords.currentIndex < 0)
         newState.itemCreationSetupData.mode = ItemCreationMode.SingleItem;
 
-    console.log(`after index ${newState.batchItemCreationRecords.currentIndex}`);
     return newState;
 }
 
@@ -99,12 +95,10 @@ export function forceEndBatchItemCreation(state: State): State {
 }
 
 export function setLinkToCurrentProposedItemAndUnselect(state: State, args: { redmineLink: string }): State {
-    console.log('odelectowujemy');
     const newState: State = _.cloneDeep(state);
     const proposedItem = newState.batchItemCreationRecords.proposedItems[newState.batchItemCreationRecords.currentIndex];
     proposedItem.SELECTED = false;
     proposedItem.REDMINE_LINK = args.redmineLink;
-    console.dir(proposedItem);
     return newState;
 }
 
