@@ -83,6 +83,10 @@ export function continueBatchItemsCreation(state: State): State {
     const newState = _.cloneDeep(state);
     console.log(`before index ${newState.batchItemCreationRecords.currentIndex}`);
     newState.batchItemCreationRecords.currentIndex = newState.batchItemCreationRecords.proposedItems.findIndex(p => p.SELECTED);
+
+    if (newState.batchItemCreationRecords.currentIndex < 0)
+        newState.itemCreationSetupData.mode = ItemCreationMode.SingleItem;
+
     console.log(`after index ${newState.batchItemCreationRecords.currentIndex}`);
     return newState;
 }
@@ -90,6 +94,7 @@ export function continueBatchItemsCreation(state: State): State {
 export function forceEndBatchItemCreation(state: State): State {
     const newState = _.cloneDeep(state);
     newState.batchItemCreationRecords.currentIndex = -1;
+    newState.itemCreationSetupData.mode = ItemCreationMode.SingleItem;
     return newState;
 }
 

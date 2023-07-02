@@ -46,6 +46,9 @@ export class ItemsBatchItemCreationEffects {
         ofType(SetUserDefinedPropertyAction.TYPE),
         switchMap((action: SetUserDefinedPropertyAction) => {
 
+            console.log('batchItemCreationSDCriteriaSetUserDefinedValue$ boslugujemy: ');
+            console.dir(action);
+
             if (action.controlId == BATCH_ITEM_CREATION_SDCRITERIA_FORMID) {
                 if (action.name == fromSharedState.FORM_SEARCH_STATE) {
                     if (action.value == fromSharedState.FormSearchState.Searching) {

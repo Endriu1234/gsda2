@@ -66,6 +66,9 @@ export class ItemsItemCreationEffects {
         ofType(SetUserDefinedPropertyAction.TYPE),
         switchMap((action: SetUserDefinedPropertyAction) => {
 
+            console.log('itemCreationFormSetUserDefinedValue$ obsluguje: ');
+
+
             if (action.controlId == ITEM_CREATION_FORMID) {
                 if (action.name == fromSharedState.FORM_SAVE_STATE) {
                     if (action.value == fromSharedState.FormSaveState.Saving || action.value == fromSharedState.FormSaveState.SavingWithRedirect) {
@@ -86,20 +89,15 @@ export class ItemsItemCreationEffects {
 
                                         this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item saved', icon: SnackBarIcon.Success }));
 
-                                        return of(
-                                            startResetItemCreationForm(),
-                                            new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID,
-                                                fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingSuccessful));
+                                        return of(startResetItemCreationForm());
                                     }
                                     else if (formData.creationFormSetupState.mode === ItemCreationMode.BatchItemWithGUI) {
                                         console.log('obslugujemy success dla single batch gui');
 
                                         this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item saved', icon: SnackBarIcon.Success }));
                                         console.log('obslugujemy success dla single batch gui bo snacu');
-                                        return of(
-                                            //new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID,
-                                            //fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingSuccessful),
-                                            setLinkToCurrentProposedItemAndUnselect({ redmineLink: response.redmineLink }), continueBatchItemsCreation());
+                                        return of(setLinkToCurrentProposedItemAndUnselect({ redmineLink: response.redmineLink }), continueBatchItemsCreation());
+
                                     }
                                     else if (formData.creationFormSetupState.mode === ItemCreationMode.BatchItemWithoutGUI) {
                                         console.log('obslugujemy success dla batch No Gui');
@@ -114,7 +112,7 @@ export class ItemsItemCreationEffects {
 
                                     if (formData.creationFormSetupState.mode === ItemCreationMode.SingleItem) {
                                         return of(new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID,
-                                            fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingFailed));
+                                            fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New));
                                     }
 
                                     return of(forceEndBatchItemCreation());
@@ -125,7 +123,7 @@ export class ItemsItemCreationEffects {
 
                                 if (formData.creationFormSetupState.mode === ItemCreationMode.SingleItem) {
                                     return of(new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID,
-                                        fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingFailed));
+                                        fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New));
                                 }
 
                                 return of(forceEndBatchItemCreation());

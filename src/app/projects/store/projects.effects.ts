@@ -76,22 +76,19 @@ export class ProjectsEffects {
                                     }
 
                                     this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Project saved', icon: SnackBarIcon.Success }));
-                                    return of(
-                                        resetProjectCreationForm(),
-                                        new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID,
-                                            fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingSuccessful));
+                                    return of(resetProjectCreationForm());
                                 }
                                 else {
                                     console.log(response.errorMessage);
                                     this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage, icon: SnackBarIcon.Error }));
                                     return of(new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID,
-                                        fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingFailed));
+                                        fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New));
                                 }
                             }), catchError(error => {
                                 console.log(error);
                                 this.sharedStore.dispatch(addSnackbarNotification({ notification: "Error during adding project", icon: SnackBarIcon.Error }));
                                 return of(new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID,
-                                    fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingFailed));
+                                    fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New));
                             }))
                         }))
                     }
@@ -111,6 +108,8 @@ export class ProjectsEffects {
                 new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.wiki', ''),
                 new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.parent_project', ''),
                 new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.inherit_public', box(['Public'])),
+                new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID,
+                    fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New),
                 new ResetAction(fromProjectsState.PROJECT_CREATION_FORMID));
         })
     ));
