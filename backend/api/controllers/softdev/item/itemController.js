@@ -40,7 +40,7 @@ module.exports.getPotentialRedmineItemsFromSDProject = async (req, res) => {
         retVal.errorMessage = "Missing itemLevel";
     }
 
-    const queryResults = await softDevDataProvider.getSDProjectPotentialRedmineItems(req.query.sourceSoftDevProject);
+    const queryResults = await softDevDataProvider.getSDProjectPotentialRedmineItems(req.query.sourceSoftDevProject, req.query.targetRedmineProject);
 
     retVal.records = queryResults;
 

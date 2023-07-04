@@ -76,22 +76,19 @@ export class ProjectsEffects {
                                     }
 
                                     this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Project saved', icon: SnackBarIcon.Success }));
-                                    return of(
-                                        resetProjectCreationForm(),
-                                        new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID,
-                                            fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingSuccessful));
+                                    return of(resetProjectCreationForm());
                                 }
                                 else {
                                     console.log(response.errorMessage);
                                     this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage, icon: SnackBarIcon.Error }));
                                     return of(new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID,
-                                        fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingFailed));
+                                        fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New));
                                 }
                             }), catchError(error => {
                                 console.log(error);
                                 this.sharedStore.dispatch(addSnackbarNotification({ notification: "Error during adding project", icon: SnackBarIcon.Error }));
                                 return of(new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID,
-                                    fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.SavingFailed));
+                                    fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New));
                             }))
                         }))
                     }
@@ -111,6 +108,8 @@ export class ProjectsEffects {
                 new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.wiki', ''),
                 new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.parent_project', ''),
                 new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.inherit_public', box(['Public'])),
+                new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID,
+                    fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New),
                 new ResetAction(fromProjectsState.PROJECT_CREATION_FORMID));
         })
     ));
@@ -122,7 +121,6 @@ export class ProjectsEffects {
                 return this.store.select(getSoftDevProjects).pipe(take(1), mergeMap(sdProjects => {
                     let sdProject = sdProjects.find(sd => sd.PRODUCT_VERSION_NAME == dialogData.controls.projectId.value);
                     if (sdProject) {
-                        console.log('Wypelniam forme z przycisku');
                         return of(new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.identifier', sdProject.PRODUCT_VERSION_NAME.replace(/\./g, "_").toLocaleLowerCase()),
                             new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.name', sdProject.PRODUCT_VERSION_NAME),
                             new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.description', this.createDescription(sdProject)),

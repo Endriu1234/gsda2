@@ -5,6 +5,7 @@ import { CRValidation } from '../models/cr-validation.model';
 import { IssueValidation } from '../models/issue-validation.model';
 import { TmsValidation } from '../models/tms-validation.model';
 import { FromIdValidation } from '../models/fromId-validation.model';
+import { ItemCreationMode } from '../state/items.item-creation-state';
 
 export function setRedmineProjectsFilterForItemCreation(state: State): State {
     const newState: State = _.cloneDeep(state);
@@ -34,5 +35,23 @@ export function addValidatedTms(state: State, args: { validatedTms: TmsValidatio
 export function addValidatedFromId(state: State, args: { validatedFromId: FromIdValidation }): State {
     const newState: State = _.cloneDeep(state);
     newState.itemCreationSetupData.validatedFromId.push(args.validatedFromId);
+    return newState;
+}
+
+export function startResetItemCreationForm(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemCreationSetupData.resetInProgress = true;
+    return newState;
+}
+
+export function endResetItemCreationForm(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemCreationSetupData.resetInProgress = false;
+    return newState;
+}
+
+export function setItemCreationFormMode(state: State, args: { mode: ItemCreationMode }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemCreationSetupData.mode = args.mode;
     return newState;
 }

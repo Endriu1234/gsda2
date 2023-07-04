@@ -8,7 +8,15 @@ import { IssueValidation } from "../models/issue-validation.model";
 import { TmsValidation } from "../models/tms-validation.model";
 import { FromIdValidation } from "../models/fromId-validation.model";
 
+export enum ItemCreationMode {
+    SingleItem = "SINGLE_ITEM_CREATION",
+    BatchItemWithGUI = "BATCH_ITEM_CREATION_WITH_GUI",
+    BatchItemWithoutGUI = "BATCH_ITEM_CREATION_WITHOUT_GUI"
+}
+
 export interface ItemCreationSetupData {
+    resetInProgress: boolean,
+    mode: ItemCreationMode,
     redmineTrackersLoaded: boolean;
     redmineTrackers: RedmineTracker[];
     redmineUsersLoaded: boolean;
@@ -25,6 +33,8 @@ export interface ItemCreationSetupData {
 
 export function getItemCreationSetupDataInitialState(): ItemCreationSetupData {
     return {
+        resetInProgress: false,
+        mode: ItemCreationMode.SingleItem,
         redmineTrackersLoaded: false,
         redmineTrackers: [],
         redmineUsersLoaded: false,

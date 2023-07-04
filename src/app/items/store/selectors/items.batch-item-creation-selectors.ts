@@ -15,4 +15,10 @@ export const getBatchItemCreationTMSCriteriaFormState = createSelector(getItemsS
 
 export const getBatchItemCreationRedmineCriteriaFormState = createSelector(getItemsState, (state: State) => state.batchItemCreationRedmineCriteriaFormData);
 
+export const getBatchItemsRecordsWithFormData = createSelector(getBatchItemCreationRecords, getBatchItemCreationFormData, (batchRecords, batchFormData) => {
+    return {
+        batchRecords: batchRecords,
+        batchFormData: batchFormData
+    }
+});
 

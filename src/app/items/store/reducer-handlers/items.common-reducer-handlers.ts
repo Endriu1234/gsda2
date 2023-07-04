@@ -6,6 +6,7 @@ import { RedmineTracker } from '../models/redmine-tracker.model';
 import { RedmineUser } from '../models/redmine-user.model';
 import { RedmineUserByLetter } from '../models/redmine-user-letter-model';
 import { SoftDevProject } from 'src/app/shared/store/models/softdev-project.model';
+import { StateActionPair } from '@ngrx/store/src/state';
 
 export function loadRedmineProjects(state: State, args: { redmineProjects: RedmineProject[] }): State {
     const newState: State = _.cloneDeep(state);

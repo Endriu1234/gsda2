@@ -3,8 +3,11 @@ import { CRValidation } from '../models/cr-validation.model';
 import { IssueValidation } from '../models/issue-validation.model';
 import { TmsValidation } from '../models/tms-validation.model';
 import { FromIdValidation } from '../models/fromId-validation.model';
+import { ItemCreationMode } from '../state/items.item-creation-state';
 
-export const resetItemCreationForm = createAction('[Items Component] Reset Item Creation From');
+export const startResetItemCreationForm = createAction('[Items Component] Start Reset Item Creation From');
+export const endResetItemCreationForm = createAction('[Items Component] End Reset Item Creation From');
+export const setItemCreationFormMode = createAction('[Items Component] Set Item Creation Form Mode', props<{ mode: ItemCreationMode }>());
 export const setRedmineProjectsFilterForItemCreation = createAction('[Items Component] Set Redmine Projects Filter For Item Creation');
 export const setRedmineUsersByLetterFilter = createAction('[Items Component] Set Redmine Users With Letter Filter');
 
