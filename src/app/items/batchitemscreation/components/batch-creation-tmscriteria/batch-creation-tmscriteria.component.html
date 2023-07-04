@@ -1,23 +1,57 @@
-<form novalidate>
+<ng-container *ngIf="formState$ | async as formState">
     <mat-card>
         <mat-card-content>
-            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
-                <mat-label>Client</mat-label>
-                <input type="text"  matInput>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
-                <mat-label>Redmine Target Project</mat-label>
-                <input type="text"  matInput>
-            </mat-form-field>
-            <mat-checkbox>Show Closed</mat-checkbox>
-            <mat-checkbox>Show Task in Client / Processing bin</mat-checkbox>
-            <mat-checkbox>Show Created</mat-checkbox>
-            <button
-            mat-fab
-            extended
-            color="primary"
-            class="me-3 my-2"
-        >Find</button>
+            <form novalidate [ngrxFormState]="formState">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-3">
+                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                                <mat-label>iTMS Task</mat-label>
+                                <input type="text" 
+                                    matInput
+                                    [ngrxFormControlState]="$any(formState).controls.iTMSTask"
+                                    [ngrxValueConverter]="trimUpper"
+                                >
+                            </mat-form-field>
+                        </div>
+                        <div class="col-3">
+                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                                <mat-label>Redmine Target Project</mat-label>
+                                <input type="text"
+                                    matInput
+                                    [ngrxFormControlState]="$any(formState).controls.targetRedmineProject"
+                                    [matAutocomplete]="autoRedmineProject"
+                                >
+                                <mat-autocomplete #autoRedmineProject="matAutocomplete">
+                                    <mat-option *ngFor="let project of (redmineProjectsFiltered$ | async)"
+                                        [value]="project.name"
+                                    >
+                                        {{project.name}}
+                                    </mat-option>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-6">
+                            <mat-checkbox color="primary" 
+                                [ngrxFormControlState]="$any(formState).controls.showCreated"
+                            >Show Created</mat-checkbox>
+                            <mat-checkbox color="primary" 
+                                [ngrxFormControlState]="$any(formState).controls.showClosed"
+                            >Show Closed</mat-checkbox>
+                            <mat-checkbox color="primary" 
+                                [ngrxFormControlState]="$any(formState).controls.showInClientBin"
+                            >Show Task in Client / Processing bin</mat-checkbox>
+                            <button
+                                mat-fab
+                                extended
+                                color="primary"
+                                class="ms-3 my-2"
+                            >Find</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </mat-card-content>
     </mat-card>
-</form>
+    <br>
+</ng-container>

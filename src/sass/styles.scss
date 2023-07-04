@@ -1,5 +1,15 @@
+@use '@angular/material' as mat;
 @import 'variables';
 @import '~animate.css/animate.min.css';
+
+
+.dense-1 {
+  @include mat.all-component-densities(-1);
+}
+
+.dense-2 {
+  @include mat.all-component-densities(-2);
+}
 
 @font-face {
     font-family: 'Material Symbols Rounded';

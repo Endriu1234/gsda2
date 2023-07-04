@@ -78,8 +78,15 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
         return n;
 
     }, 0);
-
+    
     return selectionCount > 0 && selectionCount === this.dataSource.data.length;
+  }
+
+  isIndeterminate() {
+    const isSelected = this.dataSource.data.some((element, index, arra) => {
+      return element.SELECTED;
+    });
+    return this.dataSource.data.length > 0 && isSelected && !this.isAllSelected();
   }
 
   toggleAllRows() {

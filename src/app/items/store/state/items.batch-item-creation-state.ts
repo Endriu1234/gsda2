@@ -4,6 +4,8 @@ import { ProposedItem } from "../models/batchitemcreation/proposed-item.model";
 import { createFormGroupState, FormGroupState } from "ngrx-forms";
 
 export const BATCH_ITEM_CREATION_SDCRITERIA_FORMID = "BATCH_ITEM_CREATION_SDCRITERIA_FORMID";
+export const BATCH_ITEM_CREATION_TMSCRITERIA_FORMID = "BATCH_ITEM_CREATION_TMSCRITERIA_FORMID";
+export const BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID = "BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID";
 
 export interface BatchItemCreationSdCriteriaFormData {
     targetRedmineProject: string,
@@ -31,6 +33,38 @@ export function getBatchItemCreationSdCriteriaSetupDataInitialState(): BatchItem
         redmineProjectsFiltered: [],
         softDevProjectsFiltered: []
     }
+}
+
+export interface BatchItemCreationTMSCriteriaFormData {
+    targetRedmineProject: string,
+    iTMSTask: string,
+    showClosed: boolean,
+    showCreated: boolean,
+    showInClientBin: boolean
+};
+
+export function getBatchItemCreationTMSCriteriaFormDataInitialState(): FormGroupState<BatchItemCreationTMSCriteriaFormData> {
+    return createFormGroupState<BatchItemCreationTMSCriteriaFormData>(BATCH_ITEM_CREATION_TMSCRITERIA_FORMID, {
+        targetRedmineProject: '',
+        iTMSTask: '',
+        showClosed: false,
+        showCreated: false,
+        showInClientBin: false
+    });
+}
+
+export interface BatchItemCreationRedmineCriteriaFormData {
+    targetRedmineProject: string,
+    sourceRedmineProject: string,
+    showCreated: boolean
+};
+
+export function getBatchItemCreationRedmineCriteriaFormDataInitialState(): FormGroupState<BatchItemCreationRedmineCriteriaFormData> {
+    return createFormGroupState<BatchItemCreationRedmineCriteriaFormData>(BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID, {
+        targetRedmineProject: '',
+        sourceRedmineProject: '',
+        showCreated: false
+    });
 }
 
 export interface BatchItemCreationRecords {

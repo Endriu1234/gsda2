@@ -20,7 +20,10 @@
                             </mat-form-field>
                         </div>
                         <div class="col-3">
-
+                            <mat-error
+                                *ngIf="formState.isTouched && (formState.errors._targetRedmineProject?.$validateProjectError || formState.errors._targetRedmineProject?.required)">
+                                Project is required
+                            </mat-error>
                             <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
                                 <mat-label>Redmine Target Project</mat-label>
                                 <input type="text"
@@ -49,11 +52,18 @@
                         <div class="col-3">
                             <mat-checkbox [ngrxFormControlState]="$any(formState).controls.showCreated">Show
                                 Created</mat-checkbox>
-                            <button mat-fab extended color="primary" (click)="search()">Find</button>
+                            <button 
+                                mat-fab 
+                                extended 
+                                color="primary" 
+                                class="ms-3 my-2"
+                                (click)="search()"
+                            >Find</button>
                         </div>
                     </div>
                 </div>
             </form>
         </mat-card-content>
     </mat-card>
+    <br>
 </ng-container>

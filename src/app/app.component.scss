@@ -19,6 +19,7 @@ mat-sidenav {
     line-height: 0;
     transform: rotate(180deg);
     vertical-align: baseline;
+    z-index: 0;
 }
 
 .custom-shape-back svg {
@@ -26,8 +27,10 @@ mat-sidenav {
     display: block;
     width: calc(156% + 1.3px);
     height: 180px;
+    z-index: 0;
 }
 
 .custom-shape-back .shape-fill {
     fill: #282828;
+    z-index: 0;
 }
