@@ -14,12 +14,10 @@ import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/
 import { Item } from '../models/item.model';
 import { endResetItemCreationForm, fillItemById, identifyAndFillItemById, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startResetItemCreationForm } from '../actions/items.item-creation-actions';
 import { noopAction } from '../actions/items.common-actions';
-import { getItemCreationDialogState, getItemCreationFormState, getItemCreationFormWithSetup } from '../selectors/items.item-creation-selectors';
+import { getItemCreationDialogState, getItemCreationFormState, getItemCreationFormWithSetup, getItemCreationMode } from '../selectors/items.item-creation-selectors';
 import { ITEM_CREATION_DIALOG, ITEM_CREATION_FORMID, ItemCreationMode } from '../state/items.item-creation-state';
 import { SnackBarIcon } from '../../../shared/store/shared.state';
 import { continueBatchItemsCreation, forceEndBatchItemCreation, setLinkToCurrentProposedItemAndUnselect } from '../actions/items.batch-item-creation-actions';
-
-
 
 export const validateUserError = "validateUserError";
 export const validateCRError = "validateCRError";
@@ -35,30 +33,35 @@ export class ItemsItemCreationEffects {
         private sharedStore: Store<fromSharedState.State>,
         private http: HttpClient) { }
 
-
-
     itemCreationFormSetValue$ = createEffect(() => this.actions$.pipe(
         ofType(SetValueAction.TYPE),
         switchMap((action: SetValueAction<any>) => {
-            if (action.controlId === ITEM_CREATION_FORMID + '.project')
-                return from(validateProject(this.store, validateProjectError, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilterForItemCreation())));
 
-            if (action.controlId === ITEM_CREATION_FORMID + '.user')
-                return from(validateUser(this.store, validateUserError, action.controlId, action.value).pipe(startWith(setRedmineUsersByLetterFilter())));
+            return this.store.select(getItemCreationMode).pipe(take(1), switchMap(creationMode => {
 
-            if (action.controlId === ITEM_CREATION_FORMID + '.cr')
-                return from(validateCR(this.store, this.http, validateCRError, action.controlId, action.value));
+                if (creationMode === ItemCreationMode.BatchItemWithoutGUI)
+                    return [noopAction()];
 
-            if (action.controlId === ITEM_CREATION_FORMID + '.issue')
-                return from(validateIssue(this.store, this.http, validateIssueError, action.controlId, action.value));
+                if (action.controlId === ITEM_CREATION_FORMID + '.project')
+                    return from(validateProject(this.store, validateProjectError, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilterForItemCreation())));
 
-            if (action.controlId === ITEM_CREATION_FORMID + '.tms')
-                return from(validateTms(this.store, this.http, validateTmsError, action.controlId, action.value));
+                if (action.controlId === ITEM_CREATION_FORMID + '.user')
+                    return from(validateUser(this.store, validateUserError, action.controlId, action.value).pipe(startWith(setRedmineUsersByLetterFilter())));
 
-            if (action.controlId === ITEM_CREATION_DIALOG + '.fromId')
-                return from(validateFromId(this.store, this.http, validateFromIdError, action.controlId, action.value));
+                if (action.controlId === ITEM_CREATION_FORMID + '.cr')
+                    return from(validateCR(this.store, this.http, validateCRError, action.controlId, action.value));
 
-            return of(noopAction());
+                if (action.controlId === ITEM_CREATION_FORMID + '.issue')
+                    return from(validateIssue(this.store, this.http, validateIssueError, action.controlId, action.value));
+
+                if (action.controlId === ITEM_CREATION_FORMID + '.tms')
+                    return from(validateTms(this.store, this.http, validateTmsError, action.controlId, action.value));
+
+                if (action.controlId === ITEM_CREATION_DIALOG + '.fromId')
+                    return from(validateFromId(this.store, this.http, validateFromIdError, action.controlId, action.value));
+
+                return of(noopAction());
+            }));
         })
     ));
 
