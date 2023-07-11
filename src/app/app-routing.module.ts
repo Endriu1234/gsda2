@@ -28,6 +28,10 @@ const routes: Routes = [
     {
         path: 'setup',
         loadChildren: () => import('./setup/setup.module').then(module => module.SetupModule)
+    },
+    {
+        path: 'auth',
+        loadChildren: () => import('./auth/auth.module').then(module => module.AuthModule)
     }
 ]
 
