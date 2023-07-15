@@ -22,3 +22,12 @@ export const getBatchItemsRecordsWithFormData = createSelector(getBatchItemCreat
     }
 });
 
+export const getIsAnyBatchItemsRecordsSelected = createSelector(getBatchItemCreationRecords, (batchRecords) => {
+    let retVal = false;
+    if (batchRecords && batchRecords.proposedItems) {
+        retVal = batchRecords.proposedItems.some(p => p.SELECTED);
+    }
+
+    return retVal;
+})
+

@@ -1,7 +1,9 @@
 export interface State {
-    loginInProgress: boolean
+    loginInProgress: boolean,
+    logged: boolean;
 }
 
 export const initialState: State = {
-    loginInProgress: false
+    loginInProgress: false,
+    logged: false
 }

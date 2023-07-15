@@ -3,7 +3,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ProposedItem } from 'src/app/items/store/models/batchitemcreation/proposed-item.model';
 import { Store } from '@ngrx/store';
 import * as fromItemsState from '../../../store/state/items.state';
-import { getBatchItemCreationFormData, getBatchItemCreationRecords } from 'src/app/items/store/selectors/items.batch-item-creation-selectors';
+import { getBatchItemCreationFormData, getBatchItemCreationRecords, getIsAnyBatchItemsRecordsSelected } from 'src/app/items/store/selectors/items.batch-item-creation-selectors';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection } from 'src/app/items/store/actions/items.batch-item-creation-actions';
 import { animate, state, style, transition, trigger } from '@angular/animations';
@@ -32,6 +32,7 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
   recordsSubscription: Subscription | null = null;
   expandedElement: ProposedItem | null = null;
   formState$: Observable<FormGroupState<any>>;
+  isAnyRecordSelected$!: Observable<boolean>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -44,6 +45,8 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
     this.recordsSubscription = this.store.select(getBatchItemCreationRecords).subscribe(records => {
       this.dataSource.data = records.proposedItems;
     });
+
+    this.isAnyRecordSelected$ = this.store.select(getIsAnyBatchItemsRecordsSelected);
   }
 
   ngOnDestroy(): void {
@@ -78,7 +81,7 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
         return n;
 
     }, 0);
-    
+
     return selectionCount > 0 && selectionCount === this.dataSource.data.length;
   }
 

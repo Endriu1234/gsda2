@@ -19,6 +19,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { ItemsGeneralEffects } from './store/effects/items.common-effects';
 import { ItemsItemCreationEffects } from './store/effects/items.item-creation-effects';
 import { ItemsBatchItemCreationEffects } from './store/effects/items.batch-item-creation-effects';
+import { DirectivesModule } from '../shared/directives/directives.module';
 
 
 
@@ -42,6 +43,7 @@ import { ItemsBatchItemCreationEffects } from './store/effects/items.batch-item-
     NgrxFormsModule,
     MatDialogModule,
     SmallSpinnerModule,
+    DirectivesModule,
     EffectsModule.forFeature([ItemsGeneralEffects, ItemsItemCreationEffects, ItemsBatchItemCreationEffects])
   ]
 })
