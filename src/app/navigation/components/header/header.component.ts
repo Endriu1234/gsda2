@@ -7,6 +7,7 @@ import * as fromAuthState from '../../../auth/store/auth.state'
 import * as fromAuthSelectors from '../../../auth/store/auth.selectors'
 
 import { toggleSidenav } from '../../store/navigation.actions';
+import { logout } from 'src/app/auth/store/auth.actions';
 
 
 @Component({
@@ -28,6 +29,11 @@ export class HeaderComponent implements OnInit {
 
   onToggleSideNav() {
     this.store.dispatch(toggleSidenav());
+  }
+
+  onLogout() {
+    this.authStore.dispatch(logout());
+
   }
 
 
