@@ -5,6 +5,7 @@ const crsRoutes = require('../../api/routes/softdev/crs/crsRoutes');
 const issuesRoutes = require('../../api/routes/softdev/issues/issuesRoutes');
 const tmsRoutes = require('../../api/routes/softdev/tms/tmsRoutes');
 const itemsSdRoutes = require('../../api/routes/softdev/item/itemRoutes');
+const authRoutes = require('./auth/authRoutes');
 const express = require('express');
 const router = express.Router();
 
@@ -15,5 +16,6 @@ router.use('/softdev/crs/', crsRoutes);
 router.use('/softdev/issues/', issuesRoutes);
 router.use('/softdev/tms/', tmsRoutes);
 router.use('/softdev/items', itemsSdRoutes);
+router.use('/auth/', authRoutes);
 
 module.exports = router;
