@@ -5,6 +5,7 @@ module.exports.login = async (req, res) => {
     const retVal = {
         success: false,
         errorMessage: '',
+        user: null,
         token: null,
         expiresIn: null
     };
@@ -28,6 +29,7 @@ module.exports.login = async (req, res) => {
                 expiresIn: process.env.JWT_EXPIRES_IN
             });
             retVal.expiresIn = process.env.JWT_EXPIRES_IN;
+            retVal.user = user.sAMAccountName;
             retVal.success = true;
         }
         else

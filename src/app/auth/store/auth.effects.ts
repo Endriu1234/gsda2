@@ -11,13 +11,13 @@ import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { AuthDataHttpResponse } from './models/auth-data-http-response'
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { getLoggingFormData } from './auth.selectors';
-
+import { AutoAuthService } from '../auto-auth.service';
 
 
 @Injectable()
 export class AuthEffects {
     constructor(private actions$: Actions, private store: Store<fromAuthState.State>,
-        private sharedStore: Store<fromSharedState.State>, private http: HttpClient) {
+        private sharedStore: Store<fromSharedState.State>, private http: HttpClient, private authAuthService: AutoAuthService) {
 
     }
 
@@ -31,8 +31,21 @@ export class AuthEffects {
                 return this.http.post<AuthDataHttpResponse>(environment.apiUrl + '/auth/login',
                     formData.value, { context }).pipe(switchMap(response => {
 
-                        if (response.success)
-                            return [loginSuccess({ authData: response })]
+                        if (response.success) {
+
+                            let expirationDate = null;
+
+                            if (response.expiresIn) {
+                                const expiresInHours = parseInt(response.expiresIn.replace('h', ''));
+                                const expiresInMiliseconds = expiresInHours * 60 * 60 * 1000;
+                                expirationDate = new Date((new Date().getTime() + expiresInMiliseconds));
+
+                                this.authAuthService.startSessionTimmer(expiresInMiliseconds);
+                                this.authAuthService.storeSession(response.user!, response.token!, expirationDate);
+                            }
+
+                            return [loginSuccess({ user: response.user!, token: response.token!, expirationDate })]
+                        }
 
                         return [loginFaliure()]
                     }));

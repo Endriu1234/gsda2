@@ -7,8 +7,9 @@ export interface LogingFormData {
 
 export interface State {
     loginInProgress: boolean,
+    user: string | null,
     token: string | null,
-    expiresIn: string | null,
+    expirationDate: Date | null,
     loggingFormData: FormGroupState<LogingFormData>;
 }
 
@@ -16,8 +17,9 @@ export const LOGGING_FORMID = "LOGGING_FORMID";
 
 export const initialState: State = {
     loginInProgress: false,
+    user: null,
     token: null,
-    expiresIn: null,
+    expirationDate: null,
     loggingFormData: createFormGroupState<LogingFormData>(LOGGING_FORMID, {
         user: '',
         password: ''

@@ -1,5 +1,4 @@
 import { State } from "./auth.state";
-import { AuthDataHttpResponse } from "./models/auth-data-http-response";
 
 export function startLogin(state: State): State {
     const newState: State = { ...state };
@@ -7,11 +6,12 @@ export function startLogin(state: State): State {
     return newState;
 };
 
-export function loginSuccess(state: State, args: { authData: AuthDataHttpResponse }): State {
+export function loginSuccess(state: State, args: { user: string, token: string, expirationDate: Date | null }): State {
     const newState: State = { ...state };
     newState.loginInProgress = false;
-    newState.token = args.authData.token;
-    newState.expiresIn = args.authData.expiresIn;
+    newState.user = args.user;
+    newState.token = args.token;
+    newState.expirationDate = args.expirationDate;
     return newState;
 };
 
@@ -19,13 +19,15 @@ export function loginFaliure(state: State): State {
     const newState: State = { ...state };
     newState.loginInProgress = false;
     newState.token = null;
-    newState.expiresIn = null;
+    newState.expirationDate = null;
+    newState.user = null;
     return newState;
 };
 
 export function logout(state: State): State {
     const newState: State = { ...state };
     newState.token = null;
-    newState.expiresIn = null;
+    newState.expirationDate = null;
+    newState.user = null;
     return newState;
 };

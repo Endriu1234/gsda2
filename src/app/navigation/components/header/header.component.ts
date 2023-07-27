@@ -2,12 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as fromRoot from '../../../app.reducer';
-import * as fromAuth from '../../../auth/store/auth.reducer'
 import * as fromAuthState from '../../../auth/store/auth.state'
 import * as fromAuthSelectors from '../../../auth/store/auth.selectors'
 
 import { toggleSidenav } from '../../store/navigation.actions';
-import { logout } from 'src/app/auth/store/auth.actions';
+import { AutoAuthService } from 'src/app/auth/auto-auth.service';
 
 
 @Component({
@@ -18,7 +17,7 @@ import { logout } from 'src/app/auth/store/auth.actions';
 export class HeaderComponent implements OnInit {
   isUserLogged$: Observable<boolean> | null = null;
 
-  constructor(private store: Store<fromRoot.State>, private authStore: Store<fromAuthState.State>) { }
+  constructor(private store: Store<fromRoot.State>, private authStore: Store<fromAuthState.State>, private autoAuthService: AutoAuthService) { }
 
   ngOnInit(): void {
     this.authStore.select(fromAuthSelectors.getIsUserLogged).subscribe(e => {
@@ -32,8 +31,7 @@ export class HeaderComponent implements OnInit {
   }
 
   onLogout() {
-    this.authStore.dispatch(logout());
-
+    this.autoAuthService.logout();
   }
 
 
