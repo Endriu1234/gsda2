@@ -20,9 +20,6 @@ export class HeaderComponent implements OnInit {
   constructor(private store: Store<fromRoot.State>, private authStore: Store<fromAuthState.State>, private autoAuthService: AutoAuthService) { }
 
   ngOnInit(): void {
-    this.authStore.select(fromAuthSelectors.getIsUserLogged).subscribe(e => {
-      console.log(`isLogged value: ${e}`);
-    });
     this.isUserLogged$ = this.authStore.select(fromAuthSelectors.getIsUserLogged);
   }
 

@@ -31,3 +31,15 @@ export function logout(state: State): State {
     newState.user = null;
     return newState;
 };
+
+export function setRedirectURLForLogin(state: State, args: { url: string }): State {
+    const newState: State = { ...state };
+    newState.redirectURL = args.url;
+    return newState;
+};
+
+export function clearRedirectURLForLogin(state: State): State {
+    const newState: State = { ...state };
+    newState.redirectURL = null;
+    return newState;
+};

@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { LogingFormData, State, initialState } from './auth.state';
-import { loginFaliure, loginSuccess, logout, startLogin } from './auth.actions';
+import { clearRedirectURLForLogin, loginFaliure, loginSuccess, logout, setRedirectURLForLogin, startLogin } from './auth.actions';
 import * as fromReducerHanders from './auth.reducer-handlers';
 import { onNgrxForms, wrapReducerWithFormStateUpdate, updateGroup, validate } from 'ngrx-forms';
 import { required } from 'ngrx-forms/validation';
@@ -17,7 +17,9 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
     on(startLogin, fromReducerHanders.startLogin),
     on(loginSuccess, fromReducerHanders.loginSuccess),
     on(loginFaliure, fromReducerHanders.loginFaliure),
-    on(logout, fromReducerHanders.logout)
+    on(logout, fromReducerHanders.logout),
+    on(setRedirectURLForLogin, fromReducerHanders.setRedirectURLForLogin),
+    on(clearRedirectURLForLogin, fromReducerHanders.clearRedirectURLForLogin)
 );
 
 export const authReducer = wrapReducerWithFormStateUpdate(

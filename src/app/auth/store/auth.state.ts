@@ -10,6 +10,7 @@ export interface State {
     user: string | null,
     token: string | null,
     expirationDate: Date | null,
+    redirectURL: string | null,
     loggingFormData: FormGroupState<LogingFormData>;
 }
 
@@ -20,6 +21,7 @@ export const initialState: State = {
     user: null,
     token: null,
     expirationDate: null,
+    redirectURL: null,
     loggingFormData: createFormGroupState<LogingFormData>(LOGGING_FORMID, {
         user: '',
         password: ''

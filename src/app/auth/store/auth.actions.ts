@@ -9,3 +9,5 @@ export const loginSuccess = createAction('[Auth Component] Login Success', props
 }>());
 export const loginFaliure = createAction('[Auth Component] Login Faliure');
 export const logout = createAction('[Auth Component] Log out');
+export const setRedirectURLForLogin = createAction('[Auth Component] Set redirect URL for Login', props<{ url: string }>());
+export const clearRedirectURLForLogin = createAction('[Auth Component] Clear redirect URL for Login');
