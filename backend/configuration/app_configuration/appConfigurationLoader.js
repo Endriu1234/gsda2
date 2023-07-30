@@ -3,6 +3,7 @@ const methodOverride = require('method-override');
 const mongoSanitize = require('express-mongo-sanitize');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 function configurePATH() {
     process.env['PATH'] = `${process.env.ORACLE_CLIENT_PATH};` + process.env['PATH'];
@@ -17,6 +18,7 @@ async function connectToMongo() {
 }
 
 function setupMiddleWares(app) {
+    app.use(cors());
     app.use(bodyParser.json());
     app.use(express.urlencoded({ extended: true }));
     app.use(methodOverride('_method'));
@@ -25,21 +27,10 @@ function setupMiddleWares(app) {
             replaceWith: '_' // 
         }
     ));
-    app.use((req, res, next) => {
-        res.setHeader('Access-Control-Allow-Origin', "*");
-        res.setHeader('Access-Control-Allow-Headers', "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-        res.setHeader('Access-Control-Allow-Methods', "GET, POST, PUT, PATCH, DELETE, OPTIONS");
-        next();
-    });
-
 }
 
 module.exports.loadAppConfiguration = (app, directory) => {
     configurePATH();
     connectToMongo();
-    //setupViewsAndStatic(app, directory);
     setupMiddleWares(app);
-    //setupSession(app);
-    //    setupFlashMessages(app);
-    //setupSecurity(app);
 }
