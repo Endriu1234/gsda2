@@ -1,3 +1,29 @@
 .mat-primary {
     background-color: #282828;
 }
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+a:hover,
+a:active {
+    color: lightgray;
+}
+
+.navigation-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: inline;
+}
+
+li {
+    display: inline;
+    margin-left: 10px;
+}
+
+div {
+    margin-left: auto;
+}

@@ -9,6 +9,7 @@ import { clearDisplayedSnackbarNotifications } from './shared/store/shared.actio
 import * as fromSharedState from './shared/store/shared.state';
 import * as fromShared from './shared/store/shared.reducer';
 import Swal from 'sweetalert2';
+import { AutoAuthService } from './auth/auto-auth.service';
 
 
 @Component({
@@ -27,11 +28,12 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'GSDA';
 
   constructor(private navigationStore: Store<fromNavigation.State>,
-    private sharedStore: Store<fromSharedState.State>) {
+    private sharedStore: Store<fromSharedState.State>, private autoAuthService: AutoAuthService) {
     this.isSidenavOpened$ = this.navigationStore.select(fromNavigation.getSidenavOpened);
   }
 
   ngOnInit(): void {
+    this.autoAuthService.tryAutoLogin();
     this.notificationSub = this.sharedStore.select(fromShared.getSnackbarNotifications).subscribe(notifications => {
       const newNotifications = notifications.filter(n => n.timestamp > this.readedNotificationTimestamp);
 

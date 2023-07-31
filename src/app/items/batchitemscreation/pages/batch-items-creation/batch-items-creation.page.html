@@ -41,15 +41,8 @@
             </div>
         </div>
         <div>
-            <table mat-table 
-                [dataSource]="dataSource" 
-                multiTemplateDataRows 
-                matSort 
-                cdkDropList
-                cdkDropListOrientation="horizontal" 
-                (cdkDropListDropped)="drop($event)" 
-                class="mat-elevation-z1"
-            >
+            <table mat-table [dataSource]="dataSource" multiTemplateDataRows matSort cdkDropList
+                cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)" class="mat-elevation-z1">
                 <ng-container matColumnDef="SELECT">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header [disabled]="!isIndeterminate()" cdkDrag>
                         <mat-checkbox color="primary" (change)="$event ? toggleAllRows() : null" [checked]="isAllSelected()"
@@ -140,7 +133,7 @@
                         extended 
                         color="primary" 
                         class="me-3 my-2" 
-                        [disabled]="!(getBatchItemCreationCanActivateCreate$ | async)"
+                        [disableMatFabButton]="!(isAnyRecordSelected$ | async)"
                         (click)="createBatch()"
                     >Create Batch</button>
                 </form>

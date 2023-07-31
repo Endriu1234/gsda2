@@ -60,10 +60,10 @@
                         <div class="col-3">
                             <mat-checkbox color="primary" [ngrxFormControlState]="$any(formState).controls.showCreated">Show
                                 Created</mat-checkbox>
-                            <button 
-                                mat-fab 
-                                extended 
-                                color="primary" 
+                            <button
+                                mat-fab
+                                extended
+                                color="primary"
                                 class="ms-3 my-2"
                                 [disabled]="!(getBatchItemCreationSDCriteriaCanActivateFind$ | async)"
                                 (click)="search()"

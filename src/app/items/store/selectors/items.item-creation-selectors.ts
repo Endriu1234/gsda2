@@ -5,6 +5,7 @@ import { FormControlState, FormGroupState } from 'ngrx-forms';
 import { ItemCreationFromData } from '../state/items.item-creation-state';
 
 export const getItemCreationSetupData = createSelector(getItemsState, (state: State) => state.itemCreationSetupData);
+export const getItemCreationMode = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.mode);
 export const getRedmineProjectsFilteredForItemCreation = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineProjectsFiltered);
 
 export const getRedmineUsersByLetter = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineUsersByLetter);

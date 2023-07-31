@@ -3,7 +3,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ProposedItem } from 'src/app/items/store/models/batchitemcreation/proposed-item.model';
 import { Store } from '@ngrx/store';
 import * as fromItemsState from '../../../store/state/items.state';
-import { getBatchItemCreationCanActivateCreate, getBatchItemCreationCanActivateGrid, getBatchItemCreationFormDeletedColumns, getBatchItemCreationFormData, getBatchItemCreationRecords, hasBatchItemCreationFormDeletedColumns, getBatchItemCreationFormDisplayedColumns, getBatchItemCreationFormDisplayedColumnsLength, hasBatchItemCreationFormDeletedColumnsSelToAdd } from 'src/app/items/store/selectors/items.batch-item-creation-selectors';
+import { getBatchItemCreationCanActivateGrid, getIsAnyBatchItemsRecordsSelected, getBatchItemCreationFormDeletedColumns, getBatchItemCreationFormData, getBatchItemCreationRecords, hasBatchItemCreationFormDeletedColumns, getBatchItemCreationFormDisplayedColumns, getBatchItemCreationFormDisplayedColumnsLength, hasBatchItemCreationFormDeletedColumnsSelToAdd } from 'src/app/items/store/selectors/items.batch-item-creation-selectors';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { addBatchItemCreationFormColumn, deleteBatchItemCreationFormColumn, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection } from 'src/app/items/store/actions/items.batch-item-creation-actions';
 import { animate, state, style, transition, trigger } from '@angular/animations';
@@ -33,7 +33,6 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
   expandedElement: ProposedItem | null = null;
   formState$: Observable<FormGroupState<any>>;
   getBatchItemCreationCanActivateGrid$: Observable<boolean> | null = null;
-  getBatchItemCreationCanActivateCreate$: Observable<boolean> | null = null;
   hasDeletedColumns$: Observable<boolean> | null = null;
   hasDeletedColumnsSelToAdd$: Observable<boolean> | null = null;
   deletedColumns$: Observable<string[]> | null = null;
@@ -41,6 +40,7 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
   displayedColumnsLength$: Observable<number> | null = null;
 
   selectedDeletedValues = "";
+  isAnyRecordSelected$!: Observable<boolean>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -59,13 +59,13 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
     });
 
     this.getBatchItemCreationCanActivateGrid$ = this.store.select(getBatchItemCreationCanActivateGrid);
-    this.getBatchItemCreationCanActivateCreate$ = this.store.select(getBatchItemCreationCanActivateCreate);
     this.hasDeletedColumns$ = this.store.select(hasBatchItemCreationFormDeletedColumns);
     this.hasDeletedColumnsSelToAdd$ = this.store.select(hasBatchItemCreationFormDeletedColumnsSelToAdd);
     this.deletedColumns$ = this.store.select(getBatchItemCreationFormDeletedColumns);
     this.displayedColumns$ = this.store.select(getBatchItemCreationFormDisplayedColumns);
     this.displayedColumnsLength$ = this.store.select(getBatchItemCreationFormDisplayedColumnsLength);
     this.dataSource.sortData = this.sortData();
+    this.isAnyRecordSelected$ = this.store.select(getIsAnyBatchItemsRecordsSelected);
   }
 
   ngOnDestroy(): void {
@@ -100,7 +100,7 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
         return n;
 
     }, 0);
-    
+
     return selectionCount > 0 && selectionCount === this.dataSource.data.length;
   }
 

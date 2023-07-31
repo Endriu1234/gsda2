@@ -6,19 +6,23 @@ import * as fromProjects from './projects/store/projects.reducer';
 import * as fromProjectsState from './projects/store/projects.state';
 import * as fromShared from './shared/store/shared.reducer';
 import * as fromSharedState from './shared/store/shared.state';
+import * as fromAuthState from './auth/store/auth.state';
+import * as fromAuth from './auth/store/auth.reducer';
 
 export interface State {
     [fromNavigation.navigationReducerKey]: fromNavigation.State,
     [fromItems.itemsReducerKey]: fromItemsState.State,
     [fromProjects.projectsReducerKey]: fromProjectsState.State,
-    [fromShared.sharedReducerKey]: fromSharedState.State
+    [fromShared.sharedReducerKey]: fromSharedState.State,
+    [fromAuth.authReducerKey]: fromAuthState.State
 }
 
 export const reducers: ActionReducerMap<State> = {
     [fromNavigation.navigationReducerKey]: fromNavigation.navigationReducer,
     [fromItems.itemsReducerKey]: fromItems.itemsReducer,
     [fromProjects.projectsReducerKey]: fromProjects.projectsReducer,
-    [fromShared.sharedReducerKey]: fromShared.sharedReducer
+    [fromShared.sharedReducerKey]: fromShared.sharedReducer,
+    [fromAuth.authReducerKey]: fromAuth.authReducer
 };
 
 

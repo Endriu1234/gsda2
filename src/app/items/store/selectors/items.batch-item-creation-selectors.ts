@@ -49,30 +49,6 @@ function canBatchItemCreationCanActivateGrid(batchRecords: BatchItemCreationReco
     return true;
 }
 
-export const getBatchItemCreationCanActivateCreate = createSelector(getBatchItemCreationRecords, canBatchItemCreationCanActivateCreate);
-
-function canBatchItemCreationCanActivateCreate(batchRecords: BatchItemCreationRecords): boolean {
-    if (!batchRecords.proposedItems || batchRecords.proposedItems.length <= 0 || !isAtLeastOneCheckboxMarked(batchRecords.proposedItems)) {
-        return false;
-    }
-
-    return true;
-}
-
-function isAtLeastOneCheckboxMarked(items: ProposedItem[]): boolean {
-    let bRet = false;
-    for (let i = 0; i < items.length; i++) {
-        if (items[i].SELECTED) {
-            bRet = true;
-            break;
-        } 
-    }
-
-    //items.find(i => i.SELECTED == true) ? bRet = true : bRet = false;
-
-    return bRet;
-}
-
 export const getBatchItemCreationFormDeletedColumns = createSelector(getBatchItemCreationFormDataAddon, (batchFormDataAddon) => {
     return batchFormDataAddon.value.deletedColumns;
 });
@@ -88,3 +64,12 @@ export const getBatchItemCreationFormDisplayedColumns = createSelector(getBatchI
 export const getBatchItemCreationFormDisplayedColumnsLength = createSelector(getBatchItemCreationFormDataAddon, (batchFormDataAddon) => {
     return batchFormDataAddon.value.displayedColumns.length;
 });
+export const getIsAnyBatchItemsRecordsSelected = createSelector(getBatchItemCreationRecords, (batchRecords) => {
+    let retVal = false;
+    if (batchRecords && batchRecords.proposedItems) {
+        retVal = batchRecords.proposedItems.some(p => p.SELECTED);
+    }
+
+    return retVal;
+})
+

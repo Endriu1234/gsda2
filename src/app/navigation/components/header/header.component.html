@@ -1,5 +1,12 @@
 <mat-toolbar color="primary">
 
     <app-menu-switch></app-menu-switch>
-
+    <div>
+        <ul class="navigation-items">
+            <li *ngIf="!(isUserLogged$ | async)"><a routerLink="/auth/login">Login</a></li>
+            <li *ngIf="(isUserLogged$ | async)">
+                <a style="cursor: pointer" [routerLink]="" (click)="onLogout()">Logout</a>
+            </li>
+        </ul>
+    </div>
 </mat-toolbar>
