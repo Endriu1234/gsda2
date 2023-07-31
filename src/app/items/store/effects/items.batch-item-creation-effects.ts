@@ -4,8 +4,8 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as fromItemsState from '../state/items.state';
 import * as fromSharedState from '../../../shared/store/shared.state';
 import { Store } from '@ngrx/store';
-import { catchError, of, switchMap, take } from "rxjs";
-import { ResetAction, SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
+import { catchError, from, of, startWith, switchMap, take } from "rxjs";
+import { ResetAction, SetUserDefinedPropertyAction, SetValueAction, validate } from 'ngrx-forms';
 import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 import { environment } from 'src/environments/environment';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
@@ -19,6 +19,12 @@ import { Router } from '@angular/router';
 import { ProposedItem } from '../models/batchitemcreation/proposed-item.model';
 import { setItemCreationFormMode, startResetItemCreationForm } from '../actions/items.item-creation-actions';
 import { ITEM_CREATION_FORMID, ItemCreationMode } from '../state/items.item-creation-state';
+import { validateRedmineProject, validateSDProject } from '../batch-items.validation';
+import { required } from 'ngrx-forms/validation';
+
+export const validateSDTargetRedmineProjectError = "validateSDTargetRedmineProjectError";
+export const validateSDSourceSoftDevProjectError = "validateSDSourceSoftDevProjectError";
+export const validateItemLevelError = "validateItemLevelError";
 
 @Injectable()
 export class ItemsBatchItemCreationEffects {
@@ -56,9 +62,10 @@ export class ItemsBatchItemCreationEffects {
                             params = params.append("targetRedmineProject", formData.value.targetRedmineProject);
                             params = params.append("itemLevel", formData.value.itemLevel);
                             params = params.append("showCreated", formData.value.showCreated);
+                            let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
 
                             return this.http.get<BatchItemSearchHttpResponse>(environment.apiUrl + '/softdev/items/get-potential-redmine-items-from-sdproject',
-                                { params })
+                                { params, context })
                                 .pipe(switchMap(response => {
                                     if (response.success) {
 
@@ -165,4 +172,21 @@ export class ItemsBatchItemCreationEffects {
         })
     ));
 
+
+    
+    batchItemSDCriteriaFormSetValue$ = createEffect(() => this.actions$.pipe(
+        ofType(SetValueAction.TYPE),
+        switchMap((action: SetValueAction<any>) => {
+            if (action.controlId === BATCH_ITEM_CREATION_SDCRITERIA_FORMID + '.sourceSoftDevProject')
+                return from(validateSDProject(this.store, validateSDSourceSoftDevProjectError, action.controlId, action.value).pipe(startWith(setSoftDevProjectsFilterForBatchItemCreationSdCriteria())));
+
+            if (action.controlId === BATCH_ITEM_CREATION_SDCRITERIA_FORMID + '.targetRedmineProject')
+                return from(validateRedmineProject(this.store, validateSDTargetRedmineProjectError, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilterForBatchItemCreationSdCriteria())));
+            
+            if (action.controlId === BATCH_ITEM_CREATION_SDCRITERIA_FORMID + '.itemLevel')
+                return of(validate(required));
+
+            return of(noopAction());
+        })
+    ));
 }

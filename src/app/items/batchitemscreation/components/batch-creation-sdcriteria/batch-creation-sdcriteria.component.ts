@@ -20,6 +20,8 @@ export class BatchCreationSDCriteriaComponent implements OnInit {
   redmineProjectsFiltered$: Observable<RedmineProject[]> | null = null;
   softDevProjectsFiltered$: Observable<SoftDevProject[]> | null = null;
   formState$: Observable<FormGroupState<any>>;
+  getBatchItemCreationSDCriteriaCanActivateFind$: Observable<boolean> | null = null;
+  isGridFilled$: Observable<boolean> | null = null;
 
   constructor(private store: Store<fromItemsState.State>) {
     this.formState$ = this.store.select(fromBatchItemsSelectors.getBatchItemCreationSdCriteriaFormState);
@@ -38,6 +40,9 @@ export class BatchCreationSDCriteriaComponent implements OnInit {
 
     this.redmineProjectsFiltered$ = this.store.select(fromBatchItemsSelectors.getRedmineProjectsFilteredForBatchItemCreation);
     this.softDevProjectsFiltered$ = this.store.select(fromBatchItemsSelectors.getSoftDevProjectsFilteredForBatchItemCreation);
+
+    this.getBatchItemCreationSDCriteriaCanActivateFind$ = this.store.select(fromBatchItemsSelectors.getBatchItemCreationSDCriteriaCanActivateFind);
+    this.isGridFilled$ = this.store.select(fromBatchItemsSelectors.getBatchItemCreationCanActivateGrid);
   }
 
   search(): void {

@@ -1,5 +1,5 @@
 import { FormGroupState } from "ngrx-forms";
-import { BatchItemCreationFormData, BatchItemCreationRecords, BatchItemCreationRedmineCriteriaFormData, BatchItemCreationSdCriteriaFormData, BatchItemCreationSdCriteriaSetupData, BatchItemCreationTMSCriteriaFormData, getBatchItemCreationFormDataInitialState, getBatchItemCreationRecordsInitialState, getBatchItemCreationRedmineCriteriaFormDataInitialState, getBatchItemCreationSdCriteriaFormDataInitialState, getBatchItemCreationSdCriteriaSetupDataInitialState, getBatchItemCreationTMSCriteriaFormDataInitialState } from "./items.batch-item-creation-state";
+import { BatchItemCreationFormData, BatchItemCreationFormDataAddon, BatchItemCreationRecords, BatchItemCreationRedmineCriteriaFormData, BatchItemCreationSdCriteriaFormData, BatchItemCreationSdCriteriaSetupData, BatchItemCreationTMSCriteriaFormData, getBatchItemCreationFormDataAddonInitialState, getBatchItemCreationFormDataInitialState, getBatchItemCreationRecordsInitialState, getBatchItemCreationRedmineCriteriaFormDataInitialState, getBatchItemCreationSdCriteriaFormDataInitialState, getBatchItemCreationSdCriteriaSetupDataInitialState, getBatchItemCreationTMSCriteriaFormDataInitialState } from "./items.batch-item-creation-state";
 import { getItemCreationFromDataInitialState, getItemCreationFromIdDialogInitialState, getItemCreationSetupDataInitialState, ItemCreationFromData, ItemCreationFromIdDialog, ItemCreationSetupData } from "./items.item-creation-state";
 import { ItemsSetupData, getItemsSetupDataInitialState } from "./items.common-state";
 
@@ -12,6 +12,7 @@ export interface State {
     batchItemCreationSdCriteriaFormData: FormGroupState<BatchItemCreationSdCriteriaFormData>;
     batchItemCreationRecords: BatchItemCreationRecords;
     batchItemCreationFormData: FormGroupState<BatchItemCreationFormData>;
+    batchItemCreationFormDataAddon: FormGroupState<BatchItemCreationFormDataAddon>;
     batchItemCreationTMSCriteriaFormData: FormGroupState<BatchItemCreationTMSCriteriaFormData>;
     batchItemCreationRedmineCriteriaFormData: FormGroupState<BatchItemCreationRedmineCriteriaFormData>;
 }
@@ -27,6 +28,7 @@ export const initialState: State = {
     batchItemCreationRecords: getBatchItemCreationRecordsInitialState(),
     batchItemCreationSdCriteriaFormData: getBatchItemCreationSdCriteriaFormDataInitialState(),
     batchItemCreationFormData: getBatchItemCreationFormDataInitialState(),
+    batchItemCreationFormDataAddon: getBatchItemCreationFormDataAddonInitialState(),
 
     batchItemCreationTMSCriteriaFormData: getBatchItemCreationTMSCriteriaFormDataInitialState(),
 

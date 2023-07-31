@@ -10,3 +10,5 @@ export const startBatchItemsCreation = createAction('[Items Component] Start Bat
 export const forceEndBatchItemCreation = createAction('[Items Component] Force End Batch Items Creation');
 export const continueBatchItemsCreation = createAction('[Items Component] Continue Batch Items Creation');
 export const setLinkToCurrentProposedItemAndUnselect = createAction('[Items Component] set Link to current Proposed Item and unselect', props<{ redmineLink: string }>());
+export const deleteBatchItemCreationFormColumn = createAction('[Items Component] delete Column From Batch Item Grid', props<{ column: string }>());
+export const addBatchItemCreationFormColumn = createAction('[Items Component] add Deleted Column To Batch Item Grid');
