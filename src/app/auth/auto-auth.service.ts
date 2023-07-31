@@ -3,6 +3,8 @@ import { Store } from '@ngrx/store';
 import { State } from './store/auth.state';
 import { loginSuccess, logout } from './store/auth.actions';
 import { AuthDataHttpResponse } from './store/models/auth-data-http-response';
+import { environment } from 'src/environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +44,18 @@ export class AutoAuthService {
       else
         this.clearSession();
     }
+    else
+      this.tryLoginFakeUser();
+  }
+
+  tryLoginFakeUser() {
+
+    if (environment.fakeUser) {
+      let expirationDate = new Date();
+      expirationDate = new Date(expirationDate.getTime() + 1000 * 60 * 60 * 24);
+      this.authStore.dispatch(loginSuccess({ user: environment.fakeUser, token: 'FakeToken', expirationDate }));
+    }
+
   }
 
   logout() {
