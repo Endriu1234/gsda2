@@ -25,5 +25,25 @@ module.exports.createRedmineItem = async (req, res) => {
         errorMessage: ''
     };
 
+    const validationResult = await redmineItemValidator.validateRedmineItem(req.body);
+
+    if (validationResult.isValid) {
+        const itemJson = await convertFormItemObjectToJSON(req.body);
+        const result = await postRedmineJsonData('issues.json', itemJson);
+
+        if (!result.success) {
+            retVal.success = false;
+            retVal.errorMessage = 'Redmine Item not created. Save failed.';
+        }
+        else
+            retVal.redmineLink = `${getRedmineAddress(`issues/${result.redmineResponse.data.issue.id}`)}`;
+    }
+    else {
+        retVal.success = false;
+        retVal.errorMessage = validationResult.errorMsg;
+    }
+
+    return res.status(200).json(retVal);
+
     return res.status(200).json(retVal);
 }
