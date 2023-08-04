@@ -21,6 +21,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
     imports: [
@@ -43,7 +44,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         MatTableModule,
         MatPaginatorModule,
         MatSortModule,
-        DragDropModule
+        DragDropModule,
+        MatMenuModule
     ],
     declarations: [
         NgrxMatSelectViewAdapter,
@@ -73,7 +75,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         MatTableModule,
         MatPaginatorModule,
         MatSortModule,
-        DragDropModule
+        DragDropModule,
+        MatMenuModule
     ],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { float: 'always' } },

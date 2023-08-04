@@ -27,3 +27,23 @@ li {
 div {
     margin-left: auto;
 }
+
+.menu-item-icon {
+    vertical-align: middle;
+}
+
+.nav-caption {
+    display: inline-block;
+    padding-left: 6px;
+    font: 400 16px/24px Roboto, sans-serif;
+    letter-spacing: .03125em;
+    vertical-align: sub;
+}
+
+.login {
+    vertical-align: super;
+}
+
+li {
+    font-size: 16px;
+}

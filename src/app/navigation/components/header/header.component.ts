@@ -7,6 +7,7 @@ import * as fromAuthSelectors from '../../../auth/store/auth.selectors'
 
 import { toggleSidenav } from '../../store/navigation.actions';
 import { AutoAuthService } from 'src/app/auth/auto-auth.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -15,12 +16,12 @@ import { AutoAuthService } from 'src/app/auth/auto-auth.service';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  isUserLogged$: Observable<boolean> | null = null;
+  getUserLogin$: Observable<string | null> | null = null;
 
-  constructor(private store: Store<fromRoot.State>, private authStore: Store<fromAuthState.State>, private autoAuthService: AutoAuthService) { }
+  constructor(private router: Router, private store: Store<fromRoot.State>, private authStore: Store<fromAuthState.State>, private autoAuthService: AutoAuthService) { }
 
   ngOnInit(): void {
-    this.isUserLogged$ = this.authStore.select(fromAuthSelectors.getIsUserLogged);
+    this.getUserLogin$ = this.authStore.select(fromAuthSelectors.getUserLogin);
   }
 
   onToggleSideNav() {
@@ -29,6 +30,9 @@ export class HeaderComponent implements OnInit {
 
   onLogout() {
     this.autoAuthService.logout();
+  }
+  onLogin() {
+    this.router.navigateByUrl('/auth/login');
   }
 
 

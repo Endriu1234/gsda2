@@ -3,10 +3,23 @@
     <app-menu-switch></app-menu-switch>
     <div>
         <ul class="navigation-items">
-            <li *ngIf="!(isUserLogged$ | async)"><a routerLink="/auth/login">Login</a></li>
-            <li *ngIf="(isUserLogged$ | async)">
-                <a style="cursor: pointer" [routerLink]="" (click)="onLogout()">Logout</a>
+            <li *ngIf="(getUserLogin$ | async)"><span class="login">{{getUserLogin$ | async}}</span></li>
+            <li>
+                <button mat-icon-button [disableRipple]="true" [matMenuTriggerFor]="menu">
+                    <span class="material-symbols-rounded">more_vert</span>
+                </button>
             </li>
         </ul>
+        <mat-menu #menu="matMenu">
+            <button *ngIf="!(getUserLogin$ | async)" mat-menu-item (click)="onLogin()">
+              <span class="material-symbols-rounded menu-item-icon">login</span>
+              <span class="nav-caption">Login</span>
+            
+            </button>
+            <button *ngIf="(getUserLogin$ | async)" mat-menu-item (click)="onLogout()">
+              <span class="material-symbols-rounded menu-item-icon">logout</span>
+              <span class="nav-caption">Logout</span>
+            </button>
+        </mat-menu>
     </div>
 </mat-toolbar>
