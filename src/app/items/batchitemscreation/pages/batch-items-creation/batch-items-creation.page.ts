@@ -3,9 +3,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ProposedItem } from 'src/app/items/store/models/batchitemcreation/proposed-item.model';
 import { Store } from '@ngrx/store';
 import * as fromItemsState from '../../../store/state/items.state';
-import { getBatchItemCreationFormData, getBatchItemCreationRecords, getIsAnyBatchItemsRecordsSelected } from 'src/app/items/store/selectors/items.batch-item-creation-selectors';
+import { getBatchItemCreationCanActivateGrid, getIsAnyBatchItemsRecordsSelected, getBatchItemCreationFormDeletedColumns, getBatchItemCreationFormData, getBatchItemCreationRecords, hasBatchItemCreationFormDeletedColumns, getBatchItemCreationFormDisplayedColumns, getBatchItemCreationFormDisplayedColumnsLength, hasBatchItemCreationFormDeletedColumnsSelToAdd } from 'src/app/items/store/selectors/items.batch-item-creation-selectors';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection } from 'src/app/items/store/actions/items.batch-item-creation-actions';
+import { addBatchItemCreationFormColumn, deleteBatchItemCreationFormColumn, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection } from 'src/app/items/store/actions/items.batch-item-creation-actions';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -27,11 +27,19 @@ import { FormGroupState } from 'ngrx-forms';
 })
 export class BatchItemsCreationPage implements OnInit, OnDestroy {
 
-  displayedColumns: string[] = ['SELECT', 'SUBJECT', 'ISSUE', 'CR', 'expand'];
+  //displayedColumns: string[] = ['SELECT', 'SUBJECT', 'ISSUE', 'CR', 'expand'];
   dataSource: MatTableDataSource<ProposedItem> = new MatTableDataSource<ProposedItem>([]);
   recordsSubscription: Subscription | null = null;
   expandedElement: ProposedItem | null = null;
   formState$: Observable<FormGroupState<any>>;
+  getBatchItemCreationCanActivateGrid$: Observable<boolean> | null = null;
+  hasDeletedColumns$: Observable<boolean> | null = null;
+  hasDeletedColumnsSelToAdd$: Observable<boolean> | null = null;
+  deletedColumns$: Observable<string[]> | null = null;
+  displayedColumns$: Observable<string[]> | null = null;
+  displayedColumnsLength$: Observable<number> | null = null;
+
+  selectedDeletedValues = "";
   isAnyRecordSelected$!: Observable<boolean>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -41,11 +49,22 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
     this.formState$ = this.store.select(getBatchItemCreationFormData);
   }
 
+  ngOnChanges(): void {
+    
+  }
+
   ngOnInit(): void {
     this.recordsSubscription = this.store.select(getBatchItemCreationRecords).subscribe(records => {
       this.dataSource.data = records.proposedItems;
     });
 
+    this.getBatchItemCreationCanActivateGrid$ = this.store.select(getBatchItemCreationCanActivateGrid);
+    this.hasDeletedColumns$ = this.store.select(hasBatchItemCreationFormDeletedColumns);
+    this.hasDeletedColumnsSelToAdd$ = this.store.select(hasBatchItemCreationFormDeletedColumnsSelToAdd);
+    this.deletedColumns$ = this.store.select(getBatchItemCreationFormDeletedColumns);
+    this.displayedColumns$ = this.store.select(getBatchItemCreationFormDisplayedColumns);
+    this.displayedColumnsLength$ = this.store.select(getBatchItemCreationFormDisplayedColumnsLength);
+    this.dataSource.sortData = this.sortData();
     this.isAnyRecordSelected$ = this.store.select(getIsAnyBatchItemsRecordsSelected);
   }
 
@@ -60,11 +79,11 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
   }
 
   removeColumn(column: string) {
-    this.displayedColumns = this.displayedColumns.filter(colName => colName !== column);
+    this.store.dispatch(deleteBatchItemCreationFormColumn({ column: column }));
   }
 
   drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
+    //moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
   }
 
   toggleRowSelection(row: ProposedItem) {
@@ -104,7 +123,58 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
       this.dataSource.paginator.firstPage();
   }
 
+  sortData() {
+    let sortFunction = (items: ProposedItem[], sort: MatSort): ProposedItem[] => {
+      if (!sort.active || sort.direction === '') {
+        return items;
+      }
+
+      return items.sort((a: ProposedItem, b: ProposedItem) => {
+        let comparatorResult = 0;
+        switch (sort.active) {
+          case 'SELECT':
+            comparatorResult = a.SELECTED ? -1 : 1;
+            break;
+          case 'SUBJECT':
+            comparatorResult = a.SUBJECT.localeCompare(b.SUBJECT);
+            break;
+          case 'ISSUE':
+            const issueNumA = a.ISSUE.match(/(\d+)/);
+            const issueNumB = b.ISSUE.match(/(\d+)/);
+            if (issueNumA && issueNumB) {
+              console.log(issueNumA[0] + "  " + issueNumB[0]);
+              comparatorResult = Number(issueNumA[0]) - Number(issueNumB[0]);
+            } else {
+              comparatorResult = a.ISSUE.localeCompare(b.ISSUE);
+            }
+            break;
+          case 'CR':
+            const crNumA = a.CR.match(/(\d+)/);
+            const crNumB = b.CR.match(/(\d+)/);
+            if (crNumA && crNumB) {
+              comparatorResult = Number(crNumA[0]) - Number(crNumB[0]);
+            } else {
+              comparatorResult = a.CR.localeCompare(b.CR);
+            }
+            break;
+          default:
+            comparatorResult = a.DESCRIPTION.localeCompare(b.DESCRIPTION);
+            break;
+        }
+        return comparatorResult * (sort.direction == 'asc' ? 1 : -1);
+      });
+    };
+
+    return sortFunction;
+  }
+
   createBatch() {
     this.store.dispatch(startBatchItemsCreation());
+  }
+
+  addColumns() {
+    this.store.dispatch(addBatchItemCreationFormColumn());
+
+    this.selectedDeletedValues = "";
   }
 }

@@ -3,6 +3,7 @@ import { State } from "../state/items.state";
 import { filterRedmineProjects, filterSoftDevProjects } from 'src/app/shared/store/shared.reducer-handlers';
 import { ProposedItem } from '../models/batchitemcreation/proposed-item.model';
 import { ItemCreationMode } from '../state/items.item-creation-state';
+import { unbox } from 'ngrx-forms';
 
 export function setRedmineProjectsFilterForBatchItemCreationSdCriteria(state: State): State {
     const newState: State = _.cloneDeep(state);
@@ -99,6 +100,24 @@ export function setLinkToCurrentProposedItemAndUnselect(state: State, args: { re
     const proposedItem = newState.batchItemCreationRecords.proposedItems[newState.batchItemCreationRecords.currentIndex];
     proposedItem.SELECTED = false;
     proposedItem.REDMINE_LINK = args.redmineLink;
+    return newState;
+}
+
+export function deleteBatchItemCreationFormColumn(state: State, args: { column: string }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreationFormDataAddon.value.deletedColumns.push(args.column);
+    newState.batchItemCreationFormDataAddon.value.displayedColumns = newState.batchItemCreationFormDataAddon.value.displayedColumns.filter(colName => colName !== args.column)
+    return newState;
+}
+
+export function addBatchItemCreationFormColumn(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    for (let index = 0; index < unbox(newState.batchItemCreationFormData.value.deletedColumnsSelToAdd).length; index++) {
+        let column = unbox(newState.batchItemCreationFormData.value.deletedColumnsSelToAdd)[index];
+        newState.batchItemCreationFormDataAddon.value.displayedColumns.push(column);
+        newState.batchItemCreationFormDataAddon.value.deletedColumns = newState.batchItemCreationFormDataAddon.value.deletedColumns.filter(colName => colName !== column);
+    }
+    newState.batchItemCreationFormData.value.deletedColumnsSelToAdd = "";
     return newState;
 }
 

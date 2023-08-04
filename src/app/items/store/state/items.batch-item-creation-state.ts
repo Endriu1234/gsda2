@@ -18,7 +18,7 @@ export function getBatchItemCreationSdCriteriaFormDataInitialState(): FormGroupS
     return createFormGroupState<BatchItemCreationSdCriteriaFormData>(BATCH_ITEM_CREATION_SDCRITERIA_FORMID, {
         targetRedmineProject: '',
         sourceSoftDevProject: '',
-        itemLevel: '',
+        itemLevel: 'issue',
         showCreated: false
     });
 }
@@ -81,13 +81,29 @@ export function getBatchItemCreationRecordsInitialState(): BatchItemCreationReco
 
 export interface BatchItemCreationFormData {
     skipCreationForm: boolean;
+    deletedColumnsSelToAdd: string;
 }
 
 export const BATCH_ITEM_CREATION_FORMID = "BATCH_ITEM_CREATION_FORMID";
 
 export function getBatchItemCreationFormDataInitialState(): FormGroupState<BatchItemCreationFormData> {
     return createFormGroupState<BatchItemCreationFormData>(BATCH_ITEM_CREATION_FORMID, {
-        skipCreationForm: false
+        skipCreationForm: false,
+        deletedColumnsSelToAdd: ''
+    });
+}
+
+export interface BatchItemCreationFormDataAddon {
+    displayedColumns: string[];
+    deletedColumns: string[];
+}
+
+export const BATCH_ITEM_CREATION_FORM_ADDON_ID = "BATCH_ITEM_CREATION_FORM_ADDON_ID";
+
+export function getBatchItemCreationFormDataAddonInitialState(): FormGroupState<BatchItemCreationFormDataAddon> {
+    return createFormGroupState<BatchItemCreationFormDataAddon>(BATCH_ITEM_CREATION_FORM_ADDON_ID, {
+        displayedColumns: ['SELECT', 'SUBJECT', 'ISSUE', 'CR', 'expand'],
+        deletedColumns: []
     });
 }
 

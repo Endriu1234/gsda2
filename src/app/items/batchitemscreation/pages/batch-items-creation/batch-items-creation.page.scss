@@ -49,6 +49,33 @@ table {
     --mdc-checkbox-text-color: white;
 }
 
+.jkbutton {
+    background-color: transparent;
+    transition: all .3s ease;
+    fill: rgb(160, 230, 160);
+    margin-left: 10px;
+    //transition: transform .2s;
+}
+
+.jkbutton:disabled {
+    background-color: transparent;
+    fill: rgb(179, 185, 179);
+    margin-left: 10px;
+    transform: rotate(-135deg);
+}
+
+.jkIcon {
+    transform: scale(2);
+}
+
+.jkSvgActive {
+    fill: rgb(160, 230, 160);
+}
+
+.jkSvgInactive {
+    fill: rgb(179, 185, 179)
+}
+
 :host ::ng-deep {
     .jk-primary-chekbox.mat-mdc-checkbox .mdc-form-field {
     color: white;

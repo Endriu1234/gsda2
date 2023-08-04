@@ -8,7 +8,7 @@ import { onNgrxForms, wrapReducerWithFormStateUpdate, updateGroup, validate, Val
 import { required } from 'ngrx-forms/validation';
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, initSoftDevProjects, loadRedmineProjects, loadRedmineTrackers, loadRedmineUsers, loadSoftDevProjects } from './actions/items.common-actions';
 import { addValidatedCR, addValidatedFromId, addValidatedIssue, addValidatedTms, endResetItemCreationForm, setItemCreationFormMode, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startResetItemCreationForm } from './actions/items.item-creation-actions';
-import { continueBatchItemsCreation, forceEndBatchItemCreation, setBatchItemCreationRecords, setLinkToCurrentProposedItemAndUnselect, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection } from './actions/items.batch-item-creation-actions';
+import { deleteBatchItemCreationFormColumn, continueBatchItemsCreation, forceEndBatchItemCreation, setBatchItemCreationRecords, setLinkToCurrentProposedItemAndUnselect, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection, addBatchItemCreationFormColumn } from './actions/items.batch-item-creation-actions';
 import { ItemCreationFromData } from './state/items.item-creation-state';
 
 export const itemsReducerKey = 'items';
@@ -50,7 +50,9 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
     on(startBatchItemsCreation, fromBatchItemCreationReducerHanders.startBatchItemsCreation),
     on(continueBatchItemsCreation, fromBatchItemCreationReducerHanders.continueBatchItemsCreation),
     on(setLinkToCurrentProposedItemAndUnselect, fromBatchItemCreationReducerHanders.setLinkToCurrentProposedItemAndUnselect),
-    on(forceEndBatchItemCreation, fromBatchItemCreationReducerHanders.forceEndBatchItemCreation)
+    on(forceEndBatchItemCreation, fromBatchItemCreationReducerHanders.forceEndBatchItemCreation),
+    on(deleteBatchItemCreationFormColumn, fromBatchItemCreationReducerHanders.deleteBatchItemCreationFormColumn),
+    on(addBatchItemCreationFormColumn, fromBatchItemCreationReducerHanders.addBatchItemCreationFormColumn)
 );
 
 export const itemsReducer = wrapReducerWithFormStateUpdate(
