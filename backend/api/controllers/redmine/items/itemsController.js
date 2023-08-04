@@ -44,6 +44,4 @@ module.exports.createRedmineItem = async (req, res) => {
     }
 
     return res.status(200).json(retVal);
-
-    return res.status(200).json(retVal);
 }
