@@ -68,7 +68,7 @@ module.exports.getSDProjectPotentialRedmineItemsQuery = (bForPacket) => {
                     iss_desc AS description,
                     aa_uf_id AS issue,
                     '' AS cr,
-                    '' AS tms,
+                    iss_user_18 AS tms,
                     '' AS assignee,
                     '' AS redmine_link
                 FROM 

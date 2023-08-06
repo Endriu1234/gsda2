@@ -1,5 +1,7 @@
 const { errorMonitor } = require('node-cache');
 const softDevDataProvider = require('../../../business/softdev/softDevDataProvider');
+const redmineDataProvider = require('../../../business/redmine/redmineDataProvider')
+const { getRedmineAddress } = require('../../../business/redmine/tools/redmineConnectionTools');
 
 module.exports.getItemById = async (req, res) => {
     const retVal = {};
@@ -41,8 +43,23 @@ module.exports.getPotentialRedmineItemsFromSDProject = async (req, res) => {
     }
 
     const queryResults = await softDevDataProvider.getSDProjectPotentialRedmineItems(req.query.sourceSoftDevProject, req.query.targetRedmineProject);
+    const redmineItems = await redmineDataProvider.getRedmineItemsPerIssues(req.query.targetRedmineProject);
+    
+    if (redmineItems) {
+        for (const softDevRecord of queryResults) {
+            if (redmineItems[softDevRecord.ISSUE] !== undefined
+                && (redmineItems[softDevRecord.ISSUE][0].subject === softDevRecord.SUBJECT 
+                    || redmineItems[softDevRecord.ISSUE][0].subject.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.SUBJECT.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
+                && (redmineItems[softDevRecord.ISSUE][0].description === softDevRecord.DESCRIPTION
+                    || redmineItems[softDevRecord.ISSUE][0].description.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.DESCRIPTION.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))) {
+                
+                softDevRecord.REDMINE_LINK = `${getRedmineAddress(`issues/${redmineItems[softDevRecord.ISSUE][0].id}`)}`;
+                softDevRecord.SELECTED = false;
+            }
+        }
+    }
 
-    retVal.records = queryResults;
+    retVal.records = req.query.showCreated === 'true' ? queryResults : queryResults.filter((record) => { return record.REDMINE_LINK === null || record.REDMINE_LINK.length <= 0 });
 
     return res.status(200).json(retVal);
 

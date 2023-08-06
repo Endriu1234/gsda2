@@ -3,15 +3,18 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ProposedItem } from 'src/app/items/store/models/batchitemcreation/proposed-item.model';
 import { Store } from '@ngrx/store';
 import * as fromItemsState from '../../../store/state/items.state';
+import * as fromSharedState from '../../../../shared/store/shared.state';
 import { getBatchItemCreationCanActivateGrid, getIsAnyBatchItemsRecordsSelected, getBatchItemCreationFormDeletedColumns, getBatchItemCreationFormData, getBatchItemCreationRecords, hasBatchItemCreationFormDeletedColumns, getBatchItemCreationFormDisplayedColumns, getBatchItemCreationFormDisplayedColumnsLength, hasBatchItemCreationFormDeletedColumnsSelToAdd } from 'src/app/items/store/selectors/items.batch-item-creation-selectors';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { addBatchItemCreationFormColumn, deleteBatchItemCreationFormColumn, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection } from 'src/app/items/store/actions/items.batch-item-creation-actions';
+import { addBatchItemCreationFormColumn, createOneRecordFromBatch, deleteBatchItemCreationFormColumn, dragAndDropBatchItemsCreationColumns, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection } from 'src/app/items/store/actions/items.batch-item-creation-actions';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { CdkDragDrop, CdkDrag, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Observable } from 'rxjs';
 import { FormGroupState } from 'ngrx-forms';
+import { Router } from '@angular/router';
+import { openLinkInNewWindow } from 'src/app/shared/store/shared.actions';
 
 @Component({
   selector: 'app-batch-items-creation',
@@ -45,7 +48,7 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private store: Store<fromItemsState.State>) {
+  constructor(private store: Store<fromItemsState.State>, private sharedStore: Store<fromSharedState.State>) {
     this.formState$ = this.store.select(getBatchItemCreationFormData);
   }
 
@@ -83,7 +86,7 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
   }
 
   drop(event: CdkDragDrop<string[]>) {
-    //moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
+    this.store.dispatch(dragAndDropBatchItemsCreationColumns({prevIndex: event.previousIndex, currIndex: event.currentIndex}))
   }
 
   toggleRowSelection(row: ProposedItem) {
@@ -136,29 +139,36 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
             comparatorResult = a.SELECTED ? -1 : 1;
             break;
           case 'SUBJECT':
-            comparatorResult = a.SUBJECT.localeCompare(b.SUBJECT);
+            comparatorResult = a.SUBJECT ? a.SUBJECT.localeCompare(b.SUBJECT) : b.SUBJECT ? -1 : 0;
             break;
           case 'ISSUE':
-            const issueNumA = a.ISSUE.match(/(\d+)/);
-            const issueNumB = b.ISSUE.match(/(\d+)/);
-            if (issueNumA && issueNumB) {
-              console.log(issueNumA[0] + "  " + issueNumB[0]);
-              comparatorResult = Number(issueNumA[0]) - Number(issueNumB[0]);
+            if (a.ISSUE && b.ISSUE) {
+              const issueNumA = a.ISSUE.match(/(\d+)/);
+              const issueNumB = b.ISSUE.match(/(\d+)/);
+              if (issueNumA && issueNumB) {
+                comparatorResult = Number(issueNumA[0]) - Number(issueNumB[0]);
+              } else {
+                comparatorResult = a.ISSUE.localeCompare(b.ISSUE);
+              }
             } else {
-              comparatorResult = a.ISSUE.localeCompare(b.ISSUE);
+              comparatorResult = a.ISSUE ? a.ISSUE.localeCompare(b.ISSUE) : b.ISSUE ? -1 : 0;
             }
             break;
           case 'CR':
-            const crNumA = a.CR.match(/(\d+)/);
-            const crNumB = b.CR.match(/(\d+)/);
-            if (crNumA && crNumB) {
-              comparatorResult = Number(crNumA[0]) - Number(crNumB[0]);
+            if (a.CR && b.CR) {
+              const crNumA = a.CR.match(/(\d+)/);
+              const crNumB = b.CR.match(/(\d+)/);
+              if (crNumA && crNumB) {
+                comparatorResult = Number(crNumA[0]) - Number(crNumB[0]);
+              } else {
+                comparatorResult = a.CR.localeCompare(b.CR);
+              }
             } else {
-              comparatorResult = a.CR.localeCompare(b.CR);
+              comparatorResult = a.CR ? a.CR.localeCompare(b.CR) : b.CR ? -1 : 0;
             }
             break;
           default:
-            comparatorResult = a.DESCRIPTION.localeCompare(b.DESCRIPTION);
+            comparatorResult = a.DESCRIPTION ? a.DESCRIPTION.localeCompare(b.DESCRIPTION) : b.DESCRIPTION ? -1 : 0;
             break;
         }
         return comparatorResult * (sort.direction == 'asc' ? 1 : -1);
@@ -176,5 +186,13 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
     this.store.dispatch(addBatchItemCreationFormColumn());
 
     this.selectedDeletedValues = "";
+  }
+
+  createSingleItem(element: ProposedItem) {
+    this.store.dispatch(createOneRecordFromBatch({proposedItem: element}));
+  }
+
+  openItemInRedmine(link: string) {
+    this.sharedStore.dispatch(openLinkInNewWindow({url: link}));
   }
 }

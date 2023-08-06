@@ -11,7 +11,8 @@ import { FromIdValidation } from "../models/fromId-validation.model";
 export enum ItemCreationMode {
     SingleItem = "SINGLE_ITEM_CREATION",
     BatchItemWithGUI = "BATCH_ITEM_CREATION_WITH_GUI",
-    BatchItemWithoutGUI = "BATCH_ITEM_CREATION_WITHOUT_GUI"
+    BatchItemWithoutGUI = "BATCH_ITEM_CREATION_WITHOUT_GUI",
+    BatchItemSingleRecord = "BATCH_ITEM_SINGLE_RECORD"
 }
 
 export interface ItemCreationSetupData {

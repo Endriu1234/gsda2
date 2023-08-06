@@ -10,9 +10,9 @@ import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 import { environment } from 'src/environments/environment';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { BatchItemSearchHttpResponse } from '../models/batchitemcreation/batch-item-search-http-response.model';
-import { continueBatchItemsCreation, forceEndBatchItemCreation, setBatchItemCreationRecords, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation } from '../actions/items.batch-item-creation-actions';
+import { continueBatchItemsCreation, createOneRecordFromBatch, forceEndBatchItemCreation, setBatchItemCreationRecords, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation } from '../actions/items.batch-item-creation-actions';
 import { noopAction } from '../actions/items.common-actions';
-import { getBatchItemCreationRecords, getBatchItemCreationSDCriteriaSearchFormState, getBatchItemsRecordsWithFormData } from '../selectors/items.batch-item-creation-selectors';
+import { getBatchItemCreationFormData, getBatchItemCreationRecords, getBatchItemCreationSDCriteriaSearchFormState, getBatchItemsRecordsWithFormData } from '../selectors/items.batch-item-creation-selectors';
 import { BATCH_ITEM_CREATION_SDCRITERIA_FORMID } from '../state/items.batch-item-creation-state';
 import { SnackBarIcon } from '../../../shared/store/shared.state';
 import { Router } from '@angular/router';
@@ -187,6 +187,34 @@ export class ItemsBatchItemCreationEffects {
                 return of(validate(required));
 
             return of(noopAction());
+        })
+    ));
+
+    createOneRecordFromBatch$ = createEffect(() => this.actions$.pipe(
+        ofType(createOneRecordFromBatch),
+        switchMap((element: {proposedItem: ProposedItem}) => {
+            return this.store.select(getBatchItemCreationFormData).pipe(take(1), switchMap(batchItemCreationFormData => {
+                const actions: any[] = [
+                    new ResetAction(ITEM_CREATION_FORMID),
+                    new SetValueAction(ITEM_CREATION_FORMID + '.project', element.proposedItem.REDMINE_PROJECT),
+                    new SetValueAction(ITEM_CREATION_FORMID + '.tracker', element.proposedItem.TRACKER),
+                    new SetValueAction(ITEM_CREATION_FORMID + '.subject', element.proposedItem.SUBJECT),
+                    new SetValueAction(ITEM_CREATION_FORMID + '.description', element.proposedItem.DESCRIPTION),
+                    new SetValueAction(ITEM_CREATION_FORMID + '.user', element.proposedItem.ASSIGNEE),
+                    new SetValueAction(ITEM_CREATION_FORMID + '.issue', element.proposedItem.ISSUE),
+                    new SetValueAction(ITEM_CREATION_FORMID + '.cr', element.proposedItem.CR),
+                    new SetValueAction(ITEM_CREATION_FORMID + '.tms', element.proposedItem.TMS)
+                ];
+
+                if (batchItemCreationFormData.value.skipCreationForm) {
+                    actions.push(new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID, fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.Saving));
+                    return actions;
+                }
+                else {
+                    this.router.navigate(['/items/itemcreation']);
+                    return actions;
+                }
+            }));
         })
     ));
 }

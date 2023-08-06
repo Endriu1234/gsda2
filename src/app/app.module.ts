@@ -18,6 +18,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { SmallSpinnerModule } from './shared/components/small-spinner.module';
 import { httpInterceptProviders } from './shared/components/interceptors-providers.module';
+import { SharedEffects } from './shared/store/shared.effects';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,7 @@ import { httpInterceptProviders } from './shared/components/interceptors-provide
     MatDialogModule,
     SmallSpinnerModule,
     StoreModule.forRoot(reducers),
-    EffectsModule.forRoot([]),
+    EffectsModule.forRoot([SharedEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 1000, // Retains last 25 states
       logOnly: !isDevMode(), // Restrict extension to log-only mode

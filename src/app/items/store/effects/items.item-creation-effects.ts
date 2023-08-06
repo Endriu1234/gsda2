@@ -97,6 +97,10 @@ export class ItemsItemCreationEffects {
 
                                         return of(setLinkToCurrentProposedItemAndUnselect({ redmineLink: response.redmineLink }), continueBatchItemsCreation());
                                     }
+                                    else if (formData.creationFormSetupState.mode === ItemCreationMode.BatchItemSingleRecord) {
+                                        this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item saved', icon: SnackBarIcon.Success }));
+                                        return of(setLinkToCurrentProposedItemAndUnselect({ redmineLink: response.redmineLink }), forceEndBatchItemCreation());
+                                    }
 
                                     return of(noopAction());
                                 }

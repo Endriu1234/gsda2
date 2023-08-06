@@ -4,6 +4,7 @@ import { filterRedmineProjects, filterSoftDevProjects } from 'src/app/shared/sto
 import { ProposedItem } from '../models/batchitemcreation/proposed-item.model';
 import { ItemCreationMode } from '../state/items.item-creation-state';
 import { unbox } from 'ngrx-forms';
+import { moveItemInArray } from '@angular/cdk/drag-drop';
 
 export function setRedmineProjectsFilterForBatchItemCreationSdCriteria(state: State): State {
     const newState: State = _.cloneDeep(state);
@@ -103,6 +104,24 @@ export function setLinkToCurrentProposedItemAndUnselect(state: State, args: { re
     return newState;
 }
 
+export function createOneRecordFromBatch(state: State, args: {proposedItem: ProposedItem}): State {
+    const newState = _.cloneDeep(state);
+    const index = state.batchItemCreationRecords.proposedItems.findIndex(i => {
+        return i.SUBJECT === args.proposedItem.SUBJECT
+            && i.DESCRIPTION === args.proposedItem.DESCRIPTION
+            && i.ISSUE === args.proposedItem.ISSUE
+            && i.CR === args.proposedItem.CR
+            && i.TMS === args.proposedItem.TMS
+            && i.ASSIGNEE === args.proposedItem.ASSIGNEE
+            && i.TRACKER === args.proposedItem.TRACKER;
+    });
+
+    newState.itemCreationSetupData.mode = ItemCreationMode.BatchItemSingleRecord;
+    newState.batchItemCreationRecords.currentIndex = index;
+
+    return newState;
+}
+
 export function deleteBatchItemCreationFormColumn(state: State, args: { column: string }): State {
     const newState: State = _.cloneDeep(state);
     newState.batchItemCreationFormDataAddon.value.deletedColumns.push(args.column);
@@ -115,9 +134,16 @@ export function addBatchItemCreationFormColumn(state: State): State {
     for (let index = 0; index < unbox(newState.batchItemCreationFormData.value.deletedColumnsSelToAdd).length; index++) {
         let column = unbox(newState.batchItemCreationFormData.value.deletedColumnsSelToAdd)[index];
         newState.batchItemCreationFormDataAddon.value.displayedColumns.push(column);
+        moveItemInArray(newState.batchItemCreationFormDataAddon.value.displayedColumns, newState.batchItemCreationFormDataAddon.value.displayedColumns.length-2, newState.batchItemCreationFormDataAddon.value.displayedColumns.length-1);
         newState.batchItemCreationFormDataAddon.value.deletedColumns = newState.batchItemCreationFormDataAddon.value.deletedColumns.filter(colName => colName !== column);
     }
     newState.batchItemCreationFormData.value.deletedColumnsSelToAdd = "";
+    return newState;
+}
+
+export function dragAndDropBatchItemsCreationColumns(state: State, args: { prevIndex: number, currIndex: number }): State {
+    const newState: State = _.cloneDeep(state);
+    moveItemInArray(newState.batchItemCreationFormDataAddon.value.displayedColumns, args.prevIndex, args.currIndex);
     return newState;
 }
 

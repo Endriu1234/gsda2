@@ -102,7 +102,7 @@ export const BATCH_ITEM_CREATION_FORM_ADDON_ID = "BATCH_ITEM_CREATION_FORM_ADDON
 
 export function getBatchItemCreationFormDataAddonInitialState(): FormGroupState<BatchItemCreationFormDataAddon> {
     return createFormGroupState<BatchItemCreationFormDataAddon>(BATCH_ITEM_CREATION_FORM_ADDON_ID, {
-        displayedColumns: ['SELECT', 'SUBJECT', 'ISSUE', 'CR', 'expand'],
+        displayedColumns: ['SELECT', 'SUBJECT', 'ISSUE', 'CR', 'LINK', 'expand'],
         deletedColumns: []
     });
 }

@@ -83,6 +83,17 @@
                     <td mat-cell *matCellDef="let element"> {{element.CR}} </td>
                 </ng-container>
 
+                <ng-container matColumnDef="LINK">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header cdkDrag></th>
+                    <td mat-cell *matCellDef="let element">
+                        <button mat-mini-fab color="primary" [matTooltip]="element.REDMINE_LINK ? 'Open item in Redmine' : 'Add item'" matTooltipPosition="before"
+                            (click)="element.REDMINE_LINK ? openItemInRedmine(element.REDMINE_LINK):createSingleItem(element);$event.stopPropagation()">
+                            <mat-icon *ngIf="!element.REDMINE_LINK" fontIcon="add_box"></mat-icon>
+                            <mat-icon *ngIf="element.REDMINE_LINK" fontIcon="link"></mat-icon>
+                        </button>   
+                    </td>
+                </ng-container>
+
                 <ng-container matColumnDef="expand">
                     <th mat-header-cell *matHeaderCellDef>&nbsp;</th>
                     <td mat-cell *matCellDef="let element">
