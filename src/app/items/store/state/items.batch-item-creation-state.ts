@@ -1,11 +1,12 @@
 import { RedmineProject } from "src/app/shared/store/models/redmine-project.model";
 import { SoftDevProject } from "src/app/shared/store/models/softdev-project.model";
 import { ProposedItem } from "../models/batchitemcreation/proposed-item.model";
-import { createFormGroupState, FormGroupState } from "ngrx-forms";
+import { box, Boxed, createFormGroupState, FormGroupState } from "ngrx-forms";
 
 export const BATCH_ITEM_CREATION_SDCRITERIA_FORMID = "BATCH_ITEM_CREATION_SDCRITERIA_FORMID";
 export const BATCH_ITEM_CREATION_TMSCRITERIA_FORMID = "BATCH_ITEM_CREATION_TMSCRITERIA_FORMID";
 export const BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID = "BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID";
+export const BATCH_ITEM_CREATION_GRID_REMOVABLE_COLUMNS = ['SUBJECT', 'ISSUE', 'CR'];
 
 export interface BatchItemCreationSdCriteriaFormData {
     targetRedmineProject: string,
@@ -81,7 +82,7 @@ export function getBatchItemCreationRecordsInitialState(): BatchItemCreationReco
 
 export interface BatchItemCreationFormData {
     skipCreationForm: boolean;
-    deletedColumnsSelToAdd: string;
+    visibleColumns: Boxed<string[]>;
 }
 
 export const BATCH_ITEM_CREATION_FORMID = "BATCH_ITEM_CREATION_FORMID";
@@ -89,7 +90,7 @@ export const BATCH_ITEM_CREATION_FORMID = "BATCH_ITEM_CREATION_FORMID";
 export function getBatchItemCreationFormDataInitialState(): FormGroupState<BatchItemCreationFormData> {
     return createFormGroupState<BatchItemCreationFormData>(BATCH_ITEM_CREATION_FORMID, {
         skipCreationForm: false,
-        deletedColumnsSelToAdd: ''
+        visibleColumns: box(BATCH_ITEM_CREATION_GRID_REMOVABLE_COLUMNS)
     });
 }
 

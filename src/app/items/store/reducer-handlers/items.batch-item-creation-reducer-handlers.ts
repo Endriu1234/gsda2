@@ -122,22 +122,29 @@ export function createOneRecordFromBatch(state: State, args: {proposedItem: Prop
     return newState;
 }
 
-export function deleteBatchItemCreationFormColumn(state: State, args: { column: string }): State {
+export function updateBatchItemCreationFormColumn(state: State): State {
     const newState: State = _.cloneDeep(state);
-    newState.batchItemCreationFormDataAddon.value.deletedColumns.push(args.column);
-    newState.batchItemCreationFormDataAddon.value.displayedColumns = newState.batchItemCreationFormDataAddon.value.displayedColumns.filter(colName => colName !== args.column)
-    return newState;
-}
-
-export function addBatchItemCreationFormColumn(state: State): State {
-    const newState: State = _.cloneDeep(state);
-    for (let index = 0; index < unbox(newState.batchItemCreationFormData.value.deletedColumnsSelToAdd).length; index++) {
-        let column = unbox(newState.batchItemCreationFormData.value.deletedColumnsSelToAdd)[index];
-        newState.batchItemCreationFormDataAddon.value.displayedColumns.push(column);
-        moveItemInArray(newState.batchItemCreationFormDataAddon.value.displayedColumns, newState.batchItemCreationFormDataAddon.value.displayedColumns.length-2, newState.batchItemCreationFormDataAddon.value.displayedColumns.length-1);
-        newState.batchItemCreationFormDataAddon.value.deletedColumns = newState.batchItemCreationFormDataAddon.value.deletedColumns.filter(colName => colName !== column);
+    
+    for (let index = 0; index < unbox(newState.batchItemCreationFormData.value.visibleColumns).length; index++) {
+        let column = unbox(newState.batchItemCreationFormData.value.visibleColumns)[index];
+        
+        if (newState.batchItemCreationFormDataAddon.value.displayedColumns.indexOf(column) < 0) {
+            const dispLenght = newState.batchItemCreationFormDataAddon.value.displayedColumns.length;
+            const removableLength = state.batchItemCreationGridRemovableColumns.length;
+            newState.batchItemCreationFormDataAddon.value.displayedColumns.splice((dispLenght - removableLength)+1, 0, column);
+            moveItemInArray(newState.batchItemCreationFormDataAddon.value.displayedColumns, (dispLenght - removableLength)+1, dispLenght-2);
+        }
     }
-    newState.batchItemCreationFormData.value.deletedColumnsSelToAdd = "";
+
+    newState.batchItemCreationFormDataAddon.value.displayedColumns.map((column) => {
+        if (state.batchItemCreationGridRemovableColumns.includes(column)) {
+            if (unbox(newState.batchItemCreationFormData.value.visibleColumns).indexOf(column) < 0) {
+                newState.batchItemCreationFormDataAddon.value.displayedColumns = newState.batchItemCreationFormDataAddon.value.displayedColumns.filter(colName => colName !== column)
+            }
+        }
+    });
+    
+    
     return newState;
 }
 

@@ -1,9 +1,8 @@
 import { createSelector } from '@ngrx/store';
 import { State } from '../state/items.state';
 import { getItemsState } from './items.common-selectors';
-import { FormGroupState, unbox } from 'ngrx-forms';
+import { FormGroupState } from 'ngrx-forms';
 import { BatchItemCreationRecords, BatchItemCreationSdCriteriaFormData } from '../state/items.batch-item-creation-state';
-import { ProposedItem } from '../models/batchitemcreation/proposed-item.model';
 
 export const getBatchItemCreationSDCriteriaSearchFormState = createSelector(getItemsState, (state: State) => state.batchItemCreationSdCriteriaFormData);
 export const getBatchItemCreationSdCriteriaFormState = createSelector(getItemsState, (state: State) => state.batchItemCreationSdCriteriaFormData);
@@ -18,6 +17,7 @@ export const getBatchItemCreationFormDataAddon = createSelector(getItemsState, (
 export const getBatchItemCreationTMSCriteriaFormState = createSelector(getItemsState, (state: State) => state.batchItemCreationTMSCriteriaFormData);
 
 export const getBatchItemCreationRedmineCriteriaFormState = createSelector(getItemsState, (state: State) => state.batchItemCreationRedmineCriteriaFormData);
+export const getBatchItemCreationGridRemovableColumns = createSelector(getItemsState, (state: State) => state.batchItemCreationGridRemovableColumns);
 
 export const getBatchItemsRecordsWithFormData = createSelector(getBatchItemCreationRecords, getBatchItemCreationFormData, (batchRecords, batchFormData) => {
     return {
@@ -49,19 +49,10 @@ function canBatchItemCreationCanActivateGrid(batchRecords: BatchItemCreationReco
     return true;
 }
 
-export const getBatchItemCreationFormDeletedColumns = createSelector(getBatchItemCreationFormDataAddon, (batchFormDataAddon) => {
-    return batchFormDataAddon.value.deletedColumns;
-});
-export const hasBatchItemCreationFormDeletedColumns = createSelector(getBatchItemCreationFormDataAddon, (batchFormDataAddon) => {
-    return batchFormDataAddon.value.deletedColumns.length > 0;
-});
-export const hasBatchItemCreationFormDeletedColumnsSelToAdd = createSelector(getBatchItemCreationFormData, (batchFormData) => {
-    return unbox(batchFormData.value.deletedColumnsSelToAdd).length > 0
-});
-export const getBatchItemCreationFormDisplayedColumns = createSelector(getBatchItemCreationFormDataAddon, (batchFormDataAddon) => {
+export const getBatchItemCreationFormColumns = createSelector(getBatchItemCreationFormDataAddon, (batchFormDataAddon) => {
     return batchFormDataAddon.value.displayedColumns;
 });
-export const getBatchItemCreationFormDisplayedColumnsLength = createSelector(getBatchItemCreationFormDataAddon, (batchFormDataAddon) => {
+export const getBatchItemCreationFormColumnsLength = createSelector(getBatchItemCreationFormDataAddon, (batchFormDataAddon) => {
     return batchFormDataAddon.value.displayedColumns.length;
 });
 export const getIsAnyBatchItemsRecordsSelected = createSelector(getBatchItemCreationRecords, (batchRecords) => {

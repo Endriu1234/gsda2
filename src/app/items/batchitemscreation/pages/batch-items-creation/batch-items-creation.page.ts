@@ -4,16 +4,15 @@ import { ProposedItem } from 'src/app/items/store/models/batchitemcreation/propo
 import { Store } from '@ngrx/store';
 import * as fromItemsState from '../../../store/state/items.state';
 import * as fromSharedState from '../../../../shared/store/shared.state';
-import { getBatchItemCreationCanActivateGrid, getIsAnyBatchItemsRecordsSelected, getBatchItemCreationFormDeletedColumns, getBatchItemCreationFormData, getBatchItemCreationRecords, hasBatchItemCreationFormDeletedColumns, getBatchItemCreationFormDisplayedColumns, getBatchItemCreationFormDisplayedColumnsLength, hasBatchItemCreationFormDeletedColumnsSelToAdd } from 'src/app/items/store/selectors/items.batch-item-creation-selectors';
+import { getBatchItemCreationCanActivateGrid, getIsAnyBatchItemsRecordsSelected, getBatchItemCreationFormData, getBatchItemCreationRecords, getBatchItemCreationFormColumns as getBatchItemCreationFormColumns, getBatchItemCreationFormColumnsLength, getBatchItemCreationGridRemovableColumns } from 'src/app/items/store/selectors/items.batch-item-creation-selectors';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { addBatchItemCreationFormColumn, createOneRecordFromBatch, deleteBatchItemCreationFormColumn, dragAndDropBatchItemsCreationColumns, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection } from 'src/app/items/store/actions/items.batch-item-creation-actions';
+import { createOneRecordFromBatch, dragAndDropBatchItemsCreationColumns, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection } from 'src/app/items/store/actions/items.batch-item-creation-actions';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { CdkDragDrop, CdkDrag, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Observable } from 'rxjs';
 import { FormGroupState } from 'ngrx-forms';
-import { Router } from '@angular/router';
 import { openLinkInNewWindow } from 'src/app/shared/store/shared.actions';
 
 @Component({
@@ -30,19 +29,15 @@ import { openLinkInNewWindow } from 'src/app/shared/store/shared.actions';
 })
 export class BatchItemsCreationPage implements OnInit, OnDestroy {
 
-  //displayedColumns: string[] = ['SELECT', 'SUBJECT', 'ISSUE', 'CR', 'expand'];
   dataSource: MatTableDataSource<ProposedItem> = new MatTableDataSource<ProposedItem>([]);
   recordsSubscription: Subscription | null = null;
   expandedElement: ProposedItem | null = null;
   formState$: Observable<FormGroupState<any>>;
   getBatchItemCreationCanActivateGrid$: Observable<boolean> | null = null;
-  hasDeletedColumns$: Observable<boolean> | null = null;
-  hasDeletedColumnsSelToAdd$: Observable<boolean> | null = null;
-  deletedColumns$: Observable<string[]> | null = null;
-  displayedColumns$: Observable<string[]> | null = null;
-  displayedColumnsLength$: Observable<number> | null = null;
+  allColumns$: Observable<string[]> | null = null;
+  columnsLength$: Observable<number> | null = null;
+  removableColumns$: Observable<string[]> | null = null;
 
-  selectedDeletedValues = "";
   isAnyRecordSelected$!: Observable<boolean>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -62,11 +57,9 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
     });
 
     this.getBatchItemCreationCanActivateGrid$ = this.store.select(getBatchItemCreationCanActivateGrid);
-    this.hasDeletedColumns$ = this.store.select(hasBatchItemCreationFormDeletedColumns);
-    this.hasDeletedColumnsSelToAdd$ = this.store.select(hasBatchItemCreationFormDeletedColumnsSelToAdd);
-    this.deletedColumns$ = this.store.select(getBatchItemCreationFormDeletedColumns);
-    this.displayedColumns$ = this.store.select(getBatchItemCreationFormDisplayedColumns);
-    this.displayedColumnsLength$ = this.store.select(getBatchItemCreationFormDisplayedColumnsLength);
+    this.removableColumns$ = this.store.select(getBatchItemCreationGridRemovableColumns);
+    this.allColumns$ = this.store.select(getBatchItemCreationFormColumns);
+    this.columnsLength$ = this.store.select(getBatchItemCreationFormColumnsLength);
     this.dataSource.sortData = this.sortData();
     this.isAnyRecordSelected$ = this.store.select(getIsAnyBatchItemsRecordsSelected);
   }
@@ -79,10 +72,6 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-  }
-
-  removeColumn(column: string) {
-    this.store.dispatch(deleteBatchItemCreationFormColumn({ column: column }));
   }
 
   drop(event: CdkDragDrop<string[]>) {
@@ -180,12 +169,6 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
 
   createBatch() {
     this.store.dispatch(startBatchItemsCreation());
-  }
-
-  addColumns() {
-    this.store.dispatch(addBatchItemCreationFormColumn());
-
-    this.selectedDeletedValues = "";
   }
 
   createSingleItem(element: ProposedItem) {

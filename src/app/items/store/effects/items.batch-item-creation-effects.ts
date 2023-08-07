@@ -10,10 +10,10 @@ import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 import { environment } from 'src/environments/environment';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { BatchItemSearchHttpResponse } from '../models/batchitemcreation/batch-item-search-http-response.model';
-import { continueBatchItemsCreation, createOneRecordFromBatch, forceEndBatchItemCreation, setBatchItemCreationRecords, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation } from '../actions/items.batch-item-creation-actions';
+import { continueBatchItemsCreation, createOneRecordFromBatch, forceEndBatchItemCreation, setBatchItemCreationRecords, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation, updateBatchItemCreationFormColumn } from '../actions/items.batch-item-creation-actions';
 import { noopAction } from '../actions/items.common-actions';
 import { getBatchItemCreationFormData, getBatchItemCreationRecords, getBatchItemCreationSDCriteriaSearchFormState, getBatchItemsRecordsWithFormData } from '../selectors/items.batch-item-creation-selectors';
-import { BATCH_ITEM_CREATION_SDCRITERIA_FORMID } from '../state/items.batch-item-creation-state';
+import { BATCH_ITEM_CREATION_FORMID, BATCH_ITEM_CREATION_SDCRITERIA_FORMID } from '../state/items.batch-item-creation-state';
 import { SnackBarIcon } from '../../../shared/store/shared.state';
 import { Router } from '@angular/router';
 import { ProposedItem } from '../models/batchitemcreation/proposed-item.model';
@@ -177,6 +177,7 @@ export class ItemsBatchItemCreationEffects {
     batchItemSDCriteriaFormSetValue$ = createEffect(() => this.actions$.pipe(
         ofType(SetValueAction.TYPE),
         switchMap((action: SetValueAction<any>) => {
+            
             if (action.controlId === BATCH_ITEM_CREATION_SDCRITERIA_FORMID + '.sourceSoftDevProject')
                 return from(validateSDProject(this.store, validateSDSourceSoftDevProjectError, action.controlId, action.value).pipe(startWith(setSoftDevProjectsFilterForBatchItemCreationSdCriteria())));
 
@@ -185,6 +186,9 @@ export class ItemsBatchItemCreationEffects {
             
             if (action.controlId === BATCH_ITEM_CREATION_SDCRITERIA_FORMID + '.itemLevel')
                 return of(validate(required));
+
+            if (action.controlId === BATCH_ITEM_CREATION_FORMID + '.visibleColumns')
+                return of(updateBatchItemCreationFormColumn());
 
             return of(noopAction());
         })
