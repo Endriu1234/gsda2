@@ -37,6 +37,11 @@ const initialState: State = {
                     caption: 'Item View/Edit',
                     route: '/items/itemviewedit',
                     icon: 'file_open'
+                },
+                {
+                    caption: 'Items From E-mails',
+                    route: '/items/itemsfromemails',
+                    icon: 'mail'
                 }
             ]
         },
