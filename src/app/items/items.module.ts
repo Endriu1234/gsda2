@@ -20,6 +20,9 @@ import { ItemsGeneralEffects } from './store/effects/items.common-effects';
 import { ItemsItemCreationEffects } from './store/effects/items.item-creation-effects';
 import { ItemsBatchItemCreationEffects } from './store/effects/items.batch-item-creation-effects';
 import { DirectivesModule } from '../shared/directives/directives.module';
+import { ItemsFromEmailsPage } from './itemsfromemails/pages/items-from-emails/items-from-emails.page';
+import { ItemsFromEmailsSettingsComponent } from './itemsfromemails/components/items-from-emails-settings/items-from-emails-settings.component';
+import { ItemsFromEmailsLogsComponent } from './itemsfromemails/components/items-from-emails-logs/items-from-emails-logs.component';
 
 
 
@@ -33,7 +36,10 @@ import { DirectivesModule } from '../shared/directives/directives.module';
     BatchCreationSDCriteriaComponent,
     BatchCreationTMSCriteriaComponent,
     BatchCreationRedmineCriteriaComponent,
-    BatchCreationIdscriteriaComponent
+    BatchCreationIdscriteriaComponent,
+    ItemsFromEmailsPage,
+    ItemsFromEmailsSettingsComponent,
+    ItemsFromEmailsLogsComponent
   ],
   imports: [
     CommonModule,

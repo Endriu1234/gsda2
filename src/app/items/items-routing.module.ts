@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { BatchItemsCreationPage } from './batchitemscreation/pages/batch-items-creation/batch-items-creation.page';
 import { ItemCreationPage } from './itemcreation/pages/item-creation/item-creation.page';
 import { ItemViewEditPage } from './itemviewedit/pages/item-view-edit/item-view-edit.page';
+import { ItemsFromEmailsPage } from './itemsfromemails/pages/items-from-emails/items-from-emails.page';
 
 const routes: Routes = [
     {
@@ -21,6 +22,10 @@ const routes: Routes = [
     {
         path: 'itemviewedit',
         component: ItemViewEditPage
+    },
+    {
+        path: 'itemsfromemails',
+        component: ItemsFromEmailsPage
     },
 ];
 
