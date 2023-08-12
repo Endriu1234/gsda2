@@ -6,7 +6,7 @@ import { box, Boxed, createFormGroupState, FormGroupState } from "ngrx-forms";
 export const BATCH_ITEM_CREATION_SDCRITERIA_FORMID = "BATCH_ITEM_CREATION_SDCRITERIA_FORMID";
 export const BATCH_ITEM_CREATION_TMSCRITERIA_FORMID = "BATCH_ITEM_CREATION_TMSCRITERIA_FORMID";
 export const BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID = "BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID";
-export const BATCH_ITEM_CREATION_GRID_REMOVABLE_COLUMNS = ['SUBJECT', 'ISSUE', 'CR'];
+export const BATCH_ITEM_CREATION_GRID_REMOVABLE_COLUMNS = ['TRACKER', 'SUBJECT', 'ISSUE', 'CR', 'TMS'];
 
 export interface BatchItemCreationSdCriteriaFormData {
     targetRedmineProject: string,
@@ -54,17 +54,31 @@ export function getBatchItemCreationTMSCriteriaFormDataInitialState(): FormGroup
     });
 }
 
+export interface BatchItemCreationRedmineCriteriaSetupData {
+    redmineSourceProjectsFiltered: RedmineProject[];
+    redmineTargetProjectsFiltered: RedmineProject[];
+}
+
+export function getBatchItemCreationRedmineCriteriaSetupDataInitialState(): BatchItemCreationRedmineCriteriaSetupData {
+    return {
+        redmineSourceProjectsFiltered: [],
+        redmineTargetProjectsFiltered: []
+    }
+}
+
 export interface BatchItemCreationRedmineCriteriaFormData {
     targetRedmineProject: string,
     sourceRedmineProject: string,
-    showCreated: boolean
+    showCreated: boolean,
+    showClosed: boolean
 };
 
 export function getBatchItemCreationRedmineCriteriaFormDataInitialState(): FormGroupState<BatchItemCreationRedmineCriteriaFormData> {
     return createFormGroupState<BatchItemCreationRedmineCriteriaFormData>(BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID, {
         targetRedmineProject: '',
         sourceRedmineProject: '',
-        showCreated: false
+        showCreated: false,
+        showClosed: false
     });
 }
 
@@ -103,7 +117,7 @@ export const BATCH_ITEM_CREATION_FORM_ADDON_ID = "BATCH_ITEM_CREATION_FORM_ADDON
 
 export function getBatchItemCreationFormDataAddonInitialState(): FormGroupState<BatchItemCreationFormDataAddon> {
     return createFormGroupState<BatchItemCreationFormDataAddon>(BATCH_ITEM_CREATION_FORM_ADDON_ID, {
-        displayedColumns: ['SELECT', 'SUBJECT', 'ISSUE', 'CR', 'LINK', 'expand'],
+        displayedColumns: ['SELECT', 'TRACKER', 'SUBJECT', 'ISSUE', 'CR', 'TMS', 'LINK', 'expand'],
         deletedColumns: []
     });
 }

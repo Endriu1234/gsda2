@@ -10,10 +10,10 @@ import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 import { environment } from 'src/environments/environment';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { BatchItemSearchHttpResponse } from '../models/batchitemcreation/batch-item-search-http-response.model';
-import { continueBatchItemsCreation, createOneRecordFromBatch, forceEndBatchItemCreation, setBatchItemCreationRecords, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation, updateBatchItemCreationFormColumn } from '../actions/items.batch-item-creation-actions';
+import { continueBatchItemsCreation, createOneRecordFromBatch, forceEndBatchItemCreation, setBatchItemCreationRecords, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setRedmineSourceProjectsFilterForBatchItemCreationCriteria as setRedmineSourceProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForBatchItemCreationCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation, updateBatchItemCreationFormColumn } from '../actions/items.batch-item-creation-actions';
 import { noopAction } from '../actions/items.common-actions';
-import { getBatchItemCreationFormData, getBatchItemCreationRecords, getBatchItemCreationSDCriteriaSearchFormState, getBatchItemsRecordsWithFormData } from '../selectors/items.batch-item-creation-selectors';
-import { BATCH_ITEM_CREATION_FORMID, BATCH_ITEM_CREATION_SDCRITERIA_FORMID } from '../state/items.batch-item-creation-state';
+import { getBatchItemCreationFormData, getBatchItemCreationRecords, getBatchItemCreationRedmineCriteriaFormState, getBatchItemCreationSDCriteriaSearchFormState, getBatchItemsRecordsWithFormData } from '../selectors/items.batch-item-creation-selectors';
+import { BATCH_ITEM_CREATION_FORMID, BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID, BATCH_ITEM_CREATION_SDCRITERIA_FORMID } from '../state/items.batch-item-creation-state';
 import { SnackBarIcon } from '../../../shared/store/shared.state';
 import { Router } from '@angular/router';
 import { ProposedItem } from '../models/batchitemcreation/proposed-item.model';
@@ -24,6 +24,8 @@ import { required } from 'ngrx-forms/validation';
 
 export const validateSDTargetRedmineProjectError = "validateSDTargetRedmineProjectError";
 export const validateSDSourceSoftDevProjectError = "validateSDSourceSoftDevProjectError";
+export const validateRmTargetRedmineProjectError = "validateRmTargetRedmineProjectError";
+export const validateRmSourceRedmineProjectError = "validateRmSourceRedmineProjectError";
 export const validateItemLevelError = "validateItemLevelError";
 
 @Injectable()
@@ -42,6 +44,12 @@ export class ItemsBatchItemCreationEffects {
             }
             if (action.controlId === BATCH_ITEM_CREATION_SDCRITERIA_FORMID + '.sourceSoftDevProject') {
                 return of(setSoftDevProjectsFilterForBatchItemCreationSdCriteria())
+            }
+            if (action.controlId === BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID + '.sourceRedmineProject') {
+                return of(setRedmineSourceProjectsFilterForBatchItemCreationCriteria())
+            }
+            if (action.controlId === BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID + '.targetRedmineProject') {
+                return of(setRedmineTargetProjectsFilterForBatchItemCreationCriteria())
             }
 
             return of(noopAction());
@@ -85,6 +93,42 @@ export class ItemsBatchItemCreationEffects {
                                     return of(new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_SDCRITERIA_FORMID,
                                         fromSharedState.FORM_SEARCH_STATE, fromSharedState.FormSearchState.SearchFailed));
                                 }))
+                        }))
+                    }
+                }
+            }
+            if (action.controlId == BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID) {
+                if (action.name == fromSharedState.FORM_SEARCH_STATE) {
+                    if (action.value == fromSharedState.FormSearchState.Searching) {
+                        return this.store.select(getBatchItemCreationRedmineCriteriaFormState).pipe(take(1), switchMap(formData => {
+                            let params = new HttpParams();
+                            params = params.append("sourceRedmineProject", formData.value.sourceRedmineProject);
+                            params = params.append("targetRedmineProject", formData.value.targetRedmineProject);
+                            params = params.append("showClosed", formData.value.showClosed);
+                            params = params.append("showCreated", formData.value.showCreated);
+                            let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
+
+                            return this.http.get<BatchItemSearchHttpResponse>(environment.apiUrl + '/redmine/items/get-potential-redmine-items-from-rmproject',
+                                { params, context })
+                                .pipe(switchMap(response => {
+                                    if (response.success) {
+
+                                        return of(setBatchItemCreationRecords({ proposedItems: response.records }),
+                                            new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID,
+                                                fromSharedState.FORM_SEARCH_STATE, fromSharedState.FormSearchState.SearchSuccessful));
+                                    }
+                                    else {
+                                        console.log(response.errorMessage);
+                                        this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage, icon: SnackBarIcon.Error }));
+                                        return of(new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID,
+                                            fromSharedState.FORM_SEARCH_STATE, fromSharedState.FormSearchState.SearchFailed));
+                                    }
+                            }), catchError(error => {
+                                console.log(error);
+                                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Error during Batch Item Creation Redmine Criteria Search", icon: SnackBarIcon.Error }));
+                                return of(new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID,
+                                    fromSharedState.FORM_SEARCH_STATE, fromSharedState.FormSearchState.SearchFailed));
+                            }))
                         }))
                     }
                 }
@@ -184,8 +228,14 @@ export class ItemsBatchItemCreationEffects {
             if (action.controlId === BATCH_ITEM_CREATION_SDCRITERIA_FORMID + '.targetRedmineProject')
                 return from(validateRedmineProject(this.store, validateSDTargetRedmineProjectError, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilterForBatchItemCreationSdCriteria())));
             
-            if (action.controlId === BATCH_ITEM_CREATION_SDCRITERIA_FORMID + '.itemLevel')
-                return of(validate(required));
+            if (action.controlId === BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID + '.sourceRedmineProject')
+                return from(validateRedmineProject(this.store, validateRmSourceRedmineProjectError, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilterForBatchItemCreationSdCriteria())));
+
+            if (action.controlId === BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID + '.targetRedmineProject')
+                return from(validateRedmineProject(this.store, validateRmTargetRedmineProjectError, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilterForBatchItemCreationSdCriteria())));
+
+            /*if (action.controlId === BATCH_ITEM_CREATION_SDCRITERIA_FORMID + '.itemLevel')
+                return of(validate(required));*/
 
             if (action.controlId === BATCH_ITEM_CREATION_FORMID + '.visibleColumns')
                 return of(updateBatchItemCreationFormColumn());

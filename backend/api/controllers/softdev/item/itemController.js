@@ -42,19 +42,38 @@ module.exports.getPotentialRedmineItemsFromSDProject = async (req, res) => {
         retVal.errorMessage = "Missing itemLevel";
     }
 
-    const queryResults = await softDevDataProvider.getSDProjectPotentialRedmineItems(req.query.sourceSoftDevProject, req.query.targetRedmineProject);
-    const redmineItems = await redmineDataProvider.getRedmineItemsPerIssues(req.query.targetRedmineProject);
+    const queryResults = await softDevDataProvider.getSDProjectPotentialRedmineItems(req.query.sourceSoftDevProject, req.query.targetRedmineProject, req.query.itemLevel);
+    const redmineItems = (req.query.itemLevel === 'issue') ? await redmineDataProvider.getRedmineItemsPerIssues(req.query.targetRedmineProject, false) : await redmineDataProvider.getRedmineItemsFromProject(req.query.targetRedmineProject, false);
     
     if (redmineItems) {
-        for (const softDevRecord of queryResults) {
-            if (redmineItems[softDevRecord.ISSUE] !== undefined
-                && (redmineItems[softDevRecord.ISSUE][0].subject === softDevRecord.SUBJECT 
-                    || redmineItems[softDevRecord.ISSUE][0].subject.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.SUBJECT.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
-                && (redmineItems[softDevRecord.ISSUE][0].description === softDevRecord.DESCRIPTION
-                    || redmineItems[softDevRecord.ISSUE][0].description.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.DESCRIPTION.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))) {
-                
-                softDevRecord.REDMINE_LINK = `${getRedmineAddress(`issues/${redmineItems[softDevRecord.ISSUE][0].id}`)}`;
-                softDevRecord.SELECTED = false;
+        if (!(req.query.itemLevel === 'cr')) {
+            for (const softDevRecord of queryResults) {
+                if (redmineItems[softDevRecord.ISSUE] !== undefined
+                    && (redmineItems[softDevRecord.ISSUE][0].subject === softDevRecord.SUBJECT 
+                        || redmineItems[softDevRecord.ISSUE][0].subject.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.SUBJECT.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
+                    && (redmineItems[softDevRecord.ISSUE][0].description === softDevRecord.DESCRIPTION
+                        || redmineItems[softDevRecord.ISSUE][0].description.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.DESCRIPTION.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))) {
+                    
+                    softDevRecord.REDMINE_LINK = `${getRedmineAddress(`issues/${redmineItems[softDevRecord.ISSUE][0].id}`)}`;
+                    softDevRecord.SELECTED = false;
+                }
+            }
+        } else {
+            for (const softDevRecord of queryResults) {
+                let target = redmineItems.issues.find((r) => {
+                    return r.subject && softDevRecord.SUBJECT && 
+                    (r.subject === softDevRecord.SUBJECT 
+                        || r.subject.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.SUBJECT.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
+                    && r.description && softDevRecord.DESCRIPTION &&
+                    (r.description === softDevRecord.DESCRIPTION
+                        || r.description.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.DESCRIPTION.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
+                    && redmineDataProvider.getCustomFieldValue(r, process.env.REDMINE_CR_NAME) === softDevRecord.CR
+                });
+
+                if (target) {
+                    softDevRecord.REDMINE_LINK = `${getRedmineAddress(`issues/${target.id}`)}`;
+                    softDevRecord.SELECTED = false;
+                }
             }
         }
     }

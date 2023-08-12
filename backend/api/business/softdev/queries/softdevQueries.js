@@ -1,3 +1,26 @@
+const selectSDProjectPotentialRedmineItems = `SELECT 
+                                                'true' AS selected,
+                                                :targetRedmineProject AS redmine_project,
+                                                case
+                                                    when issue.iss_type = 'Defect' Then
+                                                    'Bug'
+                                                    when (select issrc.isr_source_type
+                                                            from sd_live.issue_source issrc
+                                                            where issrc.isr_issue_aa = issue.aa_id
+                                                            and rownum = 1) = 'Autotesting' and
+                                                        issue.iss_type = 'Defect' Then
+                                                    'Regression'
+                                                    else
+                                                    issue.iss_type
+                                                end AS tracker,
+                                                issue.iss_summary AS subject,
+                                                issue.iss_desc AS description,
+                                                issue.aa_uf_id AS issue,
+                                                jacekk.Getcrsfromissuebyproject(issue.aa_id, :productVersionId) AS cr,
+                                                issue.iss_user_18 AS tms,
+                                                '' AS assignee,
+                                                '' AS redmine_link `;
+
 module.exports.getSDActiveProjectsQuery = () => {
     return `SELECT 
     prd_version.aa_id AS product_version_id,
@@ -59,19 +82,9 @@ module.exports.getSDRegressionQuery = (bForPacket) => {
     return query;
 };
 
-module.exports.getSDProjectPotentialRedmineItemsQuery = (bForPacket) => {
-    let query = `SELECT 
-                    'true' AS selected,
-                    :targetRedmineProject AS redmine_project,
-                    'Bug' AS tracker,
-                    iss_summary AS subject,
-                    iss_desc AS description,
-                    aa_uf_id AS issue,
-                    '' AS cr,
-                    iss_user_18 AS tms,
-                    '' AS assignee,
-                    '' AS redmine_link
-                FROM 
+module.exports.getSDProjectPotentialRedmineItemsByIssueQuery = (bForPacket) => {
+    let query = getSelectSDProjectPotentialRedmineItems(true); 
+    query +=   `FROM 
                     sd_live.issue issue, 
                     sd_live.issue_source source,
                     sd_live.product product
@@ -97,6 +110,91 @@ module.exports.getSDProjectPotentialRedmineItemsQuery = (bForPacket) => {
 
     return query;
 };
+
+module.exports.getSDProjectPotentialRedmineItemsByCrQuery = (bForPacket) => {
+    let query = getSelectSDProjectPotentialRedmineItems(false);
+    query +=   `FROM 
+                    sd_live.issue        issue,
+                    sd_live.change_request cr,
+                    sd_live.PROD_VERSION pv
+                WHERE 
+                    cr.cr_planned_fix_ver_aa = pv.AA_ID
+                    AND issue.aa_id = cr.CR_ISSUE_AA
+                    AND iss_is_active = 'Y'
+                    AND iss_status <> 'Canceled' `;
+
+    if (bForPacket) {
+        query += `AND pv.aa_id IN (SELECT
+                    prj.pj_version_aa
+                FROM 
+                    sd_live.project prj, sd_live.project pckt, sd_live.project_link prjlnk
+                WHERE
+                    prj.aa_id = prjlnk.pjl_project_aa
+                    AND pckt.aa_id = prjlnk.pjl_parent_proj_aa
+                    AND pckt.pj_version_aa = :productVersionId) `;
+    }
+    else
+        query += `AND pv.aa_id = :productVersionId `;
+
+    return query;
+};
+
+module.exports.getSDProjectPotentialRedmineItemsByPossibleCrQuery = (bForPacket) => {
+    let query = getSelectSDProjectPotentialRedmineItems(true);
+    query +=   `FROM 
+                    sd_live.issue        issue,
+                    sd_live.issue_devline_eval_v devv
+                WHERE 
+                    issue.aa_id = devv.IDE_ISSUE_AA
+                    AND iss_is_active = 'Y'
+                    AND iss_status <> 'Canceled'
+                    AND devv.ide_cr_aa is null
+                    AND devv.IDE_AFFECTED <> 'N'
+                    AND devv.IDE_APPROVED <> 'N' `;
+
+    if (bForPacket) {
+        query += `AND devv.IDE_VERSION_AA IN (SELECT
+                    prj.pj_version_aa
+                FROM 
+                    sd_live.project prj, sd_live.project pckt, sd_live.project_link prjlnk
+                WHERE
+                    prj.aa_id = prjlnk.pjl_project_aa
+                    AND pckt.aa_id = prjlnk.pjl_parent_proj_aa
+                    AND pckt.pj_version_aa = :productVersionId) `;
+    }
+    else
+        query += `AND devv.IDE_VERSION_AA = :productVersionId `;
+
+    return query;
+};
+
+function getSelectSDProjectPotentialRedmineItems(combineCRs) {
+    let select = `SELECT 
+                    'true' AS selected,
+                    :targetRedmineProject AS redmine_project,
+                    case
+                        when issue.iss_type = 'Defect' Then
+                        'Bug'
+                        when (select issrc.isr_source_type
+                                from sd_live.issue_source issrc
+                                where issrc.isr_issue_aa = issue.aa_id
+                                and rownum = 1) = 'Autotesting' and
+                            issue.iss_type = 'Defect' Then
+                        'Regression'
+                        else
+                        issue.iss_type
+                    end AS tracker,
+                    '' AS status,
+                    issue.iss_summary AS subject,
+                    issue.iss_desc AS description,
+                    issue.aa_uf_id AS issue, 
+                    issue.iss_user_18 AS tms,
+                    '' AS assignee,
+                    '' AS redmine_link, `
+    select += combineCRs ? `jacekk.Getcrsfromissuebyproject(issue.aa_id, :productVersionId) AS cr ` : `cr.aa_uf_id AS cr `
+
+    return select;
+}
 
 module.exports.getCRValidationQuery = () => {
     return `select count(*) as existence from  sd_live.change_request_v cr where cr.AA_UF_ID = :changeRequest and rownum = 1`;

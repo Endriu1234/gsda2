@@ -8,7 +8,7 @@ import { onNgrxForms, wrapReducerWithFormStateUpdate, updateGroup, validate, Val
 import { required } from 'ngrx-forms/validation';
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, initSoftDevProjects, loadRedmineProjects, loadRedmineTrackers, loadRedmineUsers, loadSoftDevProjects } from './actions/items.common-actions';
 import { addValidatedCR, addValidatedFromId, addValidatedIssue, addValidatedTms, endResetItemCreationForm, setItemCreationFormMode, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startResetItemCreationForm } from './actions/items.item-creation-actions';
-import { continueBatchItemsCreation, forceEndBatchItemCreation, setBatchItemCreationRecords, setLinkToCurrentProposedItemAndUnselect, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection, dragAndDropBatchItemsCreationColumns, createOneRecordFromBatch, updateBatchItemCreationFormColumn } from './actions/items.batch-item-creation-actions';
+import { continueBatchItemsCreation, forceEndBatchItemCreation, setBatchItemCreationRecords, setLinkToCurrentProposedItemAndUnselect, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection, dragAndDropBatchItemsCreationColumns, createOneRecordFromBatch, updateBatchItemCreationFormColumn, setRedmineSourceProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForBatchItemCreationCriteria } from './actions/items.batch-item-creation-actions';
 import { ItemCreationFromData } from './state/items.item-creation-state';
 
 export const itemsReducerKey = 'items';
@@ -44,6 +44,8 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
 
     on(setRedmineProjectsFilterForBatchItemCreationSdCriteria, fromBatchItemCreationReducerHanders.setRedmineProjectsFilterForBatchItemCreationSdCriteria),
     on(setSoftDevProjectsFilterForBatchItemCreationSdCriteria, fromBatchItemCreationReducerHanders.setSoftDevProjectsFilterForBatchItemCreationSdCriteria),
+    on(setRedmineSourceProjectsFilterForBatchItemCreationCriteria, fromBatchItemCreationReducerHanders.setRedmineSourceProjectsFilterForBatchItemCreationCriteria),
+    on(setRedmineTargetProjectsFilterForBatchItemCreationCriteria, fromBatchItemCreationReducerHanders.setRedmineTargetProjectsFilterForBatchItemCreationCriteria),
     on(setBatchItemCreationRecords, fromBatchItemCreationReducerHanders.setBatchItemCreationRecords),
     on(togglePropsedItemSelection, fromBatchItemCreationReducerHanders.togglePropsedItemSelection),
     on(toggleAllPropsedItemsSelection, fromBatchItemCreationReducerHanders.toggleAllPropsedItemsSelection),

@@ -20,6 +20,24 @@ export function setSoftDevProjectsFilterForBatchItemCreationSdCriteria(state: St
     return newState;
 }
 
+export function setRedmineSourceProjectsFilterForBatchItemCreationCriteria(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreationRedmineCriteriaSetupData.redmineSourceProjectsFiltered
+        = filterRedmineProjects(newState.itemsSetupData.redmineProjects, newState.batchItemCreationRedmineCriteriaFormData.value.sourceRedmineProject);
+        newState.batchItemCreationRedmineCriteriaSetupData.redmineSourceProjectsFiltered 
+        = newState.batchItemCreationRedmineCriteriaSetupData.redmineSourceProjectsFiltered.filter(u => u.name.toLocaleLowerCase() !== newState.batchItemCreationRedmineCriteriaFormData.value.targetRedmineProject.toLocaleLowerCase());
+    return newState;
+}
+
+export function setRedmineTargetProjectsFilterForBatchItemCreationCriteria(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreationRedmineCriteriaSetupData.redmineTargetProjectsFiltered
+        = filterRedmineProjects(newState.itemsSetupData.redmineProjects, newState.batchItemCreationRedmineCriteriaFormData.value.targetRedmineProject);
+    newState.batchItemCreationRedmineCriteriaSetupData.redmineTargetProjectsFiltered 
+        = newState.batchItemCreationRedmineCriteriaSetupData.redmineTargetProjectsFiltered.filter(u => u.name.toLocaleLowerCase() !== newState.batchItemCreationRedmineCriteriaFormData.value.sourceRedmineProject.toLocaleLowerCase());
+    return newState;
+}
+
 export function setBatchItemCreationRecords(state: State, args: { proposedItems: ProposedItem[] }): State {
     const newState: State = _.cloneDeep(state);
     newState.batchItemCreationRecords = {

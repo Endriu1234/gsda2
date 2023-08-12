@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroupState } from 'ngrx-forms';
+import { FormGroupState, SetUserDefinedPropertyAction } from 'ngrx-forms';
 import { Observable, take } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
@@ -7,6 +7,8 @@ import * as fromItemsState from '../../../store/state/items.state';
 import * as fromBatchItemsSelectors from '../../../store/selectors/items.batch-item-creation-selectors';
 import * as fromCommonItemsSelectors from '../../../store/selectors/items.common-selectors';
 import { initRedmineProjects } from 'src/app/items/store/actions/items.common-actions';
+import { BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID } from 'src/app/items/store/state/items.batch-item-creation-state';
+import { FORM_SEARCH_STATE, FormSearchState } from 'src/app/shared/store/shared.state';
 
 @Component({
   selector: 'app-batch-creation-redmine-criteria',
@@ -15,7 +17,10 @@ import { initRedmineProjects } from 'src/app/items/store/actions/items.common-ac
 })
 export class BatchCreationRedmineCriteriaComponent implements OnInit {
   formState$: Observable<FormGroupState<any>>;
-  redmineProjectsFiltered$: Observable<RedmineProject[]> | null = null;
+  redmineSourceProjectsFiltered$: Observable<RedmineProject[]> | null = null;
+  redmineTargetProjectsFiltered$: Observable<RedmineProject[]> | null = null;
+  isGridFilled$: Observable<boolean> | null = null;
+  canActivateFind$: Observable<boolean> | null = null;
 
   constructor(private store: Store<fromItemsState.State>) {
     this.formState$ = this.store.select(fromBatchItemsSelectors.getBatchItemCreationRedmineCriteriaFormState);
@@ -28,8 +33,16 @@ export class BatchCreationRedmineCriteriaComponent implements OnInit {
         this.store.dispatch(initRedmineProjects());
     });
 
-    this.redmineProjectsFiltered$ = this.store.select(fromBatchItemsSelectors.getRedmineProjectsFilteredForBatchItemCreation);
-    
+    this.redmineSourceProjectsFiltered$ = this.store.select(fromBatchItemsSelectors.getRedmineSourceProjectsFilteredForBatchItemCreation);
+    this.redmineTargetProjectsFiltered$ = this.store.select(fromBatchItemsSelectors.getRedmineTargetProjectsFilteredForBatchItemCreation);
+
+    this.isGridFilled$ = this.store.select(fromBatchItemsSelectors.getBatchItemCreationCanActivateGrid);
+
+    this.canActivateFind$ = this.store.select(fromBatchItemsSelectors.getBatchItemCreationRmCriteriaCanActivateFind);
+  }
+
+  search(): void {
+    this.store.dispatch(new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID, FORM_SEARCH_STATE, FormSearchState.Searching))
   }
 
 }

@@ -156,6 +156,12 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
               comparatorResult = a.CR ? a.CR.localeCompare(b.CR) : b.CR ? -1 : 0;
             }
             break;
+          case 'TMS':
+            comparatorResult = a.TMS ? a.TMS.localeCompare(b.TMS) : b.TMS ? -1 : 0;
+            break;
+          case 'TRACKER':
+            comparatorResult = a.TRACKER ? a.TRACKER.localeCompare(b.TRACKER) : b.TRACKER ? -1 : 0;
+            break;
           default:
             comparatorResult = a.DESCRIPTION ? a.DESCRIPTION.localeCompare(b.DESCRIPTION) : b.DESCRIPTION ? -1 : 0;
             break;

@@ -2,7 +2,7 @@ import { createSelector } from '@ngrx/store';
 import { State } from '../state/items.state';
 import { getItemsState } from './items.common-selectors';
 import { FormGroupState } from 'ngrx-forms';
-import { BatchItemCreationRecords, BatchItemCreationSdCriteriaFormData } from '../state/items.batch-item-creation-state';
+import { BatchItemCreationRecords, BatchItemCreationRedmineCriteriaFormData, BatchItemCreationSdCriteriaFormData } from '../state/items.batch-item-creation-state';
 
 export const getBatchItemCreationSDCriteriaSearchFormState = createSelector(getItemsState, (state: State) => state.batchItemCreationSdCriteriaFormData);
 export const getBatchItemCreationSdCriteriaFormState = createSelector(getItemsState, (state: State) => state.batchItemCreationSdCriteriaFormData);
@@ -16,6 +16,8 @@ export const getBatchItemCreationFormDataAddon = createSelector(getItemsState, (
 
 export const getBatchItemCreationTMSCriteriaFormState = createSelector(getItemsState, (state: State) => state.batchItemCreationTMSCriteriaFormData);
 
+export const getRedmineSourceProjectsFilteredForBatchItemCreation = createSelector(getItemsState, (state: State) => state.batchItemCreationRedmineCriteriaSetupData.redmineSourceProjectsFiltered);
+export const getRedmineTargetProjectsFilteredForBatchItemCreation = createSelector(getItemsState, (state: State) => state.batchItemCreationRedmineCriteriaSetupData.redmineTargetProjectsFiltered);
 export const getBatchItemCreationRedmineCriteriaFormState = createSelector(getItemsState, (state: State) => state.batchItemCreationRedmineCriteriaFormData);
 export const getBatchItemCreationGridRemovableColumns = createSelector(getItemsState, (state: State) => state.batchItemCreationGridRemovableColumns);
 
@@ -32,6 +34,18 @@ function canBatchItemCreationSDCriteriaActivateFind(formState: FormGroupState<Ba
     if (!formState.value || formState.isValidationPending || formState.isInvalid 
         || !formState.controls.itemLevel.value
         || !formState.controls.sourceSoftDevProject.value 
+        || !formState.controls.targetRedmineProject.value) {
+        return false;
+    }
+
+    return true;
+}
+
+export const getBatchItemCreationRmCriteriaCanActivateFind = createSelector(getBatchItemCreationRedmineCriteriaFormState, canBatchItemCreationRmCriteriaActivateFind);
+
+function canBatchItemCreationRmCriteriaActivateFind(formState: FormGroupState<BatchItemCreationRedmineCriteriaFormData>): boolean {
+    if (!formState.value || formState.isValidationPending || formState.isInvalid 
+        || !formState.controls.sourceRedmineProject.value 
         || !formState.controls.targetRedmineProject.value) {
         return false;
     }

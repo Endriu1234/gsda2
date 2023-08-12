@@ -2,6 +2,7 @@ export class ProposedItem {
     public SELECTED: boolean;
     public REDMINE_PROJECT: string;
     public TRACKER: string;
+    public STATUS: string;
     public SUBJECT: string;
     public DESCRIPTION: string;
     public ISSUE: string;
@@ -10,11 +11,12 @@ export class ProposedItem {
     public ASSIGNEE: string;
     public REDMINE_LINK: string;
 
-    constructor(SELECTED: boolean, REDMINE_PROJECT: string, TRACKER: string, SUBJECT: string, DESCRIPTION: string, ISSUE: string,
+    constructor(SELECTED: boolean, REDMINE_PROJECT: string, TRACKER: string, STATUS: string, SUBJECT: string, DESCRIPTION: string, ISSUE: string,
         CR: string, TMS: string, ASSIGNEE: string, REDMINE_LINK: string) {
         this.SELECTED = SELECTED;
         this.REDMINE_PROJECT = REDMINE_PROJECT;
         this.TRACKER = TRACKER;
+        this.STATUS = STATUS;
         this.SUBJECT = SUBJECT;
         this.DESCRIPTION = DESCRIPTION;
         this.ISSUE = ISSUE;

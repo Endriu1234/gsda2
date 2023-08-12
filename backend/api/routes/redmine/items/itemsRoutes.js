@@ -8,6 +8,6 @@ router.get('/get-redmine-trackers', authController.checkAuth, itemsController.ge
 router.get('/get-redmine-users', authController.checkAuth, itemsController.getRedmineUsers);
 router.get('/get-redmine-projects', authController.checkAuth, itemsController.getRedmineProjects);
 router.post('/create-redmine-item', authController.checkAuth, itemsController.createRedmineItem);
-
+router.get('/get-potential-redmine-items-from-rmproject', authController.checkAuth, itemsController.getPotentialRedmineItemsFromRedmineProject);
 
 module.exports = router;

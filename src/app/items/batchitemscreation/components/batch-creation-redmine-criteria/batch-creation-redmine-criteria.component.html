@@ -10,16 +10,20 @@
                                 <input type="text"
                                     matInput
                                     [ngrxFormControlState]="$any(formState).controls.sourceRedmineProject"
-                                    [matAutocomplete]="autoRedmineProject"
+                                    [matAutocomplete]="autoRedmineSourceProject"
                                 >
-                                <mat-autocomplete #autoRedmineProject="matAutocomplete">
-                                    <mat-option *ngFor="let project of (redmineProjectsFiltered$ | async)"
+                                <mat-autocomplete #autoRedmineSourceProject="matAutocomplete">
+                                    <mat-option *ngFor="let project of (redmineSourceProjectsFiltered$ | async)"
                                         [value]="project.name"
                                     >
                                         {{project.name}}
                                     </mat-option>
                                 </mat-autocomplete>
                             </mat-form-field>
+                            <mat-error
+                                [style.visibility]="(formState.isTouched && (formState.errors._sourceRedmineProject?.$validateRmSourceRedmineProjectError || formState.errors._sourceRedmineProject?.required))?'visible':'hidden'">
+                                Redmine Project is required
+                            </mat-error>
                         </div>
                         <div class="col-4">
                             <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
@@ -27,18 +31,25 @@
                                 <input type="text"
                                     matInput
                                     [ngrxFormControlState]="$any(formState).controls.targetRedmineProject"
-                                    [matAutocomplete]="autoRedmineProject"
+                                    [matAutocomplete]="autoRedmineTargetProject"
                                 >
-                                <mat-autocomplete #autoRedmineProject="matAutocomplete">
-                                    <mat-option *ngFor="let project of (redmineProjectsFiltered$ | async)"
+                                <mat-autocomplete #autoRedmineTargetProject="matAutocomplete">
+                                    <mat-option *ngFor="let project of (redmineTargetProjectsFiltered$ | async)"
                                         [value]="project.name"
                                     >
                                         {{project.name}}
                                     </mat-option>
                                 </mat-autocomplete>
                             </mat-form-field>
+                            <mat-error
+                                [style.visibility]="(formState.isTouched && (formState.errors._targetRedmineProject?.$validateRmTargetRedmineProjectError || formState.errors._targetRedmineProject?.required))?'visible':'hidden'">
+                                Redmine Project is required
+                            </mat-error>
                         </div>
                         <div class="col-4">
+                            <mat-checkbox color="primary"
+                                [ngrxFormControlState]="$any(formState).controls.showClosed"
+                            >Show Closed</mat-checkbox>
                             <mat-checkbox  color="primary" 
                                 [ngrxFormControlState]="$any(formState).controls.showCreated"
                             >Show Created</mat-checkbox>
@@ -47,6 +58,8 @@
                                 extended
                                 color="primary"
                                 class="ms-3 my-2"
+                                [disabled]="!(canActivateFind$ | async)"
+                                (click)="search()"
                             >Find</button>
                         </div>
                     </div>
@@ -55,4 +68,7 @@
         </mat-card-content>
     </mat-card>
     <br>
+    <div *ngIf="!(isGridFilled$ | async)">
+        <br><br><br><br><br><br><br><br>
+    </div>
 </ng-container>
