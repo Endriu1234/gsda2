@@ -23,6 +23,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
     imports: [
@@ -47,7 +48,8 @@ import { MatMenuModule } from '@angular/material/menu';
         MatSortModule,
         DragDropModule,
         MatTooltipModule,
-        MatMenuModule
+        MatMenuModule,
+        MatSlideToggleModule
     ],
     declarations: [
         NgrxMatSelectViewAdapter,
@@ -79,7 +81,8 @@ import { MatMenuModule } from '@angular/material/menu';
         MatSortModule,
         DragDropModule,
         MatTooltipModule,
-        MatMenuModule
+        MatMenuModule,
+        MatSlideToggleModule
     ],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { float: 'always' } },

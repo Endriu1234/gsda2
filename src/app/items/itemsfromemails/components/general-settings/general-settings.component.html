@@ -1,0 +1,28 @@
+<mat-card>
+    <mat-card-content>
+        <form novalidate>
+            <div class="container-fluid">
+                <div class="row">
+                    <mat-slide-toggle>Enabled</mat-slide-toggle>
+                </div>
+                <div class="row">
+                    <mat-form-field appearance="outline" [style.width.px]=220 class="mt-3">
+                        <input
+                              type="number" class="form-control" matInput name="value"
+                            placeholder="Interval in minutes" formControlName="value">
+                    </mat-form-field>
+                </div>
+                <div class="row">
+                    <button
+                        mat-fab
+                        extended
+                        color="primary"
+                        class="mt-0"
+
+                    >Save</button>
+                </div>
+
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>

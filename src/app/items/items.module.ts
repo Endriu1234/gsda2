@@ -23,6 +23,8 @@ import { DirectivesModule } from '../shared/directives/directives.module';
 import { ItemsFromEmailsPage } from './itemsfromemails/pages/items-from-emails/items-from-emails.page';
 import { ItemsFromEmailsSettingsComponent } from './itemsfromemails/components/items-from-emails-settings/items-from-emails-settings.component';
 import { ItemsFromEmailsLogsComponent } from './itemsfromemails/components/items-from-emails-logs/items-from-emails-logs.component';
+import { GeneralSettingsComponent } from './itemsfromemails/components/general-settings/general-settings.component';
+import { AliasesSettingsComponent } from './itemsfromemails/components/aliases-settings/aliases-settings.component';
 
 
 
@@ -39,7 +41,9 @@ import { ItemsFromEmailsLogsComponent } from './itemsfromemails/components/items
     BatchCreationIdscriteriaComponent,
     ItemsFromEmailsPage,
     ItemsFromEmailsSettingsComponent,
-    ItemsFromEmailsLogsComponent
+    ItemsFromEmailsLogsComponent,
+    GeneralSettingsComponent,
+    AliasesSettingsComponent
   ],
   imports: [
     CommonModule,
