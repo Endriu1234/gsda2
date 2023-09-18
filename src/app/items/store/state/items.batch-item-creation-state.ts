@@ -2,10 +2,14 @@ import { RedmineProject } from "src/app/shared/store/models/redmine-project.mode
 import { SoftDevProject } from "src/app/shared/store/models/softdev-project.model";
 import { ProposedItem } from "../models/batchitemcreation/proposed-item.model";
 import { box, Boxed, createFormGroupState, FormGroupState } from "ngrx-forms";
+import { RedmineUserByLetter } from "../../../shared/store/models/redmine-user-letter-model";
+import { TmsClient } from "src/app/shared/store/models/tms-client.model";
+import { TmsClientByLetter } from "src/app/shared/store/models/tms-client-letter.model";
 
 export const BATCH_ITEM_CREATION_SDCRITERIA_FORMID = "BATCH_ITEM_CREATION_SDCRITERIA_FORMID";
 export const BATCH_ITEM_CREATION_TMSCRITERIA_FORMID = "BATCH_ITEM_CREATION_TMSCRITERIA_FORMID";
 export const BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID = "BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID";
+export const BATCH_ITEM_CREATION_IDSCRITERIA_FORMID = "BATCH_ITEM_CREATION_IDSCRITERIA_FORMID";
 export const BATCH_ITEM_CREATION_GRID_REMOVABLE_COLUMNS = ['TRACKER', 'SUBJECT', 'ISSUE', 'CR', 'TMS'];
 
 export interface BatchItemCreationSdCriteriaFormData {
@@ -36,21 +40,49 @@ export function getBatchItemCreationSdCriteriaSetupDataInitialState(): BatchItem
     }
 }
 
+export interface BatchItemCreationTmsCriteriaSetupData {
+    redmineTargetProjectsFiltered: RedmineProject[];
+    redmineUsersByLetter: RedmineUserByLetter[];
+    redmineUsersByLetterFiltered: RedmineUserByLetter[];
+    tmsClients: TmsClient[];
+    tmsClientsByLetter: TmsClientByLetter[];
+    tmsClientsByLetterFiltered: TmsClientByLetter[];
+    tmsClientsLoaded: boolean;
+}
+
+export function getBatchItemCreationTmsCriteriaSetupDataInitialState(): BatchItemCreationTmsCriteriaSetupData {
+    return {
+        redmineTargetProjectsFiltered: [],
+        redmineUsersByLetter: [],
+        redmineUsersByLetterFiltered: [],
+        tmsClients: [],
+        tmsClientsByLetter: [],
+        tmsClientsByLetterFiltered: [],
+        tmsClientsLoaded: false
+    }
+}
+
 export interface BatchItemCreationTMSCriteriaFormData {
     targetRedmineProject: string,
-    iTMSTask: string,
+    iTMSClient: string,
     showClosed: boolean,
     showCreated: boolean,
-    showInClientBin: boolean
+    showInClientBin: boolean,
+    fromDate: string,
+    toDate: string,
+    userToITms: string
 };
 
 export function getBatchItemCreationTMSCriteriaFormDataInitialState(): FormGroupState<BatchItemCreationTMSCriteriaFormData> {
     return createFormGroupState<BatchItemCreationTMSCriteriaFormData>(BATCH_ITEM_CREATION_TMSCRITERIA_FORMID, {
         targetRedmineProject: '',
-        iTMSTask: '',
+        iTMSClient: '',
         showClosed: false,
         showCreated: false,
-        showInClientBin: false
+        showInClientBin: false,
+        fromDate: '',
+        toDate: '',
+        userToITms: ''
     });
 }
 
@@ -79,6 +111,30 @@ export function getBatchItemCreationRedmineCriteriaFormDataInitialState(): FormG
         sourceRedmineProject: '',
         showCreated: false,
         showClosed: false
+    });
+}
+
+export interface BatchItemCreationIdsCriteriaSetupData {
+    redmineTargetProjectsFiltered: RedmineProject[];
+}
+
+export function getBatchItemCreationIdsCriteriaSetupDataInitialState(): BatchItemCreationIdsCriteriaSetupData {
+    return {
+        redmineTargetProjectsFiltered: []
+    }
+}
+
+export interface BatchItemCreationIdsCriteriaFormData {
+    targetRedmineProject: string,
+    showCreated: boolean,
+    allIds: string
+};
+
+export function getBatchItemCreationIdsCriteriaFormDataInitialState(): FormGroupState<BatchItemCreationIdsCriteriaFormData> {
+    return createFormGroupState<BatchItemCreationIdsCriteriaFormData>(BATCH_ITEM_CREATION_IDSCRITERIA_FORMID, {
+        targetRedmineProject: '',
+        showCreated: false,
+        allIds: ''
     });
 }
 

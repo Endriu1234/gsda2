@@ -4,7 +4,7 @@ import * as fromItemsState from '../../../store/state/items.state';
 import * as fromItemCreationSelectors from '../../../store/selectors/items.item-creation-selectors';
 import * as fromCommonItemsSelectors from '../../../store/selectors/items.common-selectors';
 import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model';
-import { RedmineUserByLetter } from 'src/app/items/store/models/redmine-user-letter-model';
+import { RedmineUserByLetter } from 'src/app/shared/store/models/redmine-user-letter-model';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 import { Observable, take } from 'rxjs';
 import { FormGroupState, SetUserDefinedPropertyAction } from 'ngrx-forms';

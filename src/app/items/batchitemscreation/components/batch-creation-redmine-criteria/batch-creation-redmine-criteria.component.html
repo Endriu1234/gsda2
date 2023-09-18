@@ -47,12 +47,12 @@
                             </mat-error>
                         </div>
                         <div class="col-4">
-                            <mat-checkbox color="primary"
-                                [ngrxFormControlState]="$any(formState).controls.showClosed"
-                            >Show Closed</mat-checkbox>
                             <mat-checkbox  color="primary" 
                                 [ngrxFormControlState]="$any(formState).controls.showCreated"
                             >Show Created</mat-checkbox>
+                            <mat-checkbox color="primary"
+                                [ngrxFormControlState]="$any(formState).controls.showClosed"
+                            >Show Closed</mat-checkbox>
                             <button
                                 mat-fab
                                 extended

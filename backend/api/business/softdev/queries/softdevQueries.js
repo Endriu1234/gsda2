@@ -46,6 +46,24 @@ WHERE
     AND proj.pj_status not in ('Canceled', 'Closed', 'Delivered', 'Doc Reviewed', 'Doc Created', 'Finished', 'Scope Approved')
     AND proj.pj_active = 'Y' `};
 
+module.exports.getTmsLocalUsersQuery = () => {
+    return ` SELECT 
+        lu.gus_user_id as login, 
+        lu.gus_user_id_ext2 as tms_login,
+        lu.gus_user_firstname as first_name,
+        lu.gus_user_middlename as middle_name,
+        lu.gus_user_lastname as last_name,
+        lu.gus_mail_address as email
+    FROM 
+        sd_live.local_users lu `};
+
+module.exports.getTmsClientsQuery = () => {
+    return ` SELECT 
+        cl.CLID as tms_client, 
+        cl.CLNAME as tms_client_fullName
+    FROM sd_live.tms_client_v cl 
+    WHERE cl.CLID not like '#%' AND cl.CLID not like '4%' AND cl.CLID not like '~%' `};
+
 module.exports.getSDRegressionQuery = (bForPacket) => {
     let query = `SELECT 
                     aa_uf_id AS issue_id,
@@ -196,6 +214,38 @@ function getSelectSDProjectPotentialRedmineItems(combineCRs) {
     return select;
 }
 
+module.exports.getTmsProjectPotentialRedmineItems = (showClosed, showInClientBin) => {
+    let showClosedAnd = showClosed ? ``:` AND tms.status <> 'C' `;
+    let showInClientBinAnd = showInClientBin ? ``:` AND tms.employee Not like 'N/%' `;
+    let query = `select 'true' AS selected,
+                    :targetRedmineProject AS redmine_project,
+                    'TMS Task' AS tracker,
+                    '' AS status,
+                    CLIENT || '-' || ID AS subject,
+                    txt.PROBLEMFULLTEXT AS description,
+                    case
+                    when tms.SOFTDEV_ID like 'ISS%' Then
+                    tms.SOFTDEV_ID
+                    else
+                    ''
+                    end AS issue,
+                    CLIENT || '-' || ID AS tms,
+                    tms.employee AS assignee,
+                    '' AS redmine_link, 
+                    '' AS cr
+                from SD_LIVE.tms_problem_v         tms,
+                    SD_LIVE.Tms_Problem_Full_Text txt
+                where txt.TASK_AA_ID = tms.aa_id `;
+    query += showClosedAnd;
+    query += showInClientBinAnd;
+    query += ` and tms.client = :iTMSClient
+                and tms.createddatetime >= To_Date(:fromDate,'YYYY-MM-DD HH24:MI')
+                and tms.createddatetime <= To_Date(:toDate,'YYYY-MM-DD HH24:MI') 
+                and tms.employee = (case when :TmsUser is not null then :TmsUser else tms.employee end) `;
+
+    return query;
+}
+
 module.exports.getCRValidationQuery = () => {
     return `select count(*) as existence from  sd_live.change_request_v cr where cr.AA_UF_ID = :changeRequest and rownum = 1`;
 };
@@ -206,6 +256,10 @@ module.exports.getIssueValidationQuery = () => {
 
 module.exports.getTmsValidationQuery = () => {
     return `select count(*) as existence from SD_LIVE.tms_problem_v tms where tms.client = :tmsClient and tms.id = :tmsId and rownum = 1`;
+};
+
+module.exports.getTmsClientValidationQuery = () => {
+    return `select count(*) as existence from SD_LIVE.tms_problem_v tms where tms.client = :tmsClient and rownum = 1`;
 };
 
 module.exports.getItemDataByIssue = () => {

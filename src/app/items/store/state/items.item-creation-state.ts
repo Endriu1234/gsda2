@@ -1,8 +1,8 @@
 import { RedmineProject } from "src/app/shared/store/models/redmine-project.model";
 import { createFormGroupState, FormGroupState } from "ngrx-forms";
 import { RedmineTracker } from "../models/redmine-tracker.model";
-import { RedmineUser } from "../models/redmine-user.model";
-import { RedmineUserByLetter } from "../models/redmine-user-letter-model";
+import { RedmineUser } from "../../../shared/store/models/redmine-user.model";
+import { RedmineUserByLetter } from "../../../shared/store/models/redmine-user-letter-model";
 import { CRValidation } from "../models/cr-validation.model";
 import { IssueValidation } from "../models/issue-validation.model";
 import { TmsValidation } from "../models/tms-validation.model";

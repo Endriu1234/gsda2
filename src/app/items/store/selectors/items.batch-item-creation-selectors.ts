@@ -2,7 +2,7 @@ import { createSelector } from '@ngrx/store';
 import { State } from '../state/items.state';
 import { getItemsState } from './items.common-selectors';
 import { FormGroupState } from 'ngrx-forms';
-import { BatchItemCreationRecords, BatchItemCreationRedmineCriteriaFormData, BatchItemCreationSdCriteriaFormData } from '../state/items.batch-item-creation-state';
+import { BatchItemCreationIdsCriteriaFormData, BatchItemCreationRecords, BatchItemCreationRedmineCriteriaFormData, BatchItemCreationSdCriteriaFormData, BatchItemCreationTMSCriteriaFormData } from '../state/items.batch-item-creation-state';
 
 export const getBatchItemCreationSDCriteriaSearchFormState = createSelector(getItemsState, (state: State) => state.batchItemCreationSdCriteriaFormData);
 export const getBatchItemCreationSdCriteriaFormState = createSelector(getItemsState, (state: State) => state.batchItemCreationSdCriteriaFormData);
@@ -20,6 +20,17 @@ export const getRedmineSourceProjectsFilteredForBatchItemCreation = createSelect
 export const getRedmineTargetProjectsFilteredForBatchItemCreation = createSelector(getItemsState, (state: State) => state.batchItemCreationRedmineCriteriaSetupData.redmineTargetProjectsFiltered);
 export const getBatchItemCreationRedmineCriteriaFormState = createSelector(getItemsState, (state: State) => state.batchItemCreationRedmineCriteriaFormData);
 export const getBatchItemCreationGridRemovableColumns = createSelector(getItemsState, (state: State) => state.batchItemCreationGridRemovableColumns);
+
+export const getRedmineUsersByLetterFiltered = createSelector(getItemsState, (state: State) => state.batchItemCreationTMSCriteriaSetupData.redmineUsersByLetterFiltered);
+
+export const getRedmineTargetProjectsFilteredForTmsBatchItemCreation = createSelector(getItemsState, (state: State) => state.batchItemCreationTMSCriteriaSetupData.redmineTargetProjectsFiltered);
+
+export const getTmsClientsLoaded = createSelector(getItemsState, (state: State) => state.batchItemCreationTMSCriteriaSetupData.tmsClientsLoaded);
+export const getTmsClientsByLetterFiltered = createSelector(getItemsState, (state: State) => state.batchItemCreationTMSCriteriaSetupData.tmsClientsByLetterFiltered);
+export const getTmsClients = createSelector(getItemsState, (state: State) => state.batchItemCreationTMSCriteriaSetupData.tmsClients);
+
+export const getBatchItemCreationIdsCriteriaFormState = createSelector(getItemsState, (state: State) => state.batchItemCreationIdsCriteriaFormData);
+export const getRedmineProjectsFilteredForIdsBatchItemCreation = createSelector(getItemsState, (state: State) => state.batchItemCreationIdsCriteriaSetupData.redmineTargetProjectsFiltered);
 
 export const getBatchItemsRecordsWithFormData = createSelector(getBatchItemCreationRecords, getBatchItemCreationFormData, (batchRecords, batchFormData) => {
     return {
@@ -57,6 +68,30 @@ export const getBatchItemCreationCanActivateGrid = createSelector(getBatchItemCr
 
 function canBatchItemCreationCanActivateGrid(batchRecords: BatchItemCreationRecords): boolean {
     if (!batchRecords.proposedItems || batchRecords.proposedItems.length <= 0) {
+        return false;
+    }
+
+    return true;
+}
+
+export const getBatchItemCreationTmsCriteriaCanActivateFind = createSelector(getBatchItemCreationTMSCriteriaFormState, canActivateTMSFind);
+
+function canActivateTMSFind(formState: FormGroupState<BatchItemCreationTMSCriteriaFormData>): boolean {
+    if (!formState.value || formState.isValidationPending || formState.isInvalid 
+        || !formState.controls.iTMSClient.value 
+        || !formState.controls.targetRedmineProject.value) {
+        return false;
+    }
+
+    return true;
+}
+
+export const getBatchItemCreationIdsCriteriaCanActivateFind = createSelector(getBatchItemCreationIdsCriteriaFormState, canBatchItemCreationIdsCriteriaActivateFind);
+
+function canBatchItemCreationIdsCriteriaActivateFind(formState: FormGroupState<BatchItemCreationIdsCriteriaFormData>): boolean {
+    if (!formState.value || formState.isValidationPending || formState.isInvalid 
+        || !formState.controls.allIds.value
+        || !formState.controls.targetRedmineProject.value) {
         return false;
     }
 

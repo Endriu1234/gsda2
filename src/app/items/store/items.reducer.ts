@@ -8,7 +8,7 @@ import { onNgrxForms, wrapReducerWithFormStateUpdate, updateGroup, validate, Val
 import { required } from 'ngrx-forms/validation';
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, initSoftDevProjects, loadRedmineProjects, loadRedmineTrackers, loadRedmineUsers, loadSoftDevProjects } from './actions/items.common-actions';
 import { addValidatedCR, addValidatedFromId, addValidatedIssue, addValidatedTms, endResetItemCreationForm, setItemCreationFormMode, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startResetItemCreationForm } from './actions/items.item-creation-actions';
-import { continueBatchItemsCreation, forceEndBatchItemCreation, setBatchItemCreationRecords, setLinkToCurrentProposedItemAndUnselect, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection, dragAndDropBatchItemsCreationColumns, createOneRecordFromBatch, updateBatchItemCreationFormColumn, setRedmineSourceProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForBatchItemCreationCriteria } from './actions/items.batch-item-creation-actions';
+import { continueBatchItemsCreation, forceEndBatchItemCreation, setBatchItemCreationRecords, setLinkToCurrentProposedItemAndUnselect, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection, dragAndDropBatchItemsCreationColumns, createOneRecordFromBatch, updateBatchItemCreationFormColumn, setRedmineSourceProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForTmsBatchItemCreationCriteria, setRedmineUsersByLetterFilterForTmsBatchItemCreationCriteria, initTmsClients, loadTmsClients, setTmsClientsByLetterFilter, setRedmineTargetProjectsFilterForIdsBatchItemCreationCriteria } from './actions/items.batch-item-creation-actions';
 import { ItemCreationFromData } from './state/items.item-creation-state';
 
 export const itemsReducerKey = 'items';
@@ -46,6 +46,10 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
     on(setSoftDevProjectsFilterForBatchItemCreationSdCriteria, fromBatchItemCreationReducerHanders.setSoftDevProjectsFilterForBatchItemCreationSdCriteria),
     on(setRedmineSourceProjectsFilterForBatchItemCreationCriteria, fromBatchItemCreationReducerHanders.setRedmineSourceProjectsFilterForBatchItemCreationCriteria),
     on(setRedmineTargetProjectsFilterForBatchItemCreationCriteria, fromBatchItemCreationReducerHanders.setRedmineTargetProjectsFilterForBatchItemCreationCriteria),
+    on(setRedmineTargetProjectsFilterForTmsBatchItemCreationCriteria, fromBatchItemCreationReducerHanders.setRedmineTargetProjectsFilterForTmsBatchItemCreationCriteria),
+    on(setRedmineUsersByLetterFilterForTmsBatchItemCreationCriteria, fromBatchItemCreationReducerHanders.setRedmineUsersByLetterFilterForTmsBatchItemCreationCriteria),
+    on(setTmsClientsByLetterFilter, fromBatchItemCreationReducerHanders.setTmsClientsByLetterFilter),
+    on(setRedmineTargetProjectsFilterForIdsBatchItemCreationCriteria, fromBatchItemCreationReducerHanders.setRedmineTargetProjectsFilterForIdsBatchItemCreationCriteria),
     on(setBatchItemCreationRecords, fromBatchItemCreationReducerHanders.setBatchItemCreationRecords),
     on(togglePropsedItemSelection, fromBatchItemCreationReducerHanders.togglePropsedItemSelection),
     on(toggleAllPropsedItemsSelection, fromBatchItemCreationReducerHanders.toggleAllPropsedItemsSelection),
@@ -55,7 +59,9 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
     on(forceEndBatchItemCreation, fromBatchItemCreationReducerHanders.forceEndBatchItemCreation),
     on(createOneRecordFromBatch, fromBatchItemCreationReducerHanders.createOneRecordFromBatch),
     on(updateBatchItemCreationFormColumn, fromBatchItemCreationReducerHanders.updateBatchItemCreationFormColumn),
-    on(dragAndDropBatchItemsCreationColumns, fromBatchItemCreationReducerHanders.dragAndDropBatchItemsCreationColumns)
+    on(dragAndDropBatchItemsCreationColumns, fromBatchItemCreationReducerHanders.dragAndDropBatchItemsCreationColumns),
+    on(initTmsClients, fromBatchItemCreationReducerHanders.initTmsClients),
+    on(loadTmsClients, fromBatchItemCreationReducerHanders.loadTmsClients)
 );
 
 export const itemsReducer = wrapReducerWithFormStateUpdate(

@@ -4,7 +4,7 @@ import { from, map, switchMap } from "rxjs";
 import { HttpClient } from '@angular/common/http';
 import { RedmineTracker } from '../models/redmine-tracker.model';
 import { environment } from 'src/environments/environment';
-import { RedmineUser } from '../models/redmine-user.model';
+import { RedmineUser } from '../../../shared/store/models/redmine-user.model';
 import * as fromItemsState from '../state/items.state';
 import * as fromSharedState from '../../../shared/store/shared.state';
 
@@ -44,5 +44,4 @@ export class ItemsGeneralEffects {
             return this.http.get<SoftDevProject[]>(environment.apiUrl + '/softdev/projects/get-softdev-projects');
         }), map(softDevProjects => loadSoftDevProjects({ softDevProjects }))
     ));
-
 }

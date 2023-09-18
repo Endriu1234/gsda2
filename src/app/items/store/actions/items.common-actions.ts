@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { RedmineTracker } from '../models/redmine-tracker.model';
-import { RedmineUser } from '../models/redmine-user.model';
+import { RedmineUser } from '../../../shared/store/models/redmine-user.model';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 import { SoftDevProject } from 'src/app/shared/store/models/softdev-project.model';
 

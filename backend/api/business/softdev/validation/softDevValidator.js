@@ -9,3 +9,7 @@ module.exports.checkIssueMatchPattern = (issue) => {
 module.exports.checkTmsMatchPattern = (tms) => {
     return new RegExp("^[a-zA-Z]+-\\d{5}$").test(tms.trim());
 }
+
+module.exports.checkTmsClientMatchPattern = (tms) => {
+    return new RegExp("^[a-zA-Z]+$").test(tms.trim());
+}

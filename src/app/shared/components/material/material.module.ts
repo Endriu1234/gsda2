@@ -24,6 +24,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
     imports: [
@@ -49,7 +51,9 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
         DragDropModule,
         MatTooltipModule,
         MatMenuModule,
-        MatSlideToggleModule
+        MatSlideToggleModule,
+        MatDatepickerModule,
+        MatNativeDateModule
     ],
     declarations: [
         NgrxMatSelectViewAdapter,
@@ -82,7 +86,9 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
         DragDropModule,
         MatTooltipModule,
         MatMenuModule,
-        MatSlideToggleModule
+        MatSlideToggleModule,
+        MatDatepickerModule,
+        MatNativeDateModule
     ],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { float: 'always' } },

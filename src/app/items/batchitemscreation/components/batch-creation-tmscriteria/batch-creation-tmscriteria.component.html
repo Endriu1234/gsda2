@@ -6,13 +6,23 @@
                     <div class="row">
                         <div class="col-3">
                             <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
-                                <mat-label>iTMS Task</mat-label>
-                                <input type="text" 
+                                <mat-label>iTMS Client</mat-label>
+                                <input type="text"  [ngrxFormControlState]="$any(formState).controls.iTMSClient"
                                     matInput
-                                    [ngrxFormControlState]="$any(formState).controls.iTMSTask"
                                     [ngrxValueConverter]="trimUpper"
-                                >
+                                    [matAutocomplete]="autoTmsClient">
+                                <mat-autocomplete #autoTmsClient="matAutocomplete">
+                                    <mat-optgroup *ngFor="let group of tmsClientsFiltered$ | async" [label]="group.letter">
+                                        <mat-option *ngFor="let client of group.tmsClients" [value]="client.TMS_CLIENT">
+                                            {{client.TMS_CLIENT}}
+                                        </mat-option>
+                                    </mat-optgroup>
+                                </mat-autocomplete>
                             </mat-form-field>
+                            <mat-error 
+                                [style.visibility]="(formState.isTouched && (formState.errors._iTMSClient?.$validateSourceTmsError || formState.errors._iTMSClient?.required))?'visible':'hidden'">
+                               TMS Client is required
+                            </mat-error>
                         </div>
                         <div class="col-3">
                             <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
@@ -20,18 +30,20 @@
                                 <input type="text"
                                     matInput
                                     [ngrxFormControlState]="$any(formState).controls.targetRedmineProject"
-                                    [matAutocomplete]="autoRedmineProject"
-                                >
+                                    [matAutocomplete]="autoRedmineProject">
                                 <mat-autocomplete #autoRedmineProject="matAutocomplete">
                                     <mat-option *ngFor="let project of (redmineProjectsFiltered$ | async)"
-                                        [value]="project.name"
-                                    >
+                                        [value]="project.name">
                                         {{project.name}}
                                     </mat-option>
                                 </mat-autocomplete>
                             </mat-form-field>
+                            <mat-error
+                            [style.visibility]="(formState.isTouched && (formState.errors._targetRedmineProject?.$validateTmsTargetRedmineProjectError || formState.errors._targetRedmineProject?.required))?'visible':'hidden'">
+                                Redmine Project is required
+                            </mat-error>
                         </div>
-                        <div class="col-6">
+                        <div class="col-4">
                             <mat-checkbox color="primary" 
                                 [ngrxFormControlState]="$any(formState).controls.showCreated"
                             >Show Created</mat-checkbox>
@@ -41,12 +53,63 @@
                             <mat-checkbox color="primary" 
                                 [ngrxFormControlState]="$any(formState).controls.showInClientBin"
                             >Show Task in Client / Processing bin</mat-checkbox>
+                        </div>
+                        <div class="col-2">
                             <button
                                 mat-fab
                                 extended
                                 color="primary"
                                 class="ms-3 my-2"
+                                [disabled]="!(canActivateFind$ | async)"
+                                (click)="search()"
                             >Find</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <mat-form-field appearance="fill">
+                                <mat-label>From Date</mat-label>
+                                <input matInput 
+                                    [matDatepicker]="dpFrom" 
+                                    [ngrxFormControlState]="$any(formState).controls.fromDate"
+                                    [ngrxValueConverter]="dateConverter"
+                                >
+                                <mat-hint>MM/DD/YYYY</mat-hint>
+                                <mat-datepicker-toggle matIconSuffix [for]="dpFrom"></mat-datepicker-toggle>
+                                <mat-datepicker #dpFrom></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-3">
+                            <mat-form-field appearance="fill">
+                                <mat-label>To Date</mat-label>
+                                <input matInput 
+                                    [matDatepicker]="dpTo" 
+                                    [ngrxFormControlState]="$any(formState).controls.toDate"
+                                    [ngrxValueConverter]="dateConverter"
+                                >
+                                <mat-hint>MM/DD/YYYY</mat-hint>
+                                <mat-datepicker-toggle matIconSuffix [for]="dpTo"></mat-datepicker-toggle>
+                                <mat-datepicker #dpTo></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-3">
+                            <mat-form-field appearance="outline" class="" [style.width.%]=100>
+                                <mat-label>For Users/Group</mat-label>
+                                <input type="text"  [ngrxFormControlState]="$any(formState).controls.userToITms"
+                                    matInput
+                                    [matAutocomplete]="autoUser">
+                                <mat-autocomplete #autoUser="matAutocomplete">
+                                    <mat-optgroup *ngFor="let group of usersFiltered$ | async" [label]="group.letter">
+                                        <mat-option *ngFor="let user of group.redmineUsers" [value]="user.name">
+                                            {{user.name}}
+                                        </mat-option>
+                                    </mat-optgroup>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                            <mat-error
+                                [style.visibility]="(formState.isTouched && formState.errors._userToITms?.$validateTmsUserError)?'visible':'hidden'">
+                                Incorrect user/group
+                            </mat-error>
                         </div>
                     </div>
                 </div>
@@ -54,4 +117,7 @@
         </mat-card-content>
     </mat-card>
     <br>
+    <div *ngIf="!(isGridFilled$ | async)">
+        <br><br><br><br><br><br><br><br>
+    </div>
 </ng-container>
