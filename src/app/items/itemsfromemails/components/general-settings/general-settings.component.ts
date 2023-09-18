@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, take } from 'rxjs';
-import { FormGroupState } from 'ngrx-forms';
+import { FormGroupState, SetUserDefinedPropertyAction } from 'ngrx-forms';
 import { getItemsFromEmailsGeneralSettingsFormData } from 'src/app/items/store/selectors/items.items-from-emails-selectors';
 import * as fromItemsState from '../../../store/state/items.state';
+import { FORM_SAVE_STATE, FormSaveState } from 'src/app/shared/store/shared.state';
+import { ITEMS_FROM_EMAILS_GENERAL_SETTINGS_FORMID } from 'src/app/items/store/state/items.items-from-emails-state';
 @Component({
   selector: 'app-general-settings',
   templateUrl: './general-settings.component.html',
@@ -17,4 +19,8 @@ export class GeneralSettingsComponent {
     this.formState$ = this.store.select(getItemsFromEmailsGeneralSettingsFormData);
   }
 
+
+  saveSettings() {
+    this.store.dispatch(new SetUserDefinedPropertyAction(ITEMS_FROM_EMAILS_GENERAL_SETTINGS_FORMID, FORM_SAVE_STATE, FormSaveState.Saving))
+  }
 }

@@ -6,6 +6,8 @@ const issuesRoutes = require('../../api/routes/softdev/issues/issuesRoutes');
 const tmsRoutes = require('../../api/routes/softdev/tms/tmsRoutes');
 const itemsSdRoutes = require('../../api/routes/softdev/item/itemRoutes');
 const authRoutes = require('./auth/authRoutes');
+const itemsFromEmailsRoutes = require('./gsda/itemsfromemails/itemsFromEmailsRoutes');
+
 const express = require('express');
 const router = express.Router();
 
@@ -17,5 +19,6 @@ router.use('/softdev/issues/', issuesRoutes);
 router.use('/softdev/tms/', tmsRoutes);
 router.use('/softdev/items', itemsSdRoutes);
 router.use('/auth/', authRoutes);
+router.use('/gsda/items-from-emails', itemsFromEmailsRoutes);
 
 module.exports = router;

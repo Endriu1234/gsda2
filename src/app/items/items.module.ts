@@ -25,6 +25,7 @@ import { ItemsFromEmailsSettingsComponent } from './itemsfromemails/components/i
 import { ItemsFromEmailsLogsComponent } from './itemsfromemails/components/items-from-emails-logs/items-from-emails-logs.component';
 import { GeneralSettingsComponent } from './itemsfromemails/components/general-settings/general-settings.component';
 import { AliasesSettingsComponent } from './itemsfromemails/components/aliases-settings/aliases-settings.component';
+import { ItemsFromEmailsEffects } from './store/effects/items.items-from-emails-effects';
 
 
 
@@ -54,7 +55,7 @@ import { AliasesSettingsComponent } from './itemsfromemails/components/aliases-s
     MatDialogModule,
     SmallSpinnerModule,
     DirectivesModule,
-    EffectsModule.forFeature([ItemsGeneralEffects, ItemsItemCreationEffects, ItemsBatchItemCreationEffects])
+    EffectsModule.forFeature([ItemsGeneralEffects, ItemsItemCreationEffects, ItemsBatchItemCreationEffects, ItemsFromEmailsEffects])
   ]
 })
 export class ItemsModule { }
