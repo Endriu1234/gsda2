@@ -1,10 +1,12 @@
 import * as _ from 'lodash';
 import { State } from "../state/items.state";
-import { filterRedmineProjects, filterSoftDevProjects } from 'src/app/shared/store/shared.reducer-handlers';
+import { filterRedmineProjects, filterRedmineUsersGroup, filterSoftDevProjects, filterTmsClientsGroup } from 'src/app/shared/store/shared.reducer-handlers';
 import { ProposedItem } from '../models/batchitemcreation/proposed-item.model';
 import { ItemCreationMode } from '../state/items.item-creation-state';
 import { unbox } from 'ngrx-forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { TmsClient } from 'src/app/shared/store/models/tms-client.model';
+import { TmsClientByLetter } from 'src/app/shared/store/models/tms-client-letter.model';
 
 export function setRedmineProjectsFilterForBatchItemCreationSdCriteria(state: State): State {
     const newState: State = _.cloneDeep(state);
@@ -35,6 +37,71 @@ export function setRedmineTargetProjectsFilterForBatchItemCreationCriteria(state
         = filterRedmineProjects(newState.itemsSetupData.redmineProjects, newState.batchItemCreationRedmineCriteriaFormData.value.targetRedmineProject);
     newState.batchItemCreationRedmineCriteriaSetupData.redmineTargetProjectsFiltered 
         = newState.batchItemCreationRedmineCriteriaSetupData.redmineTargetProjectsFiltered.filter(u => u.name.toLocaleLowerCase() !== newState.batchItemCreationRedmineCriteriaFormData.value.sourceRedmineProject.toLocaleLowerCase());
+    return newState;
+}
+
+export function setRedmineTargetProjectsFilterForTmsBatchItemCreationCriteria(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreationTMSCriteriaSetupData.redmineTargetProjectsFiltered
+        = filterRedmineProjects(newState.itemsSetupData.redmineProjects, newState.batchItemCreationTMSCriteriaFormData.value.targetRedmineProject);
+    return newState;
+}
+
+export function setRedmineUsersByLetterFilterForTmsBatchItemCreationCriteria(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreationTMSCriteriaSetupData.redmineUsersByLetterFiltered = filterRedmineUsersGroup(newState.batchItemCreationTMSCriteriaSetupData.redmineUsersByLetter, newState.batchItemCreationTMSCriteriaFormData.value.userToITms);
+    return newState;
+}
+
+export function initTmsClients(state: State): State {
+    const newState = _.cloneDeep(state);
+    newState.batchItemCreationTMSCriteriaSetupData.tmsClientsLoaded = false;
+    return newState;
+}
+
+export function loadTmsClients(state: State, args: { tmsClients: TmsClient[] }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreationTMSCriteriaSetupData.tmsClients = args.tmsClients;
+    newState.batchItemCreationTMSCriteriaSetupData.tmsClientsByLetter = createTmsClientsByLetter(newState.batchItemCreationTMSCriteriaSetupData.tmsClients);
+    newState.batchItemCreationTMSCriteriaSetupData.tmsClientsByLetterFiltered = filterTmsClientsGroup(newState.batchItemCreationTMSCriteriaSetupData.tmsClientsByLetter, newState.batchItemCreationTMSCriteriaFormData.value.iTMSClient);
+    newState.batchItemCreationTMSCriteriaSetupData.tmsClientsLoaded = true;
+    return newState;
+}
+
+function createTmsClientsByLetter(allClients: TmsClient[]): TmsClientByLetter[] {
+    let clientsByLetter: TmsClientByLetter[] = [];
+    let letter = '';
+    let clientsTmp: TmsClient[] = [];
+
+    if (allClients) {
+        allClients.forEach(element => {
+            if (element.TMS_CLIENT[0] !== letter) {
+                if (letter !== '') {
+                    clientsByLetter.push({ letter: letter, tmsClients: clientsTmp.slice() });
+                }
+                letter = element.TMS_CLIENT[0];
+                clientsTmp.length = 0;
+            }
+            clientsTmp.push(element);
+        });
+        if (letter !== '') {
+            clientsByLetter.push({ letter: letter, tmsClients: clientsTmp.slice() });
+        }
+    }
+
+    return clientsByLetter;
+}
+
+export function setTmsClientsByLetterFilter(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreationTMSCriteriaSetupData.tmsClientsByLetterFiltered = filterTmsClientsGroup(newState.batchItemCreationTMSCriteriaSetupData.tmsClientsByLetter, newState.batchItemCreationTMSCriteriaFormData.value.iTMSClient);
+    return newState;
+}
+
+export function setRedmineTargetProjectsFilterForIdsBatchItemCreationCriteria(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreationIdsCriteriaSetupData.redmineTargetProjectsFiltered
+        = filterRedmineProjects(newState.itemsSetupData.redmineProjects, newState.batchItemCreationIdsCriteriaFormData.value.targetRedmineProject);
     return newState;
 }
 

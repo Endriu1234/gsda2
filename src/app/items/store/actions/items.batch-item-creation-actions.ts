@@ -1,10 +1,15 @@
 import { createAction, props } from '@ngrx/store';
 import { ProposedItem } from '../models/batchitemcreation/proposed-item.model';
+import { TmsClient } from 'src/app/shared/store/models/tms-client.model';
 
 export const setRedmineProjectsFilterForBatchItemCreationSdCriteria = createAction('[Items Component] Set Redmine Projects Filter For Batch Item Creation Sd Criteria');
 export const setSoftDevProjectsFilterForBatchItemCreationSdCriteria = createAction('[Items Component] Set SoftDev Projects Filter For Batch Item Creation Sd Criteria');
 export const setRedmineSourceProjectsFilterForBatchItemCreationCriteria = createAction('[Items Component] Set Redmine Source Projects Filter For Batch Item Creation Redmine Criteria');
 export const setRedmineTargetProjectsFilterForBatchItemCreationCriteria = createAction('[Items Component] Set Redmine Target Projects Filter For Batch Item Creation Redmine Criteria');
+export const setRedmineTargetProjectsFilterForTmsBatchItemCreationCriteria = createAction('[Items Component] Set Redmine Target Projects Filter for Batch Item Creation Tms Criteria');
+export const setRedmineUsersByLetterFilterForTmsBatchItemCreationCriteria = createAction('[Items Component] Set User for ITMS  Filter for Batch Item Creation Tms Criteria');
+export const setTmsClientsByLetterFilter = createAction('[Items Component] Set Tms Client Filter for Batch Item Creation Tms Criteria');
+export const setRedmineTargetProjectsFilterForIdsBatchItemCreationCriteria = createAction('[Items Component] Set Redmine Target Projects Filter for Batch Item Creation Ids Criteria');
 export const setBatchItemCreationRecords = createAction('[Items Component] Set Batch Item Creation Records', props<{ proposedItems: ProposedItem[] }>());
 export const togglePropsedItemSelection = createAction('[Items Component] Toggle Proposed Item Selection', props<{ proposedItem: ProposedItem }>());
 export const toggleAllPropsedItemsSelection = createAction('[Items Component] Toggle All Proposed Items Selection');
@@ -15,3 +20,5 @@ export const setLinkToCurrentProposedItemAndUnselect = createAction('[Items Comp
 export const updateBatchItemCreationFormColumn = createAction('[Items Component] update Columns In Batch Item Grid');
 export const dragAndDropBatchItemsCreationColumns = createAction('[Items Component] Drag And Drop Columns in Batch Item Grid', props<{ prevIndex: number, currIndex: number }>());
 export const createOneRecordFromBatch = createAction('[Items Component] Create One Record From Batch', props<{ proposedItem: ProposedItem }>());
+export const initTmsClients = createAction('[Items Component] Init Tms Ciients');
+export const loadTmsClients = createAction('[Items Component] Load Tms Clients', props<{ tmsClients: TmsClient[] }>());

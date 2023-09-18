@@ -1,1 +1,57 @@
-<p>batch-creation-idscriteria works!</p>
+<ng-container *ngIf="formState$ | async as formState">
+    <mat-card>
+        <mat-card-content>
+            <form novalidate [ngrxFormState]="formState">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-4">
+                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                                <mat-label>Ids (CR/Issue/Tms Task)</mat-label>
+                                <textarea matInput [ngrxFormControlState]="$any(formState).controls.allIds"></textarea>
+                            </mat-form-field>
+                            <mat-error
+                                *ngIf="formState.errors._allIds?.required">
+                                Ids is required
+                            </mat-error>
+                        </div>
+                        <div class="col-4">
+                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                                <mat-label>Redmine Target Project</mat-label>
+                                <input type="text"
+                            matInput
+                            [ngrxFormControlState]="$any(formState).controls.targetRedmineProject"
+                            [matAutocomplete]="autoRedmineProject">
+                                <mat-autocomplete #autoRedmineProject="matAutocomplete">
+                                    <mat-option *ngFor="let project of (redmineProjectsFiltered$ | async)"
+                                        [value]="project.name">
+                                        {{project.name}}
+                                    </mat-option>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                            <mat-error
+                            [style.visibility]="(formState.isTouched && (formState.errors._targetRedmineProject?.$validateIdsTargetRedmineProjectError || formState.errors._targetRedmineProject?.required))?'visible':'hidden'">
+                                Redmine Project is required
+                            </mat-error>
+                        </div>
+                        <div class="col-4">
+                            <mat-checkbox color="primary" [ngrxFormControlState]="$any(formState).controls.showCreated">Show
+                                Created</mat-checkbox>
+                            <button
+                                mat-fab
+                                extended
+                                color="primary"
+                                class="ms-3 my-2"
+                                [disabled]="!(getBatchItemCreationIdsCriteriaCanActivateFind$ | async)"
+                                (click)="search()"
+                            >Find</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+    <br>
+    <div *ngIf="!(isGridFilled$ | async)">
+        <br><br><br><br><br><br><br><br>
+    </div>
+</ng-container>

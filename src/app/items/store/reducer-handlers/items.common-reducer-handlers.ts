@@ -1,12 +1,11 @@
 import * as _ from 'lodash';
 import { State } from '../state/items.state';
 import { RedmineProject } from "src/app/shared/store/models/redmine-project.model";
-import { filterRedmineProjects, filterSoftDevProjects } from "src/app/shared/store/shared.reducer-handlers";
+import { filterRedmineProjects, filterRedmineUsersGroup, filterSoftDevProjects } from "src/app/shared/store/shared.reducer-handlers";
 import { RedmineTracker } from '../models/redmine-tracker.model';
-import { RedmineUser } from '../models/redmine-user.model';
-import { RedmineUserByLetter } from '../models/redmine-user-letter-model';
+import { RedmineUser } from '../../../shared/store/models/redmine-user.model';
+import { RedmineUserByLetter } from '../../../shared/store/models/redmine-user-letter-model';
 import { SoftDevProject } from 'src/app/shared/store/models/softdev-project.model';
-import { StateActionPair } from '@ngrx/store/src/state';
 
 export function loadRedmineProjects(state: State, args: { redmineProjects: RedmineProject[] }): State {
     const newState: State = _.cloneDeep(state);
@@ -16,6 +15,10 @@ export function loadRedmineProjects(state: State, args: { redmineProjects: Redmi
         = filterRedmineProjects(args.redmineProjects, newState.itemCreationFromData.value.project);
     newState.batchItemCreationSdCriteriaSetupData.redmineProjectsFiltered
         = filterRedmineProjects(args.redmineProjects, newState.batchItemCreationSdCriteriaFormData.value.targetRedmineProject);
+    newState.batchItemCreationTMSCriteriaSetupData.redmineTargetProjectsFiltered
+        = filterRedmineProjects(args.redmineProjects, newState.batchItemCreationTMSCriteriaFormData.value.targetRedmineProject);
+    newState.batchItemCreationIdsCriteriaSetupData.redmineTargetProjectsFiltered
+        = filterRedmineProjects(args.redmineProjects, newState.batchItemCreationIdsCriteriaFormData.value.targetRedmineProject);
     return newState;
 }
 
@@ -43,7 +46,10 @@ export function loadRedmineUsers(state: State, args: { redmineUsers: RedmineUser
     const newState: State = _.cloneDeep(state);
     newState.itemCreationSetupData.redmineUsers = args.redmineUsers;
     newState.itemCreationSetupData.redmineUsersByLetter = createUsersByLetter(newState.itemCreationSetupData.redmineUsers);
+    newState.batchItemCreationTMSCriteriaSetupData.redmineUsersByLetter = createUsersByLetter(args.redmineUsers);
     newState.itemCreationSetupData.redmineUsersByLetterFiltered = filterRedmineUsersGroup(newState.itemCreationSetupData.redmineUsersByLetter, newState.itemCreationFromData.value.user);
+    newState.batchItemCreationTMSCriteriaSetupData.redmineUsersByLetterFiltered
+        = filterRedmineUsersGroup(newState.batchItemCreationTMSCriteriaSetupData.redmineUsersByLetter, newState.batchItemCreationTMSCriteriaFormData.value.userToITms);
     newState.itemCreationSetupData.redmineUsersLoaded = true;
     return newState;
 }
@@ -97,19 +103,4 @@ export function loadSoftDevProjects(state: State, args: { softDevProjects: SoftD
     newState.batchItemCreationSdCriteriaSetupData.softDevProjectsFiltered
         = filterSoftDevProjects(args.softDevProjects, newState.batchItemCreationSdCriteriaFormData.value.targetRedmineProject);
     return newState;
-}
-
-function filterRedmineUsersGroup(allUsers: RedmineUserByLetter[], filter: string): RedmineUserByLetter[] {
-
-    if (filter)
-        return allUsers.map(group => ({ letter: group.letter, redmineUsers: filterRedmineUsers(group.redmineUsers, filter) })).filter(group => group.redmineUsers.length > 0);
-
-    return allUsers;
-}
-
-function filterRedmineUsers(allUsers: RedmineUser[], filter: string): RedmineUser[] {
-    if (filter)
-        return allUsers.filter(u => u.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase()));
-
-    return allUsers;
 }

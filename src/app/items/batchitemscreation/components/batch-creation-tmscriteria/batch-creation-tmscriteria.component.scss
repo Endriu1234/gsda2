@@ -16,3 +16,14 @@ mat-card {
     background: white;
     border-radius: 5px;
 }
+
+mat-error {
+  text-decoration: red;
+  font-style: italic;
+  font-size: small;
+  position: relative;
+}
+
+mat-form-field {
+margin-bottom: -1em;
+}

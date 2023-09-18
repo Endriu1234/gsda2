@@ -45,6 +45,15 @@ const reqisteredCaches = {
     'softdev_projects': async () => {
         const result = await softDevDataProvider.getVersions();
         return result.sort((a, b) => a.PRODUCT_VERSION_NAME.localeCompare(b.PRODUCT_VERSION_NAME));
+    },
+    'tms_users': async () => {
+        const result = await softDevDataProvider.getTmsLocalUsers();
+        result.forEach(user => user.NAME = `${user.FIRST_NAME} ${user.LAST_NAME}`);
+        return result.sort((a, b) => a.NAME.localeCompare(b.NAME))
+    },
+    'tms_clients': async () => {
+        const result = await softDevDataProvider.getTmsClients();
+        return result.sort((a, b) => a.TMS_CLIENT.localeCompare(b.TMS_CLIENT))
     }
 }
 

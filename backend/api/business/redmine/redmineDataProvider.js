@@ -57,3 +57,10 @@ module.exports.getCustomFieldValue = (redmineIssue, customName)  => {
 
     return value;
 }
+
+module.exports.getRedmineUserByTmsUser = async (name) => {
+    const users = await cacheValueProvider.getValue('tms_users');
+    const user = users.find(u => u.TMS_LOGIN === name);
+
+    return user ? user.NAME : '';
+}

@@ -34,6 +34,16 @@ module.exports.getVersions = async () => {
     return await executeSoftDevQuery(softdevQueries.getSDActiveProjectsQuery());
 };
 
+module.exports.getTmsLocalUsers = async () => {
+
+    return await executeSoftDevQuery(softdevQueries.getTmsLocalUsersQuery());
+}
+
+module.exports.getTmsClients = async () => {
+
+    return await executeSoftDevQuery(softdevQueries.getTmsClientsQuery());
+}
+
 module.exports.getRegressionsFromVersion = async (softDevProjectName) => {
     const softDevProjects = await cacheValueProvider.getValue('softdev_projects');
     const project = softDevProjects.find(p => p.PRODUCT_VERSION_NAME === softDevProjectName);
@@ -57,6 +67,11 @@ module.exports.getSDProjectPotentialRedmineItems = async (softDevProjectName, ta
     }
 }
 
+module.exports.getTMSProjectPotentialRedmineItems = async (iTMSClient, targetRedmineProject, showClosed, showInClientBin, fromDate, toDate, TmsUser) => {
+
+    return await executeSoftDevQuery(softdevQueries.getTmsProjectPotentialRedmineItems(showClosed, showInClientBin), [targetRedmineProject, iTMSClient, fromDate, toDate, TmsUser]);
+}
+
 module.exports.isChangeRequestInDB = async (changeRequest) => {
     return await executeSoftDevQuery(softdevQueries.getCRValidationQuery(), [changeRequest]);
 }
@@ -69,6 +84,11 @@ module.exports.isTmsInDB = async (tms) => {
     let tmsTable = tms.split("-");
 
     return await executeSoftDevQuery(softdevQueries.getTmsValidationQuery(), [tmsTable.at(0), tmsTable.at(1)]);
+}
+
+module.exports.isTmsClientInDB = async (tms) => {
+
+    return await executeSoftDevQuery(softdevQueries.getTmsClientValidationQuery(), [tms]);
 }
 
 module.exports.getItemById = async (id) => {
@@ -84,4 +104,11 @@ module.exports.getItemById = async (id) => {
         let tmsTable = id.split("-");
         return await executeSoftDevQuery(softdevQueries.getItemDataByTms(), [tmsTable.at(0), tmsTable.at(1)]);
     }
+}
+
+module.exports.getTmsLoginByName = async (name) => {
+    const users = await cacheValueProvider.getValue('tms_users');
+    const user = users.find(u => u.NAME === name);
+
+    return user ? user.TMS_LOGIN : '';
 }
