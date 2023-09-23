@@ -112,3 +112,27 @@ module.exports.getTmsLoginByName = async (name) => {
 
     return user ? user.TMS_LOGIN : '';
 }
+
+module.exports.getIdsByCrsPotentialRedmineItems = async (tblCrs, targetRedmineProject) => {
+    
+    let params = [targetRedmineProject];
+    params.push(...tblCrs);
+        
+    return await executeSoftDevQuery(softdevQueries.getQueryForIdsByCrsPotentialRedmineItems(tblCrs.length), params);
+}
+
+module.exports.getIdsByIssuesPotentialRedmineItems = async (tblIss, targetRedmineProject) => {
+    
+    let params = [targetRedmineProject];
+    params.push(...tblIss);
+        
+    return await executeSoftDevQuery(softdevQueries.getQueryForIdsByIssuesPotentialRedmineItems(tblIss.length), params);
+}
+
+module.exports.getIdsByTmsTasksPotentialRedmineItems = async (tblTms, targetRedmineProject) => {
+    
+    let params = [targetRedmineProject];
+    params.push(...tblTms);
+        
+    return await executeSoftDevQuery(softdevQueries.getQueryForIdsByTmsPotentialRedmineItems(tblTms.length), params);
+}

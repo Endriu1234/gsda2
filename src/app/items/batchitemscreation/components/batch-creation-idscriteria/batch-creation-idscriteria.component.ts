@@ -9,6 +9,7 @@ import { FormGroupState, SetUserDefinedPropertyAction } from 'ngrx-forms';
 import { FORM_SEARCH_STATE, FormSearchState } from 'src/app/shared/store/shared.state';
 import { initRedmineProjects } from 'src/app/items/store/actions/items.common-actions';
 import { BATCH_ITEM_CREATION_IDSCRITERIA_FORMID } from 'src/app/items/store/state/items.batch-item-creation-state';
+import { trimUpperConverter } from 'src/app/shared/tools/validators/ngrxValueConverters';
 
 @Component({
   selector: 'app-batch-creation-idscriteria',
@@ -20,6 +21,8 @@ export class BatchCreationIdscriteriaComponent implements OnInit {
   formState$: Observable<FormGroupState<any>>;
   getBatchItemCreationIdsCriteriaCanActivateFind$: Observable<boolean> | null = null;
   isGridFilled$: Observable<boolean> | null = null;
+
+  trimUpper = trimUpperConverter;
 
   constructor(private store: Store<fromItemsState.State>) {
     this.formState$ = this.store.select(fromBatchItemsSelectors.getBatchItemCreationIdsCriteriaFormState);

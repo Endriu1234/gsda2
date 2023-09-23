@@ -12,14 +12,14 @@ import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/
 import { BatchItemSearchHttpResponse } from '../models/batchitemcreation/batch-item-search-http-response.model';
 import { continueBatchItemsCreation, createOneRecordFromBatch, forceEndBatchItemCreation, initTmsClients, loadTmsClients, setBatchItemCreationRecords, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setRedmineSourceProjectsFilterForBatchItemCreationCriteria as setRedmineSourceProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForIdsBatchItemCreationCriteria, setRedmineTargetProjectsFilterForTmsBatchItemCreationCriteria, setRedmineUsersByLetterFilterForTmsBatchItemCreationCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, setTmsClientsByLetterFilter, startBatchItemsCreation, updateBatchItemCreationFormColumn } from '../actions/items.batch-item-creation-actions';
 import { noopAction } from '../actions/items.common-actions';
-import { getBatchItemCreationFormData, getBatchItemCreationRecords, getBatchItemCreationRedmineCriteriaFormState, getBatchItemCreationSDCriteriaSearchFormState, getBatchItemCreationTMSCriteriaFormState, getBatchItemsRecordsWithFormData } from '../selectors/items.batch-item-creation-selectors';
+import { getBatchItemCreationFormData, getBatchItemCreationIdsCriteriaFormState, getBatchItemCreationRecords, getBatchItemCreationRedmineCriteriaFormState, getBatchItemCreationSDCriteriaSearchFormState, getBatchItemCreationTMSCriteriaFormState, getBatchItemsRecordsWithFormData } from '../selectors/items.batch-item-creation-selectors';
 import { BATCH_ITEM_CREATION_FORMID, BATCH_ITEM_CREATION_IDSCRITERIA_FORMID, BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID, BATCH_ITEM_CREATION_SDCRITERIA_FORMID, BATCH_ITEM_CREATION_TMSCRITERIA_FORMID } from '../state/items.batch-item-creation-state';
 import { SnackBarIcon } from '../../../shared/store/shared.state';
 import { Router } from '@angular/router';
 import { ProposedItem } from '../models/batchitemcreation/proposed-item.model';
 import { startResetItemCreationForm } from '../actions/items.item-creation-actions';
 import { ITEM_CREATION_FORMID } from '../state/items.item-creation-state';
-import { validateRedmineProject, validateSDProject, validateTms, validateUserForTms } from '../batch-items.validation';
+import { validateIds, validateRedmineProject, validateSDProject, validateTms, validateUserForTms } from '../batch-items.validation';
 import { TmsClient } from 'src/app/shared/store/models/tms-client.model';
 
 export const validateSDTargetRedmineProjectError = "validateSDTargetRedmineProjectError";
@@ -31,6 +31,7 @@ export const validateSourceTmsError = "validateSourceTmsError";
 export const validateItemLevelError = "validateItemLevelError";
 export const validateTmsUserError = "validateTmsUserError";
 export const validateIdsTargetRedmineProjectError = "validateIdsTargetRedmineProjectError";
+export const validateIdsError = "validateIdsError";
 
 @Injectable()
 export class ItemsBatchItemCreationEffects {
@@ -189,6 +190,41 @@ export class ItemsBatchItemCreationEffects {
                     }
                 }
             }
+            if (action.controlId === BATCH_ITEM_CREATION_IDSCRITERIA_FORMID) {
+                if (action.name == fromSharedState.FORM_SEARCH_STATE) {
+                    if (action.value == fromSharedState.FormSearchState.Searching) {
+                        return this.store.select(getBatchItemCreationIdsCriteriaFormState).pipe(take(1), switchMap(formData => {
+                            let params = new HttpParams();
+                            params = params.append("AllIds", formData.value.allIds);
+                            params = params.append("targetRedmineProject", formData.value.targetRedmineProject);
+                            params = params.append("showCreated", formData.value.showCreated);
+                            let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
+                            
+                            return this.http.get<BatchItemSearchHttpResponse>(environment.apiUrl + '/softdev/items/get-potential-redmine-items-from-ids',
+                                { params, context })
+                                .pipe(switchMap(response => {
+                                    if (response.success) {
+
+                                        return of(setBatchItemCreationRecords({ proposedItems: response.records }),
+                                            new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_IDSCRITERIA_FORMID,
+                                                fromSharedState.FORM_SEARCH_STATE, fromSharedState.FormSearchState.SearchSuccessful));
+                                    }
+                                    else {
+                                        console.log(response.errorMessage);
+                                        this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage, icon: SnackBarIcon.Error }));
+                                        return of(new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_IDSCRITERIA_FORMID,
+                                            fromSharedState.FORM_SEARCH_STATE, fromSharedState.FormSearchState.SearchFailed));
+                                    }
+                            }), catchError(error => {
+                                console.log(error);
+                                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Error during Batch Item Creation Ids Criteria Search", icon: SnackBarIcon.Error }));
+                                return of(new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_IDSCRITERIA_FORMID,
+                                    fromSharedState.FORM_SEARCH_STATE, fromSharedState.FormSearchState.SearchFailed));
+                            }))
+                        }))
+                    }
+                }
+            }
 
             return of(noopAction());
         })
@@ -302,6 +338,10 @@ export class ItemsBatchItemCreationEffects {
 
             if (action.controlId === BATCH_ITEM_CREATION_IDSCRITERIA_FORMID + '.targetRedmineProject') {
                 return from(validateRedmineProject(this.store, validateIdsTargetRedmineProjectError, action.controlId, action.value).pipe(startWith(setRedmineTargetProjectsFilterForIdsBatchItemCreationCriteria())));
+            }
+
+            if (action.controlId === BATCH_ITEM_CREATION_IDSCRITERIA_FORMID + '.allIds') {
+                return from(validateIds(this.store, validateIdsError, action.controlId, action.value));
             }
 
             /*if (action.controlId === BATCH_ITEM_CREATION_SDCRITERIA_FORMID + '.itemLevel')

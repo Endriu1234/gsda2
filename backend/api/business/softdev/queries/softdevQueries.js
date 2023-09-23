@@ -1,3 +1,5 @@
+const { query } = require("express");
+
 const selectSDProjectPotentialRedmineItems = `SELECT 
                                                 'true' AS selected,
                                                 :targetRedmineProject AS redmine_project,
@@ -186,29 +188,33 @@ module.exports.getSDProjectPotentialRedmineItemsByPossibleCrQuery = (bForPacket)
     return query;
 };
 
+function getSelectWitoutCr() {
+    return `SELECT 
+                'true' AS selected,
+                :targetRedmineProject AS redmine_project,
+                case
+                    when issue.iss_type = 'Defect' Then
+                    'Bug'
+                    when (select issrc.isr_source_type
+                            from sd_live.issue_source issrc
+                            where issrc.isr_issue_aa = issue.aa_id
+                            and rownum = 1) = 'Autotesting' and
+                        issue.iss_type = 'Defect' Then
+                    'Regression'
+                    else
+                    issue.iss_type
+                end AS tracker,
+                '' AS status,
+                issue.iss_summary AS subject,
+                issue.iss_desc AS description,
+                issue.aa_uf_id AS issue, 
+                issue.iss_user_18 AS tms,
+                '' AS assignee,
+                '' AS redmine_link, `
+}
+
 function getSelectSDProjectPotentialRedmineItems(combineCRs) {
-    let select = `SELECT 
-                    'true' AS selected,
-                    :targetRedmineProject AS redmine_project,
-                    case
-                        when issue.iss_type = 'Defect' Then
-                        'Bug'
-                        when (select issrc.isr_source_type
-                                from sd_live.issue_source issrc
-                                where issrc.isr_issue_aa = issue.aa_id
-                                and rownum = 1) = 'Autotesting' and
-                            issue.iss_type = 'Defect' Then
-                        'Regression'
-                        else
-                        issue.iss_type
-                    end AS tracker,
-                    '' AS status,
-                    issue.iss_summary AS subject,
-                    issue.iss_desc AS description,
-                    issue.aa_uf_id AS issue, 
-                    issue.iss_user_18 AS tms,
-                    '' AS assignee,
-                    '' AS redmine_link, `
+    let select = getSelectWitoutCr();
     select += combineCRs ? `jacekk.Getcrsfromissuebyproject(issue.aa_id, :productVersionId) AS cr ` : `cr.aa_uf_id AS cr `
 
     return select;
@@ -242,6 +248,74 @@ module.exports.getTmsProjectPotentialRedmineItems = (showClosed, showInClientBin
                 and tms.createddatetime >= To_Date(:fromDate,'YYYY-MM-DD HH24:MI')
                 and tms.createddatetime <= To_Date(:toDate,'YYYY-MM-DD HH24:MI') 
                 and tms.employee = (case when :TmsUser is not null then :TmsUser else tms.employee end) `;
+
+    return query;
+}
+
+module.exports.getQueryForIdsByIssuesPotentialRedmineItems = (cntParams) => {
+    let paramsDeclaration = '';
+    for (let index = 0; index < cntParams; index++) {
+        paramsDeclaration += paramsDeclaration.length > 0 ? ',' : '';
+        paramsDeclaration += ":par" + index;  
+    }
+    let query = getSelectWitoutCr();
+    query += `  '' AS cr 
+            FROM 
+                sd_live.issue issue
+            WHERE 
+                issue.aa_uf_id in (${paramsDeclaration})  `;
+
+    return query;
+}
+
+module.exports.getQueryForIdsByCrsPotentialRedmineItems = (cntParams) => {
+    let paramsDeclaration = '';
+    for (let index = 0; index < cntParams; index++) {
+        paramsDeclaration += paramsDeclaration.length > 0 ? ',' : '';
+        paramsDeclaration += ":par" + index;  
+    }
+
+
+    let query = getSelectSDProjectPotentialRedmineItems(false);
+    query +=   `FROM 
+                    sd_live.issue        issue,
+                    sd_live.change_request cr
+                WHERE 
+                    issue.aa_id = cr.CR_ISSUE_AA
+                    AND cr.aa_uf_id in (${paramsDeclaration}) `;
+
+    return query;
+}
+
+module.exports.getQueryForIdsByTmsPotentialRedmineItems = (cntParams) => {
+    let paramsDeclaration = '';
+    for (let index = 0; index < cntParams; index++) {
+        paramsDeclaration += paramsDeclaration.length > 0 ? ',' : '';
+        paramsDeclaration += ":par" + index;  
+    }
+    
+    let query = `SELECT 
+                    'true' AS selected,
+                    :targetRedmineProject AS redmine_project,
+                    'TMS Task' AS tracker,
+                    '' AS status,
+                    CLIENT || '-' || ID AS subject,
+                    txt.PROBLEMFULLTEXT AS description,
+                    case
+                    when tms.SOFTDEV_ID like 'ISS%' Then
+                    tms.SOFTDEV_ID
+                    else
+                    ''
+                    end AS issue,
+                    CLIENT || '-' || ID AS tms,
+                    tms.employee AS assignee,
+                    '' AS redmine_link, 
+                    '' AS cr
+                FROM 
+                    SD_LIVE.tms_problem_v         tms,
+                    SD_LIVE.Tms_Problem_Full_Text txt
+                WHERE txt.TASK_AA_ID = tms.aa_id 
+                    AND tms.client || '-' || tms.id IN (${paramsDeclaration}) `;
 
     return query;
 }

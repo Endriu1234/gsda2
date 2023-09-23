@@ -64,3 +64,31 @@ export function validateUserForTms(store: Store<State>, validateUserError: strin
         return of(new StartAsyncValidationAction(controlId, validateUserError), new SetAsyncErrorAction(controlId, validateUserError, "User For iTms invalid"));
     }));
 }
+
+export function validateIds(store: Store<State>, validateIdsError: string, controlId: string, Ids: string): Observable<any> {
+
+    if (!Ids)
+        return of(new StartAsyncValidationAction(controlId, validateIdsError), new SetAsyncErrorAction(controlId, validateIdsError, "No CR/ISS/TMS item provided"));
+
+    let error = '';
+    const tmpIds = Ids.replace(/\s/g,';').replace(/\|/g,';').replace(/,/g,';').replace(/(;)\1+/g,';');
+    const tblIds = tmpIds.split(';');
+
+    for (let id of tblIds) {
+        if (id && id.length > 0) {
+            if (id.startsWith('ISS')) {
+                if (!new RegExp("^(I|i)(S|s)(S|s)-[a-zA-Z]+-\\d{1,6}[a-zA-Z]{2}$").test(id)) { error = 'One of the issues is incorrect'; break; }
+            } else if (id.startsWith('CR')) {
+                if (!new RegExp("^CR-[A-Z]{3,4}-[\\d]{1,9}I[T|S]$").test(id)) { error = 'One of the CRs is incorrect'; break; }
+            } else {
+                if (!new RegExp("^[a-zA-Z]+-\\d{5}$").test(id)) { error = 'One of the TMS tasks is incorrect'; break; }
+            }
+        }
+    }
+
+    if (error.length > 0) {
+        return of(new StartAsyncValidationAction(controlId, validateIdsError), new SetAsyncErrorAction(controlId, validateIdsError, error));
+    } else {
+        return of(new StartAsyncValidationAction(controlId, validateIdsError), new ClearAsyncErrorAction(controlId, validateIdsError));
+    }
+}

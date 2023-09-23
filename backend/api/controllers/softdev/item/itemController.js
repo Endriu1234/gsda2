@@ -83,3 +83,124 @@ module.exports.getPotentialRedmineItemsFromSDProject = async (req, res) => {
     return res.status(200).json(retVal);
 
 }
+
+module.exports.getPotentialRedmineItemsFromIds = async (req, res) => {
+    const retVal = {
+        success: true,
+        errorMessage: '',
+        records: null
+    };
+
+    if (!req.query.AllIds) {
+        retVal.success = false;
+        retVal.errorMessage = "Missing Ids";
+    }
+
+    if (!req.query.targetRedmineProject) {
+        retVal.success = false;
+        retVal.errorMessage = "Missing targetRedmineProject";
+    }
+
+    let error = '';
+    const tmpIds = req.query.AllIds.replace(/\s/g,';').replace(/\|/g,';').replace(/,/g,';').replace(/(;)\1+/g,';');
+    const tblIds = tmpIds.split(';');
+    let tblIssues = [];
+    let tblCrs = [];
+    let tblTms = [];
+
+    for (let id of tblIds) {
+        if (id && id.length > 0) {
+            if (id.startsWith('ISS')) {
+                if (!new RegExp("^(I|i)(S|s)(S|s)-[a-zA-Z]+-\\d{1,6}[a-zA-Z]{2}$").test(id)) { error = 'One of the issues is incorrect'; break; };
+                tblIssues.push(id);
+            } else if (id.startsWith('CR')) {
+                if (!new RegExp("^CR-[A-Z]{3,4}-[\\d]{1,9}I[T|S]$").test(id)) { error = 'One of the CRs is incorrect'; break; };
+                tblCrs.push(id);
+            } else {
+                if (!new RegExp("^[a-zA-Z]+-\\d{5}$").test(id)) { error = 'One of the TMS tasks is incorrect'; break; };
+                tblTms.push(id);
+            }
+        }
+    }
+
+    if (error.length > 0) {
+        retVal.success = false;
+        retVal.errorMessage = error;
+    }
+
+    const redmineItems = await redmineDataProvider.getRedmineItemsFromProject(req.query.targetRedmineProject, false);
+    let queryResults = [];
+
+    if (tblCrs.length > 0) {
+        const crsQueryResults = await softDevDataProvider.getIdsByCrsPotentialRedmineItems(tblCrs, req.query.targetRedmineProject);
+
+        for (const softDevRecord of crsQueryResults) {
+            let target = redmineItems.issues.find((r) => {
+                return r.subject && softDevRecord.SUBJECT && 
+                (r.subject === softDevRecord.SUBJECT 
+                    || r.subject.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.SUBJECT.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
+                && r.description && softDevRecord.DESCRIPTION &&
+                (r.description === softDevRecord.DESCRIPTION
+                    || r.description.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.DESCRIPTION.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
+                && redmineDataProvider.getCustomFieldValue(r, process.env.REDMINE_CR_NAME) === softDevRecord.CR
+            });
+
+            if (target) {
+                softDevRecord.REDMINE_LINK = `${getRedmineAddress(`issues/${target.id}`)}`;
+                softDevRecord.SELECTED = false;
+            }
+        }
+
+        queryResults.push(...crsQueryResults);
+    }
+    if (tblIssues.length > 0) {
+        const issQueryResults = await softDevDataProvider.getIdsByIssuesPotentialRedmineItems(tblIssues, req.query.targetRedmineProject);
+
+        for (const softDevRecord of issQueryResults) {
+            let target = redmineItems.issues.find((r) => {
+                return r.subject && softDevRecord.SUBJECT && 
+                (r.subject === softDevRecord.SUBJECT 
+                    || r.subject.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.SUBJECT.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
+                && r.description && softDevRecord.DESCRIPTION &&
+                (r.description === softDevRecord.DESCRIPTION
+                    || r.description.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.DESCRIPTION.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
+                && redmineDataProvider.getCustomFieldValue(r, process.env.REDMINE_ISSUE_NAME) === softDevRecord.ISSUE
+            });
+
+            if (target) {
+                softDevRecord.REDMINE_LINK = `${getRedmineAddress(`issues/${target.id}`)}`;
+                softDevRecord.SELECTED = false;
+            }
+        }
+
+        queryResults.push(...issQueryResults);
+    }
+    if (tblTms.length > 0) {
+        const tmsQueryResults = await softDevDataProvider.getIdsByTmsTasksPotentialRedmineItems(tblTms, req.query.targetRedmineProject);
+
+        for (const softDevRecord of tmsQueryResults) {
+            let target = redmineItems.issues.find((r) => {
+                return r.subject && softDevRecord.SUBJECT && 
+                (r.subject === softDevRecord.SUBJECT 
+                    || r.subject.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.SUBJECT.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
+                && r.description && softDevRecord.DESCRIPTION &&
+                (r.description === softDevRecord.DESCRIPTION
+                    || r.description.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.DESCRIPTION.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
+                && redmineDataProvider.getCustomFieldValue(r, process.env.REDMINE_TMS_TASK_NAME) === softDevRecord.TMS
+            });
+
+            if (target) {
+                softDevRecord.REDMINE_LINK = `${getRedmineAddress(`issues/${target.id}`)}`;
+                softDevRecord.SELECTED = false;
+            }
+        }
+
+        queryResults.push(...tmsQueryResults);
+    }
+
+    retVal.records = req.query.showCreated === 'true' ? queryResults : queryResults.filter((record) => { return record.REDMINE_LINK === null || record.REDMINE_LINK.length <= 0 });
+    
+    return res.status(200).json(retVal);
+
+}
+

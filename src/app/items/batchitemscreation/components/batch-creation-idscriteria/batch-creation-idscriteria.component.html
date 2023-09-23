@@ -7,11 +7,14 @@
                         <div class="col-4">
                             <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
                                 <mat-label>Ids (CR/Issue/Tms Task)</mat-label>
-                                <textarea matInput [ngrxFormControlState]="$any(formState).controls.allIds"></textarea>
+                                <textarea matInput 
+                                    [ngrxFormControlState]="$any(formState).controls.allIds"
+                                    [ngrxValueConverter]="trimUpper"></textarea>
                             </mat-form-field>
                             <mat-error
-                                *ngIf="formState.errors._allIds?.required">
-                                Ids is required
+                                [style.visibility]="(formState.isTouched && (formState.errors._allIds?.$validateIdsError || formState.errors._allIds?.required))?'visible':'hidden'"
+                            >
+                                'Incorect Id(s) - CR/Issue/Tms Task'
                             </mat-error>
                         </div>
                         <div class="col-4">
