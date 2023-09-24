@@ -2,7 +2,7 @@ import { createSelector } from '@ngrx/store';
 import { State } from '../state/items.state';
 import { getItemsState } from './items.common-selectors';
 import { FormControlState, FormGroupState } from 'ngrx-forms';
-import { ItemCreationFromData } from '../state/items.item-creation-state';
+import { ItemCreationFromData, ItemCreationMode, ItemCreationSetupData } from '../state/items.item-creation-state';
 
 export const getItemCreationSetupData = createSelector(getItemsState, (state: State) => state.itemCreationSetupData);
 export const getItemCreationMode = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.mode);
@@ -66,6 +66,16 @@ function isItemCreationFormSuitableForDefault(tmsControl: FormControlState<strin
             return false;
 
         return issueControl.isTouched && !issueControl.isValidationPending && issueControl.isValid;
+    }
+
+    return false;
+}
+
+export const isItemCreationFormCreatedFromBatch = createSelector(getItemCreationMode, isItemFromBatch);
+
+function isItemFromBatch(mode: ItemCreationMode): boolean {
+    if (mode === ItemCreationMode.BatchItemSingleRecord || mode === ItemCreationMode.BatchItemWithGUI || mode === ItemCreationMode.BatchItemWithoutGUI) {
+        return true;
     }
 
     return false;

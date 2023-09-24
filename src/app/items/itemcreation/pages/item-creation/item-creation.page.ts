@@ -13,7 +13,7 @@ import { ItemCreationFromId } from "../item-creation-from-id/item-creation-from-
 import { MatDialog } from '@angular/material/dialog';
 import { FormSaveState, FORM_SAVE_STATE } from 'src/app/shared/store/shared.state';
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers } from 'src/app/items/store/actions/items.common-actions';
-import { identifyAndFillItemById } from 'src/app/items/store/actions/items.item-creation-actions';
+import { breakBatchItemCreation, identifyAndFillItemById } from 'src/app/items/store/actions/items.item-creation-actions';
 import { ITEM_CREATION_FORMID } from 'src/app/items/store/state/items.item-creation-state';
 
 @Component({
@@ -29,6 +29,7 @@ export class ItemCreationPage implements OnInit {
   formState$: Observable<FormGroupState<any>>;
   getItemCreationFormSuitableForDefault$: Observable<boolean> | null = null;
   getItemCreationFormCanActivateSave$: Observable<boolean> | null = null;
+  isItemCreationFormCreatedFromBatch$: Observable<boolean> | null = null;
   trimUpper = trimUpperConverter;
 
   constructor(private store: Store<fromItemsState.State>, private dialog: MatDialog) {
@@ -91,6 +92,7 @@ export class ItemCreationPage implements OnInit {
 
     this.getItemCreationFormSuitableForDefault$ = this.store.select(fromItemCreationSelectors.getItemCreationFormSuitableForDefault);
     this.getItemCreationFormCanActivateSave$ = this.store.select(fromItemCreationSelectors.getItemCreationFormCanActivateSave);
+    this.isItemCreationFormCreatedFromBatch$ = this.store.select(fromItemCreationSelectors.isItemCreationFormCreatedFromBatch);
   }
 
 
@@ -100,6 +102,10 @@ export class ItemCreationPage implements OnInit {
 
   createAndOpenItem() {
     this.store.dispatch(new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID, FORM_SAVE_STATE, FormSaveState.SavingWithRedirect))
+  }
+
+  breakBatchItemCreation() {
+    this.store.dispatch(breakBatchItemCreation());
   }
 
 }

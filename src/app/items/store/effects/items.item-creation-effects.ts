@@ -12,7 +12,7 @@ import { GsdaRedmineHttpResponse } from 'src/app/shared/http/model/gsda-redmine-
 import { environment } from 'src/environments/environment';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { Item } from '../models/item.model';
-import { endResetItemCreationForm, fillItemById, identifyAndFillItemById, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startResetItemCreationForm } from '../actions/items.item-creation-actions';
+import { breakBatchItemCreation, endResetItemCreationForm, fillItemById, identifyAndFillItemById, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startResetItemCreationForm } from '../actions/items.item-creation-actions';
 import { noopAction } from '../actions/items.common-actions';
 import { getItemCreationDialogState, getItemCreationFormState, getItemCreationFormWithSetup, getItemCreationMode } from '../selectors/items.item-creation-selectors';
 import { ITEM_CREATION_DIALOG, ITEM_CREATION_FORMID, ItemCreationMode } from '../state/items.item-creation-state';
@@ -202,6 +202,14 @@ export class ItemsItemCreationEffects {
                 this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during defaulting", icon: SnackBarIcon.Error }));
                 return of(noopAction());
             }))
+        })
+    ));
+
+    breakBatchItemCreation$ = createEffect(() => this.actions$.pipe(
+        ofType(breakBatchItemCreation),
+        switchMap(() => {
+            this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item(s) Creation aborted.', icon: SnackBarIcon.Info }));
+            return of(startResetItemCreationForm(), forceEndBatchItemCreation());
         })
     ));
 

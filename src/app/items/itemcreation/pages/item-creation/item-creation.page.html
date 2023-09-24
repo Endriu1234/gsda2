@@ -5,6 +5,7 @@
             <mat-card-subtitle><button 
                                     mat-raised-button 
                                     (click)="fillById()"
+                                    *ngIf="!(isItemCreationFormCreatedFromBatch$ | async)"
                                     [style.backgroundColor]="(getItemCreationFormSuitableForDefault$ | async) ? 'rgb(160, 230, 160)' : ''"
                                 >Fill From Id</button></mat-card-subtitle>
         </div>
@@ -119,6 +120,14 @@
             </mat-card-content>
         </mat-card>
         <mat-card-actions [align]="'end'" class="jkWidthMarg">
+            <button
+                mat-fab
+                extended
+                color="primary"
+                class="me-4 my-2"
+                *ngIf="(isItemCreationFormCreatedFromBatch$ | async)"
+                (click)="breakBatchItemCreation()"
+            >Break Batch Item Creation</button>
             <button
                 mat-fab
                 extended

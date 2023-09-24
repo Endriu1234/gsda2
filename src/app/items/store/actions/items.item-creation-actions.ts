@@ -18,3 +18,4 @@ export const addValidatedFromId = createAction('[Items Component Dialog] Add Val
 
 export const fillItemById = createAction('[Items Component] Find The Item By Id');
 export const identifyAndFillItemById = createAction('[Items Component] Identify And Find The Item By Id');
+export const breakBatchItemCreation = createAction('[Items Component] Break Batch Item Creation');
