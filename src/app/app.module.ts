@@ -19,6 +19,7 @@ import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { SmallSpinnerModule } from './shared/components/small-spinner.module';
 import { httpInterceptProviders } from './shared/components/interceptors-providers.module';
 import { SharedEffects } from './shared/store/shared.effects';
+import { ProgressBarSpinnerComponent } from './shared/spinner/progress-bar/progress-bar-spinner/progress-bar-spinner.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { SharedEffects } from './shared/store/shared.effects';
     SidenavListComponent,
     WelcomePage,
     MenuSwitchComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    ProgressBarSpinnerComponent
   ],
   imports: [
     BrowserModule,

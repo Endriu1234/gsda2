@@ -21,6 +21,7 @@ import { startResetItemCreationForm } from '../actions/items.item-creation-actio
 import { ITEM_CREATION_FORMID } from '../state/items.item-creation-state';
 import { validateIds, validateRedmineProject, validateSDProject, validateTms, validateUserForTms } from '../batch-items.validation';
 import { TmsClient } from 'src/app/shared/store/models/tms-client.model';
+import { ProgressBarSpinnerService } from 'src/app/shared/spinner/progress-bar/progress-bar-spinner/progress-bar-spinner.service';
 
 export const validateSDTargetRedmineProjectError = "validateSDTargetRedmineProjectError";
 export const validateSDSourceSoftDevProjectError = "validateSDSourceSoftDevProjectError";
@@ -39,7 +40,8 @@ export class ItemsBatchItemCreationEffects {
         private store: Store<fromItemsState.State>,
         private sharedStore: Store<fromSharedState.State>,
         private http: HttpClient,
-        private router: Router) { }
+        private router: Router,
+        private progressBarService: ProgressBarSpinnerService) { }
 
     batchItemCreationSDCriteriaFormSetValue$ = createEffect(() => this.actions$.pipe(
         ofType(SetValueAction.TYPE),
@@ -250,6 +252,7 @@ export class ItemsBatchItemCreationEffects {
                     new SetValueAction(ITEM_CREATION_FORMID + '.tms', currentItem.TMS)
                 ];
 
+                this.progressBarService.startProgress(batchRecordsWithFormData.batchRecords.proposedItems.filter((item) => item.SELECTED == true).length, batchRecordsWithFormData.batchFormData.value.skipCreationForm);
                 if (batchRecordsWithFormData.batchFormData.value.skipCreationForm) {
                     actions.push(new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID, fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.Saving));
                     return actions;
@@ -268,7 +271,8 @@ export class ItemsBatchItemCreationEffects {
 
             return this.store.select(getBatchItemsRecordsWithFormData).pipe(take(1), switchMap(batchRecordsWithFormData => {
 
-                if (batchRecordsWithFormData.batchRecords.currentIndex < 0) {
+                if (batchRecordsWithFormData.batchRecords.currentIndex < 0 || this.progressBarService.checkIsCanceled()) {
+                    this.progressBarService.stopProgress();
                     this.router.navigate(['/items/batchitemscreation']);
 
                     return of(startResetItemCreationForm());
@@ -288,6 +292,7 @@ export class ItemsBatchItemCreationEffects {
                     new SetValueAction(ITEM_CREATION_FORMID + '.tms', currentItem.TMS)
                 ];
 
+                this.progressBarService.nextElement();
                 if (batchRecordsWithFormData.batchFormData.value.skipCreationForm)
                     actions.push(new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID, fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.Saving));
 
@@ -302,6 +307,7 @@ export class ItemsBatchItemCreationEffects {
 
             return this.store.select(getBatchItemCreationRecords).pipe(take(1), switchMap(batchRecords => {
 
+                this.progressBarService.resetProgress();
                 this.router.navigate(['/items/batchitemscreation']);
                 return of(startResetItemCreationForm());
             }));

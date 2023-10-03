@@ -26,6 +26,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
     imports: [
@@ -53,7 +54,8 @@ import { MatNativeDateModule } from '@angular/material/core';
         MatMenuModule,
         MatSlideToggleModule,
         MatDatepickerModule,
-        MatNativeDateModule
+        MatNativeDateModule,
+        MatProgressBarModule
     ],
     declarations: [
         NgrxMatSelectViewAdapter,
@@ -88,7 +90,8 @@ import { MatNativeDateModule } from '@angular/material/core';
         MatMenuModule,
         MatSlideToggleModule,
         MatDatepickerModule,
-        MatNativeDateModule
+        MatNativeDateModule,
+        MatProgressBarModule
     ],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { float: 'always' } },
