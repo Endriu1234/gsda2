@@ -6,6 +6,7 @@ import { getItemsFromEmailsGeneralSettingsFormData } from 'src/app/items/store/s
 import * as fromItemsState from '../../../store/state/items.state';
 import { FORM_SAVE_STATE, FormSaveState } from 'src/app/shared/store/shared.state';
 import { ITEMS_FROM_EMAILS_GENERAL_SETTINGS_FORMID } from 'src/app/items/store/state/items.items-from-emails-state';
+import { initItemsFromEmailsGeneralSettings } from 'src/app/items/store/actions/items.items-from-emails.actions';
 @Component({
   selector: 'app-general-settings',
   templateUrl: './general-settings.component.html',
@@ -17,6 +18,7 @@ export class GeneralSettingsComponent {
 
   constructor(private store: Store<fromItemsState.State>) {
     this.formState$ = this.store.select(getItemsFromEmailsGeneralSettingsFormData);
+    this.store.dispatch(initItemsFromEmailsGeneralSettings());
   }
 
 

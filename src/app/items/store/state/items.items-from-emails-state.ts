@@ -13,3 +13,15 @@ export function getItemsFromEmailsGeneralSettingsFormDataInitialState(): FormGro
         interval: 5
     });
 }
+
+export interface ItemsFromEmailsGeneralSettingsSetupData {
+    dbStateLoaded: boolean;
+    dbStateLoading: boolean;
+}
+
+export function getItemsFromEmailsGeneralSettingsSetupDataInitialState(): ItemsFromEmailsGeneralSettingsSetupData {
+    return {
+        dbStateLoaded: false,
+        dbStateLoading: false
+    };
+}
