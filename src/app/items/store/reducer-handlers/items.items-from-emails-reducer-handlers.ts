@@ -9,3 +9,10 @@ export function initItemsFromEmailsGeneralSettings(state: State): State {
     newState.itemsFromEmailsGeneralSettingsSetupData.dbStateLoading = true;
     return newState;
 }
+
+export function endInitItemsFromEmailsGeneralSettings(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemsFromEmailsGeneralSettingsSetupData.dbStateLoaded = true;
+    newState.itemsFromEmailsGeneralSettingsSetupData.dbStateLoading = false;
+    return newState;
+}

@@ -53,7 +53,7 @@ console.log('Script Started');
 db = connect(mongoDBAddress);
 
 // 1. Handling formsData collection:
-formsDataCollectionName = 'formsData';
+formsDataCollectionName = 'forms';
 console.log(`Handling ${formsDataCollectionName} collection`);
 
 if (removeCollectionsBeforeInitialization) {
@@ -75,7 +75,7 @@ const formsDataRecords = [
         formId: 'ITEMS_FROM_EMAILS_GENERAL_SETTINGS_FORMID',
         values: {
             enabled: false,
-            interval: 7
+            interval: 5
         }
     }
 ];

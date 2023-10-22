@@ -8,7 +8,7 @@ import * as fromSharedState from '../../../shared/store/shared.state';
 
 
 import { noopAction } from '../actions/items.common-actions';
-import { SetUserDefinedPropertyAction } from 'ngrx-forms';
+import { ResetAction, SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
 import { ITEMS_FROM_EMAILS_GENERAL_SETTINGS_FORMID } from '../state/items.items-from-emails-state';
 import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
@@ -16,6 +16,8 @@ import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/
 import { environment } from 'src/environments/environment';
 import { getItemsFromEmailsGeneralSettingsFormData } from '../selectors/items.items-from-emails-selectors';
 import { GsdaHttpResponse } from 'src/app/shared/http/model/gsda-http-response.model';
+import { endInitItemsFromEmailsGeneralSettings, initItemsFromEmailsGeneralSettings } from '../actions/items.items-from-emails.actions';
+import { ItemsFromEmailGeneralSettingsHttpResponse } from '../models/itemsfromemails/Items-from-email-general-settings-http-response.model';
 
 @Injectable()
 export class ItemsFromEmailsEffects {
@@ -35,7 +37,12 @@ export class ItemsFromEmailsEffects {
 
                         return this.store.select(getItemsFromEmailsGeneralSettingsFormData).pipe(take(1), switchMap(formData => {
                             let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
-                            return this.http.post<GsdaHttpResponse>(environment.apiUrl + '/gsda/items-from-emails/save-items-from-emails-settings', formData.value, { context }).pipe(switchMap(response => {
+
+                            const dataToSave = {
+                                formId: ITEMS_FROM_EMAILS_GENERAL_SETTINGS_FORMID,
+                                values: formData.value
+                            }
+                            return this.http.post<GsdaHttpResponse>(environment.apiUrl + '/gsda/items-from-emails/save-items-from-emails-settings', dataToSave, { context }).pipe(switchMap(response => {
                                 if (response.success) {
 
                                     this.sharedStore.dispatch(addSnackbarNotification({ notification: 'General Settings saved', icon: fromSharedState.SnackBarIcon.Success }));
@@ -65,4 +72,37 @@ export class ItemsFromEmailsEffects {
             return of(noopAction());
         })
     ));
+
+    initItemsFromEmailsGeneralSettings$ = createEffect(() => this.actions$.pipe(
+        ofType(initItemsFromEmailsGeneralSettings),
+        switchMap(() => {
+
+            let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
+            let params = new HttpParams();
+            params = params.append("formId", ITEMS_FROM_EMAILS_GENERAL_SETTINGS_FORMID);
+
+
+            return this.http.get<ItemsFromEmailGeneralSettingsHttpResponse>(environment.apiUrl + '/gsda/items-from-emails/get-items-from-emails-settings',
+                { context, params })
+                .pipe(mergeMap(item => {
+
+                    if (item.success) {
+                        return of(new SetValueAction(ITEMS_FROM_EMAILS_GENERAL_SETTINGS_FORMID + '.enabled', item.enabled),
+                            new SetValueAction(ITEMS_FROM_EMAILS_GENERAL_SETTINGS_FORMID + '.interval', item.interval),
+                            new ResetAction(ITEMS_FROM_EMAILS_GENERAL_SETTINGS_FORMID),
+                            endInitItemsFromEmailsGeneralSettings());
+                    }
+                    else {
+                        console.log(item.errorMessage);
+                        this.sharedStore.dispatch(addSnackbarNotification({ notification: item.errorMessage, icon: fromSharedState.SnackBarIcon.Error }));
+                        return of(noopAction());
+                    }
+                }));
+        }),
+        catchError(error => {
+            console.log(error);
+            this.sharedStore.dispatch(addSnackbarNotification({ notification: "Cannot load General Settings from DB", icon: fromSharedState.SnackBarIcon.Error }));
+            return of(noopAction());
+        }))
+    );
 }
