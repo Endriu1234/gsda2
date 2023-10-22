@@ -2,7 +2,10 @@ import { FormGroupState } from "ngrx-forms";
 import { BATCH_ITEM_CREATION_GRID_REMOVABLE_COLUMNS, BatchItemCreationFormData, BatchItemCreationFormDataAddon, BatchItemCreationIdsCriteriaFormData, BatchItemCreationIdsCriteriaSetupData, BatchItemCreationRecords, BatchItemCreationRedmineCriteriaFormData, BatchItemCreationRedmineCriteriaSetupData, BatchItemCreationSdCriteriaFormData, BatchItemCreationSdCriteriaSetupData, BatchItemCreationTMSCriteriaFormData, BatchItemCreationTmsCriteriaSetupData, getBatchItemCreationFormDataAddonInitialState, getBatchItemCreationFormDataInitialState, getBatchItemCreationIdsCriteriaFormDataInitialState, getBatchItemCreationIdsCriteriaSetupDataInitialState, getBatchItemCreationRecordsInitialState, getBatchItemCreationRedmineCriteriaFormDataInitialState, getBatchItemCreationRedmineCriteriaSetupDataInitialState, getBatchItemCreationSdCriteriaFormDataInitialState, getBatchItemCreationSdCriteriaSetupDataInitialState, getBatchItemCreationTMSCriteriaFormDataInitialState, getBatchItemCreationTmsCriteriaSetupDataInitialState } from "./items.batch-item-creation-state";
 import { getItemCreationFromDataInitialState, getItemCreationFromIdDialogInitialState, getItemCreationSetupDataInitialState, ItemCreationFromData, ItemCreationFromIdDialog, ItemCreationSetupData } from "./items.item-creation-state";
 import { ItemsSetupData, getItemsSetupDataInitialState } from "./items.common-state";
-import { ItemsFromEmailsGeneralSettingsFormData, ItemsFromEmailsGeneralSettingsSetupData, getItemsFromEmailsGeneralSettingsFormDataInitialState, getItemsFromEmailsGeneralSettingsSetupDataInitialState } from "./items.items-from-emails-state";
+import {
+    ItemsFromEmailsSettingsFormData, ItemsFromEmailsSettingsSetupData, getItemsFromEmailsSettingsFormDataInitialState,
+    getItemsFromEmailsSettingsSetupDataInitialState
+} from "./items.items-from-emails-state";
 
 export interface State {
     itemsSetupData: ItemsSetupData;
@@ -21,8 +24,8 @@ export interface State {
     batchItemCreationGridRemovableColumns: string[];
     batchItemCreationIdsCriteriaSetupData: BatchItemCreationIdsCriteriaSetupData;
     batchItemCreationIdsCriteriaFormData: FormGroupState<BatchItemCreationIdsCriteriaFormData>;
-    itemsFromEmailsGeneralSettingsFormData: FormGroupState<ItemsFromEmailsGeneralSettingsFormData>;
-    itemsFromEmailsGeneralSettingsSetupData: ItemsFromEmailsGeneralSettingsSetupData;
+    itemsFromEmailsSettingsFormData: FormGroupState<ItemsFromEmailsSettingsFormData>;
+    itemsFromEmailsSettingsSetupData: ItemsFromEmailsSettingsSetupData;
 }
 
 export const initialState: State = {
@@ -48,6 +51,6 @@ export const initialState: State = {
     batchItemCreationIdsCriteriaSetupData: getBatchItemCreationIdsCriteriaSetupDataInitialState(),
     batchItemCreationIdsCriteriaFormData: getBatchItemCreationIdsCriteriaFormDataInitialState(),
 
-    itemsFromEmailsGeneralSettingsFormData: getItemsFromEmailsGeneralSettingsFormDataInitialState(),
-    itemsFromEmailsGeneralSettingsSetupData: getItemsFromEmailsGeneralSettingsSetupDataInitialState()
+    itemsFromEmailsSettingsFormData: getItemsFromEmailsSettingsFormDataInitialState(),
+    itemsFromEmailsSettingsSetupData: getItemsFromEmailsSettingsSetupDataInitialState()
 }

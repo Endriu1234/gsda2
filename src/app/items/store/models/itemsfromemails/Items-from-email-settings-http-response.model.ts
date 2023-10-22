@@ -1,4 +1,4 @@
-export class ItemsFromEmailGeneralSettingsHttpResponse {
+export class ItemsFromEmailSettingsHttpResponse {
     public success: boolean;
     public errorMessage: string;
     public enabled: boolean;

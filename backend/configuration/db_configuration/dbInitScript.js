@@ -72,7 +72,7 @@ createCollection(formsDataCollectionName, formsDataCollectionIndex, formsDataCol
 
 const formsDataRecords = [
     {
-        formId: 'ITEMS_FROM_EMAILS_GENERAL_SETTINGS_FORMID',
+        formId: 'ITEMS_FROM_EMAILS_SETTINGS_FORMID',
         values: {
             enabled: false,
             interval: 5

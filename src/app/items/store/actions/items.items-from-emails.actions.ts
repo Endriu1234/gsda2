@@ -1,4 +1,4 @@
 import { createAction, props } from '@ngrx/store';
 
-export const initItemsFromEmailsGeneralSettings = createAction('[Items Component] Init ItemsFromEmails General Settings');
-export const endInitItemsFromEmailsGeneralSettings = createAction('[Items Component] End Init ItemsFromEmails General Settings');
+export const initItemsFromEmailsSettings = createAction('[Items Component] Init ItemsFromEmails Settings');
+export const endInitItemsFromEmailsSettings = createAction('[Items Component] End Init ItemsFromEmails Settings');

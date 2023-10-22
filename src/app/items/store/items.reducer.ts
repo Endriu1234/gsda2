@@ -11,7 +11,7 @@ import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, initSoftDev
 import { addValidatedCR, addValidatedFromId, addValidatedIssue, addValidatedTms, endResetItemCreationForm, setItemCreationFormMode, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startResetItemCreationForm } from './actions/items.item-creation-actions';
 import { continueBatchItemsCreation, forceEndBatchItemCreation, setBatchItemCreationRecords, setLinkToCurrentProposedItemAndUnselect, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection, dragAndDropBatchItemsCreationColumns, createOneRecordFromBatch, updateBatchItemCreationFormColumn, setRedmineSourceProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForTmsBatchItemCreationCriteria, setRedmineUsersByLetterFilterForTmsBatchItemCreationCriteria, initTmsClients, loadTmsClients, setTmsClientsByLetterFilter, setRedmineTargetProjectsFilterForIdsBatchItemCreationCriteria } from './actions/items.batch-item-creation-actions';
 import { ItemCreationFromData } from './state/items.item-creation-state';
-import { endInitItemsFromEmailsGeneralSettings, initItemsFromEmailsGeneralSettings } from './actions/items.items-from-emails.actions';
+import { endInitItemsFromEmailsSettings, initItemsFromEmailsSettings } from './actions/items.items-from-emails.actions';
 
 export const itemsReducerKey = 'items';
 
@@ -65,8 +65,8 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
     on(initTmsClients, fromBatchItemCreationReducerHanders.initTmsClients),
     on(loadTmsClients, fromBatchItemCreationReducerHanders.loadTmsClients),
 
-    on(initItemsFromEmailsGeneralSettings, fromItemsFromEmailsReducerHanders.initItemsFromEmailsGeneralSettings),
-    on(endInitItemsFromEmailsGeneralSettings, fromItemsFromEmailsReducerHanders.endInitItemsFromEmailsGeneralSettings)
+    on(initItemsFromEmailsSettings, fromItemsFromEmailsReducerHanders.initItemsFromEmailsSettings),
+    on(endInitItemsFromEmailsSettings, fromItemsFromEmailsReducerHanders.endInitItemsFromEmailsSettings)
 );
 
 export const itemsReducer = wrapReducerWithFormStateUpdate(
