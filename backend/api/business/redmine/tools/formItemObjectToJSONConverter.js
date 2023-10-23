@@ -15,9 +15,9 @@ module.exports.convertFormItemObjectToJSON = async function convertFormItemObjec
     redmineItem.issue.subject = formItem.subject;
     redmineItem.issue.description = formItem.description;
 
-    if (formItem.assignee) {
+    if (formItem.user) {
         const users = await cacheValueProvider.getValue('redmine_users');
-        const user = users.find(u => u.name === formItem.assignee);
+        const user = users.find(u => u.name === formItem.user);
         redmineItem.issue.assigned_to_id = user.id;
     }
 

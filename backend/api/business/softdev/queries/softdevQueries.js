@@ -1,7 +1,7 @@
 const { query } = require("express");
 
 const selectSDProjectPotentialRedmineItems = `SELECT 
-                                                'true' AS selected,
+                                                1 AS selected,
                                                 :targetRedmineProject AS redmine_project,
                                                 case
                                                     when issue.iss_type = 'Defect' Then
@@ -190,7 +190,7 @@ module.exports.getSDProjectPotentialRedmineItemsByPossibleCrQuery = (bForPacket)
 
 function getSelectWitoutCr() {
     return `SELECT 
-                'true' AS selected,
+                1 AS selected,
                 :targetRedmineProject AS redmine_project,
                 case
                     when issue.iss_type = 'Defect' Then
@@ -223,7 +223,7 @@ function getSelectSDProjectPotentialRedmineItems(combineCRs) {
 module.exports.getTmsProjectPotentialRedmineItems = (showClosed, showInClientBin) => {
     let showClosedAnd = showClosed ? ``:` AND tms.status <> 'C' `;
     let showInClientBinAnd = showInClientBin ? ``:` AND tms.employee Not like 'N/%' `;
-    let query = `select 'true' AS selected,
+    let query = `select 1 AS selected,
                     :targetRedmineProject AS redmine_project,
                     'TMS Task' AS tracker,
                     '' AS status,
@@ -295,7 +295,7 @@ module.exports.getQueryForIdsByTmsPotentialRedmineItems = (cntParams) => {
     }
     
     let query = `SELECT 
-                    'true' AS selected,
+                    1 AS selected,
                     :targetRedmineProject AS redmine_project,
                     'TMS Task' AS tracker,
                     '' AS status,

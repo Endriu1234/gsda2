@@ -9,5 +9,6 @@ router.get('/get-redmine-users', authController.checkAuth, itemsController.getRe
 router.get('/get-redmine-projects', authController.checkAuth, itemsController.getRedmineProjects);
 router.post('/create-redmine-item', authController.checkAuth, itemsController.createRedmineItem);
 router.get('/get-potential-redmine-items-from-rmproject', authController.checkAuth, itemsController.getPotentialRedmineItemsFromRedmineProject);
+router.get('/get-redmine-versions', authController.checkAuth, itemsController.getRedmineVersions);
 
 module.exports = router;

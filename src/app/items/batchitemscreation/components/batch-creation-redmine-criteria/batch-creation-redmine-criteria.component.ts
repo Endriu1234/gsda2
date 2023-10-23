@@ -9,6 +9,7 @@ import * as fromCommonItemsSelectors from '../../../store/selectors/items.common
 import { initRedmineProjects } from 'src/app/items/store/actions/items.common-actions';
 import { BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID } from 'src/app/items/store/state/items.batch-item-creation-state';
 import { FORM_SEARCH_STATE, FormSearchState } from 'src/app/shared/store/shared.state';
+import { RedmineVersion } from 'src/app/items/store/models/redmine-version.model';
 
 @Component({
   selector: 'app-batch-creation-redmine-criteria',
@@ -21,6 +22,7 @@ export class BatchCreationRedmineCriteriaComponent implements OnInit {
   redmineTargetProjectsFiltered$: Observable<RedmineProject[]> | null = null;
   isGridFilled$: Observable<boolean> | null = null;
   canActivateFind$: Observable<boolean> | null = null;
+  versions$: Observable<RedmineVersion[]> | null = null;
 
   constructor(private store: Store<fromItemsState.State>) {
     this.formState$ = this.store.select(fromBatchItemsSelectors.getBatchItemCreationRedmineCriteriaFormState);
@@ -39,6 +41,8 @@ export class BatchCreationRedmineCriteriaComponent implements OnInit {
     this.isGridFilled$ = this.store.select(fromBatchItemsSelectors.getBatchItemCreationCanActivateGrid);
 
     this.canActivateFind$ = this.store.select(fromBatchItemsSelectors.getBatchItemCreationRmCriteriaCanActivateFind);
+
+    this.versions$ = this.store.select(fromBatchItemsSelectors.getRedmineBatchVersionsByProject);
   }
 
   search(): void {

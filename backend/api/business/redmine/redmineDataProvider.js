@@ -64,3 +64,17 @@ module.exports.getRedmineUserByTmsUser = async (name) => {
 
     return user ? user.NAME : '';
 }
+
+module.exports.getRedmineVersionsByProject = async (redmineProject) => {
+
+    const projects = await cacheValueProvider.getValue('redmine_projects');
+    const project = projects.find(p => p.name === redmineProject);
+
+    if (project) {
+        const versions = await getRedmineData(`projects/${project.id}/versions.json?status=open`, false);
+       
+        return versions;
+    }
+
+    return undefined;
+}

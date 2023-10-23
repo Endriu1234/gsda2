@@ -9,6 +9,7 @@ export const getBatchItemCreationSdCriteriaFormState = createSelector(getItemsSt
 
 export const getRedmineProjectsFilteredForBatchItemCreation = createSelector(getItemsState, (state: State) => state.batchItemCreationSdCriteriaSetupData.redmineProjectsFiltered);
 export const getSoftDevProjectsFilteredForBatchItemCreation = createSelector(getItemsState, (state: State) => state.batchItemCreationSdCriteriaSetupData.softDevProjectsFiltered);
+export const getSdRedmineVersionsByProject = createSelector(getItemsState, (state: State) => state.batchItemCreationSdCriteriaSetupData.redmineVersions);
 
 export const getBatchItemCreationRecords = createSelector(getItemsState, (state: State) => state.batchItemCreationRecords);
 export const getBatchItemCreationFormData = createSelector(getItemsState, (state: State) => state.batchItemCreationFormData);
@@ -20,6 +21,7 @@ export const getRedmineSourceProjectsFilteredForBatchItemCreation = createSelect
 export const getRedmineTargetProjectsFilteredForBatchItemCreation = createSelector(getItemsState, (state: State) => state.batchItemCreationRedmineCriteriaSetupData.redmineTargetProjectsFiltered);
 export const getBatchItemCreationRedmineCriteriaFormState = createSelector(getItemsState, (state: State) => state.batchItemCreationRedmineCriteriaFormData);
 export const getBatchItemCreationGridRemovableColumns = createSelector(getItemsState, (state: State) => state.batchItemCreationGridRemovableColumns);
+export const getRedmineBatchVersionsByProject = createSelector(getItemsState, (state: State) => state.batchItemCreationRedmineCriteriaSetupData.redmineVersions);
 
 export const getRedmineUsersByLetterFiltered = createSelector(getItemsState, (state: State) => state.batchItemCreationTMSCriteriaSetupData.redmineUsersByLetterFiltered);
 
@@ -28,9 +30,11 @@ export const getRedmineTargetProjectsFilteredForTmsBatchItemCreation = createSel
 export const getTmsClientsLoaded = createSelector(getItemsState, (state: State) => state.batchItemCreationTMSCriteriaSetupData.tmsClientsLoaded);
 export const getTmsClientsByLetterFiltered = createSelector(getItemsState, (state: State) => state.batchItemCreationTMSCriteriaSetupData.tmsClientsByLetterFiltered);
 export const getTmsClients = createSelector(getItemsState, (state: State) => state.batchItemCreationTMSCriteriaSetupData.tmsClients);
+export const getTmsRedmineVersionsByProject = createSelector(getItemsState, (state: State) => state.batchItemCreationTMSCriteriaSetupData.redmineVersions);
 
 export const getBatchItemCreationIdsCriteriaFormState = createSelector(getItemsState, (state: State) => state.batchItemCreationIdsCriteriaFormData);
 export const getRedmineProjectsFilteredForIdsBatchItemCreation = createSelector(getItemsState, (state: State) => state.batchItemCreationIdsCriteriaSetupData.redmineTargetProjectsFiltered);
+export const getIdRedmineVersionsByProject = createSelector(getItemsState, (state: State) => state.batchItemCreationIdsCriteriaSetupData.redmineVersions);
 
 export const getBatchItemsRecordsWithFormData = createSelector(getBatchItemCreationRecords, getBatchItemCreationFormData, (batchRecords, batchFormData) => {
     return {
@@ -113,3 +117,7 @@ export const getIsAnyBatchItemsRecordsSelected = createSelector(getBatchItemCrea
     return retVal;
 })
 
+
+export function getRedmineVersionsByProject(getRedmineVersionsByProject: any): import("rxjs").Observable<import("../models/redmine-version.model").RedmineVersion[]> | null {
+  throw new Error('Function not implemented.');
+}

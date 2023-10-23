@@ -109,7 +109,7 @@ export function validateTms(store: Store<State>, http: HttpClient, validateTmsEr
     if (!tms)
         return of(new StartAsyncValidationAction(controlId, validateTmsError), new ClearAsyncErrorAction(controlId, validateTmsError));
 
-    if (!new RegExp("^[a-zA-Z]+-\\d{5}$").test(tms))
+    if (!new RegExp("^(([a-zA-Z0-9]+-\\d{5});*)*$").test(tms))
         return of(new StartAsyncValidationAction(controlId, validateTmsError), new SetAsyncErrorAction(controlId, validateTmsError, "Tms number invalid"));
 
     return store.select(getValidatedTms).pipe(delay(300), take(1), switchMap(validatedTms => {

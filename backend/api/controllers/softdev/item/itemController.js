@@ -117,7 +117,7 @@ module.exports.getPotentialRedmineItemsFromIds = async (req, res) => {
                 if (!new RegExp("^CR-[A-Z]{3,4}-[\\d]{1,9}I[T|S]$").test(id)) { error = 'One of the CRs is incorrect'; break; };
                 tblCrs.push(id);
             } else {
-                if (!new RegExp("^[a-zA-Z]+-\\d{5}$").test(id)) { error = 'One of the TMS tasks is incorrect'; break; };
+                if (!new RegExp("^[a-zA-Z0-9]+-\\d{5}$").test(id)) { error = 'One of the TMS tasks is incorrect'; break; };
                 tblTms.push(id);
             }
         }
@@ -136,10 +136,7 @@ module.exports.getPotentialRedmineItemsFromIds = async (req, res) => {
 
         for (const softDevRecord of crsQueryResults) {
             let target = redmineItems.issues.find((r) => {
-                return r.subject && softDevRecord.SUBJECT && 
-                (r.subject === softDevRecord.SUBJECT 
-                    || r.subject.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.SUBJECT.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
-                && r.description && softDevRecord.DESCRIPTION &&
+                return r.description && softDevRecord.DESCRIPTION &&
                 (r.description === softDevRecord.DESCRIPTION
                     || r.description.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.DESCRIPTION.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
                 && redmineDataProvider.getCustomFieldValue(r, process.env.REDMINE_CR_NAME) === softDevRecord.CR
@@ -158,10 +155,7 @@ module.exports.getPotentialRedmineItemsFromIds = async (req, res) => {
 
         for (const softDevRecord of issQueryResults) {
             let target = redmineItems.issues.find((r) => {
-                return r.subject && softDevRecord.SUBJECT && 
-                (r.subject === softDevRecord.SUBJECT 
-                    || r.subject.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.SUBJECT.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
-                && r.description && softDevRecord.DESCRIPTION &&
+                return r.description && softDevRecord.DESCRIPTION &&
                 (r.description === softDevRecord.DESCRIPTION
                     || r.description.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.DESCRIPTION.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
                 && redmineDataProvider.getCustomFieldValue(r, process.env.REDMINE_ISSUE_NAME) === softDevRecord.ISSUE
@@ -180,10 +174,7 @@ module.exports.getPotentialRedmineItemsFromIds = async (req, res) => {
 
         for (const softDevRecord of tmsQueryResults) {
             let target = redmineItems.issues.find((r) => {
-                return r.subject && softDevRecord.SUBJECT && 
-                (r.subject === softDevRecord.SUBJECT 
-                    || r.subject.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.SUBJECT.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
-                && r.description && softDevRecord.DESCRIPTION &&
+                return r.description && softDevRecord.DESCRIPTION &&
                 (r.description === softDevRecord.DESCRIPTION
                     || r.description.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.DESCRIPTION.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
                 && redmineDataProvider.getCustomFieldValue(r, process.env.REDMINE_TMS_TASK_NAME) === softDevRecord.TMS

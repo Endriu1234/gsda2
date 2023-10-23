@@ -7,6 +7,7 @@ import { CRValidation } from "../models/cr-validation.model";
 import { IssueValidation } from "../models/issue-validation.model";
 import { TmsValidation } from "../models/tms-validation.model";
 import { FromIdValidation } from "../models/fromId-validation.model";
+import { RedmineVersion } from "../models/redmine-version.model";
 
 export enum ItemCreationMode {
     SingleItem = "SINGLE_ITEM_CREATION",
@@ -30,6 +31,7 @@ export interface ItemCreationSetupData {
     validatedIssues: IssueValidation[];
     validatedTms: TmsValidation[];
     validatedFromId: FromIdValidation[];
+    redmineVersions: RedmineVersion[];
 }
 
 export function getItemCreationSetupDataInitialState(): ItemCreationSetupData {
@@ -47,7 +49,8 @@ export function getItemCreationSetupDataInitialState(): ItemCreationSetupData {
         validatedCRs: [],
         validatedIssues: [],
         validatedTms: [],
-        validatedFromId: []
+        validatedFromId: [],
+        redmineVersions: []
     };
 }
 
@@ -60,6 +63,7 @@ export interface ItemCreationFromData {
     issue: string;
     cr: string;
     tms: string;
+    version: string;
 }
 
 export const ITEM_CREATION_FORMID = "ITEM_CREATION_FORMID";
@@ -73,7 +77,8 @@ export function getItemCreationFromDataInitialState(): FormGroupState<ItemCreati
         issue: '',
         user: '',
         cr: '',
-        tms: ''
+        tms: '',
+        version: ''
     });
 }
 

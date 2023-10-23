@@ -13,6 +13,7 @@ import { FORM_SEARCH_STATE, FormSearchState } from 'src/app/shared/store/shared.
 import { RedmineUserByLetter } from 'src/app/shared/store/models/redmine-user-letter-model';
 import { initTmsClients } from 'src/app/items/store/actions/items.batch-item-creation-actions';
 import { TmsClientByLetter } from 'src/app/shared/store/models/tms-client-letter.model';
+import { RedmineVersion } from 'src/app/items/store/models/redmine-version.model';
 
 @Component({
   selector: 'app-batch-creation-tmscriteria',
@@ -26,6 +27,7 @@ export class BatchCreationTMSCriteriaComponent implements OnInit {
   canActivateFind$: Observable<boolean> | null = null;
   usersFiltered$: Observable<RedmineUserByLetter[]> | null = null;
   tmsClientsFiltered$: Observable<TmsClientByLetter[]> | null = null;
+  versions$: Observable<RedmineVersion[]> | null = null;
   trimUpper = trimUpperConverter;
   dateConverter = dateValueConverter;
 
@@ -59,6 +61,8 @@ export class BatchCreationTMSCriteriaComponent implements OnInit {
     this.usersFiltered$ = this.store.select(fromBatchItemsSelectors.getRedmineUsersByLetterFiltered);
 
     this.tmsClientsFiltered$ = this.store.select(fromBatchItemsSelectors.getTmsClientsByLetterFiltered);
+
+    this.versions$ = this.store.select(fromBatchItemsSelectors.getTmsRedmineVersionsByProject);
   }
 
   search(): void {

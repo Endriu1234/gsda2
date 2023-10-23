@@ -3,6 +3,9 @@
 # Backend
 backend/configuration/env_configuration/configurations
 
+# Frontend
+src/environments
+
 # Compiled output
 /dist
 /tmp

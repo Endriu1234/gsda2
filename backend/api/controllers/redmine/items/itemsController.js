@@ -20,12 +20,31 @@ module.exports.getRedmineProjects = async (req, res) => {
     return res.status(200).json(projects);
 }
 
+module.exports.getRedmineVersions = async (req, res) => {
+    const retVal = {
+        success: true,
+        errorMessage: '',
+        records: null
+    };
+
+    if (!req.query.redmineProject) {
+        retVal.success = false;
+        retVal.errorMessage = "Missing redmineProject";
+    }
+
+    if (retVal.success) {
+        retVal.records = redmineDataProvider.getRedmineVersionsByProject(req.query.redmineProject);
+    }
+
+    return res.status(200).json(retVal);
+}
+
 module.exports.createRedmineItem = async (req, res) => {
     const retVal = {
         success: true,
         errorMessage: ''
     };
-
+    
     const validationResult = await redmineItemValidator.validateRedmineItem(req.body);
 
     if (validationResult.isValid) {

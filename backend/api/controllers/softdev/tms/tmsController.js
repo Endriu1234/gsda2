@@ -10,9 +10,7 @@ module.exports.checkTms = async (req, res) => {
     retVal.valid = false;
 
     if (req.query.tms && softDevValidator.checkTmsMatchPattern(req.query.tms)) {
-        let isTmsInDb = await softDevDataProvider.isTmsInDB(req.query.tms);
-        if (isTmsInDb && isTmsInDb.length > 0 && isTmsInDb[0].EXISTENCE === 1)
-            retVal.valid = true;
+        retVal.valid = await softDevValidator.checkTmsTasksExistanceInDb(req.query.tms);
     }
 
     return res.status(200).json(retVal);

@@ -56,22 +56,32 @@
                     <textarea type="text" matInput placeholder="Description" [ngrxFormControlState]="$any(formState).controls.description"></textarea>
                 </mat-form-field>
                 <mat-error
-                    [style.visibility]="(formState.isTouched && formState.errors._user?.$validateUserError)?'visible':'hidden'">
-                    User not matched
-                </mat-error>
-                <mat-form-field appearance="outline" class="" [style.width.%]=100>
-                    <mat-label>Redmine Users</mat-label>
-                    <input type="text"  [ngrxFormControlState]="$any(formState).controls.user"
-                        matInput
-                        [matAutocomplete]="autoUser">
-                    <mat-autocomplete #autoUser="matAutocomplete">
-                        <mat-optgroup *ngFor="let group of usersFiltered$ | async" [label]="group.letter">
-                            <mat-option *ngFor="let user of group.redmineUsers" [value]="user.name">
-                                {{user.name}}
+                        [style.visibility]="(formState.isTouched && formState.errors._user?.$validateUserError)?'visible':'hidden'">
+                        User not matched
+                    </mat-error>
+                <div class="d-flex flex-md-row justify-content-md-between flex-column">
+                    <mat-form-field appearance="outline" class="" [style.width.%]=49>
+                        <mat-label>Redmine Users</mat-label>
+                        <input type="text"  [ngrxFormControlState]="$any(formState).controls.user"
+                            matInput
+                            [matAutocomplete]="autoUser">
+                        <mat-autocomplete #autoUser="matAutocomplete">
+                            <mat-optgroup *ngFor="let group of usersFiltered$ | async" [label]="group.letter">
+                                <mat-option *ngFor="let user of group.redmineUsers" [value]="user.name">
+                                    {{user.name}}
+                                </mat-option>
+                            </mat-optgroup>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="" [style.width.%]=49>
+                        <mat-label>Version</mat-label>
+                        <mat-select [ngrxFormControlState]="$any(formState).controls.version">
+                            <mat-option *ngFor="let version of versions$ | async" [value]="version.name">
+                                {{version.name}}
                             </mat-option>
-                        </mat-optgroup>
-                    </mat-autocomplete>
-                </mat-form-field>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
                 <div class="d-flex flex-md-row justify-content-md-between flex-column mt-3">
                     <mat-form-field appearance="outline" [style.width.%]=100 class="pe-md-2">
                         <mat-label>SD Issue#</mat-label>

@@ -10,6 +10,7 @@ import { FORM_SEARCH_STATE, FormSearchState } from 'src/app/shared/store/shared.
 import { initRedmineProjects } from 'src/app/items/store/actions/items.common-actions';
 import { BATCH_ITEM_CREATION_IDSCRITERIA_FORMID } from 'src/app/items/store/state/items.batch-item-creation-state';
 import { trimUpperConverter } from 'src/app/shared/tools/validators/ngrxValueConverters';
+import { RedmineVersion } from 'src/app/items/store/models/redmine-version.model';
 
 @Component({
   selector: 'app-batch-creation-idscriteria',
@@ -21,6 +22,7 @@ export class BatchCreationIdscriteriaComponent implements OnInit {
   formState$: Observable<FormGroupState<any>>;
   getBatchItemCreationIdsCriteriaCanActivateFind$: Observable<boolean> | null = null;
   isGridFilled$: Observable<boolean> | null = null;
+  versions$: Observable<RedmineVersion[]> | null = null;
 
   trimUpper = trimUpperConverter;
 
@@ -38,6 +40,8 @@ export class BatchCreationIdscriteriaComponent implements OnInit {
 
     this.getBatchItemCreationIdsCriteriaCanActivateFind$ = this.store.select(fromBatchItemsSelectors.getBatchItemCreationIdsCriteriaCanActivateFind);
     this.isGridFilled$ = this.store.select(fromBatchItemsSelectors.getBatchItemCreationCanActivateGrid);
+
+    this.versions$ = this.store.select(fromBatchItemsSelectors.getIdRedmineVersionsByProject);
   }
 
   search(): void {

@@ -87,9 +87,7 @@ module.exports.validateRedmineItem = async (item) => {
     if (item.tms) {
         let isValid = false;
         if (softDevValidator.checkTmsMatchPattern(item.tms.trim())) {
-            let isTmsInDb = await softDevDataProvider.isTmsInDB(item.tms.trim().toUpperCase());
-            if (isTmsInDb && isTmsInDb.length > 0 && isTmsInDb[0].EXISTENCE === 1)
-                isValid = true;
+            isValid = await softDevValidator.checkTmsTasksExistanceInDb(item.tms.trim().toUpperCase());
         }
         if (!isValid) {
             retVal.isValid = false;

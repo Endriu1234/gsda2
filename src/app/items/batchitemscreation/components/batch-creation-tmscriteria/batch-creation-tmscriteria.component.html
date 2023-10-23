@@ -67,33 +67,7 @@
                     </div>
                     <div class="row">
                         <div class="col-3">
-                            <mat-form-field appearance="fill">
-                                <mat-label>From Date</mat-label>
-                                <input matInput 
-                                    [matDatepicker]="dpFrom" 
-                                    [ngrxFormControlState]="$any(formState).controls.fromDate"
-                                    [ngrxValueConverter]="dateConverter"
-                                >
-                                <mat-hint>MM/DD/YYYY</mat-hint>
-                                <mat-datepicker-toggle matIconSuffix [for]="dpFrom"></mat-datepicker-toggle>
-                                <mat-datepicker #dpFrom></mat-datepicker>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-3">
-                            <mat-form-field appearance="fill">
-                                <mat-label>To Date</mat-label>
-                                <input matInput 
-                                    [matDatepicker]="dpTo" 
-                                    [ngrxFormControlState]="$any(formState).controls.toDate"
-                                    [ngrxValueConverter]="dateConverter"
-                                >
-                                <mat-hint>MM/DD/YYYY</mat-hint>
-                                <mat-datepicker-toggle matIconSuffix [for]="dpTo"></mat-datepicker-toggle>
-                                <mat-datepicker #dpTo></mat-datepicker>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-3">
-                            <mat-form-field appearance="outline" class="" [style.width.%]=100>
+                            <mat-form-field appearance="outline">
                                 <mat-label>For Users/Group</mat-label>
                                 <input type="text"  [ngrxFormControlState]="$any(formState).controls.userToITms"
                                     matInput
@@ -110,6 +84,42 @@
                                 [style.visibility]="(formState.isTouched && formState.errors._userToITms?.$validateTmsUserError)?'visible':'hidden'">
                                 Incorrect user/group
                             </mat-error>
+                        </div>
+                        <div class="col-3">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Version</mat-label>
+                                <mat-select [ngrxFormControlState]="$any(formState).controls.version">
+                                    <mat-option *ngFor="let version of versions$ | async" [value]="version.name">
+                                        {{version.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-3">
+                            <mat-form-field appearance="outline">
+                                <mat-label>From Date</mat-label>
+                                <input matInput 
+                                    [matDatepicker]="dpFrom" 
+                                    [ngrxFormControlState]="$any(formState).controls.fromDate"
+                                    [ngrxValueConverter]="dateConverter"
+                                >
+                                <mat-hint>MM/DD/YYYY</mat-hint>
+                                <mat-datepicker-toggle matIconSuffix [for]="dpFrom"></mat-datepicker-toggle>
+                                <mat-datepicker #dpFrom></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-3">
+                            <mat-form-field appearance="outline">
+                                <mat-label>To Date</mat-label>
+                                <input matInput 
+                                    [matDatepicker]="dpTo" 
+                                    [ngrxFormControlState]="$any(formState).controls.toDate"
+                                    [ngrxValueConverter]="dateConverter"
+                                >
+                                <mat-hint>MM/DD/YYYY</mat-hint>
+                                <mat-datepicker-toggle matIconSuffix [for]="dpTo"></mat-datepicker-toggle>
+                                <mat-datepicker #dpTo></mat-datepicker>
+                            </mat-form-field>
                         </div>
                     </div>
                 </div>

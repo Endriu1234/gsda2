@@ -15,6 +15,7 @@ import { FormSaveState, FORM_SAVE_STATE } from 'src/app/shared/store/shared.stat
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers } from 'src/app/items/store/actions/items.common-actions';
 import { breakBatchItemCreation, identifyAndFillItemById } from 'src/app/items/store/actions/items.item-creation-actions';
 import { ITEM_CREATION_FORMID } from 'src/app/items/store/state/items.item-creation-state';
+import { RedmineVersion } from 'src/app/items/store/models/redmine-version.model';
 
 @Component({
   selector: 'app-item-creation',
@@ -30,6 +31,7 @@ export class ItemCreationPage implements OnInit {
   getItemCreationFormSuitableForDefault$: Observable<boolean> | null = null;
   getItemCreationFormCanActivateSave$: Observable<boolean> | null = null;
   isItemCreationFormCreatedFromBatch$: Observable<boolean> | null = null;
+  versions$: Observable<RedmineVersion[]> | null = null;
   trimUpper = trimUpperConverter;
 
   constructor(private store: Store<fromItemsState.State>, private dialog: MatDialog) {
@@ -93,6 +95,7 @@ export class ItemCreationPage implements OnInit {
     this.getItemCreationFormSuitableForDefault$ = this.store.select(fromItemCreationSelectors.getItemCreationFormSuitableForDefault);
     this.getItemCreationFormCanActivateSave$ = this.store.select(fromItemCreationSelectors.getItemCreationFormCanActivateSave);
     this.isItemCreationFormCreatedFromBatch$ = this.store.select(fromItemCreationSelectors.isItemCreationFormCreatedFromBatch);
+    this.versions$ = this.store.select(fromItemCreationSelectors.getRedmineVersionsByProject);
   }
 
 

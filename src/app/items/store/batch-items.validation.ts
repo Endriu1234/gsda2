@@ -38,7 +38,7 @@ export function validateTms(store: Store<State>, validateTmsError: string, contr
     if (!tms)
         return of(new StartAsyncValidationAction(controlId, validateTmsError), new ClearAsyncErrorAction(controlId, validateTmsError));
 
-    if (!new RegExp("^[a-zA-Z]+$").test(tms))
+    if (!new RegExp("^[a-zA-Z0-9]+$").test(tms))
         return of(new StartAsyncValidationAction(controlId, validateTmsError), new SetAsyncErrorAction(controlId, validateTmsError, "Tms number invalid"));
 
     let params = new HttpParams();
@@ -81,7 +81,7 @@ export function validateIds(store: Store<State>, validateIdsError: string, contr
             } else if (id.startsWith('CR')) {
                 if (!new RegExp("^CR-[A-Z]{3,4}-[\\d]{1,9}I[T|S]$").test(id)) { error = 'One of the CRs is incorrect'; break; }
             } else {
-                if (!new RegExp("^[a-zA-Z]+-\\d{5}$").test(id)) { error = 'One of the TMS tasks is incorrect'; break; }
+                if (!new RegExp("^[a-zA-Z0-9]+-\\d{5}$").test(id)) { error = 'One of the TMS tasks is incorrect'; break; }
             }
         }
     }
