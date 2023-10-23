@@ -16,15 +16,15 @@ import { BatchItemsCreationPage } from './batchitemscreation/pages/batch-items-c
 import { SmallSpinnerModule } from '../shared/components/small-spinner.module';
 import { BatchCreationIdscriteriaComponent } from './batchitemscreation/components/batch-creation-idscriteria/batch-creation-idscriteria.component';
 import { EffectsModule } from '@ngrx/effects';
-import { ItemsGeneralEffects } from './store/effects/items.common-effects';
+import { ItemsCommonEffects } from './store/effects/items.common-effects';
 import { ItemsItemCreationEffects } from './store/effects/items.item-creation-effects';
 import { ItemsBatchItemCreationEffects } from './store/effects/items.batch-item-creation-effects';
 import { DirectivesModule } from '../shared/directives/directives.module';
 import { ItemsFromEmailsPage } from './itemsfromemails/pages/items-from-emails/items-from-emails.page';
-import { ItemsFromEmailsSettingsComponent } from './itemsfromemails/components/items-from-emails-settings/items-from-emails-settings.component';
+import { ItemsFromEmailsComponent } from './itemsfromemails/components/items-from-emails/items-from-emails.component';
 import { ItemsFromEmailsLogsComponent } from './itemsfromemails/components/items-from-emails-logs/items-from-emails-logs.component';
-import { GeneralSettingsComponent } from './itemsfromemails/components/general-settings/general-settings.component';
-import { AliasesSettingsComponent } from './itemsfromemails/components/aliases-settings/aliases-settings.component';
+import { ItemsFromEmailsSettingsComponent } from './itemsfromemails/components/items-from-emails-settings/items-from-emails-settings.component';
+import { ItemsFromEmailsAliasesComponent } from './itemsfromemails/components/items-from-emails-aliases/items-from-emails-aliases.component';
 import { ItemsFromEmailsEffects } from './store/effects/items.items-from-emails-effects';
 
 
@@ -35,16 +35,15 @@ import { ItemsFromEmailsEffects } from './store/effects/items.items-from-emails-
     ItemViewEditPage,
     ItemCreationPage,
     ItemCreationFromId,
-
     BatchCreationSDCriteriaComponent,
     BatchCreationTMSCriteriaComponent,
     BatchCreationRedmineCriteriaComponent,
     BatchCreationIdscriteriaComponent,
     ItemsFromEmailsPage,
-    ItemsFromEmailsSettingsComponent,
+    ItemsFromEmailsComponent,
     ItemsFromEmailsLogsComponent,
-    GeneralSettingsComponent,
-    AliasesSettingsComponent
+    ItemsFromEmailsSettingsComponent,
+    ItemsFromEmailsAliasesComponent
   ],
   imports: [
     CommonModule,
@@ -55,7 +54,7 @@ import { ItemsFromEmailsEffects } from './store/effects/items.items-from-emails-
     MatDialogModule,
     SmallSpinnerModule,
     DirectivesModule,
-    EffectsModule.forFeature([ItemsGeneralEffects, ItemsItemCreationEffects, ItemsBatchItemCreationEffects, ItemsFromEmailsEffects])
+    EffectsModule.forFeature([ItemsCommonEffects, ItemsItemCreationEffects, ItemsBatchItemCreationEffects, ItemsFromEmailsEffects])
   ]
 })
 export class ItemsModule { }

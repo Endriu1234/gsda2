@@ -3,6 +3,7 @@ import { initialState, State } from './state/items.state';
 import * as fromCommonReducerHanders from './reducer-handlers/items.common-reducer-handlers';
 import * as fromItemCreationReducerHanders from './reducer-handlers/items.item-creation-reducer-handlers';
 import * as fromBatchItemCreationReducerHanders from './reducer-handlers/items.batch-item-creation-reducer-handlers';
+import * as fromItemsFromEmailsReducerHanders from './reducer-handlers/items.items-from-emails-reducer-handlers';
 
 import { onNgrxForms, wrapReducerWithFormStateUpdate, updateGroup, validate, ValidationErrors } from 'ngrx-forms';
 import { required } from 'ngrx-forms/validation';
@@ -10,6 +11,7 @@ import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, initSoftDev
 import { addValidatedCR, addValidatedFromId, addValidatedIssue, addValidatedTms, endResetItemCreationForm, setItemCreationFormMode, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startResetItemCreationForm } from './actions/items.item-creation-actions';
 import { continueBatchItemsCreation, forceEndBatchItemCreation, setBatchItemCreationRecords, setLinkToCurrentProposedItemAndUnselect, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection, dragAndDropBatchItemsCreationColumns, createOneRecordFromBatch, updateBatchItemCreationFormColumn, setRedmineSourceProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForTmsBatchItemCreationCriteria, setRedmineUsersByLetterFilterForTmsBatchItemCreationCriteria, initTmsClients, loadTmsClients, setTmsClientsByLetterFilter, setRedmineTargetProjectsFilterForIdsBatchItemCreationCriteria } from './actions/items.batch-item-creation-actions';
 import { ItemCreationFromData } from './state/items.item-creation-state';
+import { endInitItemsFromEmailsSettings, initItemsFromEmailsSettings } from './actions/items.items-from-emails.actions';
 
 export const itemsReducerKey = 'items';
 
@@ -61,7 +63,10 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
     on(updateBatchItemCreationFormColumn, fromBatchItemCreationReducerHanders.updateBatchItemCreationFormColumn),
     on(dragAndDropBatchItemsCreationColumns, fromBatchItemCreationReducerHanders.dragAndDropBatchItemsCreationColumns),
     on(initTmsClients, fromBatchItemCreationReducerHanders.initTmsClients),
-    on(loadTmsClients, fromBatchItemCreationReducerHanders.loadTmsClients)
+    on(loadTmsClients, fromBatchItemCreationReducerHanders.loadTmsClients),
+
+    on(initItemsFromEmailsSettings, fromItemsFromEmailsReducerHanders.initItemsFromEmailsSettings),
+    on(endInitItemsFromEmailsSettings, fromItemsFromEmailsReducerHanders.endInitItemsFromEmailsSettings)
 );
 
 export const itemsReducer = wrapReducerWithFormStateUpdate(

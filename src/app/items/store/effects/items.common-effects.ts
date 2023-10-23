@@ -14,7 +14,7 @@ import { SoftDevProject } from 'src/app/shared/store/models/softdev-project.mode
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, initSoftDevProjects, loadRedmineProjects, loadRedmineTrackers, loadRedmineUsers, loadSoftDevProjects } from '../actions/items.common-actions';
 
 @Injectable()
-export class ItemsGeneralEffects {
+export class ItemsCommonEffects {
 
     constructor(private actions$: Actions,
         private store: Store<fromItemsState.State>,
