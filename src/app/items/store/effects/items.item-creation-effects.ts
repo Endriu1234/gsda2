@@ -12,12 +12,13 @@ import { GsdaRedmineHttpResponse } from 'src/app/shared/http/model/gsda-redmine-
 import { environment } from 'src/environments/environment';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { Item } from '../models/item.model';
-import { breakBatchItemCreation, endResetItemCreationForm, fillItemById, identifyAndFillItemById, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startResetItemCreationForm } from '../actions/items.item-creation-actions';
+import { breakBatchItemCreation, endResetItemCreationForm, fillItemById, identifyAndFillItemById, initRedmineVersions, loadRedmineVersions, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startResetItemCreationForm } from '../actions/items.item-creation-actions';
 import { noopAction } from '../actions/items.common-actions';
 import { getItemCreationDialogState, getItemCreationFormState, getItemCreationFormWithSetup, getItemCreationMode } from '../selectors/items.item-creation-selectors';
 import { ITEM_CREATION_DIALOG, ITEM_CREATION_FORMID, ItemCreationMode } from '../state/items.item-creation-state';
 import { SnackBarIcon } from '../../../shared/store/shared.state';
 import { continueBatchItemsCreation, forceEndBatchItemCreation, setLinkToCurrentProposedItemAndUnselect } from '../actions/items.batch-item-creation-actions';
+import { RedmineVersion } from '../models/redmine-version.model';
 
 export const validateUserError = "validateUserError";
 export const validateCRError = "validateCRError";
@@ -211,6 +212,14 @@ export class ItemsItemCreationEffects {
             this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item(s) Creation aborted.', icon: SnackBarIcon.Info }));
             return of(startResetItemCreationForm(), forceEndBatchItemCreation());
         })
+    ));
+
+    initRedmineVersions$ = createEffect(() => this.actions$.pipe(ofType(initRedmineVersions),
+        switchMap((param) => {
+            let params = new HttpParams();
+            params = params.append("redmineProject", param.projectName);
+            return this.http.get<RedmineVersion[]>(environment.apiUrl + '/redmine/items/get-redmine-versions', { params });
+        }), map(redmineVersions => loadRedmineVersions({ redmineVersions }))
     ));
 
 }

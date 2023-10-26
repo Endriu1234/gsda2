@@ -4,6 +4,7 @@ import { IssueValidation } from '../models/issue-validation.model';
 import { TmsValidation } from '../models/tms-validation.model';
 import { FromIdValidation } from '../models/fromId-validation.model';
 import { ItemCreationMode } from '../state/items.item-creation-state';
+import { RedmineVersion } from '../models/redmine-version.model';
 
 export const startResetItemCreationForm = createAction('[Items Component] Start Reset Item Creation From');
 export const endResetItemCreationForm = createAction('[Items Component] End Reset Item Creation From');
@@ -19,3 +20,7 @@ export const addValidatedFromId = createAction('[Items Component Dialog] Add Val
 export const fillItemById = createAction('[Items Component] Find The Item By Id');
 export const identifyAndFillItemById = createAction('[Items Component] Identify And Find The Item By Id');
 export const breakBatchItemCreation = createAction('[Items Component] Break Batch Item Creation');
+
+export const initRedmineVersions = createAction('[Items Component] Init Redmine Versions', props<{ projectName: string }>());
+export const loadRedmineVersions = createAction('[Items Component] Load Redmine Versions', props<{ redmineVersions: RedmineVersion[] }>());
+export const clearRedmineVersions = createAction('[Items Component] Clear Redmine Versions');

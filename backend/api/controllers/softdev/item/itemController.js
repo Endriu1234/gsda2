@@ -42,7 +42,8 @@ module.exports.getPotentialRedmineItemsFromSDProject = async (req, res) => {
         retVal.errorMessage = "Missing itemLevel";
     }
 
-    const queryResults = await softDevDataProvider.getSDProjectPotentialRedmineItems(req.query.sourceSoftDevProject, req.query.targetRedmineProject, req.query.itemLevel);
+    const redmineVersion = req.query.redmine_version ? req.query.redmine_version : '';
+    const queryResults = await softDevDataProvider.getSDProjectPotentialRedmineItems(req.query.sourceSoftDevProject, req.query.targetRedmineProject, redmineVersion, req.query.itemLevel);
     const redmineItems = (req.query.itemLevel === 'issue') ? await redmineDataProvider.getRedmineItemsPerIssues(req.query.targetRedmineProject, false) : await redmineDataProvider.getRedmineItemsFromProject(req.query.targetRedmineProject, false);
     
     if (redmineItems) {
@@ -129,10 +130,11 @@ module.exports.getPotentialRedmineItemsFromIds = async (req, res) => {
     }
 
     const redmineItems = await redmineDataProvider.getRedmineItemsFromProject(req.query.targetRedmineProject, false);
+    const redmineVersion = req.query.redmine_version ? req.query.redmine_version : '';
     let queryResults = [];
 
     if (tblCrs.length > 0) {
-        const crsQueryResults = await softDevDataProvider.getIdsByCrsPotentialRedmineItems(tblCrs, req.query.targetRedmineProject);
+        const crsQueryResults = await softDevDataProvider.getIdsByCrsPotentialRedmineItems(tblCrs, req.query.targetRedmineProject, redmineVersion);
 
         for (const softDevRecord of crsQueryResults) {
             let target = redmineItems.issues.find((r) => {
@@ -151,7 +153,7 @@ module.exports.getPotentialRedmineItemsFromIds = async (req, res) => {
         queryResults.push(...crsQueryResults);
     }
     if (tblIssues.length > 0) {
-        const issQueryResults = await softDevDataProvider.getIdsByIssuesPotentialRedmineItems(tblIssues, req.query.targetRedmineProject);
+        const issQueryResults = await softDevDataProvider.getIdsByIssuesPotentialRedmineItems(tblIssues, req.query.targetRedmineProject, redmineVersion);
 
         for (const softDevRecord of issQueryResults) {
             let target = redmineItems.issues.find((r) => {
@@ -170,7 +172,7 @@ module.exports.getPotentialRedmineItemsFromIds = async (req, res) => {
         queryResults.push(...issQueryResults);
     }
     if (tblTms.length > 0) {
-        const tmsQueryResults = await softDevDataProvider.getIdsByTmsTasksPotentialRedmineItems(tblTms, req.query.targetRedmineProject);
+        const tmsQueryResults = await softDevDataProvider.getIdsByTmsTasksPotentialRedmineItems(tblTms, req.query.targetRedmineProject, redmineVersion);
 
         for (const softDevRecord of tmsQueryResults) {
             let target = redmineItems.issues.find((r) => {

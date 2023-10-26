@@ -31,6 +31,7 @@ export interface ItemCreationSetupData {
     validatedIssues: IssueValidation[];
     validatedTms: TmsValidation[];
     validatedFromId: FromIdValidation[];
+    redmineVersionsLoaded: boolean;
     redmineVersions: RedmineVersion[];
 }
 
@@ -50,6 +51,7 @@ export function getItemCreationSetupDataInitialState(): ItemCreationSetupData {
         validatedIssues: [],
         validatedTms: [],
         validatedFromId: [],
+        redmineVersionsLoaded: false,
         redmineVersions: []
     };
 }

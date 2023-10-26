@@ -7,7 +7,7 @@ import { CRValidation } from "./models/cr-validation.model";
 import { IssueValidation } from "./models/issue-validation.model";
 import { TmsValidation } from "./models/tms-validation.model";
 import { environment } from 'src/environments/environment';
-import { addValidatedCR, addValidatedIssue, addValidatedTms } from "./actions/items.item-creation-actions";
+import { addValidatedCR, addValidatedIssue, addValidatedTms, clearRedmineVersions, initRedmineVersions } from "./actions/items.item-creation-actions";
 import { getRedmineProjects, getRedmineUsers } from "./selectors/items.common-selectors";
 import { getValidatedCRs, getValidatedIssues, getValidatedTms } from "./selectors/items.item-creation-selectors";
 
@@ -164,12 +164,12 @@ export function validateFromId(store: Store<State>, http: HttpClient, validateFr
 export function validateProject(store: Store<State>, validateProjectError: string, controlId: string, projectName: string): Observable<any> {
 
     if (!projectName)
-        return of(new StartAsyncValidationAction(controlId, validateProjectError), new SetAsyncErrorAction(controlId, validateProjectError, "Project invalid"));
+        return of(new StartAsyncValidationAction(controlId, validateProjectError), new SetAsyncErrorAction(controlId, validateProjectError, "Project invalid"), clearRedmineVersions());
 
-    return store.select(getRedmineProjects).pipe(take(1), switchMap(users => {
-        if (users.find(u => u.name == projectName))
-            return of(new StartAsyncValidationAction(controlId, validateProjectError), new ClearAsyncErrorAction(controlId, validateProjectError));
+    return store.select(getRedmineProjects).pipe(take(1), switchMap(projects => {
+        if (projects.find(p => p.name == projectName))
+            return of(new StartAsyncValidationAction(controlId, validateProjectError), new ClearAsyncErrorAction(controlId, validateProjectError), initRedmineVersions({projectName: projectName}));
 
-        return of(new StartAsyncValidationAction(controlId, validateProjectError), new SetAsyncErrorAction(controlId, validateProjectError, "Project invalid"));
+        return of(new StartAsyncValidationAction(controlId, validateProjectError), new SetAsyncErrorAction(controlId, validateProjectError, "Project invalid"), clearRedmineVersions());
     }));
 }

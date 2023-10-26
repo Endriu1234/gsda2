@@ -10,9 +10,10 @@ export class ProposedItem {
     public TMS: string;
     public ASSIGNEE: string;
     public REDMINE_LINK: string;
+    public REDMINE_VERSION: string;
 
     constructor(SELECTED: boolean, REDMINE_PROJECT: string, TRACKER: string, STATUS: string, SUBJECT: string, DESCRIPTION: string, ISSUE: string,
-        CR: string, TMS: string, ASSIGNEE: string, REDMINE_LINK: string) {
+        CR: string, TMS: string, ASSIGNEE: string, REDMINE_LINK: string, REDMINE_VERSION: string) {
         this.SELECTED = SELECTED;
         this.REDMINE_PROJECT = REDMINE_PROJECT;
         this.TRACKER = TRACKER;
@@ -24,6 +25,7 @@ export class ProposedItem {
         this.TMS = TMS;
         this.ASSIGNEE = ASSIGNEE;
         this.REDMINE_LINK = REDMINE_LINK;
+        this.REDMINE_VERSION = REDMINE_VERSION;
     }
 
 }

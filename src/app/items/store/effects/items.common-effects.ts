@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { from, map, switchMap } from "rxjs";
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { RedmineTracker } from '../models/redmine-tracker.model';
 import { environment } from 'src/environments/environment';
 import { RedmineUser } from '../../../shared/store/models/redmine-user.model';
@@ -12,6 +12,7 @@ import { Store } from '@ngrx/store';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 import { SoftDevProject } from 'src/app/shared/store/models/softdev-project.model';
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, initSoftDevProjects, loadRedmineProjects, loadRedmineTrackers, loadRedmineUsers, loadSoftDevProjects } from '../actions/items.common-actions';
+import { RedmineVersion } from '../models/redmine-version.model';
 
 @Injectable()
 export class ItemsCommonEffects {

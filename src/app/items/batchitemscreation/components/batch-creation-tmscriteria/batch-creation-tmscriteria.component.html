@@ -67,7 +67,7 @@
                     </div>
                     <div class="row">
                         <div class="col-3">
-                            <mat-form-field appearance="outline">
+                            <mat-form-field appearance="outline" [style.width.%]=100>
                                 <mat-label>For Users/Group</mat-label>
                                 <input type="text"  [ngrxFormControlState]="$any(formState).controls.userToITms"
                                     matInput
@@ -86,7 +86,7 @@
                             </mat-error>
                         </div>
                         <div class="col-3">
-                            <mat-form-field appearance="outline">
+                            <mat-form-field appearance="outline" [style.width.%]=100>
                                 <mat-label>Version</mat-label>
                                 <mat-select [ngrxFormControlState]="$any(formState).controls.version">
                                     <mat-option *ngFor="let version of versions$ | async" [value]="version.name">
@@ -96,7 +96,7 @@
                             </mat-form-field>
                         </div>
                         <div class="col-3">
-                            <mat-form-field appearance="outline">
+                            <mat-form-field appearance="outline" [style.width.%]=100>
                                 <mat-label>From Date</mat-label>
                                 <input matInput 
                                     [matDatepicker]="dpFrom" 
@@ -109,7 +109,7 @@
                             </mat-form-field>
                         </div>
                         <div class="col-3">
-                            <mat-form-field appearance="outline">
+                            <mat-form-field appearance="outline" [style.width.%]=100>
                                 <mat-label>To Date</mat-label>
                                 <input matInput 
                                     [matDatepicker]="dpTo" 

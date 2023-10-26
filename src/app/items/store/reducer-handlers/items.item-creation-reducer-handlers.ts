@@ -6,6 +6,7 @@ import { IssueValidation } from '../models/issue-validation.model';
 import { TmsValidation } from '../models/tms-validation.model';
 import { FromIdValidation } from '../models/fromId-validation.model';
 import { ItemCreationMode } from '../state/items.item-creation-state';
+import { RedmineVersion } from '../models/redmine-version.model';
 
 export function setRedmineProjectsFilterForItemCreation(state: State): State {
     const newState: State = _.cloneDeep(state);
@@ -53,5 +54,25 @@ export function endResetItemCreationForm(state: State): State {
 export function setItemCreationFormMode(state: State, args: { mode: ItemCreationMode }): State {
     const newState: State = _.cloneDeep(state);
     newState.itemCreationSetupData.mode = args.mode;
+    return newState;
+}
+
+export function initRedmineVersions(state: State): State {
+    const newState = _.cloneDeep(state);
+    newState.itemCreationSetupData.redmineVersionsLoaded = false;
+    return newState;
+}
+
+export function loadRedmineVersions(state: State, args: { redmineVersions: RedmineVersion[] }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemCreationSetupData.redmineVersions = args.redmineVersions;
+    newState.itemCreationSetupData.redmineVersionsLoaded = true;
+    return newState;
+}
+
+export function clearRedmineVersions(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemCreationSetupData.redmineVersions = [];
+    newState.itemCreationSetupData.redmineVersionsLoaded = false;
     return newState;
 }

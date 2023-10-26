@@ -34,6 +34,7 @@ export function getBatchItemCreationSdCriteriaFormDataInitialState(): FormGroupS
 export interface BatchItemCreationSdCriteriaSetupData {
     redmineProjectsFiltered: RedmineProject[];
     softDevProjectsFiltered: SoftDevProject[];
+    redmineVersionsLoaded: boolean;
     redmineVersions: RedmineVersion[];
 }
 
@@ -41,6 +42,7 @@ export function getBatchItemCreationSdCriteriaSetupDataInitialState(): BatchItem
     return {
         redmineProjectsFiltered: [],
         softDevProjectsFiltered: [],
+        redmineVersionsLoaded: false,
         redmineVersions: []
     }
 }
@@ -53,6 +55,7 @@ export interface BatchItemCreationTmsCriteriaSetupData {
     tmsClientsByLetter: TmsClientByLetter[];
     tmsClientsByLetterFiltered: TmsClientByLetter[];
     tmsClientsLoaded: boolean;
+    redmineVersionsLoaded: boolean;
     redmineVersions: RedmineVersion[];
 }
 
@@ -65,6 +68,7 @@ export function getBatchItemCreationTmsCriteriaSetupDataInitialState(): BatchIte
         tmsClientsByLetter: [],
         tmsClientsByLetterFiltered: [],
         tmsClientsLoaded: false,
+        redmineVersionsLoaded: false,
         redmineVersions: []
     }
 }
@@ -98,6 +102,7 @@ export function getBatchItemCreationTMSCriteriaFormDataInitialState(): FormGroup
 export interface BatchItemCreationRedmineCriteriaSetupData {
     redmineSourceProjectsFiltered: RedmineProject[];
     redmineTargetProjectsFiltered: RedmineProject[];
+    redmineVersionsLoaded: boolean;
     redmineVersions: RedmineVersion[];
 }
 
@@ -105,6 +110,7 @@ export function getBatchItemCreationRedmineCriteriaSetupDataInitialState(): Batc
     return {
         redmineSourceProjectsFiltered: [],
         redmineTargetProjectsFiltered: [],
+        redmineVersionsLoaded: false,
         redmineVersions: []
     }
 }
@@ -129,12 +135,14 @@ export function getBatchItemCreationRedmineCriteriaFormDataInitialState(): FormG
 
 export interface BatchItemCreationIdsCriteriaSetupData {
     redmineTargetProjectsFiltered: RedmineProject[];
+    redmineVersionsLoaded: boolean;
     redmineVersions: RedmineVersion[];
 }
 
 export function getBatchItemCreationIdsCriteriaSetupDataInitialState(): BatchItemCreationIdsCriteriaSetupData {
     return {
         redmineTargetProjectsFiltered: [],
+        redmineVersionsLoaded: false,
         redmineVersions: []
     }
 }

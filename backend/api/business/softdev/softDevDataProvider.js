@@ -53,23 +53,23 @@ module.exports.getRegressionsFromVersion = async (softDevProjectName) => {
     }
 }
 
-module.exports.getSDProjectPotentialRedmineItems = async (softDevProjectName, targetRedmineProject, itemLevel) => {
+module.exports.getSDProjectPotentialRedmineItems = async (softDevProjectName, targetRedmineProject, redmineVersion, itemLevel) => {
     const softDevProjects = await cacheValueProvider.getValue('softdev_projects');
     const project = softDevProjects.find(p => p.PROJECT_NAME === softDevProjectName);
     
     if (project) {
         if (itemLevel === 'issue')
-            return await executeSoftDevQuery(softdevQueries.getSDProjectPotentialRedmineItemsByIssueQuery(project.PRODUCT_VERSION_NAME.endsWith('_Packet')), [targetRedmineProject, project.PRODUCT_VERSION_ID]);
+            return await executeSoftDevQuery(softdevQueries.getSDProjectPotentialRedmineItemsByIssueQuery(project.PRODUCT_VERSION_NAME.endsWith('_Packet')), [targetRedmineProject, redmineVersion, project.PRODUCT_VERSION_ID]);
         else if (itemLevel === 'cr')
-            return await executeSoftDevQuery(softdevQueries.getSDProjectPotentialRedmineItemsByCrQuery(project.PRODUCT_VERSION_NAME.endsWith('_Packet')), [targetRedmineProject, project.PRODUCT_VERSION_ID]);
+            return await executeSoftDevQuery(softdevQueries.getSDProjectPotentialRedmineItemsByCrQuery(project.PRODUCT_VERSION_NAME.endsWith('_Packet')), [targetRedmineProject, redmineVersion, project.PRODUCT_VERSION_ID]);
         else
-            return await executeSoftDevQuery(softdevQueries.getSDProjectPotentialRedmineItemsByPossibleCrQuery(project.PRODUCT_VERSION_NAME.endsWith('_Packet')), [targetRedmineProject, project.PRODUCT_VERSION_ID]);
+            return await executeSoftDevQuery(softdevQueries.getSDProjectPotentialRedmineItemsByPossibleCrQuery(project.PRODUCT_VERSION_NAME.endsWith('_Packet')), [targetRedmineProject, redmineVersion, project.PRODUCT_VERSION_ID]);
     }
 }
 
-module.exports.getTMSProjectPotentialRedmineItems = async (iTMSClient, targetRedmineProject, showClosed, showInClientBin, fromDate, toDate, TmsUser) => {
+module.exports.getTMSProjectPotentialRedmineItems = async (iTMSClient, targetRedmineProject, showClosed, showInClientBin, fromDate, toDate, TmsUser, redmineVersion) => {
 
-    return await executeSoftDevQuery(softdevQueries.getTmsProjectPotentialRedmineItems(showClosed, showInClientBin), [targetRedmineProject, iTMSClient, fromDate, toDate, TmsUser]);
+    return await executeSoftDevQuery(softdevQueries.getTmsProjectPotentialRedmineItems(showClosed, showInClientBin), [targetRedmineProject, redmineVersion, iTMSClient, fromDate, toDate, TmsUser]);
 }
 
 module.exports.isChangeRequestInDB = async (changeRequest) => {
@@ -113,25 +113,25 @@ module.exports.getTmsLoginByName = async (name) => {
     return user ? user.TMS_LOGIN : '';
 }
 
-module.exports.getIdsByCrsPotentialRedmineItems = async (tblCrs, targetRedmineProject) => {
+module.exports.getIdsByCrsPotentialRedmineItems = async (tblCrs, targetRedmineProject, redmineVersion) => {
     
-    let params = [targetRedmineProject];
+    let params = [targetRedmineProject, redmineVersion];
     params.push(...tblCrs);
         
     return await executeSoftDevQuery(softdevQueries.getQueryForIdsByCrsPotentialRedmineItems(tblCrs.length), params);
 }
 
-module.exports.getIdsByIssuesPotentialRedmineItems = async (tblIss, targetRedmineProject) => {
+module.exports.getIdsByIssuesPotentialRedmineItems = async (tblIss, targetRedmineProject, redmineVersion) => {
     
-    let params = [targetRedmineProject];
+    let params = [targetRedmineProject, redmineVersion];
     params.push(...tblIss);
         
     return await executeSoftDevQuery(softdevQueries.getQueryForIdsByIssuesPotentialRedmineItems(tblIss.length), params);
 }
 
-module.exports.getIdsByTmsTasksPotentialRedmineItems = async (tblTms, targetRedmineProject) => {
+module.exports.getIdsByTmsTasksPotentialRedmineItems = async (tblTms, targetRedmineProject, redmineVersion) => {
     
-    let params = [targetRedmineProject];
+    let params = [targetRedmineProject, redmineVersion];
     params.push(...tblTms);
         
     return await executeSoftDevQuery(softdevQueries.getQueryForIdsByTmsPotentialRedmineItems(tblTms.length), params);

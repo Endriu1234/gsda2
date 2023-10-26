@@ -21,22 +21,14 @@ module.exports.getRedmineProjects = async (req, res) => {
 }
 
 module.exports.getRedmineVersions = async (req, res) => {
-    const retVal = {
-        success: true,
-        errorMessage: '',
-        records: null
-    };
-
+    
     if (!req.query.redmineProject) {
-        retVal.success = false;
-        retVal.errorMessage = "Missing redmineProject";
+        return res.status(402).json('Error');
     }
 
-    if (retVal.success) {
-        retVal.records = redmineDataProvider.getRedmineVersionsByProject(req.query.redmineProject);
-    }
+    const versions = await redmineDataProvider.getRedmineVersionsByProject(req.query.redmineProject);
 
-    return res.status(200).json(retVal);
+    return res.status(200).json(versions);
 }
 
 module.exports.createRedmineItem = async (req, res) => {
@@ -88,7 +80,7 @@ module.exports.getPotentialRedmineItemsFromRedmineProject = async (req, res) => 
     const showClosed = req.query.showClosed === 'true';
     const redmineTargetItems = await redmineDataProvider.getRedmineItemsFromProject(req.query.targetRedmineProject, false);
     const redmineSourceItems = await redmineDataProvider.getRedmineItemsFromProject(req.query.sourceRedmineProject, !showClosed);
-
+    
     if (redmineSourceItems && redmineSourceItems.issues) {
         for (const item of redmineSourceItems.issues) {
             let target = redmineTargetItems.issues.find((r) => {
@@ -101,7 +93,7 @@ module.exports.getPotentialRedmineItemsFromRedmineProject = async (req, res) => 
             })
             let retStruct = {
                 SELECTED: target ? false : true,
-                REDMINE_PROJECT: req.query.sourceRedmineProject,
+                REDMINE_PROJECT: req.query.targetRedmineProject,
                 TRACKER: item.tracker ? item.tracker.name : '',
                 STATUS: item.status ? item.status.name : '',
                 SUBJECT: item.subject,
@@ -110,13 +102,14 @@ module.exports.getPotentialRedmineItemsFromRedmineProject = async (req, res) => 
                 CR: redmineDataProvider.getCustomFieldValue(item, process.env.REDMINE_CR_NAME),
                 TMS: redmineDataProvider.getCustomFieldValue(item, process.env.REDMINE_TMS_TASK_NAME),
                 ASSIGNEE: item.assigned_to ? item.assigned_to.name : '',
-                REDMINE_LINK: target ? `${getRedmineAddress(`issues/${target.id}`)}` : ''
+                REDMINE_LINK: target ? `${getRedmineAddress(`issues/${target.id}`)}` : '',
+                REDMINE_VERSION: req.query.redmine_version ? req.query.redmine_version : ''
             }
             retRecords.push(retStruct);
         }
     }
     
     retVal.records = req.query.showCreated === 'true' ? retRecords : retRecords.filter((record) => { return record.REDMINE_LINK === null || record.REDMINE_LINK.length <= 0 });
-    
+
     return res.status(200).json(retVal);
 }

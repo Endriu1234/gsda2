@@ -5,6 +5,9 @@ import { State } from "./state/items.state";
 import { getRedmineProjects, getRedmineUsers, getSoftDevProjects } from "./selectors/items.common-selectors";
 import { HttpParams } from "@angular/common/http";
 import { getTmsClients } from "./selectors/items.batch-item-creation-selectors";
+import { noopAction } from "src/app/shared/store/shared.actions";
+import { validateIdsTargetRedmineProjectError, validateRmTargetRedmineProjectError, validateSDTargetRedmineProjectError, validateTmsTargetRedmineProjectError } from "./effects/items.batch-item-creation-effects";
+import { clearRedmineVersionsForIds, clearRedmineVersionsForRedmine, clearRedmineVersionsForSd, clearRedmineVersionsForTms, initRedmineVersionsForIds, initRedmineVersionsForRedmine, initRedmineVersionsForSd, initRedmineVersionsForTms } from "./actions/items.batch-item-creation-actions";
 
 
 export function validateSDProject(store: Store<State>, validateProjectError: string, controlId: string, projectName: string): Observable<any> {
@@ -23,14 +26,50 @@ export function validateSDProject(store: Store<State>, validateProjectError: str
 export function validateRedmineProject(store: Store<State>, validateProjectError: string, controlId: string, projectName: string): Observable<any> {
 
     if (!projectName)
-        return of(new StartAsyncValidationAction(controlId, validateProjectError), new SetAsyncErrorAction(controlId, validateProjectError, "Redmine project invalid"));
+        return of(new StartAsyncValidationAction(controlId, validateProjectError), new SetAsyncErrorAction(controlId, validateProjectError, "Redmine project invalid"), getClearVersion(validateProjectError));
 
     return store.select(getRedmineProjects).pipe(take(1), switchMap(project => {
         if (project.find(p => p.name == projectName))
-            return of(new StartAsyncValidationAction(controlId, validateProjectError), new ClearAsyncErrorAction(controlId, validateProjectError));
+            return of(new StartAsyncValidationAction(controlId, validateProjectError), new ClearAsyncErrorAction(controlId, validateProjectError), getLoadVersion(validateProjectError, projectName));
 
-        return of(new StartAsyncValidationAction(controlId, validateProjectError), new SetAsyncErrorAction(controlId, validateProjectError, "Redmine project invalid"));
+        return of(new StartAsyncValidationAction(controlId, validateProjectError), new SetAsyncErrorAction(controlId, validateProjectError, "Redmine project invalid"), getClearVersion(validateProjectError));
     }));
+}
+
+function getLoadVersion(validateProject: string, projectName: string) {
+    switch (validateProject) {
+        case validateSDTargetRedmineProjectError:
+            return initRedmineVersionsForSd({projectName: projectName});
+    
+        case validateRmTargetRedmineProjectError:
+            return initRedmineVersionsForRedmine({projectName: projectName});
+
+        case validateTmsTargetRedmineProjectError:
+            return initRedmineVersionsForTms({projectName: projectName});
+
+        case validateIdsTargetRedmineProjectError:
+            return initRedmineVersionsForIds({projectName: projectName});
+    }
+
+    return of(noopAction());
+}
+
+function getClearVersion(validateProject: string) {
+    switch (validateProject) {
+        case validateSDTargetRedmineProjectError:
+            return clearRedmineVersionsForSd();
+    
+        case validateRmTargetRedmineProjectError:
+            return clearRedmineVersionsForRedmine();
+
+        case validateTmsTargetRedmineProjectError:
+            return clearRedmineVersionsForTms();
+
+        case validateIdsTargetRedmineProjectError:
+            return clearRedmineVersionsForIds();
+    }
+
+    return of(noopAction());
 }
 
 export function validateTms(store: Store<State>, validateTmsError: string, controlId: string, tms: string): Observable<any> {

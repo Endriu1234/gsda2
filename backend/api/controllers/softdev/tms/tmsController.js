@@ -47,6 +47,7 @@ module.exports.getPotentialRedmineItemsFromTms = async (req, res) => {
     let toDate = '3000-01-01 23:59';
     const tmsUserLogin = await softDevDataProvider.getTmsLoginByName(req.query.userToiTMS);
     const redmineTargetItems = await redmineDataProvider.getRedmineItemsFromProject(req.query.targetRedmineProject, false);
+    const redmineVersion = req.query.redmine_version ? req.query.redmine_version : ''; 
     
     if (req.query.fromDate) {
         try {
@@ -68,7 +69,7 @@ module.exports.getPotentialRedmineItemsFromTms = async (req, res) => {
         } 
     }
 
-    const queryResults = await softDevDataProvider.getTMSProjectPotentialRedmineItems(req.query.iTMSClient, req.query.targetRedmineProject, showClosed, showInClientBin, fromDate, toDate, tmsUserLogin?tmsUserLogin:'');
+    const queryResults = await softDevDataProvider.getTMSProjectPotentialRedmineItems(req.query.iTMSClient, req.query.targetRedmineProject, showClosed, showInClientBin, fromDate, toDate, tmsUserLogin?tmsUserLogin:'', redmineVersion);
 
     if (queryResults && queryResults.length > 0) {
         for (let tms of queryResults) {
@@ -83,6 +84,7 @@ module.exports.getPotentialRedmineItemsFromTms = async (req, res) => {
             let retStruct = {
                 SELECTED: target ? false : true,
                 REDMINE_PROJECT: tms.REDMINE_PROJECT,
+                REDMINE_VERSION: tms.REDMINE_VERSION,
                 TRACKER: tms.TRACKER,
                 STATUS: tms.STATUS ? tms.STATUS : '',
                 SUBJECT: target ? target.subject : tms.SUBJECT,

@@ -1,6 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import { ProposedItem } from '../models/batchitemcreation/proposed-item.model';
 import { TmsClient } from 'src/app/shared/store/models/tms-client.model';
+import { RedmineVersion } from '../models/redmine-version.model';
 
 export const setRedmineProjectsFilterForBatchItemCreationSdCriteria = createAction('[Items Component] Set Redmine Projects Filter For Batch Item Creation Sd Criteria');
 export const setSoftDevProjectsFilterForBatchItemCreationSdCriteria = createAction('[Items Component] Set SoftDev Projects Filter For Batch Item Creation Sd Criteria');
@@ -22,3 +23,15 @@ export const dragAndDropBatchItemsCreationColumns = createAction('[Items Compone
 export const createOneRecordFromBatch = createAction('[Items Component] Create One Record From Batch', props<{ proposedItem: ProposedItem }>());
 export const initTmsClients = createAction('[Items Component] Init Tms Ciients');
 export const loadTmsClients = createAction('[Items Component] Load Tms Clients', props<{ tmsClients: TmsClient[] }>());
+export const initRedmineVersionsForIds = createAction('[Items Component] Init Redmine Versions For Ids', props<{ projectName: string }>());
+export const loadRedmineVersionsForIds = createAction('[Items Component] Load Redmine Versions For Ids', props<{ redmineVersions: RedmineVersion[] }>());
+export const clearRedmineVersionsForIds = createAction('[Items Component] Clear Redmine Versions For Ids');
+export const initRedmineVersionsForTms = createAction('[Items Component] Init Redmine Versions For Tms', props<{ projectName: string }>());
+export const loadRedmineVersionsForTms = createAction('[Items Component] Load Redmine Versions For Tms', props<{ redmineVersions: RedmineVersion[] }>());
+export const clearRedmineVersionsForTms = createAction('[Items Component] Clear Redmine Versions For Tms');
+export const initRedmineVersionsForRedmine = createAction('[Items Component] Init Redmine Versions For Redmine', props<{ projectName: string }>());
+export const loadRedmineVersionsForRedmine = createAction('[Items Component] Load Redmine Versions For Redmine', props<{ redmineVersions: RedmineVersion[] }>());
+export const clearRedmineVersionsForRedmine = createAction('[Items Component] Clear Redmine Versions For Redmine');
+export const initRedmineVersionsForSd = createAction('[Items Component] Init Redmine Versions For Sd', props<{ projectName: string }>());
+export const loadRedmineVersionsForSd = createAction('[Items Component] Load Redmine Versions For Sd', props<{ redmineVersions: RedmineVersion[] }>());
+export const clearRedmineVersionsForSd = createAction('[Items Component] Clear Redmine Versions For Sd');

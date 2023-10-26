@@ -1,4 +1,5 @@
 const cacheValueProvider = require('../../cache/cacheValueProvider');
+const redmineDataProvider = require('../redmineDataProvider');
 
 module.exports.convertFormItemObjectToJSON = async function convertFormItemObjectToJSON(formItem) {
 
@@ -7,6 +8,12 @@ module.exports.convertFormItemObjectToJSON = async function convertFormItemObjec
     const projects = await cacheValueProvider.getValue('redmine_projects');
     const project = projects.find(p => p.name === formItem.project);
     redmineItem.issue.project_id = project.id;
+
+    if (formItem.version) {
+        const versions = await redmineDataProvider.getRedmineVersionsByProject(formItem.project);
+        const version = versions.find(v => v.name === formItem.version);
+        redmineItem.issue.fixed_version_id = version.id;
+    }
 
     const trackers = await cacheValueProvider.getValue('redmine_trackers');
     const tracker = trackers.find(t => t.name === formItem.tracker);

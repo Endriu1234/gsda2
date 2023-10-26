@@ -192,6 +192,7 @@ function getSelectWitoutCr() {
     return `SELECT 
                 1 AS selected,
                 :targetRedmineProject AS redmine_project,
+                :redmineVersion AS REDMINE_VERSION,
                 case
                     when issue.iss_type = 'Defect' Then
                     'Bug'
@@ -225,6 +226,7 @@ module.exports.getTmsProjectPotentialRedmineItems = (showClosed, showInClientBin
     let showInClientBinAnd = showInClientBin ? ``:` AND tms.employee Not like 'N/%' `;
     let query = `select 1 AS selected,
                     :targetRedmineProject AS redmine_project,
+                    :redmineVersion AS REDMINE_VERSION,
                     'TMS Task' AS tracker,
                     '' AS status,
                     CLIENT || '-' || ID AS subject,
@@ -297,6 +299,7 @@ module.exports.getQueryForIdsByTmsPotentialRedmineItems = (cntParams) => {
     let query = `SELECT 
                     1 AS selected,
                     :targetRedmineProject AS redmine_project,
+                    :redmineVersion AS REDMINE_VERSION,
                     'TMS Task' AS tracker,
                     '' AS status,
                     CLIENT || '-' || ID AS subject,

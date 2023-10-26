@@ -8,8 +8,8 @@ import * as fromItemsFromEmailsReducerHanders from './reducer-handlers/items.ite
 import { onNgrxForms, wrapReducerWithFormStateUpdate, updateGroup, validate, ValidationErrors } from 'ngrx-forms';
 import { required } from 'ngrx-forms/validation';
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, initSoftDevProjects, loadRedmineProjects, loadRedmineTrackers, loadRedmineUsers, loadSoftDevProjects } from './actions/items.common-actions';
-import { addValidatedCR, addValidatedFromId, addValidatedIssue, addValidatedTms, endResetItemCreationForm, setItemCreationFormMode, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startResetItemCreationForm } from './actions/items.item-creation-actions';
-import { continueBatchItemsCreation, forceEndBatchItemCreation, setBatchItemCreationRecords, setLinkToCurrentProposedItemAndUnselect, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection, dragAndDropBatchItemsCreationColumns, createOneRecordFromBatch, updateBatchItemCreationFormColumn, setRedmineSourceProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForTmsBatchItemCreationCriteria, setRedmineUsersByLetterFilterForTmsBatchItemCreationCriteria, initTmsClients, loadTmsClients, setTmsClientsByLetterFilter, setRedmineTargetProjectsFilterForIdsBatchItemCreationCriteria } from './actions/items.batch-item-creation-actions';
+import { addValidatedCR, addValidatedFromId, addValidatedIssue, addValidatedTms, clearRedmineVersions, endResetItemCreationForm, initRedmineVersions, loadRedmineVersions, setItemCreationFormMode, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startResetItemCreationForm } from './actions/items.item-creation-actions';
+import { continueBatchItemsCreation, forceEndBatchItemCreation, setBatchItemCreationRecords, setLinkToCurrentProposedItemAndUnselect, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection, dragAndDropBatchItemsCreationColumns, createOneRecordFromBatch, updateBatchItemCreationFormColumn, setRedmineSourceProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForTmsBatchItemCreationCriteria, setRedmineUsersByLetterFilterForTmsBatchItemCreationCriteria, initTmsClients, loadTmsClients, setTmsClientsByLetterFilter, setRedmineTargetProjectsFilterForIdsBatchItemCreationCriteria, initRedmineVersionsForIds, loadRedmineVersionsForIds, clearRedmineVersionsForIds, initRedmineVersionsForTms, loadRedmineVersionsForTms, clearRedmineVersionsForTms, initRedmineVersionsForRedmine, clearRedmineVersionsForRedmine, loadRedmineVersionsForRedmine, initRedmineVersionsForSd, loadRedmineVersionsForSd, clearRedmineVersionsForSd } from './actions/items.batch-item-creation-actions';
 import { ItemCreationFromData } from './state/items.item-creation-state';
 import { endInitItemsFromEmailsSettings, initItemsFromEmailsSettings } from './actions/items.items-from-emails.actions';
 
@@ -34,7 +34,6 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
     on(initSoftDevProjects, fromCommonReducerHanders.initSoftDevProjects),
     on(loadSoftDevProjects, fromCommonReducerHanders.loadSoftDevProjects),
 
-
     on(setRedmineProjectsFilterForItemCreation, fromItemCreationReducerHanders.setRedmineProjectsFilterForItemCreation),
     on(addValidatedCR, fromItemCreationReducerHanders.addValidatedCR),
     on(addValidatedIssue, fromItemCreationReducerHanders.addValidatedIssue),
@@ -43,6 +42,9 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
     on(startResetItemCreationForm, fromItemCreationReducerHanders.startResetItemCreationForm),
     on(endResetItemCreationForm, fromItemCreationReducerHanders.endResetItemCreationForm),
     on(setItemCreationFormMode, fromItemCreationReducerHanders.setItemCreationFormMode),
+    on(initRedmineVersions, fromItemCreationReducerHanders.initRedmineVersions),
+    on(loadRedmineVersions, fromItemCreationReducerHanders.loadRedmineVersions),
+    on(clearRedmineVersions, fromItemCreationReducerHanders.clearRedmineVersions),
 
     on(setRedmineProjectsFilterForBatchItemCreationSdCriteria, fromBatchItemCreationReducerHanders.setRedmineProjectsFilterForBatchItemCreationSdCriteria),
     on(setSoftDevProjectsFilterForBatchItemCreationSdCriteria, fromBatchItemCreationReducerHanders.setSoftDevProjectsFilterForBatchItemCreationSdCriteria),
@@ -64,6 +66,19 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
     on(dragAndDropBatchItemsCreationColumns, fromBatchItemCreationReducerHanders.dragAndDropBatchItemsCreationColumns),
     on(initTmsClients, fromBatchItemCreationReducerHanders.initTmsClients),
     on(loadTmsClients, fromBatchItemCreationReducerHanders.loadTmsClients),
+
+    on(initRedmineVersionsForIds, fromBatchItemCreationReducerHanders.initRedmineVersionsForIds),
+    on(loadRedmineVersionsForIds, fromBatchItemCreationReducerHanders.loadRedmineVersionsForIds),
+    on(clearRedmineVersionsForIds, fromBatchItemCreationReducerHanders.clearRedmineVersionsForIds),
+    on(initRedmineVersionsForTms, fromBatchItemCreationReducerHanders.initRedmineVersionsForTms),
+    on(loadRedmineVersionsForTms, fromBatchItemCreationReducerHanders.loadRedmineVersionsForTms),
+    on(clearRedmineVersionsForTms, fromBatchItemCreationReducerHanders.clearRedmineVersionsForTms),
+    on(initRedmineVersionsForRedmine, fromBatchItemCreationReducerHanders.initRedmineVersionsForRedmine),
+    on(loadRedmineVersionsForRedmine, fromBatchItemCreationReducerHanders.loadRedmineVersionsForRedmine),
+    on(clearRedmineVersionsForRedmine, fromBatchItemCreationReducerHanders.clearRedmineVersionsForRedmine),
+    on(initRedmineVersionsForSd, fromBatchItemCreationReducerHanders.initRedmineVersionsForSd),
+    on(loadRedmineVersionsForSd, fromBatchItemCreationReducerHanders.loadRedmineVersionsForSd),
+    on(clearRedmineVersionsForSd, fromBatchItemCreationReducerHanders.clearRedmineVersionsForSd),
 
     on(initItemsFromEmailsSettings, fromItemsFromEmailsReducerHanders.initItemsFromEmailsSettings),
     on(endInitItemsFromEmailsSettings, fromItemsFromEmailsReducerHanders.endInitItemsFromEmailsSettings)

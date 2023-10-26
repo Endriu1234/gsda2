@@ -10,7 +10,7 @@ import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 import { environment } from 'src/environments/environment';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { BatchItemSearchHttpResponse } from '../models/batchitemcreation/batch-item-search-http-response.model';
-import { continueBatchItemsCreation, createOneRecordFromBatch, forceEndBatchItemCreation, initTmsClients, loadTmsClients, setBatchItemCreationRecords, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setRedmineSourceProjectsFilterForBatchItemCreationCriteria as setRedmineSourceProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForIdsBatchItemCreationCriteria, setRedmineTargetProjectsFilterForTmsBatchItemCreationCriteria, setRedmineUsersByLetterFilterForTmsBatchItemCreationCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, setTmsClientsByLetterFilter, startBatchItemsCreation, updateBatchItemCreationFormColumn } from '../actions/items.batch-item-creation-actions';
+import { continueBatchItemsCreation, createOneRecordFromBatch, forceEndBatchItemCreation, initRedmineVersionsForIds, initRedmineVersionsForRedmine, initRedmineVersionsForSd, initRedmineVersionsForTms, initTmsClients, loadRedmineVersionsForIds, loadRedmineVersionsForRedmine, loadRedmineVersionsForSd, loadRedmineVersionsForTms, loadTmsClients, setBatchItemCreationRecords, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setRedmineSourceProjectsFilterForBatchItemCreationCriteria as setRedmineSourceProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForIdsBatchItemCreationCriteria, setRedmineTargetProjectsFilterForTmsBatchItemCreationCriteria, setRedmineUsersByLetterFilterForTmsBatchItemCreationCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, setTmsClientsByLetterFilter, startBatchItemsCreation, updateBatchItemCreationFormColumn } from '../actions/items.batch-item-creation-actions';
 import { noopAction } from '../actions/items.common-actions';
 import { getBatchItemCreationFormData, getBatchItemCreationIdsCriteriaFormState, getBatchItemCreationRecords, getBatchItemCreationRedmineCriteriaFormState, getBatchItemCreationSDCriteriaSearchFormState, getBatchItemCreationTMSCriteriaFormState, getBatchItemsRecordsWithFormData } from '../selectors/items.batch-item-creation-selectors';
 import { BATCH_ITEM_CREATION_FORMID, BATCH_ITEM_CREATION_IDSCRITERIA_FORMID, BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID, BATCH_ITEM_CREATION_SDCRITERIA_FORMID, BATCH_ITEM_CREATION_TMSCRITERIA_FORMID } from '../state/items.batch-item-creation-state';
@@ -22,6 +22,7 @@ import { ITEM_CREATION_FORMID } from '../state/items.item-creation-state';
 import { validateIds, validateRedmineProject, validateSDProject, validateTms, validateUserForTms } from '../batch-items.validation';
 import { TmsClient } from 'src/app/shared/store/models/tms-client.model';
 import { ProgressBarSpinnerService } from 'src/app/shared/spinner/progress-bar/progress-bar-spinner/progress-bar-spinner.service';
+import { RedmineVersion } from '../models/redmine-version.model';
 
 export const validateSDTargetRedmineProjectError = "validateSDTargetRedmineProjectError";
 export const validateSDSourceSoftDevProjectError = "validateSDSourceSoftDevProjectError";
@@ -89,6 +90,7 @@ export class ItemsBatchItemCreationEffects {
                             params = params.append("targetRedmineProject", formData.value.targetRedmineProject);
                             params = params.append("itemLevel", formData.value.itemLevel);
                             params = params.append("showCreated", formData.value.showCreated);
+                            params = params.append("redmine_version", formData.value.version);
                             let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
 
                             return this.http.get<BatchItemSearchHttpResponse>(environment.apiUrl + '/softdev/items/get-potential-redmine-items-from-sdproject',
@@ -125,6 +127,7 @@ export class ItemsBatchItemCreationEffects {
                             params = params.append("targetRedmineProject", formData.value.targetRedmineProject);
                             params = params.append("showClosed", formData.value.showClosed);
                             params = params.append("showCreated", formData.value.showCreated);
+                            params = params.append("redmine_version", formData.value.version);
                             let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
 
                             return this.http.get<BatchItemSearchHttpResponse>(environment.apiUrl + '/redmine/items/get-potential-redmine-items-from-rmproject',
@@ -165,6 +168,7 @@ export class ItemsBatchItemCreationEffects {
                             params = params.append("fromDate", formData.value.fromDate);
                             params = params.append("toDate", formData.value.toDate);
                             params = params.append("userToiTMS", formData.value.userToITms);
+                            params = params.append("redmine_version", formData.value.version);
                             let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
                             
                             return this.http.get<BatchItemSearchHttpResponse>(environment.apiUrl + '/softdev/tms/get-potential-redmine-items-from-tms',
@@ -200,6 +204,7 @@ export class ItemsBatchItemCreationEffects {
                             params = params.append("AllIds", formData.value.allIds);
                             params = params.append("targetRedmineProject", formData.value.targetRedmineProject);
                             params = params.append("showCreated", formData.value.showCreated);
+                            params = params.append("redmine_version", formData.value.version);
                             let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
                             
                             return this.http.get<BatchItemSearchHttpResponse>(environment.apiUrl + '/softdev/items/get-potential-redmine-items-from-ids',
@@ -249,7 +254,8 @@ export class ItemsBatchItemCreationEffects {
                     new SetValueAction(ITEM_CREATION_FORMID + '.user', currentItem.ASSIGNEE),
                     new SetValueAction(ITEM_CREATION_FORMID + '.issue', currentItem.ISSUE),
                     new SetValueAction(ITEM_CREATION_FORMID + '.cr', currentItem.CR),
-                    new SetValueAction(ITEM_CREATION_FORMID + '.tms', currentItem.TMS)
+                    new SetValueAction(ITEM_CREATION_FORMID + '.tms', currentItem.TMS),
+                    new SetValueAction(ITEM_CREATION_FORMID + '.version', currentItem.REDMINE_VERSION)
                 ];
 
                 this.progressBarService.startProgress(batchRecordsWithFormData.batchRecords.proposedItems.filter((item) => item.SELECTED == true).length, batchRecordsWithFormData.batchFormData.value.skipCreationForm);
@@ -289,7 +295,8 @@ export class ItemsBatchItemCreationEffects {
                     new SetValueAction(ITEM_CREATION_FORMID + '.user', currentItem.ASSIGNEE),
                     new SetValueAction(ITEM_CREATION_FORMID + '.issue', currentItem.ISSUE),
                     new SetValueAction(ITEM_CREATION_FORMID + '.cr', currentItem.CR),
-                    new SetValueAction(ITEM_CREATION_FORMID + '.tms', currentItem.TMS)
+                    new SetValueAction(ITEM_CREATION_FORMID + '.tms', currentItem.TMS),
+                    new SetValueAction(ITEM_CREATION_FORMID + '.version', currentItem.REDMINE_VERSION)
                 ];
 
                 this.progressBarService.nextElement();
@@ -373,7 +380,8 @@ export class ItemsBatchItemCreationEffects {
                     new SetValueAction(ITEM_CREATION_FORMID + '.user', element.proposedItem.ASSIGNEE),
                     new SetValueAction(ITEM_CREATION_FORMID + '.issue', element.proposedItem.ISSUE),
                     new SetValueAction(ITEM_CREATION_FORMID + '.cr', element.proposedItem.CR),
-                    new SetValueAction(ITEM_CREATION_FORMID + '.tms', element.proposedItem.TMS)
+                    new SetValueAction(ITEM_CREATION_FORMID + '.tms', element.proposedItem.TMS),
+                    new SetValueAction(ITEM_CREATION_FORMID + '.version', element.proposedItem.REDMINE_VERSION)
                 ];
                 
                 if (batchItemCreationFormData.value.skipCreationForm) {
@@ -392,5 +400,37 @@ export class ItemsBatchItemCreationEffects {
         switchMap(() => {
             return this.http.get<TmsClient[]>(environment.apiUrl + '/softdev/tms/get-tms-clients');
         }), map(tmsClients => loadTmsClients({ tmsClients }))
+    ));
+
+    initRedmineVersionsForIds$ = createEffect(() => this.actions$.pipe(ofType(initRedmineVersionsForIds),
+        switchMap((param) => {
+            let params = new HttpParams();
+            params = params.append("redmineProject", param.projectName);
+            return this.http.get<RedmineVersion[]>(environment.apiUrl + '/redmine/items/get-redmine-versions', { params });
+        }), map(redmineVersions => loadRedmineVersionsForIds({ redmineVersions }))
+    ));
+
+    initRedmineVersionsForTms$ = createEffect(() => this.actions$.pipe(ofType(initRedmineVersionsForTms),
+        switchMap((param) => {
+            let params = new HttpParams();
+            params = params.append("redmineProject", param.projectName);
+            return this.http.get<RedmineVersion[]>(environment.apiUrl + '/redmine/items/get-redmine-versions', { params });
+        }), map(redmineVersions => loadRedmineVersionsForTms({ redmineVersions }))
+    ));
+
+    initRedmineVersionsForRedmine$ = createEffect(() => this.actions$.pipe(ofType(initRedmineVersionsForRedmine),
+        switchMap((param) => {
+            let params = new HttpParams();
+            params = params.append("redmineProject", param.projectName);
+            return this.http.get<RedmineVersion[]>(environment.apiUrl + '/redmine/items/get-redmine-versions', { params });
+        }), map(redmineVersions => loadRedmineVersionsForRedmine({ redmineVersions }))
+    ));
+
+    initRedmineVersionsForSd$ = createEffect(() => this.actions$.pipe(ofType(initRedmineVersionsForSd),
+        switchMap((param) => {
+            let params = new HttpParams();
+            params = params.append("redmineProject", param.projectName);
+            return this.http.get<RedmineVersion[]>(environment.apiUrl + '/redmine/items/get-redmine-versions', { params });
+        }), map(redmineVersions => loadRedmineVersionsForSd({ redmineVersions }))
     ));
 }

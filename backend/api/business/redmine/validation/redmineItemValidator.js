@@ -1,6 +1,7 @@
 const cacheValueProvider = require('../../cache/cacheValueProvider');
 const softDevValidator = require('../../softdev/validation/softDevValidator');
 const softDevDataProvider = require('../../softdev/softDevDataProvider');
+const redmineDataProvider = require('../redmineDataProvider');
 
 module.exports.validateRedmineItem = async (item) => {
 
@@ -21,6 +22,15 @@ module.exports.validateRedmineItem = async (item) => {
         retVal.isValid = false;
         retVal.errorMsg = 'Cannot add Redmine Item. Project is required.';
         return retVal;
+    }
+
+    if (item.version) {
+        const versions = await redmineDataProvider.getRedmineVersionsByProject(item.project);
+        if (versions.filter(v => v.name === item.version).length == 0) {
+            retVal.isValid = false;
+            retVal.errorMsg = 'Cannot add Redmine Item. Version is incorrect.';
+            return retVal;
+        }
     }
 
     const trackers = await cacheValueProvider.getValue('redmine_trackers');

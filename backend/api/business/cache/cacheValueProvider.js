@@ -54,6 +54,21 @@ const reqisteredCaches = {
     'tms_clients': async () => {
         const result = await softDevDataProvider.getTmsClients();
         return result.sort((a, b) => a.TMS_CLIENT.localeCompare(b.TMS_CLIENT))
+    },
+    'redmine_versions': async () => {
+        const projects = await this.getValue('redmine_projects');
+        let results = [];
+        for (const project of projects) {
+            const versions = await getRedmineData(`projects/${project.id}/versions.json`, false);
+            if (versions && versions.versions && versions.versions.length > 0) 
+                results.push(...versions.versions.filter((version) => {return version.status === 'open'}));
+        }
+
+        jsonObject = results.map(JSON.stringify);
+        uniqueSet = new Set(jsonObject);
+        results = Array.from(uniqueSet).map(JSON.parse);
+
+        return results.sort((a, b) => a.name.localeCompare(b.name))
     }
 }
 

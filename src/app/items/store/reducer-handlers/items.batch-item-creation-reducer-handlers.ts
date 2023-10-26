@@ -7,6 +7,7 @@ import { unbox } from 'ngrx-forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { TmsClient } from 'src/app/shared/store/models/tms-client.model';
 import { TmsClientByLetter } from 'src/app/shared/store/models/tms-client-letter.model';
+import { RedmineVersion } from '../models/redmine-version.model';
 
 export function setRedmineProjectsFilterForBatchItemCreationSdCriteria(state: State): State {
     const newState: State = _.cloneDeep(state);
@@ -102,6 +103,86 @@ export function setRedmineTargetProjectsFilterForIdsBatchItemCreationCriteria(st
     const newState: State = _.cloneDeep(state);
     newState.batchItemCreationIdsCriteriaSetupData.redmineTargetProjectsFiltered
         = filterRedmineProjects(newState.itemsSetupData.redmineProjects, newState.batchItemCreationIdsCriteriaFormData.value.targetRedmineProject);
+    return newState;
+}
+
+export function initRedmineVersionsForIds(state: State): State {
+    const newState = _.cloneDeep(state);
+    newState.batchItemCreationIdsCriteriaSetupData.redmineVersionsLoaded = false;
+    return newState;
+}
+
+export function loadRedmineVersionsForIds(state: State, args: { redmineVersions: RedmineVersion[] }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreationIdsCriteriaSetupData.redmineVersions = args.redmineVersions;
+    newState.batchItemCreationIdsCriteriaSetupData.redmineVersionsLoaded = true;
+    return newState;
+}
+
+export function clearRedmineVersionsForIds(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreationIdsCriteriaSetupData.redmineVersions = [];
+    newState.batchItemCreationIdsCriteriaSetupData.redmineVersionsLoaded = false;
+    return newState;
+}
+
+export function initRedmineVersionsForTms(state: State): State {
+    const newState = _.cloneDeep(state);
+    newState.batchItemCreationTMSCriteriaSetupData.redmineVersionsLoaded = false;
+    return newState;
+}
+
+export function loadRedmineVersionsForTms(state: State, args: { redmineVersions: RedmineVersion[] }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreationTMSCriteriaSetupData.redmineVersions = args.redmineVersions;
+    newState.batchItemCreationTMSCriteriaSetupData.redmineVersionsLoaded = true;
+    return newState;
+}
+
+export function clearRedmineVersionsForTms(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreationTMSCriteriaSetupData.redmineVersions = [];
+    newState.batchItemCreationTMSCriteriaSetupData.redmineVersionsLoaded = false;
+    return newState;
+}
+
+export function initRedmineVersionsForRedmine(state: State): State {
+    const newState = _.cloneDeep(state);
+    newState.batchItemCreationRedmineCriteriaSetupData.redmineVersionsLoaded = false;
+    return newState;
+}
+
+export function loadRedmineVersionsForRedmine(state: State, args: { redmineVersions: RedmineVersion[] }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreationRedmineCriteriaSetupData.redmineVersions = args.redmineVersions;
+    newState.batchItemCreationRedmineCriteriaSetupData.redmineVersionsLoaded = true;
+    return newState;
+}
+
+export function clearRedmineVersionsForRedmine(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreationRedmineCriteriaSetupData.redmineVersions = [];
+    newState.batchItemCreationRedmineCriteriaSetupData.redmineVersionsLoaded = false;
+    return newState;
+}
+
+export function initRedmineVersionsForSd(state: State): State {
+    const newState = _.cloneDeep(state);
+    newState.batchItemCreationSdCriteriaSetupData.redmineVersionsLoaded = false;
+    return newState;
+}
+
+export function loadRedmineVersionsForSd(state: State, args: { redmineVersions: RedmineVersion[] }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreationSdCriteriaSetupData.redmineVersions = args.redmineVersions;
+    newState.batchItemCreationSdCriteriaSetupData.redmineVersionsLoaded = true;
+    return newState;
+}
+
+export function clearRedmineVersionsForSd(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreationSdCriteriaSetupData.redmineVersions = [];
+    newState.batchItemCreationSdCriteriaSetupData.redmineVersionsLoaded = false;
     return newState;
 }
 
