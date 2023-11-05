@@ -35,3 +35,5 @@ export const clearRedmineVersionsForRedmine = createAction('[Items Component] Cl
 export const initRedmineVersionsForSd = createAction('[Items Component] Init Redmine Versions For Sd', props<{ projectName: string }>());
 export const loadRedmineVersionsForSd = createAction('[Items Component] Load Redmine Versions For Sd', props<{ redmineVersions: RedmineVersion[] }>());
 export const clearRedmineVersionsForSd = createAction('[Items Component] Clear Redmine Versions For Sd');
+export const setBatchItemCreationTabIndex = createAction('[Items Component] Set Tab Index in Batch Item', props<{ index: number }>());
+export const setBatchItemCreationSelectedTabIndex = createAction('[Items Component] Set Selected Tab Index in Batch Item', props<{ index: number }>());

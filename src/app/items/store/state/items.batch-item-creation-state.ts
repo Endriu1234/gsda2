@@ -163,6 +163,18 @@ export function getBatchItemCreationIdsCriteriaFormDataInitialState(): FormGroup
     });
 }
 
+export interface BatchItemCreation {
+    activated_tab: number;
+    selected_tab: number;
+}
+
+export function getBatchItemCreationnitialState(): BatchItemCreation {
+    return {
+        activated_tab: 0,
+        selected_tab: 0
+    }
+}
+
 export interface BatchItemCreationRecords {
     currentIndex: number;
     proposedItems: ProposedItem[];

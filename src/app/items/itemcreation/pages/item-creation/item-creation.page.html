@@ -60,7 +60,7 @@
                         User not matched
                     </mat-error>
                 <div class="d-flex flex-md-row justify-content-md-between flex-column">
-                    <mat-form-field appearance="outline" class="" [style.width.%]=49>
+                    <mat-form-field appearance="outline" class="" [style.width.%]=45>
                         <mat-label>Redmine Users</mat-label>
                         <input type="text"  [ngrxFormControlState]="$any(formState).controls.user"
                             matInput
@@ -73,13 +73,23 @@
                             </mat-optgroup>
                         </mat-autocomplete>
                     </mat-form-field>
-                    <mat-form-field appearance="outline" class="" [style.width.%]=49>
+                    <mat-form-field appearance="outline" class="" [style.width.%]=45>
                         <mat-label>Version</mat-label>
                         <mat-select [ngrxFormControlState]="$any(formState).controls.version">
                             <mat-option *ngFor="let version of versions$ | async" [value]="version.name">
                                 {{version.name}}
                             </mat-option>
                         </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" [style.width.%]=8>
+                        <mat-label>Time</mat-label>
+                        <input matInput 
+                            type="number" 
+                            placeholder="" 
+                            min="0" 
+                            oninput="validity.valid||(value='');"
+                            [ngrxFormControlState]="$any(formState).controls.est_time"
+                        >
                     </mat-form-field>
                 </div>
                 <div class="d-flex flex-md-row justify-content-md-between flex-column mt-3">

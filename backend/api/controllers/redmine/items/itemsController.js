@@ -103,7 +103,8 @@ module.exports.getPotentialRedmineItemsFromRedmineProject = async (req, res) => 
                 TMS: redmineDataProvider.getCustomFieldValue(item, process.env.REDMINE_TMS_TASK_NAME),
                 ASSIGNEE: item.assigned_to ? item.assigned_to.name : '',
                 REDMINE_LINK: target ? `${getRedmineAddress(`issues/${target.id}`)}` : '',
-                REDMINE_VERSION: req.query.redmine_version ? req.query.redmine_version : ''
+                REDMINE_VERSION: req.query.redmine_version ? req.query.redmine_version : '',
+                CR_EST_HOURS: redmineSourceItems.estimated_hours
             }
             retRecords.push(retStruct);
         }

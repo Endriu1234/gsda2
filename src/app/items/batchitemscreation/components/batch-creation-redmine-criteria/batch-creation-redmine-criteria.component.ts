@@ -10,6 +10,7 @@ import { initRedmineProjects } from 'src/app/items/store/actions/items.common-ac
 import { BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID } from 'src/app/items/store/state/items.batch-item-creation-state';
 import { FORM_SEARCH_STATE, FormSearchState } from 'src/app/shared/store/shared.state';
 import { RedmineVersion } from 'src/app/items/store/models/redmine-version.model';
+import { setBatchItemCreationTabIndex } from 'src/app/items/store/actions/items.batch-item-creation-actions';
 
 @Component({
   selector: 'app-batch-creation-redmine-criteria',
@@ -46,7 +47,8 @@ export class BatchCreationRedmineCriteriaComponent implements OnInit {
   }
 
   search(): void {
-    this.store.dispatch(new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID, FORM_SEARCH_STATE, FormSearchState.Searching))
+    this.store.dispatch(new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_REDMINECRITERIA_FORMID, FORM_SEARCH_STATE, FormSearchState.Searching));
+    this.store.dispatch(setBatchItemCreationTabIndex({index: 2}));
   }
 
 }

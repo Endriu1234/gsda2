@@ -255,7 +255,8 @@ export class ItemsBatchItemCreationEffects {
                     new SetValueAction(ITEM_CREATION_FORMID + '.issue', currentItem.ISSUE),
                     new SetValueAction(ITEM_CREATION_FORMID + '.cr', currentItem.CR),
                     new SetValueAction(ITEM_CREATION_FORMID + '.tms', currentItem.TMS),
-                    new SetValueAction(ITEM_CREATION_FORMID + '.version', currentItem.REDMINE_VERSION)
+                    new SetValueAction(ITEM_CREATION_FORMID + '.version', currentItem.REDMINE_VERSION),
+                    new SetValueAction(ITEM_CREATION_FORMID + '.est_time', currentItem.CR_EST_HOURS)
                 ];
 
                 this.progressBarService.startProgress(batchRecordsWithFormData.batchRecords.proposedItems.filter((item) => item.SELECTED == true).length, batchRecordsWithFormData.batchFormData.value.skipCreationForm);
@@ -296,7 +297,8 @@ export class ItemsBatchItemCreationEffects {
                     new SetValueAction(ITEM_CREATION_FORMID + '.issue', currentItem.ISSUE),
                     new SetValueAction(ITEM_CREATION_FORMID + '.cr', currentItem.CR),
                     new SetValueAction(ITEM_CREATION_FORMID + '.tms', currentItem.TMS),
-                    new SetValueAction(ITEM_CREATION_FORMID + '.version', currentItem.REDMINE_VERSION)
+                    new SetValueAction(ITEM_CREATION_FORMID + '.version', currentItem.REDMINE_VERSION),
+                    new SetValueAction(ITEM_CREATION_FORMID + '.est_time', currentItem.CR_EST_HOURS)
                 ];
 
                 this.progressBarService.nextElement();
@@ -381,7 +383,8 @@ export class ItemsBatchItemCreationEffects {
                     new SetValueAction(ITEM_CREATION_FORMID + '.issue', element.proposedItem.ISSUE),
                     new SetValueAction(ITEM_CREATION_FORMID + '.cr', element.proposedItem.CR),
                     new SetValueAction(ITEM_CREATION_FORMID + '.tms', element.proposedItem.TMS),
-                    new SetValueAction(ITEM_CREATION_FORMID + '.version', element.proposedItem.REDMINE_VERSION)
+                    new SetValueAction(ITEM_CREATION_FORMID + '.version', element.proposedItem.REDMINE_VERSION),
+                    new SetValueAction(ITEM_CREATION_FORMID + '.est_time', element.proposedItem.CR_EST_HOURS)
                 ];
                 
                 if (batchItemCreationFormData.value.skipCreationForm) {

@@ -1,28 +1,5 @@
 const { query } = require("express");
 
-const selectSDProjectPotentialRedmineItems = `SELECT 
-                                                1 AS selected,
-                                                :targetRedmineProject AS redmine_project,
-                                                case
-                                                    when issue.iss_type = 'Defect' Then
-                                                    'Bug'
-                                                    when (select issrc.isr_source_type
-                                                            from sd_live.issue_source issrc
-                                                            where issrc.isr_issue_aa = issue.aa_id
-                                                            and rownum = 1) = 'Autotesting' and
-                                                        issue.iss_type = 'Defect' Then
-                                                    'Regression'
-                                                    else
-                                                    issue.iss_type
-                                                end AS tracker,
-                                                issue.iss_summary AS subject,
-                                                issue.iss_desc AS description,
-                                                issue.aa_uf_id AS issue,
-                                                jacekk.Getcrsfromissuebyproject(issue.aa_id, :productVersionId) AS cr,
-                                                issue.iss_user_18 AS tms,
-                                                '' AS assignee,
-                                                '' AS redmine_link `;
-
 module.exports.getSDActiveProjectsQuery = () => {
     return `SELECT 
     prd_version.aa_id AS product_version_id,
@@ -216,7 +193,8 @@ function getSelectWitoutCr() {
 
 function getSelectSDProjectPotentialRedmineItems(combineCRs) {
     let select = getSelectWitoutCr();
-    select += combineCRs ? `jacekk.Getcrsfromissuebyproject(issue.aa_id, :productVersionId) AS cr ` : `cr.aa_uf_id AS cr `
+    select += combineCRs ? `jacekk.Getcrsfromissuebyproject(issue.aa_id, :productVersionId) AS cr, ` : `cr.aa_uf_id AS cr, `;
+    select += combineCRs ? `'' AS cr_est_hours ` : '(select ROUND(sl.iso_esth_code / 60, 1) from sd_live.issue_solution sl where sl.aa_id = cr.CR_ISSUE_SOLUTION_AA) AS cr_est_hours ';
 
     return select;
 }
@@ -240,7 +218,8 @@ module.exports.getTmsProjectPotentialRedmineItems = (showClosed, showInClientBin
                     CLIENT || '-' || ID AS tms,
                     tms.employee AS assignee,
                     '' AS redmine_link, 
-                    '' AS cr
+                    '' AS cr,
+                    '' AS cr_est_hours
                 from SD_LIVE.tms_problem_v         tms,
                     SD_LIVE.Tms_Problem_Full_Text txt
                 where txt.TASK_AA_ID = tms.aa_id `;
@@ -261,7 +240,8 @@ module.exports.getQueryForIdsByIssuesPotentialRedmineItems = (cntParams) => {
         paramsDeclaration += ":par" + index;  
     }
     let query = getSelectWitoutCr();
-    query += `  '' AS cr 
+    query += `  '' AS cr,
+                '' AS cr_est_hours 
             FROM 
                 sd_live.issue issue
             WHERE 
@@ -313,7 +293,8 @@ module.exports.getQueryForIdsByTmsPotentialRedmineItems = (cntParams) => {
                     CLIENT || '-' || ID AS tms,
                     tms.employee AS assignee,
                     '' AS redmine_link, 
-                    '' AS cr
+                    '' AS cr,
+                    '' AS cr_est_hours
                 FROM 
                     SD_LIVE.tms_problem_v         tms,
                     SD_LIVE.Tms_Problem_Full_Text txt

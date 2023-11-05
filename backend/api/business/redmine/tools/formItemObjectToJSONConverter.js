@@ -13,6 +13,15 @@ module.exports.convertFormItemObjectToJSON = async function convertFormItemObjec
         const versions = await redmineDataProvider.getRedmineVersionsByProject(formItem.project);
         const version = versions.find(v => v.name === formItem.version);
         redmineItem.issue.fixed_version_id = version.id;
+
+        const devProjects = await cacheValueProvider.getValue('softdev_projects');
+        const devProject = devProjects.find(p => p.PRODUCT_VERSION_NAME === formItem.version);
+        if (devProject) {
+            let tmpDate = new Date(devProject.PRODUCT_DEV_START);
+            redmineItem.issue.start_date = new Date(tmpDate.getTime() - (tmpDate.getTimezoneOffset() * 60000)).toISOString().substring(0, 10);
+            tmpDate = new Date(devProject.PRODUCT_DEV_END);
+            redmineItem.issue.due_date = new Date(tmpDate.getTime() - (tmpDate.getTimezoneOffset() * 60000)).toISOString().substring(0, 10);
+        }
     }
 
     const trackers = await cacheValueProvider.getValue('redmine_trackers');
@@ -50,6 +59,10 @@ module.exports.convertFormItemObjectToJSON = async function convertFormItemObjec
 
         if (issueCustomField)
             custom_fields.push({ id: issueCustomField.id, value: formItem.issue });
+    }
+
+    if (formItem.est_time) {
+        redmineItem.issue.estimated_hours = formItem.est_time;
     }
 
     if (custom_fields.length > 0)

@@ -35,6 +35,8 @@ export const getTmsRedmineVersionsByProject = createSelector(getItemsState, (sta
 export const getBatchItemCreationIdsCriteriaFormState = createSelector(getItemsState, (state: State) => state.batchItemCreationIdsCriteriaFormData);
 export const getRedmineProjectsFilteredForIdsBatchItemCreation = createSelector(getItemsState, (state: State) => state.batchItemCreationIdsCriteriaSetupData.redmineTargetProjectsFiltered);
 export const getIdRedmineVersionsByProject = createSelector(getItemsState, (state: State) => state.batchItemCreationIdsCriteriaSetupData.redmineVersions);
+export const getBatchItemCreationTabIndex = createSelector(getItemsState, (state: State) => state.batchItemCreation.activated_tab);
+export const getBatchItemCreationSelectedTabIndex = createSelector(getItemsState, (state: State) => state.batchItemCreation.selected_tab);
 
 export const getBatchItemsRecordsWithFormData = createSelector(getBatchItemCreationRecords, getBatchItemCreationFormData, (batchRecords, batchFormData) => {
     return {
@@ -68,10 +70,10 @@ function canBatchItemCreationRmCriteriaActivateFind(formState: FormGroupState<Ba
     return true;
 }
 
-export const getBatchItemCreationCanActivateGrid = createSelector(getBatchItemCreationRecords, canBatchItemCreationCanActivateGrid);
+export const getBatchItemCreationCanActivateGrid = createSelector(getBatchItemCreationRecords, getBatchItemCreationTabIndex, getBatchItemCreationSelectedTabIndex, canBatchItemCreationCanActivateGrid);
 
-function canBatchItemCreationCanActivateGrid(batchRecords: BatchItemCreationRecords): boolean {
-    if (!batchRecords.proposedItems || batchRecords.proposedItems.length <= 0) {
+function canBatchItemCreationCanActivateGrid(batchRecords: BatchItemCreationRecords, activatedTab: number, selectedTab: number): boolean {
+    if (!batchRecords.proposedItems || batchRecords.proposedItems.length <= 0 || activatedTab != selectedTab) {
         return false;
     }
 

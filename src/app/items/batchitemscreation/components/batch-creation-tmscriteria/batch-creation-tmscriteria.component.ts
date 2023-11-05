@@ -11,7 +11,7 @@ import { dateValueConverter, trimUpperConverter } from 'src/app/shared/tools/val
 import { BATCH_ITEM_CREATION_TMSCRITERIA_FORMID } from 'src/app/items/store/state/items.batch-item-creation-state';
 import { FORM_SEARCH_STATE, FormSearchState } from 'src/app/shared/store/shared.state';
 import { RedmineUserByLetter } from 'src/app/shared/store/models/redmine-user-letter-model';
-import { initTmsClients } from 'src/app/items/store/actions/items.batch-item-creation-actions';
+import { initTmsClients, setBatchItemCreationTabIndex } from 'src/app/items/store/actions/items.batch-item-creation-actions';
 import { TmsClientByLetter } from 'src/app/shared/store/models/tms-client-letter.model';
 import { RedmineVersion } from 'src/app/items/store/models/redmine-version.model';
 
@@ -66,6 +66,7 @@ export class BatchCreationTMSCriteriaComponent implements OnInit {
   }
 
   search(): void {
-    this.store.dispatch(new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_TMSCRITERIA_FORMID, FORM_SEARCH_STATE, FormSearchState.Searching))
+    this.store.dispatch(new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_TMSCRITERIA_FORMID, FORM_SEARCH_STATE, FormSearchState.Searching));
+    this.store.dispatch(setBatchItemCreationTabIndex({index: 1}));
   }
 }

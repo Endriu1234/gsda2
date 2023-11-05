@@ -11,6 +11,7 @@ import { initRedmineProjects } from 'src/app/items/store/actions/items.common-ac
 import { BATCH_ITEM_CREATION_IDSCRITERIA_FORMID } from 'src/app/items/store/state/items.batch-item-creation-state';
 import { trimUpperConverter } from 'src/app/shared/tools/validators/ngrxValueConverters';
 import { RedmineVersion } from 'src/app/items/store/models/redmine-version.model';
+import { setBatchItemCreationTabIndex } from 'src/app/items/store/actions/items.batch-item-creation-actions';
 
 @Component({
   selector: 'app-batch-creation-idscriteria',
@@ -45,6 +46,7 @@ export class BatchCreationIdscriteriaComponent implements OnInit {
   }
 
   search(): void {
-    this.store.dispatch(new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_IDSCRITERIA_FORMID, FORM_SEARCH_STATE, FormSearchState.Searching))
+    this.store.dispatch(new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_IDSCRITERIA_FORMID, FORM_SEARCH_STATE, FormSearchState.Searching));
+    this.store.dispatch(setBatchItemCreationTabIndex({index: 3}));
   }
 }

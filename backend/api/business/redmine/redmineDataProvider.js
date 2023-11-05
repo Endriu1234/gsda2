@@ -67,8 +67,8 @@ module.exports.getRedmineUserByTmsUser = async (name) => {
 
 module.exports.getRedmineVersionsByProject = async (redmineProject) => {
 
-    const allVersions = await cacheValueProvider.getValue('redmine_versions');
-    const versions = allVersions.filter(v => v.project.name === redmineProject);
-
+    const allVersions = await cacheValueProvider.getValue('redmine_versions');;
+    const versions = allVersions.filter(v => v.currentProject.name === redmineProject);
+    
     return versions;
 }

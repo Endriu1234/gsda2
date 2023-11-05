@@ -4,9 +4,9 @@ import { ProposedItem } from 'src/app/items/store/models/batchitemcreation/propo
 import { Store } from '@ngrx/store';
 import * as fromItemsState from '../../../store/state/items.state';
 import * as fromSharedState from '../../../../shared/store/shared.state';
-import { getBatchItemCreationCanActivateGrid, getIsAnyBatchItemsRecordsSelected, getBatchItemCreationFormData, getBatchItemCreationRecords, getBatchItemCreationFormColumns as getBatchItemCreationFormColumns, getBatchItemCreationFormColumnsLength, getBatchItemCreationGridRemovableColumns } from 'src/app/items/store/selectors/items.batch-item-creation-selectors';
+import { getBatchItemCreationCanActivateGrid, getIsAnyBatchItemsRecordsSelected, getBatchItemCreationFormData, getBatchItemCreationRecords, getBatchItemCreationFormColumns as getBatchItemCreationFormColumns, getBatchItemCreationFormColumnsLength, getBatchItemCreationGridRemovableColumns, getBatchItemCreationTabIndex } from 'src/app/items/store/selectors/items.batch-item-creation-selectors';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { createOneRecordFromBatch, dragAndDropBatchItemsCreationColumns, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection } from 'src/app/items/store/actions/items.batch-item-creation-actions';
+import { createOneRecordFromBatch, dragAndDropBatchItemsCreationColumns, setBatchItemCreationSelectedTabIndex, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection } from 'src/app/items/store/actions/items.batch-item-creation-actions';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -37,6 +37,7 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
   allColumns$: Observable<string[]> | null = null;
   columnsLength$: Observable<number> | null = null;
   removableColumns$: Observable<string[]> | null = null;
+  activatedTabIndex$: Observable<number> | null = null;
 
   isAnyRecordSelected$!: Observable<boolean>;
 
@@ -62,6 +63,7 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
     this.columnsLength$ = this.store.select(getBatchItemCreationFormColumnsLength);
     this.dataSource.sortData = this.sortData();
     this.isAnyRecordSelected$ = this.store.select(getIsAnyBatchItemsRecordsSelected);
+    this.activatedTabIndex$ = this.store.select(getBatchItemCreationTabIndex);
   }
 
   ngOnDestroy(): void {
@@ -183,5 +185,9 @@ export class BatchItemsCreationPage implements OnInit, OnDestroy {
 
   openItemInRedmine(link: string) {
     this.sharedStore.dispatch(openLinkInNewWindow({url: link}));
+  }
+
+  selectedTabIndexChanged(index: number) {
+    this.store.dispatch(setBatchItemCreationSelectedTabIndex({index}));
   }
 }

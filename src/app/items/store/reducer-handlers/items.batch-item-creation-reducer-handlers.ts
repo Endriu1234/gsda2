@@ -320,3 +320,15 @@ export function dragAndDropBatchItemsCreationColumns(state: State, args: { prevI
     return newState;
 }
 
+export function setBatchItemCreationTabIndex(state: State, args: { index: number }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreation.activated_tab = args.index;
+    return newState;
+}
+
+export function setBatchItemCreationSelectedTabIndex(state: State, args: { index: number }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.batchItemCreation.selected_tab = args.index;
+    return newState;
+}
+

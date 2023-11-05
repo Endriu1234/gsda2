@@ -60,8 +60,11 @@ const reqisteredCaches = {
         let results = [];
         for (const project of projects) {
             const versions = await getRedmineData(`projects/${project.id}/versions.json`, false);
-            if (versions && versions.versions && versions.versions.length > 0) 
-                results.push(...versions.versions.filter((version) => {return version.status === 'open'}));
+            if (versions && versions.versions && versions.versions.length > 0) {
+                const versionTmp = versions.versions.filter((version) => {return version.status === 'open'});
+                versionTmp.forEach((version) => version.currentProject = {id: project.id, name: project.name});
+                results.push(...versionTmp);
+            }
         }
 
         jsonObject = results.map(JSON.stringify);

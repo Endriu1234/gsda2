@@ -66,6 +66,7 @@ export interface ItemCreationFromData {
     cr: string;
     tms: string;
     version: string;
+    est_time: string;
 }
 
 export const ITEM_CREATION_FORMID = "ITEM_CREATION_FORMID";
@@ -80,7 +81,8 @@ export function getItemCreationFromDataInitialState(): FormGroupState<ItemCreati
         user: '',
         cr: '',
         tms: '',
-        version: ''
+        version: '',
+        est_time: ''
     });
 }
 
