@@ -2,10 +2,10 @@ import { Store } from "@ngrx/store";
 import { ClearAsyncErrorAction, SetAsyncErrorAction, StartAsyncValidationAction } from "ngrx-forms";
 import { Observable, catchError, concat, delay, mergeMap, of, switchMap, take } from "rxjs";
 import { getRedmineProjects, getSoftDevProjects, getValidatedIdentifiers } from "./projects.selectors";
-import { State } from "./projects.state";
+import { State } from "./state/projects.state";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "src/environments/environment";
-import { addValidatedIdentifier } from "./projects.actions";
+import { addValidatedIdentifier, setVersionDataBaseonSDProject } from "./projects.actions";
 import { IdentifierValidation } from "./models/identifier-validation.model";
 
 export function validateProject(store: Store<State>, validateProjectError: string, controlId: string, projectName: string): Observable<any> {
@@ -70,4 +70,38 @@ export function validateIdentifier(store: Store<State>, http: HttpClient, valida
             }))
         );
     }));
+}
+
+export function validateVersionProject(store: Store<State>, validateProjectError: string, controlId: string, projectName: string): Observable<any> {
+
+    if (!projectName)
+        return of(new StartAsyncValidationAction(controlId, validateProjectError), new SetAsyncErrorAction(controlId, validateProjectError, "Project invalid"));
+
+    return store.select(getRedmineProjects).pipe(take(1), switchMap(projects => {
+        if (projects.find(p => p.name == projectName))
+            return of(new StartAsyncValidationAction(controlId, validateProjectError), new ClearAsyncErrorAction(controlId, validateProjectError));
+
+        return of(new StartAsyncValidationAction(controlId, validateProjectError), new SetAsyncErrorAction(controlId, validateProjectError, "Project invalid"));
+    }));
+}
+
+export function validateVersionSDProject(store: Store<State>, validateProjectError: string, controlId: string, projectName: string): Observable<any> {
+
+    if (!projectName)
+        return of(new StartAsyncValidationAction(controlId, validateProjectError), new ClearAsyncErrorAction(controlId, validateProjectError));
+
+    return store.select(getSoftDevProjects).pipe(take(1), switchMap(sdProject => {
+        if (sdProject.find(s => s.PRODUCT_VERSION_NAME == projectName))
+            return of(new StartAsyncValidationAction(controlId, validateProjectError), new ClearAsyncErrorAction(controlId, validateProjectError), setVersionDataBaseonSDProject());
+
+        return of(new StartAsyncValidationAction(controlId, validateProjectError), new SetAsyncErrorAction(controlId, validateProjectError, "SoftDev Project invalid"));
+    }));
+}
+
+export function validateVersionName(store: Store<State>, validateVersionError: string, controlId: string, versionName: string): Observable<any> {
+
+    if (!versionName)
+        return of(new StartAsyncValidationAction(controlId, validateVersionError), new SetAsyncErrorAction(controlId, validateVersionError, "Empty Version Name"));
+
+    return of(new StartAsyncValidationAction(controlId, validateVersionError), new ClearAsyncErrorAction(controlId, validateVersionError));
 }

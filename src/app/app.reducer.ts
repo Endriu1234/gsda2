@@ -3,7 +3,7 @@ import * as fromNavigation from './navigation/store/navigation.reducer';
 import * as fromItems from './items/store/items.reducer';
 import * as fromItemsState from './items/store/state/items.state';
 import * as fromProjects from './projects/store/projects.reducer';
-import * as fromProjectsState from './projects/store/projects.state';
+import * as fromProjectsState from './projects/store/state/projects.state';
 import * as fromShared from './shared/store/shared.reducer';
 import * as fromSharedState from './shared/store/shared.state';
 import * as fromAuthState from './auth/store/auth.state';

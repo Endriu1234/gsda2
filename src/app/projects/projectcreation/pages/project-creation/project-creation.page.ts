@@ -3,7 +3,8 @@ import { Store } from '@ngrx/store';
 import { Observable, take } from 'rxjs';
 import { FormGroupState, SetUserDefinedPropertyAction } from 'ngrx-forms';
 import * as fromProjectsSelectors from "../../../store/projects.selectors";
-import * as fromProjectsState from '../../../store/projects.state';
+import * as fromProjectsState from '../../../store/state/projects.state';
+import * as fromProjectState from '../../../store/state/projects.project-creation-state'
 import * as fromSharedState from '../../../../shared/store/shared.state';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 import { FormControl } from '@angular/forms';
@@ -51,11 +52,11 @@ export class ProjectCreationPage implements OnInit {
   }
 
   createProject() {
-    this.store.dispatch(new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID, FORM_SAVE_STATE, FormSaveState.Saving))
+    this.store.dispatch(new SetUserDefinedPropertyAction(fromProjectState.PROJECT_CREATION_FORMID, FORM_SAVE_STATE, FormSaveState.Saving))
   }
 
   createAndOpenProject() {
-    this.store.dispatch(new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID, FORM_SAVE_STATE, FormSaveState.SavingWithRedirect))
+    this.store.dispatch(new SetUserDefinedPropertyAction(fromProjectState.PROJECT_CREATION_FORMID, FORM_SAVE_STATE, FormSaveState.SavingWithRedirect))
   }
 
 }

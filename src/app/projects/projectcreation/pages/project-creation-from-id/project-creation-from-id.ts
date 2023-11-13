@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, take } from 'rxjs';
-import * as fromProjectsState from '../../../store/projects.state';
+import * as fromProjectsState from '../../../store/state/projects.state';
 import * as fromProjectsSelectors from "../../../store/projects.selectors";
 import { SoftDevProject } from "src/app/projects/store/models/softdev-project.model";
 import { fillProjectById, initSoftDevProjects} from 'src/app/projects/store/projects.actions';

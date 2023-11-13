@@ -23,3 +23,22 @@ module.exports.convertFormProjectObjectToJSON = async function convertFormProjec
 
     return JSON.stringify(redmineProject);
 }
+
+module.exports.convertFormVersionObjectToJSON = async function convertFormVersionObjectToJSON(formVersion) {
+    const redmineVersion = { version: {} };
+
+    redmineVersion.version.name = formVersion.name;
+    redmineVersion.version.sharing = formVersion.sharing;
+    if (formVersion.description) {
+        redmineVersion.version.description = formVersion.description;
+    }
+    if (formVersion.due_date) {
+        let tmpDate = new Date(formVersion.due_date);
+        redmineVersion.version.due_date = new Date(tmpDate.getTime() - (tmpDate.getTimezoneOffset() * 60000)).toISOString().substring(0, 10);
+    }
+    if (formVersion.wiki_title) {
+        redmineVersion.version.wiki_page_title = formVersion.wiki_title;
+    }
+
+    return JSON.stringify(redmineVersion);
+}

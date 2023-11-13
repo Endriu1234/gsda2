@@ -60,6 +60,11 @@ const initialState: State = {
                     caption: 'Project View/Edit',
                     route: '/projects/projectviewedit',
                     icon: 'folder_open'
+                },
+                {
+                    caption: 'Version Creation',
+                    route: '/projects/versioncreation',
+                    'icon': 'snippet_folder'
                 }
             ]
         },
