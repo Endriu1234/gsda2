@@ -15,18 +15,28 @@
                     *ngIf="formState.isTouched && (formState.errors._project?.$validateProjectError || formState.errors._project?.required)">
                     Project is required
                 </mat-error>
-                <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
-                    <mat-label>Redmine Project</mat-label>
-                    <input type="text"
-                        [ngrxFormControlState]="$any(formState).controls.project"
-                        matInput
-                        [matAutocomplete]="autoProject">
-                    <mat-autocomplete #autoProject="matAutocomplete">
-                        <mat-option *ngFor="let project of (projectsFiltered$ | async)" [value]="project.name">
-                            {{project.name}}
-                        </mat-option>
-                    </mat-autocomplete>
-                </mat-form-field>
+                <div class="d-flex flex-md-row justify-content-md-between flex-column">
+                    <mat-form-field appearance="outline" class="mt-2" [style.width.%]=49>
+                        <mat-label>Redmine Project</mat-label>
+                        <input type="text"
+                            [ngrxFormControlState]="$any(formState).controls.project"
+                            matInput
+                            [matAutocomplete]="autoProject">
+                        <mat-autocomplete #autoProject="matAutocomplete">
+                            <mat-option *ngFor="let project of (projectsFiltered$ | async)" [value]="project.name">
+                                {{project.name}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="mt-2" [style.width.%]=49>
+                        <mat-label>Version</mat-label>
+                        <mat-select [ngrxFormControlState]="$any(formState).controls.version">
+                            <mat-option *ngFor="let version of versions$ | async" [value]="version.name">
+                                {{version.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
             </mat-card-content>
         </mat-card>
         <mat-card>
@@ -60,7 +70,7 @@
                         User not matched
                     </mat-error>
                 <div class="d-flex flex-md-row justify-content-md-between flex-column">
-                    <mat-form-field appearance="outline" class="" [style.width.%]=45>
+                    <mat-form-field appearance="outline" class="" [style.width.%]=89>
                         <mat-label>Redmine Users</mat-label>
                         <input type="text"  [ngrxFormControlState]="$any(formState).controls.user"
                             matInput
@@ -73,15 +83,7 @@
                             </mat-optgroup>
                         </mat-autocomplete>
                     </mat-form-field>
-                    <mat-form-field appearance="outline" class="" [style.width.%]=45>
-                        <mat-label>Version</mat-label>
-                        <mat-select [ngrxFormControlState]="$any(formState).controls.version">
-                            <mat-option *ngFor="let version of versions$ | async" [value]="version.name">
-                                {{version.name}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" [style.width.%]=8>
+                    <mat-form-field appearance="outline" [style.width.%]=10>
                         <mat-label>Time</mat-label>
                         <input matInput 
                             type="number" 
