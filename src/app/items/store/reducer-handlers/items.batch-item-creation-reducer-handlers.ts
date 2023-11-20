@@ -7,7 +7,7 @@ import { unbox } from 'ngrx-forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { TmsClient } from 'src/app/shared/store/models/tms-client.model';
 import { TmsClientByLetter } from 'src/app/shared/store/models/tms-client-letter.model';
-import { RedmineVersion } from '../models/redmine-version.model';
+import { RedmineVersion } from '../../../shared/store/models/redmine-version.model';
 
 export function setRedmineProjectsFilterForBatchItemCreationSdCriteria(state: State): State {
     const newState: State = _.cloneDeep(state);

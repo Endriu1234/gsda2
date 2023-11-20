@@ -62,7 +62,7 @@ const initialState: State = {
                     icon: 'folder_open'
                 },
                 {
-                    caption: 'Version Creation',
+                    caption: 'Create/Upd Version',
                     route: '/projects/versioncreation',
                     'icon': 'snippet_folder'
                 }

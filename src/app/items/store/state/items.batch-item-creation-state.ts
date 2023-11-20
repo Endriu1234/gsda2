@@ -5,7 +5,7 @@ import { box, Boxed, createFormGroupState, FormGroupState } from "ngrx-forms";
 import { RedmineUserByLetter } from "../../../shared/store/models/redmine-user-letter-model";
 import { TmsClient } from "src/app/shared/store/models/tms-client.model";
 import { TmsClientByLetter } from "src/app/shared/store/models/tms-client-letter.model";
-import { RedmineVersion } from "../models/redmine-version.model";
+import { RedmineVersion } from "../../../shared/store/models/redmine-version.model";
 
 export const BATCH_ITEM_CREATION_SDCRITERIA_FORMID = "BATCH_ITEM_CREATION_SDCRITERIA_FORMID";
 export const BATCH_ITEM_CREATION_TMSCRITERIA_FORMID = "BATCH_ITEM_CREATION_TMSCRITERIA_FORMID";

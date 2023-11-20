@@ -1,7 +1,7 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { projectsReducerKey } from './projects.reducer';
 import { State } from './state/projects.state';
-import { canProjectCreationFormBeSaved, canVersionCreationFormBeSaved } from './projects.selectors-handlers';
+import { canProjectCreationFormBeSaved, canVersionCreationFormBeSaved, canVersionCreationFormBeUpdated } from './projects.selectors-handlers';
 
 
 export const getProjectsState = createFeatureSelector<State>(projectsReducerKey);
@@ -18,4 +18,6 @@ export const getProjectCreationFormCanActivateSave = createSelector(getProjectCr
 export const getVersionCreationFormState = createSelector(getProjectsState, (state: State) => state.versionCreationFormData);
 export const getRedmineProjectsForVersionFiltered = createSelector(getProjectsState, (state: State) => state.versionCreationSetupData.redmineProjectsFiltered);
 export const getSoftDevProjectsForVersionFiltered = createSelector(getProjectsState, (state: State) => state.versionCreationSetupData.softdevProjectsFiltered);
+export const getRedmineVersionsByProject = createSelector(getProjectsState, (state: State) => state.versionCreationSetupData.redmineVersions);
 export const canActivateVersionSave = createSelector(getVersionCreationFormState, canVersionCreationFormBeSaved);
+export const canActivateVersionUpdate = createSelector(getVersionCreationFormState, canVersionCreationFormBeUpdated);

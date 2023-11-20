@@ -5,7 +5,7 @@ import { getRedmineProjects, getSoftDevProjects, getValidatedIdentifiers } from 
 import { State } from "./state/projects.state";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { environment } from "src/environments/environment";
-import { addValidatedIdentifier, setVersionDataBaseonSDProject } from "./projects.actions";
+import { addValidatedIdentifier, clearRedmineVersions, fillVersionFormByVersion, initRedmineVersions, resetPartiallyVersionCreationForm, setVersionDataBaseonSDProject } from "./projects.actions";
 import { IdentifierValidation } from "./models/identifier-validation.model";
 
 export function validateProject(store: Store<State>, validateProjectError: string, controlId: string, projectName: string): Observable<any> {
@@ -75,13 +75,13 @@ export function validateIdentifier(store: Store<State>, http: HttpClient, valida
 export function validateVersionProject(store: Store<State>, validateProjectError: string, controlId: string, projectName: string): Observable<any> {
 
     if (!projectName)
-        return of(new StartAsyncValidationAction(controlId, validateProjectError), new SetAsyncErrorAction(controlId, validateProjectError, "Project invalid"));
+        return of(new StartAsyncValidationAction(controlId, validateProjectError), new SetAsyncErrorAction(controlId, validateProjectError, "Project invalid"), clearRedmineVersions());
 
     return store.select(getRedmineProjects).pipe(take(1), switchMap(projects => {
         if (projects.find(p => p.name == projectName))
-            return of(new StartAsyncValidationAction(controlId, validateProjectError), new ClearAsyncErrorAction(controlId, validateProjectError));
+            return of(new StartAsyncValidationAction(controlId, validateProjectError), new ClearAsyncErrorAction(controlId, validateProjectError), initRedmineVersions({projectName: projectName}));
 
-        return of(new StartAsyncValidationAction(controlId, validateProjectError), new SetAsyncErrorAction(controlId, validateProjectError, "Project invalid"));
+        return of(new StartAsyncValidationAction(controlId, validateProjectError), new SetAsyncErrorAction(controlId, validateProjectError, "Project invalid"), clearRedmineVersions());
     }));
 }
 
@@ -104,4 +104,12 @@ export function validateVersionName(store: Store<State>, validateVersionError: s
         return of(new StartAsyncValidationAction(controlId, validateVersionError), new SetAsyncErrorAction(controlId, validateVersionError, "Empty Version Name"));
 
     return of(new StartAsyncValidationAction(controlId, validateVersionError), new ClearAsyncErrorAction(controlId, validateVersionError));
+}
+
+export function validateVersionVersion(store: Store<State>, validateVersionError: string, controlId: string, version: string): Observable<any> {
+
+    if (!version)
+        return of(resetPartiallyVersionCreationForm());
+
+    return of(fillVersionFormByVersion());
 }

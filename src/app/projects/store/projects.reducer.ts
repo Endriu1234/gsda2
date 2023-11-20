@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { initRedmineProjects, loadRedmineProjects, setRedmineProjectsFilter, initSoftDevProjects, loadSoftDevProjects, setSoftDevProjectsFilter, setVersionRedmineProjectsFilter, setVersionSoftDevProjectsFilter } from './projects.actions';
+import { initRedmineProjects, loadRedmineProjects, setRedmineProjectsFilter, initSoftDevProjects, loadSoftDevProjects, setSoftDevProjectsFilter, setVersionRedmineProjectsFilter, setVersionSoftDevProjectsFilter, initRedmineVersions, loadRedmineVersions, clearRedmineVersions } from './projects.actions';
 import { initialState, State } from './state/projects.state';
 import { ProjectCreationFromData } from './state/projects.project-creation-state';
 import * as fromReducerHanders from './projects.reducer-handlers';
@@ -27,7 +27,10 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
     on(loadSoftDevProjects, fromReducerHanders.loadSoftDevProjects),
     on(setSoftDevProjectsFilter, fromReducerHanders.setSoftDevProjectsFilter),
     on(setVersionRedmineProjectsFilter, fromReducerHanders.setVersionRedmineProjectsFilter),
-    on(setVersionSoftDevProjectsFilter, fromReducerHanders.setVersionSoftDevProjectsFilter));
+    on(setVersionSoftDevProjectsFilter, fromReducerHanders.setVersionSoftDevProjectsFilter),
+    on(initRedmineVersions, fromReducerHanders.initRedmineVersions),
+    on(loadRedmineVersions, fromReducerHanders.loadRedmineVersions),
+    on(clearRedmineVersions, fromReducerHanders.clearRedmineVersions));
 
 
 export const projectsReducer = wrapReducerWithFormStateUpdate(

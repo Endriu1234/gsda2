@@ -1,7 +1,7 @@
 <ng-container *ngIf="formState$ | async as formState">
     <form novalidate [ngrxFormState]="formState">
         <div class="d-flex flex-md-row justify-content-md-between flex-column my-4 jkWidthMarg">
-            <mat-card-title>Version Creation</mat-card-title>
+            <mat-card-title>Version Creation/Update</mat-card-title>
         </div>
         <mat-card class="mt-1">
             <mat-card-content>
@@ -42,6 +42,20 @@
                         </mat-autocomplete>
                     </mat-form-field>
                 </div>
+                <div class="d-flex flex-md-row justify-content-md-between flex-column">
+                    <mat-form-field appearance="outline" class="jk-form-field" [style.width.%]=49>
+                        <mat-label>Version</mat-label>
+                        <mat-select [ngrxFormControlState]="$any(formState).controls.version">
+                            <mat-option *ngFor="let version of versions$ | async" [value]="version.name">
+                                {{version.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="d-flex flex-md-row justify-content-md-between flex-column">
+                    <app-small-spinner class="float-start ms-5"
+                        [style.visibility]="formState.controls.redmine_project.value && ((versions$ | async) == null || !(versions$ | async)?.length)?'visible':'hidden'"></app-small-spinner>
+                </div>
             </mat-card-content>
         </mat-card>
         <mat-card>
@@ -51,7 +65,11 @@
                 </mat-error>
                 <mat-form-field class="jk-form-field" appearance="outline" [style.width.%]=100>
                     <mat-label>Name</mat-label>
-                    <input type="text" matInput [ngrxFormControlState]="$any(formState).controls.name" placeholder="Name of the project">
+                    <input type="text" 
+                        matInput 
+                        [ngrxFormControlState]="$any(formState).controls.name" 
+                        placeholder="Name of the project"
+                        [disabled]="formState.controls.version.value.length > 0">
                 </mat-form-field>     
                 <mat-form-field appearance="outline" [style.width.%]=100 class="mt-3">
                     <mat-label>Description</mat-label>
@@ -101,8 +119,7 @@
                     <mat-label>Wiki content</mat-label>
                     <textarea 
                         type="text" 
-                        cdkTextareaAutosize 
-                        cdkAutosizeMinRows="7" 
+                        cdkAutosizeMinRows="5" 
                         matInput 
                         placeholder="Wiki content"
                         [ngrxFormControlState]="$any(formState).controls.wiki"></textarea>
@@ -115,17 +132,21 @@
                 extended 
                 color="accent" 
                 class="me-4 my-2"
-                (click)="createAndOpenVersion()"
-                [disabled]="!(canActivateVersionSave$ | async)"
-            >Create and Open</button>
+                (click)="formState.controls.version.value.length > 0 ? updateAndOpenVersion():createAndOpenVersion()"
+                [disabled]="formState.controls.version.value.length > 0 ? !(canActivateVersionUpdate$ | async) : !(canActivateVersionSave$ | async)"
+            ><span *ngIf="formState.controls.version.value.length <= 0">Create and Open</span>
+             <span *ngIf="formState.controls.version.value.length > 0">Update and Open</span>
+            </button>
             <button 
                 mat-fab 
                 extended 
                 color="primary" 
                 class="me-3 my-2"
-                (click)="createVersion()"
-                [disabled]="!(canActivateVersionSave$ | async)"
-            >Create</button>
+                (click)="formState.controls.version.value.length > 0 ? updateVersion():createVersion()"
+                [disabled]="formState.controls.version.value.length > 0 ? !(canActivateVersionUpdate$ | async):!(canActivateVersionSave$ | async)"
+            ><span *ngIf="formState.controls.version.value.length <= 0">Create</span>
+             <span *ngIf="formState.controls.version.value.length > 0">Update</span>
+            </button>
         </mat-card-actions>
     </form>
 </ng-container>

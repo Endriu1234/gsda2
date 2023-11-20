@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import { RedmineProject } from '../../shared/store/models/redmine-project.model';
 import { SoftDevProject } from './models/softdev-project.model';
 import { filterRedmineProjects } from '../../shared/store/shared.reducer-handlers';
+import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
 
 
 export function initRedmineProjects(state: State): State {
@@ -68,5 +69,46 @@ export function setVersionSoftDevProjectsFilter(state: State): State {
     const newState: State = _.cloneDeep(state);
     newState.versionCreationSetupData.softdevProjectsFiltered 
         = filterSoftDevProjects(newState.projectsSetupData.softDevProjects, newState.versionCreationFormData.value.sd_project);
+    return newState;
+}
+
+export function initRedmineVersions(state: State): State {
+    const newState = _.cloneDeep(state);
+    newState.versionCreationSetupData.redmineVersionsLoaded = false;
+    return newState;
+}
+
+export function loadRedmineVersions(state: State, args: { redmineVersions: RedmineVersion[] }): State {
+    const newState: State = _.cloneDeep(state);
+    let rv:RedmineVersion[] = [{
+        id: 0,
+        name: '',
+        description: '',
+        project: {
+            id: 0,
+            name: ''
+        },
+        status: '',
+        due_date: new Date(),
+        sharing: '',
+        wiki_page_title: '',
+        created_on: new Date(),
+        updated_on: new Date(),
+        currentProject: {
+            id: 0,
+            name: ''
+        },
+        wiki: ''
+    }];
+    rv.push(...args.redmineVersions);
+    newState.versionCreationSetupData.redmineVersions = rv;
+    newState.versionCreationSetupData.redmineVersionsLoaded = true;
+    return newState;
+}
+
+export function clearRedmineVersions(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.versionCreationSetupData.redmineVersions = [];
+    newState.versionCreationSetupData.redmineVersionsLoaded = false;
     return newState;
 }

@@ -15,6 +15,14 @@ export enum FormSearchState {
     SearchFailed = "SearchFailed"
 }
 
+export const FORM_UPDATE_STATE = "FORM_UPDATE_STATE";
+
+export enum FormUpdateState {
+    New = "New",
+    Updating = "Updating",
+    UpdatingWithRedirect = "UpdatingWithRedirect"
+}
+
 export enum SnackBarIcon {
     Success = "success",
     Error = "error",

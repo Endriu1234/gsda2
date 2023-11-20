@@ -10,7 +10,7 @@ import { FORM_SEARCH_STATE, FormSearchState } from 'src/app/shared/store/shared.
 import { initRedmineProjects } from 'src/app/items/store/actions/items.common-actions';
 import { BATCH_ITEM_CREATION_IDSCRITERIA_FORMID } from 'src/app/items/store/state/items.batch-item-creation-state';
 import { trimUpperConverter } from 'src/app/shared/tools/validators/ngrxValueConverters';
-import { RedmineVersion } from 'src/app/items/store/models/redmine-version.model';
+import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
 import { setBatchItemCreationTabIndex } from 'src/app/items/store/actions/items.batch-item-creation-actions';
 
 @Component({

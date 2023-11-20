@@ -15,7 +15,20 @@ export function canVersionCreationFormBeSaved(formState: FormGroupState<VersionC
     if (!formState.value || formState.isValidationPending || formState.isInvalid || 
         !formState.controls.redmine_project.value || formState.controls.redmine_project.value.length <= 0 ||
         !formState.controls.name.value || formState.controls.name.value.length <= 0 || 
-        !formState.controls.sharing.value || formState.controls.sharing.value.length <= 0) {
+        !formState.controls.sharing.value || formState.controls.sharing.value.length <= 0 ||
+        (formState.controls.version.value && formState.controls.version.value.length > 0)) {
+        return false;
+    }
+
+    return true;
+}
+
+export function canVersionCreationFormBeUpdated(formState: FormGroupState<VersionCreationFromData>): boolean {
+    if (!formState.value || formState.isValidationPending || formState.isInvalid || 
+        !formState.controls.redmine_project.value || formState.controls.redmine_project.value.length <= 0 ||
+        !formState.controls.name.value || formState.controls.name.value.length <= 0 || 
+        !formState.controls.sharing.value || formState.controls.sharing.value.length <= 0 ||
+        !(formState.controls.version.value && formState.controls.version.value.length > 0)) {
         return false;
     }
 

@@ -15,7 +15,7 @@ import { FormSaveState, FORM_SAVE_STATE } from 'src/app/shared/store/shared.stat
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers } from 'src/app/items/store/actions/items.common-actions';
 import { breakBatchItemCreation, identifyAndFillItemById } from 'src/app/items/store/actions/items.item-creation-actions';
 import { ITEM_CREATION_FORMID } from 'src/app/items/store/state/items.item-creation-state';
-import { RedmineVersion } from 'src/app/items/store/models/redmine-version.model';
+import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
 
 @Component({
   selector: 'app-item-creation',

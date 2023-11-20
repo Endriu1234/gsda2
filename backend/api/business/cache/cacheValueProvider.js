@@ -63,6 +63,12 @@ const reqisteredCaches = {
             if (versions && versions.versions && versions.versions.length > 0) {
                 const versionTmp = versions.versions.filter((version) => {return version.status === 'open'});
                 versionTmp.forEach((version) => version.currentProject = {id: project.id, name: project.name});
+                versionTmp.forEach(async (version) => {
+                    if (version.wiki_page_title && version.wiki_page_title.length > 0) {
+                        const wiki = await getRedmineData(`projects/${project.id}/wiki/${version.wiki_page_title}.json`, false);
+                        version.wiki = wiki.wiki_page.text;
+                    }
+                })
                 results.push(...versionTmp);
             }
         }
