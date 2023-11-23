@@ -10,8 +10,9 @@ export class RedmineVersion {
     public created_on: Date;
     public updated_on: Date;
     public currentProject: {id: number, name: string};
+    public wiki: string;
 
-    constructor(id: number, name: string, description: string, project: {id: number, name: string}, status: string, due_date: Date, sharing: string, wiki_page_title: string, created_on: Date, updated_on: Date, currentProject: {id: number, name: string}) {
+    constructor(id: number, name: string, description: string, project: {id: number, name: string}, status: string, due_date: Date, sharing: string, wiki_page_title: string, created_on: Date, updated_on: Date, currentProject: {id: number, name: string}, wiki: string) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -23,5 +24,6 @@ export class RedmineVersion {
         this.created_on = created_on;
         this.updated_on = updated_on;
         this.currentProject = currentProject;
+        this.wiki = wiki;
     }
 }

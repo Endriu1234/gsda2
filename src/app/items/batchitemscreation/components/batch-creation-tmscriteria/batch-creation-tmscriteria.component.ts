@@ -13,7 +13,7 @@ import { FORM_SEARCH_STATE, FormSearchState } from 'src/app/shared/store/shared.
 import { RedmineUserByLetter } from 'src/app/shared/store/models/redmine-user-letter-model';
 import { initTmsClients, setBatchItemCreationTabIndex } from 'src/app/items/store/actions/items.batch-item-creation-actions';
 import { TmsClientByLetter } from 'src/app/shared/store/models/tms-client-letter.model';
-import { RedmineVersion } from 'src/app/items/store/models/redmine-version.model';
+import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
 
 @Component({
   selector: 'app-batch-creation-tmscriteria',

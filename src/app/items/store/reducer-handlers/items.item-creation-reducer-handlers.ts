@@ -6,7 +6,7 @@ import { IssueValidation } from '../models/issue-validation.model';
 import { TmsValidation } from '../models/tms-validation.model';
 import { FromIdValidation } from '../models/fromId-validation.model';
 import { ItemCreationMode } from '../state/items.item-creation-state';
-import { RedmineVersion } from '../models/redmine-version.model';
+import { RedmineVersion } from '../../../shared/store/models/redmine-version.model';
 
 export function setRedmineProjectsFilterForItemCreation(state: State): State {
     const newState: State = _.cloneDeep(state);

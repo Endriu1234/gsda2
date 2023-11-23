@@ -115,13 +115,15 @@ module.exports.postFiles = async (uploads) => {
 }
 
 module.exports.putRedmineJsonData = async (endpoint, jsonData) => {
-    let success = true;
+    const retVal = {
+        success: true,
+        redmineLink: ''
+    }
 
-    const creationResult = await axios.put(getRedmineAddress(endpoint), jsonData, getRedmineApiConfiguration()).catch((error) => {
-        success = false;
+    retVal.redmineResponse = await axios.put(getRedmineAddress(endpoint), jsonData, getRedmineApiConfiguration()).catch((error) => {
+        retVal.success = false;
         logError(error);
     });
 
-
-    return success;
+    return retVal;
 }

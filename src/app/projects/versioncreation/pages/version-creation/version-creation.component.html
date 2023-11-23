@@ -1,0 +1,154 @@
+<ng-container *ngIf="formState$ | async as formState">
+    <form novalidate [ngrxFormState]="formState">
+        <div class="d-flex flex-md-row justify-content-md-between flex-column my-4 jkWidthMarg">
+            <mat-card-title>Version Creation/Update</mat-card-title>
+        </div>
+        <mat-card class="mt-1">
+            <mat-card-content>
+                <div class="d-flex flex-md-row justify-content-md-between flex-column">
+                    <mat-error [style.width.%]=49 class="jk-error"
+                        [style.visibility]="formState.isTouched && (formState.errors._redmine_project?.$validateProjectError || formState.errors._redmine_project?.required)?'visible':'hidden'">
+                        Project is required
+                    </mat-error>
+                    <mat-error [style.width.%]=49 class="jk-error"
+                        [style.visibility]="(formState.isTouched && (formState.errors._sd_project?.$validateSDProjectError))?'visible':'hidden'">
+                        SoftDev Project is incorrect
+                    </mat-error>
+                </div>
+                <div class="d-flex flex-md-row justify-content-md-between flex-column">
+                    <mat-form-field appearance="outline" class="" [style.width.%]=49>
+                        <mat-label>Redmine Project</mat-label>
+                        <input type="text"
+                            matInput
+                            [ngrxFormControlState]="$any(formState).controls.redmine_project"
+                            [matAutocomplete]="autoProject">
+                        <mat-autocomplete #autoProject="matAutocomplete">
+                            <mat-option *ngFor="let project of (projectsFiltered$ | async)" [value]="project.name">
+                                {{project.name}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="" [style.width.%]=49>
+                        <mat-label>SoftDev Source Project / Packet</mat-label>
+                        <input type="text"
+                            matInput
+                            [ngrxFormControlState]="$any(formState).controls.sd_project"
+                            [matAutocomplete]="autoSoftDevProject">
+                        <mat-autocomplete #autoSoftDevProject="matAutocomplete">
+                            <mat-option *ngFor="let project of (softDevProjectsFiltered$ | async)"
+                                [value]="project.PRODUCT_VERSION_NAME">
+                                {{project.PRODUCT_VERSION_NAME}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </div>
+                <div class="d-flex flex-md-row justify-content-md-between flex-column">
+                    <mat-form-field appearance="outline" class="jk-form-field" [style.width.%]=49>
+                        <mat-label>Version</mat-label>
+                        <mat-select [ngrxFormControlState]="$any(formState).controls.version">
+                            <mat-option *ngFor="let version of versions$ | async" [value]="version.name">
+                                {{version.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="d-flex flex-md-row justify-content-md-between flex-column">
+                    <app-small-spinner class="float-start ms-5"
+                        [style.visibility]="formState.controls.redmine_project.value && ((versions$ | async) == null || !(versions$ | async)?.length)?'visible':'hidden'"></app-small-spinner>
+                </div>
+            </mat-card-content>
+        </mat-card>
+        <mat-card>
+            <mat-card-content>
+                <mat-error class="jk-error" [style.visibility]="(formState.isTouched && (formState.errors._name?.$validateNameError || formState.errors._name?.required))?'visible':'hidden'">
+                    Name is required
+                </mat-error>
+                <mat-form-field class="jk-form-field" appearance="outline" [style.width.%]=100>
+                    <mat-label>Name</mat-label>
+                    <input type="text" 
+                        matInput 
+                        [ngrxFormControlState]="$any(formState).controls.name" 
+                        placeholder="Name of the project"
+                        [disabled]="formState.controls.version.value.length > 0">
+                </mat-form-field>     
+                <mat-form-field appearance="outline" [style.width.%]=100 class="mt-3">
+                    <mat-label>Description</mat-label>
+                    <input type="text" matInput [ngrxFormControlState]="$any(formState).controls.description" placeholder="Description">
+                </mat-form-field>  
+                <div class="d-flex flex-md-row justify-content-md-between flex-column">
+                    <div [style.width.%]=33></div>
+                    <div [style.width.%]=33>
+                        <mat-error class="jk-error" *ngIf="(formState.isTouched && formState.errors._due_date?.$validateDueDateError)">
+                            Incorrect Due date
+                        </mat-error>
+                    </div>
+                    <div [style.width.%]=33></div>
+                </div> 
+                <div class="d-flex flex-md-row justify-content-md-between flex-column"> 
+                    <mat-form-field appearance="outline" [style.width.%]=33>
+                        <mat-label>Wiki page</mat-label>
+                        <input 
+                            type="text" 
+                            matInput 
+                            placeholder="Wiki title"
+                            [ngrxFormControlState]="$any(formState).controls.wiki_title">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" [style.width.%]=33>
+                        <mat-label>Due date</mat-label>
+                        <input matInput 
+                            [ngrxFormControlState]="$any(formState).controls.due_date"
+                            [ngrxValueConverter]="dateConverter"
+                            [matDatepicker]="dpFrom" 
+                        >
+                        <mat-hint>MM/DD/YYYY</mat-hint>
+                        <mat-datepicker-toggle matIconSuffix [for]="dpFrom"></mat-datepicker-toggle>
+                        <mat-datepicker #dpFrom></mat-datepicker>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="" [style.width.%]=33>
+                        <mat-label>Sharing</mat-label>
+                        <mat-select [ngrxFormControlState]="$any(formState).controls.sharing">
+                            <mat-option value="none">Not shared</mat-option>
+                            <mat-option value="descendants">With subprojects</mat-option>
+                            <mat-option value="hierarchy">With project hierarchy</mat-option>
+                            <mat-option value="tree">With project tree</mat-option>
+                            <mat-option value="system">With all projects</mat-option>
+                        </mat-select>
+                    </mat-form-field>                           
+                </div> 
+                <mat-form-field appearance="outline" [style.width.%]=100>
+                    <mat-label>Wiki content</mat-label>
+                    <textarea 
+                        type="text" 
+                        cdkAutosizeMinRows="5" 
+                        matInput 
+                        placeholder="Wiki content"
+                        [readonly]="formState.controls.wiki_title.value.length <= 0"
+                        [disabled]="formState.controls.wiki_title.value.length <= 0"
+                        [ngrxFormControlState]="$any(formState).controls.wiki"></textarea>
+                </mat-form-field>   
+            </mat-card-content>
+        </mat-card>
+        <mat-card-actions [align]="'end'" class="jkWidthMarg">
+            <button 
+                mat-fab 
+                extended 
+                color="accent" 
+                class="me-4 my-2"
+                (click)="formState.controls.version.value.length > 0 ? updateAndOpenVersion():createAndOpenVersion()"
+                [disabled]="formState.controls.version.value.length > 0 ? !(canActivateVersionUpdate$ | async) : !(canActivateVersionSave$ | async)"
+            ><span *ngIf="formState.controls.version.value.length <= 0">Create and Open</span>
+             <span *ngIf="formState.controls.version.value.length > 0">Update and Open</span>
+            </button>
+            <button 
+                mat-fab 
+                extended 
+                color="primary" 
+                class="me-3 my-2"
+                (click)="formState.controls.version.value.length > 0 ? updateVersion():createVersion()"
+                [disabled]="formState.controls.version.value.length > 0 ? !(canActivateVersionUpdate$ | async):!(canActivateVersionSave$ | async)"
+            ><span *ngIf="formState.controls.version.value.length <= 0">Create</span>
+             <span *ngIf="formState.controls.version.value.length > 0">Update</span>
+            </button>
+        </mat-card-actions>
+    </form>
+</ng-container>

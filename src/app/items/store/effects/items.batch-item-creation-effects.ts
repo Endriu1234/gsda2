@@ -22,7 +22,7 @@ import { ITEM_CREATION_FORMID } from '../state/items.item-creation-state';
 import { validateIds, validateRedmineProject, validateSDProject, validateTms, validateUserForTms } from '../batch-items.validation';
 import { TmsClient } from 'src/app/shared/store/models/tms-client.model';
 import { ProgressBarSpinnerService } from 'src/app/shared/spinner/progress-bar/progress-bar-spinner/progress-bar-spinner.service';
-import { RedmineVersion } from '../models/redmine-version.model';
+import { RedmineVersion } from '../../../shared/store/models/redmine-version.model';
 
 export const validateSDTargetRedmineProjectError = "validateSDTargetRedmineProjectError";
 export const validateSDSourceSoftDevProjectError = "validateSDSourceSoftDevProjectError";

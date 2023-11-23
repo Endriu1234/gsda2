@@ -6,5 +6,7 @@ const router = express.Router();
 
 router.get('/check-identifier', authController.checkAuth, projectsController.checkIdentifier);
 router.post('/create-redmine-project', authController.checkAuth, projectsController.createRedmineProject);
+router.post('/create-redmine-version', authController.checkAuth, projectsController.createRedmineVersion);
+router.post('/update-redmine-version', authController.checkAuth, projectsController.updateRedmineVersion);
 
 module.exports = router;

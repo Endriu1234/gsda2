@@ -1,7 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import { ProposedItem } from '../models/batchitemcreation/proposed-item.model';
 import { TmsClient } from 'src/app/shared/store/models/tms-client.model';
-import { RedmineVersion } from '../models/redmine-version.model';
+import { RedmineVersion } from '../../../shared/store/models/redmine-version.model';
 
 export const setRedmineProjectsFilterForBatchItemCreationSdCriteria = createAction('[Items Component] Set Redmine Projects Filter For Batch Item Creation Sd Criteria');
 export const setSoftDevProjectsFilterForBatchItemCreationSdCriteria = createAction('[Items Component] Set SoftDev Projects Filter For Batch Item Creation Sd Criteria');

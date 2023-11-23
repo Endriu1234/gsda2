@@ -7,7 +7,7 @@ import { CRValidation } from "../models/cr-validation.model";
 import { IssueValidation } from "../models/issue-validation.model";
 import { TmsValidation } from "../models/tms-validation.model";
 import { FromIdValidation } from "../models/fromId-validation.model";
-import { RedmineVersion } from "../models/redmine-version.model";
+import { RedmineVersion } from "../../../shared/store/models/redmine-version.model";
 
 export enum ItemCreationMode {
     SingleItem = "SINGLE_ITEM_CREATION",

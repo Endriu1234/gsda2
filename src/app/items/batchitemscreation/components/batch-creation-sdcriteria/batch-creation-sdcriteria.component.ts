@@ -10,7 +10,7 @@ import { SoftDevProject } from 'src/app/shared/store/models/softdev-project.mode
 import { FORM_SEARCH_STATE, FormSearchState } from 'src/app/shared/store/shared.state';
 import { initRedmineProjects, initSoftDevProjects } from 'src/app/items/store/actions/items.common-actions';
 import { BATCH_ITEM_CREATION_SDCRITERIA_FORMID } from 'src/app/items/store/state/items.batch-item-creation-state';
-import { RedmineVersion } from 'src/app/items/store/models/redmine-version.model';
+import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
 import { setBatchItemCreationTabIndex } from 'src/app/items/store/actions/items.batch-item-creation-actions';
 
 @Component({

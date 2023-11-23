@@ -12,7 +12,7 @@ import { Store } from '@ngrx/store';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 import { SoftDevProject } from 'src/app/shared/store/models/softdev-project.model';
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, initSoftDevProjects, loadRedmineProjects, loadRedmineTrackers, loadRedmineUsers, loadSoftDevProjects } from '../actions/items.common-actions';
-import { RedmineVersion } from '../models/redmine-version.model';
+import { RedmineVersion } from '../../../shared/store/models/redmine-version.model';
 
 @Injectable()
 export class ItemsCommonEffects {

@@ -18,7 +18,7 @@ import { getItemCreationDialogState, getItemCreationFormState, getItemCreationFo
 import { ITEM_CREATION_DIALOG, ITEM_CREATION_FORMID, ItemCreationMode } from '../state/items.item-creation-state';
 import { SnackBarIcon } from '../../../shared/store/shared.state';
 import { continueBatchItemsCreation, forceEndBatchItemCreation, setLinkToCurrentProposedItemAndUnselect } from '../actions/items.batch-item-creation-actions';
-import { RedmineVersion } from '../models/redmine-version.model';
+import { RedmineVersion } from '../../../shared/store/models/redmine-version.model';
 
 export const validateUserError = "validateUserError";
 export const validateCRError = "validateCRError";

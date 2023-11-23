@@ -1,23 +1,26 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, from, map, mergeMap, of, startWith, switchMap, take } from "rxjs";
-import { HttpClient, HttpContext } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { initRedmineProjects, loadRedmineProjects, initSoftDevProjects, loadSoftDevProjects, fillProjectById, noopAction, setRedmineProjectsFilter, setSoftDevProjectsFilter, resetProjectCreationForm } from './projects.actions';
+import { initRedmineProjects, loadRedmineProjects, initSoftDevProjects, loadSoftDevProjects, fillProjectById, noopAction, setRedmineProjectsFilter, setSoftDevProjectsFilter, resetProjectCreationForm, setVersionRedmineProjectsFilter, setVersionSoftDevProjectsFilter, setVersionDataBaseonSDProject, resetVersionCreationForm, initRedmineVersions, loadRedmineVersions, resetPartiallyVersionCreationForm, fillVersionFormByVersion } from './projects.actions';
 import { RedmineProject } from '../../shared/store/models/redmine-project.model';
 import { SoftDevProject } from './models/softdev-project.model';
 import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 import { Store } from '@ngrx/store';
-import * as fromProjectsState from './projects.state';
+import * as fromProjectsState from './state/projects.state';
+import * as fromProjectState from './state/projects.project-creation-state';
 import * as fromSharedState from '../../shared/store/shared.state';
 import { ResetAction, SetUserDefinedPropertyAction, SetValueAction, box } from 'ngrx-forms';
-import { PROJECT_CREATION_DIALOG, PROJECT_CREATION_FORMID } from './projects.state';
-import { validateIdentifier, validateProject, validateSDProject } from './projects.validation';
-import { getProjectCreationDialogState, getProjectCreationFormState, getSoftDevProjects } from './projects.selectors';
+import { PROJECT_CREATION_DIALOG, PROJECT_CREATION_FORMID } from './state/projects.project-creation-state';
+import { validateIdentifier, validateProject, validateSDProject, validateVersionName, validateVersionProject, validateVersionSDProject, validateVersionVersion } from './projects.validation';
+import { getProjectCreationDialogState, getProjectCreationFormState, getRedmineVersionsByProject, getSoftDevProjects, getVersionCreationFormState } from './projects.selectors';
 import { formatDate } from '@angular/common';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { GsdaRedmineHttpResponse } from 'src/app/shared/http/model/gsda-redmine-http-response.model';
 import { SnackBarIcon } from '../../shared/store/shared.state';
+import { VERSION_CREATION_FORMID } from './state/prjects.version-creation-state';
+import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
 
 const GET_SD_PROJECTS_URL = environment.apiUrl + '/softdev/projects/get-softdev-projects';
 const GET_REDMINE_PROJECTS_URL = environment.apiUrl + '/redmine/items/get-redmine-projects';
@@ -25,6 +28,9 @@ const GET_REDMINE_PROJECTS_URL = environment.apiUrl + '/redmine/items/get-redmin
 export const validateProjectError = "validateProjectError";
 export const validateSDProjectError = "validateSDProjectError";
 export const validateIdentifierError = "validateIdentifierError";
+export const validateNameError = "validateNameError";
+export const validateDueDateError = "validateDueDateError";
+export const validateVersionError = "validateVersionError";
 
 @Injectable()
 export class ProjectsEffects {
@@ -55,6 +61,18 @@ export class ProjectsEffects {
             if (action.controlId === PROJECT_CREATION_DIALOG + '.projectId')
                 return from(validateSDProject(this.store, validateSDProjectError, action.controlId, action.value).pipe(startWith(setSoftDevProjectsFilter())));
 
+            if (action.controlId === VERSION_CREATION_FORMID + '.redmine_project')
+                return from(validateVersionProject(this.store, validateProjectError, action.controlId, action.value).pipe(startWith(setVersionRedmineProjectsFilter())));
+
+            if (action.controlId === VERSION_CREATION_FORMID + '.sd_project')
+                return from(validateVersionSDProject(this.store, validateSDProjectError, action.controlId, action.value).pipe(startWith(setVersionSoftDevProjectsFilter())));
+
+            if (action.controlId === VERSION_CREATION_FORMID + '.name')
+                return from(validateVersionName(this.store, validateNameError, action.controlId, action.value));
+
+            if (action.controlId === VERSION_CREATION_FORMID + '.version')
+                return from(validateVersionVersion(this.store, validateVersionError, action.controlId, action.value));
+
             return of(noopAction());
         })
     ));
@@ -81,14 +99,72 @@ export class ProjectsEffects {
                                 else {
                                     console.log(response.errorMessage);
                                     this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage, icon: SnackBarIcon.Error }));
-                                    return of(new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID,
+                                    return of(new SetUserDefinedPropertyAction(fromProjectState.PROJECT_CREATION_FORMID,
                                         fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New));
                                 }
                             }), catchError(error => {
                                 console.log(error);
                                 this.sharedStore.dispatch(addSnackbarNotification({ notification: "Error during adding project", icon: SnackBarIcon.Error }));
-                                return of(new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID,
+                                return of(new SetUserDefinedPropertyAction(fromProjectState.PROJECT_CREATION_FORMID,
                                     fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New));
+                            }))
+                        }))
+                    }
+                }
+            }
+
+            if (action.controlId == VERSION_CREATION_FORMID) {
+                if (action.name == fromSharedState.FORM_SAVE_STATE) {
+                    if (action.value == fromSharedState.FormSaveState.Saving || action.value == fromSharedState.FormSaveState.SavingWithRedirect) {
+                        return this.store.select(getVersionCreationFormState).pipe(take(1), switchMap(formData => {
+                            let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
+                            return this.http.post<GsdaRedmineHttpResponse>(environment.apiUrl + '/redmine/projects/create-redmine-version', formData.value, { context }).pipe(switchMap(response => {
+                                if (response.success) {
+                                    if (action.value == fromSharedState.FormSaveState.SavingWithRedirect && response.redmineLink) {
+                                        window.location.href = response.redmineLink;
+                                    }
+
+                                    this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Version saved', icon: SnackBarIcon.Success }));
+                                    return of(resetVersionCreationForm());
+                                }
+                                else {
+                                    console.log(response.errorMessage);
+                                    this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage, icon: SnackBarIcon.Error }));
+                                    return of(new SetUserDefinedPropertyAction(VERSION_CREATION_FORMID,
+                                        fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New));
+                                }
+                            }), catchError(error => {
+                                console.log(error);
+                                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Error during adding version", icon: SnackBarIcon.Error }));
+                                return of(new SetUserDefinedPropertyAction(VERSION_CREATION_FORMID,
+                                    fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New));
+                            }))
+                        }))
+                    }
+                } else if (action.name == fromSharedState.FORM_UPDATE_STATE) {
+                    if (action.value == fromSharedState.FormUpdateState.Updating || action.value == fromSharedState.FormUpdateState.UpdatingWithRedirect) {
+                        return this.store.select(getVersionCreationFormState).pipe(take(1), switchMap(formData => {
+                            let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
+                            return this.http.post<GsdaRedmineHttpResponse>(environment.apiUrl + '/redmine/projects/update-redmine-version', formData.value, { context }).pipe(switchMap(response => {
+                                if (response.success) {
+                                    if (action.value == fromSharedState.FormUpdateState.UpdatingWithRedirect && response.redmineLink) {
+                                        window.location.href = response.redmineLink;
+                                    }
+
+                                    this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Version updated', icon: SnackBarIcon.Success }));
+                                    return of(resetVersionCreationForm());
+                                }
+                                else {
+                                    console.log(response.errorMessage);
+                                    this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage, icon: SnackBarIcon.Error }));
+                                    return of(new SetUserDefinedPropertyAction(VERSION_CREATION_FORMID,
+                                        fromSharedState.FORM_UPDATE_STATE, fromSharedState.FormUpdateState.New));
+                                }
+                            }), catchError(error => {
+                                console.log(error);
+                                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Error during updating version", icon: SnackBarIcon.Error }));
+                                return of(new SetUserDefinedPropertyAction(VERSION_CREATION_FORMID,
+                                    fromSharedState.FORM_UPDATE_STATE, fromSharedState.FormUpdateState.New));
                             }))
                         }))
                     }
@@ -101,16 +177,16 @@ export class ProjectsEffects {
 
     resetProjectCreationForm$ = createEffect(() => this.actions$.pipe(ofType(resetProjectCreationForm),
         switchMap(() => {
-            return of(new SetValueAction(fromProjectsState.PROJECT_CREATION_DIALOG + '.projectId', ''),
-                new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.name', ''),
-                new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.identifier', ''),
-                new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.description', ''),
-                new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.wiki', ''),
-                new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.parent_project', ''),
-                new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.inherit_public', box(['Public'])),
-                new SetUserDefinedPropertyAction(fromProjectsState.PROJECT_CREATION_FORMID,
+            return of(new SetValueAction(fromProjectState.PROJECT_CREATION_DIALOG + '.projectId', ''),
+                new SetValueAction(fromProjectState.PROJECT_CREATION_FORMID + '.name', ''),
+                new SetValueAction(fromProjectState.PROJECT_CREATION_FORMID + '.identifier', ''),
+                new SetValueAction(fromProjectState.PROJECT_CREATION_FORMID + '.description', ''),
+                new SetValueAction(fromProjectState.PROJECT_CREATION_FORMID + '.wiki', ''),
+                new SetValueAction(fromProjectState.PROJECT_CREATION_FORMID + '.parent_project', ''),
+                new SetValueAction(fromProjectState.PROJECT_CREATION_FORMID + '.inherit_public', box(['Public'])),
+                new SetUserDefinedPropertyAction(fromProjectState.PROJECT_CREATION_FORMID,
                     fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New),
-                new ResetAction(fromProjectsState.PROJECT_CREATION_FORMID));
+                new ResetAction(fromProjectState.PROJECT_CREATION_FORMID));
         })
     ));
 
@@ -119,12 +195,12 @@ export class ProjectsEffects {
         switchMap(() => {
             return this.store.select(getProjectCreationDialogState).pipe(take(1), switchMap(dialogData => {
                 return this.store.select(getSoftDevProjects).pipe(take(1), mergeMap(sdProjects => {
-                    let sdProject = sdProjects.find(sd => sd.PRODUCT_VERSION_NAME == dialogData.controls.projectId.value);
+                    let sdProject = sdProjects.find((sd: { PRODUCT_VERSION_NAME: string; }) => sd.PRODUCT_VERSION_NAME == dialogData.controls.projectId.value);
                     if (sdProject) {
-                        return of(new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.identifier', sdProject.PRODUCT_VERSION_NAME.replace(/\./g, "_").toLocaleLowerCase()),
-                            new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.name', sdProject.PRODUCT_VERSION_NAME),
-                            new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.description', this.createDescription(sdProject)),
-                            new SetValueAction(fromProjectsState.PROJECT_CREATION_FORMID + '.wiki', this.createWikiInformation(sdProject)));
+                        return of(new SetValueAction(fromProjectState.PROJECT_CREATION_FORMID + '.identifier', sdProject.PRODUCT_VERSION_NAME.replace(/\./g, "_").toLocaleLowerCase()),
+                            new SetValueAction(fromProjectState.PROJECT_CREATION_FORMID + '.name', sdProject.PRODUCT_VERSION_NAME),
+                            new SetValueAction(fromProjectState.PROJECT_CREATION_FORMID + '.description', this.createDescription(sdProject)),
+                            new SetValueAction(fromProjectState.PROJECT_CREATION_FORMID + '.wiki', this.createWikiInformation(sdProject)));
                     }
 
                     return of(noopAction());
@@ -203,4 +279,100 @@ export class ProjectsEffects {
     }
 
 
+    setVersionDataBaseonSDProject$ = createEffect(() => this.actions$.pipe(
+        ofType(setVersionDataBaseonSDProject),
+        switchMap(() => {
+            return this.store.select(getVersionCreationFormState).pipe(take(1), switchMap(versionFormData => {
+                return this.store.select(getSoftDevProjects).pipe(take(1), mergeMap(sdProjects => {
+                    let sdProject = sdProjects.find((sd: { PRODUCT_VERSION_NAME: string; }) => sd.PRODUCT_VERSION_NAME == versionFormData.controls.sd_project.value);
+                    if (sdProject) {
+                        return of(versionFormData.controls.version.value.length > 0 ? noopAction():new SetValueAction(VERSION_CREATION_FORMID + '.name', sdProject.PRODUCT_VERSION_NAME),
+                            new SetValueAction(VERSION_CREATION_FORMID + '.description', sdProject.PROJECT_NAME),
+                            new SetValueAction(VERSION_CREATION_FORMID + '.due_date', sdProject.PRODUCT_DELIVERY_DATE),
+                            new SetValueAction(VERSION_CREATION_FORMID + '.wiki_title', sdProject.PRODUCT_VERSION_NAME.replace(/\./g, "_").toLocaleLowerCase()),
+                            new SetValueAction(VERSION_CREATION_FORMID + '.wiki', this.createWikiInformation(sdProject)));
+                    }
+
+                    return of(noopAction());
+                }))
+            }), catchError(error => {
+                console.log(error);
+                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during defaulting!", icon: SnackBarIcon.Error }));
+                return of(noopAction());
+            }))
+        })
+    ));
+
+
+    resetVersionCreationForm$ = createEffect(() => this.actions$.pipe(ofType(resetVersionCreationForm),
+        switchMap(() => {
+            return of(new SetValueAction(VERSION_CREATION_FORMID + '.redmine_project', ''),
+                new SetValueAction(VERSION_CREATION_FORMID + '.version', ''),
+                new SetValueAction(VERSION_CREATION_FORMID + '.sd_project', ''),
+                new SetValueAction(VERSION_CREATION_FORMID + '.name', ''),
+                new SetValueAction(VERSION_CREATION_FORMID + '.description', ''),
+                new SetValueAction(VERSION_CREATION_FORMID + '.wiki_title', ''),
+                new SetValueAction(VERSION_CREATION_FORMID + '.due_date', ''),
+                new SetValueAction(VERSION_CREATION_FORMID + '.sharing', 'descendants'),
+                new SetValueAction(VERSION_CREATION_FORMID + '.wiki', ''),
+                new SetUserDefinedPropertyAction(VERSION_CREATION_FORMID,
+                    fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New),
+                new ResetAction(VERSION_CREATION_FORMID));
+        })
+    ));
+
+    resetPartiallyVersionCreationForm$ = createEffect(() => this.actions$.pipe(ofType(resetPartiallyVersionCreationForm),
+        switchMap(() => {
+            return of(new SetValueAction(VERSION_CREATION_FORMID + '.name', ''),
+                new SetValueAction(VERSION_CREATION_FORMID + '.description', ''),
+                new SetValueAction(VERSION_CREATION_FORMID + '.wiki_title', ''),
+                new SetValueAction(VERSION_CREATION_FORMID + '.due_date', ''),
+                new SetValueAction(VERSION_CREATION_FORMID + '.sharing', 'descendants'),
+                new SetValueAction(VERSION_CREATION_FORMID + '.wiki', ''),
+                new SetUserDefinedPropertyAction(VERSION_CREATION_FORMID,
+                    fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New),
+                new ResetAction(VERSION_CREATION_FORMID));
+        })
+    ));
+
+    /*setEmptyVersion$ = createEffect(() => this.actions$.pipe(
+        ofType(setEmptyVersion),
+        switchMap(() => {
+            return of(new SetValueAction(VERSION_CREATION_FORMID + '.version', ' '));
+        })
+    ));*/
+
+    initRedmineVersions$ = createEffect(() => this.actions$.pipe(ofType(initRedmineVersions),
+        switchMap((param) => {
+            let params = new HttpParams();
+            params = params.append("redmineProject", param.projectName);
+            return this.http.get<RedmineVersion[]>(environment.apiUrl + '/redmine/items/get-redmine-versions', { params });
+        }), map(redmineVersions => loadRedmineVersions({ redmineVersions }))
+    ));
+
+    fillVersionFormByVersion$ = createEffect(() => this.actions$.pipe(
+        ofType(fillVersionFormByVersion),
+        switchMap(() => {
+            return this.store.select(getVersionCreationFormState).pipe(take(1), switchMap(versionFormData => {
+                return this.store.select(getRedmineVersionsByProject).pipe(take(1), mergeMap(versions => {
+                    let version = versions.find((ver) => ver.name == versionFormData.controls.version.value);
+                    if (version) {
+                        return of(new SetValueAction(VERSION_CREATION_FORMID + '.name', version.name),
+                            new SetValueAction(VERSION_CREATION_FORMID + '.description', version.description),
+                            new SetValueAction(VERSION_CREATION_FORMID + '.due_date', version.due_date),
+                            new SetValueAction(VERSION_CREATION_FORMID + '.wiki_title', version.wiki_page_title),
+                            new SetValueAction(VERSION_CREATION_FORMID + '.sharing', version.sharing),
+                            new SetValueAction(VERSION_CREATION_FORMID + '.wiki', version.wiki),
+                            new SetValueAction(VERSION_CREATION_FORMID + '.sd_project', ''));
+                    }
+
+                    return of(noopAction());
+                }))
+            }), catchError(error => {
+                console.log(error);
+                this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during defaulting!", icon: SnackBarIcon.Error }));
+                return of(noopAction());
+            }))
+        })
+    ));
 }

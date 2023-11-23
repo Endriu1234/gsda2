@@ -11,13 +11,15 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { SmallSpinnerModule } from '../shared/components/small-spinner.module';
 import { EffectsModule } from '@ngrx/effects';
 import { ProjectsEffects } from './store/projects.effects';
+import { VersionCreationComponent } from './versioncreation/pages/version-creation/version-creation.component';
 
 
 @NgModule({
   declarations: [
     ProjectCreationPage,
     ProjectViewEditPage,
-    ProjectCreationFromId
+    ProjectCreationFromId,
+    VersionCreationComponent
   ],
   imports: [
     CommonModule,

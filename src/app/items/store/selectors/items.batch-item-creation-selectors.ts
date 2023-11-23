@@ -120,6 +120,6 @@ export const getIsAnyBatchItemsRecordsSelected = createSelector(getBatchItemCrea
 })
 
 
-export function getRedmineVersionsByProject(getRedmineVersionsByProject: any): import("rxjs").Observable<import("../models/redmine-version.model").RedmineVersion[]> | null {
+export function getRedmineVersionsByProject(getRedmineVersionsByProject: any): import("rxjs").Observable<import("../../../shared/store/models/redmine-version.model").RedmineVersion[]> | null {
   throw new Error('Function not implemented.');
 }
