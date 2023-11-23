@@ -106,5 +106,35 @@ module.exports.validateRedmineItem = async (item) => {
         }
     }
 
+    if (item.uploads) {
+
+        if (item.uploads.length === 0) {
+            retVal.isValid = false;
+            retVal.errorMsg = 'No attachments were provided';
+            return retVal;
+        }
+
+        for (const attachment of item.uploads) {
+
+            if (!attachment.content_type || attachment.content_type.length === 0) {
+                retVal.isValid = false;
+                retVal.errorMsg = 'There is an attachment w/o content type';
+                return retVal;
+            }
+
+            if (!attachment.filename || attachment.filename.length === 0) {
+                retVal.isValid = false;
+                retVal.errorMsg = 'There is an attachment w/o file name';
+                return retVal;
+            }
+
+            if (!attachment.content) {
+                retVal.isValid = false;
+                retVal.errorMsg = 'There is an attachment w/o content';
+                return retVal;
+            }
+        }
+    }
+
     return retVal;
 }

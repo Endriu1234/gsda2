@@ -1,4 +1,6 @@
+const emailHandler = require('../../../business/email/emailHandler');
 const ItemsFromEmailsSettings = require('../../../model/gsda/itemsfromemails/ItemsFromEmailsSettings');
+
 
 module.exports.getItemsFromEmailsSettings = async (req, res) => {
     const retVal = {
@@ -36,7 +38,18 @@ module.exports.getItemsFromEmailsSettings = async (req, res) => {
     return res.status(200).json(retVal);
 }
 
+
+
 module.exports.saveItemsFromEmailsSettings = async (req, res) => {
+    emailHandler.test();
+    // emailHandler.getEmailBoxes(
+    //     (boxes) => {
+    //         console.log('getEmailBoxes SUCCESS');
+    //         console.dir(boxes);
+    //     },
+    //     (error) => { console.log(`Zlabany blad w wywolaniu: ${error}`) }
+    // );
+
     const retVal = {
         success: false,
         errorMessage: ''
