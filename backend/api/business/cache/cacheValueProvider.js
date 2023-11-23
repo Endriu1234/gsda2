@@ -65,8 +65,9 @@ const reqisteredCaches = {
                 versionTmp.forEach((version) => version.currentProject = {id: project.id, name: project.name});
                 versionTmp.forEach(async (version) => {
                     if (version.wiki_page_title && version.wiki_page_title.length > 0) {
-                        const wiki = await getRedmineData(`projects/${project.id}/wiki/${version.wiki_page_title}.json`, false);
-                        version.wiki = wiki.wiki_page.text;
+                        const wiki = await getRedmineData(`projects/${version.project.id}/wiki/${version.wiki_page_title}.json`, false);
+                        if (wiki && wiki.wiki_page && wiki.wiki_page.text)
+                            version.wiki = wiki.wiki_page.text;
                     }
                 })
                 results.push(...versionTmp);

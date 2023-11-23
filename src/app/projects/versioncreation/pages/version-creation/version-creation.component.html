@@ -122,6 +122,8 @@
                         cdkAutosizeMinRows="5" 
                         matInput 
                         placeholder="Wiki content"
+                        [readonly]="formState.controls.wiki_title.value.length <= 0"
+                        [disabled]="formState.controls.wiki_title.value.length <= 0"
                         [ngrxFormControlState]="$any(formState).controls.wiki"></textarea>
                 </mat-form-field>   
             </mat-card-content>

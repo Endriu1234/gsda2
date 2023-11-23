@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromItemsState from '../../../store/state/items.state';
 import * as fromItemCreationSelectors from '../../../store/selectors/items.item-creation-selectors';
@@ -6,7 +6,7 @@ import * as fromCommonItemsSelectors from '../../../store/selectors/items.common
 import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model';
 import { RedmineUserByLetter } from 'src/app/shared/store/models/redmine-user-letter-model';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
-import { Observable, take } from 'rxjs';
+import { Observable, Subscription, take } from 'rxjs';
 import { FormGroupState, SetUserDefinedPropertyAction } from 'ngrx-forms';
 import { trimUpperConverter } from '../../../../shared/tools/validators/ngrxValueConverters';
 import { ItemCreationFromId } from "../item-creation-from-id/item-creation-from-id";
@@ -22,7 +22,7 @@ import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.mode
   templateUrl: './item-creation.page.html',
   styleUrls: ['./item-creation.page.scss']
 })
-export class ItemCreationPage implements OnInit {
+export class ItemCreationPage implements OnInit, OnDestroy {
 
   trackers$: Observable<RedmineTracker[]> | null = null;
   usersFiltered$: Observable<RedmineUserByLetter[]> | null = null;
@@ -32,6 +32,7 @@ export class ItemCreationPage implements OnInit {
   getItemCreationFormCanActivateSave$: Observable<boolean> | null = null;
   isItemCreationFormCreatedFromBatch$: Observable<boolean> | null = null;
   versions$: Observable<RedmineVersion[]> | null = null;
+  private subscriptions: (Subscription | undefined) [] = [];
   trimUpper = trimUpperConverter;
 
   constructor(private store: Store<fromItemsState.State>, private dialog: MatDialog) {
@@ -51,12 +52,12 @@ export class ItemCreationPage implements OnInit {
 
   fillById() {
     let fillFromId = false;
-    this.getItemCreationFormSuitableForDefault$?.subscribe(val => fillFromId = val);
+    this.subscriptions.push(this.getItemCreationFormSuitableForDefault$?.subscribe(val => fillFromId = val));
     if (!fillFromId) {
       this.openFromIdDialog();
     } else {
       let id: string = "";
-      this.formState$.subscribe(formState => {
+      this.subscriptions.push(this.formState$.subscribe(formState => {
         if (formState.controls.issue && formState.controls.issue.value) {
           id = formState.controls.issue.value;
         } else if (formState.controls.cr && formState.controls.cr.value) {
@@ -64,7 +65,7 @@ export class ItemCreationPage implements OnInit {
         } else if (formState.controls.tms && formState.controls.tms.value) {
           id = formState.controls.tms.value;
         }
-      });
+      }));
       this.store.dispatch(identifyAndFillItemById());
     }
   }
@@ -98,6 +99,9 @@ export class ItemCreationPage implements OnInit {
     this.versions$ = this.store.select(fromItemCreationSelectors.getRedmineVersionsByProject);
   }
 
+  ngOnDestroy() {
+    this.subscriptions.forEach(s => {if (s) s.unsubscribe()});
+  }
 
   createItem() {
     this.store.dispatch(new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID, FORM_SAVE_STATE, FormSaveState.Saving))
