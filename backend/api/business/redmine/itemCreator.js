@@ -20,8 +20,6 @@ module.exports.createItem = async function (values) {
                 values.uploads = null;
         }
         const itemJson = await convertFormItemObjectToJSON(values);
-        console.log('dane do wyslania:');
-        console.dir(itemJson);
         const result = await postRedmineJsonData('issues.json', itemJson);
 
         if (!result.success) {

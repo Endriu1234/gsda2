@@ -1,8 +1,7 @@
 const Imap = require('imap');
 const { simpleParser } = require('mailparser');
-const fs = require('fs');
 const { htmlToText } = require('html-to-text');
-const { createItem } = require('../redmine/itemCreator');
+const { createItemFromEmail } = require('./createItemFromEmail');
 
 const imapConfig = {
     user: process.env.GSDA_EMAIL_USER,
@@ -104,8 +103,6 @@ module.exports.test = function () {
                             errorCallback(error1);
                     }
                     else {
-                        console.log('resutls');
-                        console.dir(results);
 
                         const f = imap.fetch(results, { bodies: '' });
 
@@ -125,60 +122,10 @@ module.exports.test = function () {
                                         ]
                                     };
 
-                                    // console.dir(parsed);
-
-
                                     const plainText = htmlToText(parsed.html, options);
                                     const upperedPlainText = plainText.toUpperCase();
 
-                                    const gsdaResultIndex = upperedPlainText.indexOf("GSDA RESULT");
-                                    const gsdaCreateIndex = upperedPlainText.indexOf("GSDA CREATE");
-
-                                    console.log(`!! Analiza ${parsed.subject}`);
-
-                                    if (gsdaCreateIndex !== -1 && (gsdaResultIndex === -1 || gsdaCreateIndex < gsdaResultIndex)) {
-                                        console.log('TWORZYMY');
-
-
-
-                                        const itemData = {
-                                            project: 'Batch Creation 1',
-                                            tracker: 'Deficiency',
-                                            subject: (parsed.subject ? parsed.subject : 'Email w/o subject'),
-                                            description: plainText,
-                                            issue: '',
-                                            user: '',
-                                            cr: '',
-                                            tms: '',
-                                            version: '',
-                                            est_time: '',
-                                            uploads: [{
-                                                filename: 'SOURCE_EMAIL.html',
-                                                content_type: 'text/html',
-                                                token: '',
-                                                content: Buffer.from(parsed.html, "utf-8")
-                                            }]
-                                        };
-
-                                        const itemCreationResult = await createItem(itemData);
-
-                                        if (!itemCreationResult.success) {
-                                            console.log(itemCreationResult.errorMessage);
-
-                                            if (errorCallback)
-                                                errorCallback(itemCreationResult.errorMessage);
-                                        }
-
-                                    }
-                                    else
-                                        console.log('Nie tworzymy ')
-                                    // fs.writeFile(`email${Date.now().toString()}.html`, parsed.html, (error5) => {
-                                    //     if (error5) {
-                                    //         console.log(error5);
-                                    //         throw error5;
-                                    //     }
-                                    // });
-
+                                    createItemFromEmail(plainText, upperedPlainText, parsed.subject, parsed.html, errorCallback);
                                 });
                             });
 

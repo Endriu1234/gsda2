@@ -1,3 +1,4 @@
+const ItemsFromEmailsSettings = require('../../model/gsda/itemsfromemails/ItemsFromEmailsSettings');
 const { getRedmineData } = require('../redmine/tools/redmineConnectionTools');
 const softDevDataProvider = require('../softdev/softDevDataProvider');
 const NodeCache = require("node-cache");
@@ -61,8 +62,8 @@ const reqisteredCaches = {
         for (const project of projects) {
             const versions = await getRedmineData(`projects/${project.id}/versions.json`, false);
             if (versions && versions.versions && versions.versions.length > 0) {
-                const versionTmp = versions.versions.filter((version) => {return version.status === 'open'});
-                versionTmp.forEach((version) => version.currentProject = {id: project.id, name: project.name});
+                const versionTmp = versions.versions.filter((version) => { return version.status === 'open' });
+                versionTmp.forEach((version) => version.currentProject = { id: project.id, name: project.name });
                 versionTmp.forEach(async (version) => {
                     if (version.wiki_page_title && version.wiki_page_title.length > 0) {
                         const wiki = await getRedmineData(`projects/${version.project.id}/wiki/${version.wiki_page_title}.json`, false);
@@ -79,6 +80,10 @@ const reqisteredCaches = {
         results = Array.from(uniqueSet).map(JSON.parse);
 
         return results.sort((a, b) => a.name.localeCompare(b.name))
+    },
+    'items_from_emails_settings': async () => {
+        const settings = await ItemsFromEmailsSettings.findOne({ formId: 'ITEMS_FROM_EMAILS_SETTINGS_FORMID' });
+        return { ...settings.values };
     }
 }
 

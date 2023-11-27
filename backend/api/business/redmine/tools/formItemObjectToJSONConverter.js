@@ -68,9 +68,6 @@ module.exports.convertFormItemObjectToJSON = async function convertFormItemObjec
     if (custom_fields.length > 0)
         redmineItem.issue.custom_fields = custom_fields;
 
-    console.log('Przed attachemntami');
-    console.dir(redmineItem);
-
     if (formItem && formItem.uploads && formItem.uploads.length > 0) {
 
         redmineItem.issue.uploads = [];
@@ -83,9 +80,6 @@ module.exports.convertFormItemObjectToJSON = async function convertFormItemObjec
             });
         }
     }
-    console.log('po attachmentach')
-    console.dir(redmineItem);
 
     return redmineItem;
-    //return JSON.stringify(redmineItem);
 }

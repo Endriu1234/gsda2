@@ -1,6 +1,6 @@
 const emailHandler = require('../../../business/email/emailHandler');
 const ItemsFromEmailsSettings = require('../../../model/gsda/itemsfromemails/ItemsFromEmailsSettings');
-
+const cacheValueProvider = require('../../../business/cache/cacheValueProvider');
 
 module.exports.getItemsFromEmailsSettings = async (req, res) => {
     const retVal = {
@@ -41,14 +41,6 @@ module.exports.getItemsFromEmailsSettings = async (req, res) => {
 
 
 module.exports.saveItemsFromEmailsSettings = async (req, res) => {
-    emailHandler.test();
-    // emailHandler.getEmailBoxes(
-    //     (boxes) => {
-    //         console.log('getEmailBoxes SUCCESS');
-    //         console.dir(boxes);
-    //     },
-    //     (error) => { console.log(`Zlabany blad w wywolaniu: ${error}`) }
-    // );
 
     const retVal = {
         success: false,
@@ -61,6 +53,7 @@ module.exports.saveItemsFromEmailsSettings = async (req, res) => {
             && req.body.values) {
 
             await ItemsFromEmailsSettings.findOneAndUpdate({ formId: req.body.formId }, { values: req.body.values });
+            cacheValueProvider.deleteValue('items_from_emails_settings');
             retVal.success = true;
         }
         else {
@@ -70,6 +63,8 @@ module.exports.saveItemsFromEmailsSettings = async (req, res) => {
     catch (err) {
         retVal.errorMessage = err;
     }
+
+    emailHandler.test();
 
     return res.status(200).json(retVal);
 }
