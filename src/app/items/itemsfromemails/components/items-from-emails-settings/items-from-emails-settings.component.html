@@ -8,11 +8,18 @@
                             [ngrxFormControlState]="$any(formState).controls.enabled">Enabled</mat-slide-toggle>
                     </div>
                     <div class="row">
-                        <mat-form-field appearance="outline" [style.width.px]=220 class="mt-3">
-                            <input  [ngrxFormControlState]="$any(formState).controls.interval"
-                              type="number" class="form-control" matInput name="value"
-                            placeholder="Interval in minutes">
+                        <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                            <mat-label>Tracker</mat-label>
+                            <mat-select [ngrxFormControlState]="$any(formState).controls.tracker">
+
+                                <mat-option *ngFor="let tracker of (trackers$ | async)"
+                                    [value]="tracker.name">{{tracker.name}}</mat-option>
+                            </mat-select>
                         </mat-form-field>
+                        <mat-error *ngIf="formState.errors._itemLevel?.required">
+                            Item level is required
+                        </mat-error>
+
                     </div>
                     <div class="row">
                         <button

@@ -87,7 +87,7 @@ export class ItemsFromEmailsEffects {
 
                     if (item.success) {
                         return of(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.enabled', item.enabled),
-                            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.interval', item.interval),
+                            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.tracker', item.tracker),
                             new ResetAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID),
                             endInitItemsFromEmailsSettings());
                     }

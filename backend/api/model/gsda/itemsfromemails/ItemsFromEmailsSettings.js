@@ -7,7 +7,7 @@ const ItemsFromEmailsSettings = new Schema({
     formId: String,
     values: {
         enabled: Boolean,
-        interval: Number
+        tracker: String
     }
 }, opts);
 

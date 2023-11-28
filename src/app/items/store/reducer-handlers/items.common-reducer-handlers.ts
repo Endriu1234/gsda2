@@ -24,14 +24,14 @@ export function loadRedmineProjects(state: State, args: { redmineProjects: Redmi
 
 export function initRedmineTrackers(state: State): State {
     const newState = _.cloneDeep(state);
-    newState.itemCreationSetupData.redmineTrackersLoaded = false;
+    newState.itemsSetupData.redmineTrackersLoaded = false;
     return newState;
 }
 
 export function loadRedmineTrackers(state: State, args: { redmineTrackers: RedmineTracker[] }): State {
     const newState: State = _.cloneDeep(state);
-    newState.itemCreationSetupData.redmineTrackers = args.redmineTrackers;
-    newState.itemCreationSetupData.redmineTrackersLoaded = true;
+    newState.itemsSetupData.redmineTrackers = args.redmineTrackers;
+    newState.itemsSetupData.redmineTrackersLoaded = true;
     return newState;
 
 }

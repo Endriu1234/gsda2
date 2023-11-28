@@ -19,8 +19,6 @@ export enum ItemCreationMode {
 export interface ItemCreationSetupData {
     resetInProgress: boolean,
     mode: ItemCreationMode,
-    redmineTrackersLoaded: boolean;
-    redmineTrackers: RedmineTracker[];
     redmineUsersLoaded: boolean;
     redmineUsers: RedmineUser[];
     redmineUsersByLetterLoaded: boolean;
@@ -39,8 +37,6 @@ export function getItemCreationSetupDataInitialState(): ItemCreationSetupData {
     return {
         resetInProgress: false,
         mode: ItemCreationMode.SingleItem,
-        redmineTrackersLoaded: false,
-        redmineTrackers: [],
         redmineUsersLoaded: false,
         redmineUsers: [],
         redmineUsersByLetterLoaded: false,
