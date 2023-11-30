@@ -13,6 +13,8 @@ export function loadRedmineProjects(state: State, args: { redmineProjects: Redmi
     newState.itemsSetupData.redmineProjectsLoaded = true;
     newState.itemCreationSetupData.redmineProjectsFiltered
         = filterRedmineProjects(args.redmineProjects, newState.itemCreationFromData.value.project);
+    newState.itemsFromEmailsSettingsSetupData.redmineProjectsFiltered
+        = filterRedmineProjects(args.redmineProjects, newState.itemsFromEmailsSettingsFormData.value.project);
     newState.batchItemCreationSdCriteriaSetupData.redmineProjectsFiltered
         = filterRedmineProjects(args.redmineProjects, newState.batchItemCreationSdCriteriaFormData.value.targetRedmineProject);
     newState.batchItemCreationTMSCriteriaSetupData.redmineTargetProjectsFiltered

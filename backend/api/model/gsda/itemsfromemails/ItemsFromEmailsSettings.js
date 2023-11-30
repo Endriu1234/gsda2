@@ -7,7 +7,8 @@ const ItemsFromEmailsSettings = new Schema({
     formId: String,
     values: {
         enabled: Boolean,
-        tracker: String
+        tracker: String,
+        project: String
     }
 }, opts);
 

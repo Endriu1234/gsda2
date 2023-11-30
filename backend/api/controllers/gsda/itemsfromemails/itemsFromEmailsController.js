@@ -7,7 +7,8 @@ module.exports.getItemsFromEmailsSettings = async (req, res) => {
         success: true,
         errorMessage: '',
         enabled: false,
-        tracker: ''
+        tracker: '',
+        project: ''
     };
 
     if (req.query.formId) {
@@ -17,6 +18,7 @@ module.exports.getItemsFromEmailsSettings = async (req, res) => {
                 if (result) {
                     retVal.enabled = result.values.enabled;
                     retVal.tracker = result.values.tracker;
+                    retVal.project = result.values.project;
                 }
                 else {
                     console.log('Cannot find Items From Emails Settings');

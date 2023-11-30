@@ -15,7 +15,7 @@ import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/
 import { environment } from 'src/environments/environment';
 import { getItemsFromEmailsSettingsFormData } from '../selectors/items.items-from-emails-selectors';
 import { GsdaHttpResponse } from 'src/app/shared/http/model/gsda-http-response.model';
-import { endInitItemsFromEmailsSettings, initItemsFromEmailsSettings } from '../actions/items.items-from-emails.actions';
+import { endInitItemsFromEmailsSettings, initItemsFromEmailsSettings, setRedmineProjectsFilterForItemsFromEmail } from '../actions/items.items-from-emails.actions';
 import { ItemsFromEmailSettingsHttpResponse } from '../models/itemsfromemails/Items-from-email-settings-http-response.model';
 
 @Injectable()
@@ -26,7 +26,19 @@ export class ItemsFromEmailsEffects {
         private sharedStore: Store<fromSharedState.State>,
         private http: HttpClient) { }
 
-    settingsFormSetUserDefinedValue$ = createEffect(() => this.actions$.pipe(
+    settingsFormEmailSetValue$ = createEffect(() => this.actions$.pipe(
+        ofType(SetValueAction.TYPE),
+        switchMap((action: SetValueAction<any>) => {
+
+            if (action.controlId === ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.project')
+                return [setRedmineProjectsFilterForItemsFromEmail()];
+            //return from(validateProject(this.store, validateProjectError, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilterForItemCreation())));
+
+            return of(noopAction());
+        })
+    ));
+
+    settingsFormEmailSetUserDefinedValue$ = createEffect(() => this.actions$.pipe(
         ofType(SetUserDefinedPropertyAction.TYPE),
         switchMap((action: SetUserDefinedPropertyAction) => {
 
@@ -88,6 +100,7 @@ export class ItemsFromEmailsEffects {
                     if (item.success) {
                         return of(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.enabled', item.enabled),
                             new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.tracker', item.tracker),
+                            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.project', item.project),
                             new ResetAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID),
                             endInitItemsFromEmailsSettings());
                     }
@@ -104,4 +117,6 @@ export class ItemsFromEmailsEffects {
             return of(noopAction());
         }))
     );
+
+
 }

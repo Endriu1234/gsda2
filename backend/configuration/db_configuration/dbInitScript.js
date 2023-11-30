@@ -75,7 +75,8 @@ const formsDataRecords = [
         formId: 'ITEMS_FROM_EMAILS_SETTINGS_FORMID',
         values: {
             enabled: false,
-            tracker: 'Bug'
+            tracker: 'Bug',
+            project: 'Demo'
         }
     }
 ];
