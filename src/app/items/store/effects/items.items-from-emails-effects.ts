@@ -15,7 +15,7 @@ import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/
 import { environment } from 'src/environments/environment';
 import { getItemsFromEmailsSettingsFormData } from '../selectors/items.items-from-emails-selectors';
 import { GsdaHttpResponse } from 'src/app/shared/http/model/gsda-http-response.model';
-import { endInitItemsFromEmailsSettings, initItemsFromEmailsSettings, setRedmineProjectsFilterForItemsFromEmail } from '../actions/items.items-from-emails.actions';
+import { endInitItemsFromEmailsSettings, initItemsFromEmailsSettings, setRedmineProjectsFilterForItemsFromEmail, setRedmineUsersByLetterFilterForItemsFromEmail } from '../actions/items.items-from-emails.actions';
 import { ItemsFromEmailSettingsHttpResponse } from '../models/itemsfromemails/Items-from-email-settings-http-response.model';
 
 @Injectable()
@@ -32,6 +32,13 @@ export class ItemsFromEmailsEffects {
 
             if (action.controlId === ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.project')
                 return [setRedmineProjectsFilterForItemsFromEmail()];
+
+            if (action.controlId === ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.user')
+                return [setRedmineUsersByLetterFilterForItemsFromEmail()];
+
+            //if (action.controlId === ITEM_CREATION_FORMID + '.user')
+            //    return from(validateUser(this.store, validateUserError, action.controlId, action.value).pipe(startWith(setRedmineUsersByLetterFilter())));
+
             //return from(validateProject(this.store, validateProjectError, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilterForItemCreation())));
 
             return of(noopAction());
@@ -101,6 +108,7 @@ export class ItemsFromEmailsEffects {
                         return of(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.enabled', item.enabled),
                             new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.tracker', item.tracker),
                             new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.project', item.project),
+                            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.user', item.user),
                             new ResetAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID),
                             endInitItemsFromEmailsSettings());
                     }

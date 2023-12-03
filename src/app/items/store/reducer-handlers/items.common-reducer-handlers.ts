@@ -48,10 +48,16 @@ export function loadRedmineUsers(state: State, args: { redmineUsers: RedmineUser
     const newState: State = _.cloneDeep(state);
     newState.itemCreationSetupData.redmineUsers = args.redmineUsers;
     newState.itemCreationSetupData.redmineUsersByLetter = createUsersByLetter(newState.itemCreationSetupData.redmineUsers);
-    newState.batchItemCreationTMSCriteriaSetupData.redmineUsersByLetter = createUsersByLetter(args.redmineUsers);
     newState.itemCreationSetupData.redmineUsersByLetterFiltered = filterRedmineUsersGroup(newState.itemCreationSetupData.redmineUsersByLetter, newState.itemCreationFromData.value.user);
+
+    newState.batchItemCreationTMSCriteriaSetupData.redmineUsersByLetter = createUsersByLetter(args.redmineUsers);
     newState.batchItemCreationTMSCriteriaSetupData.redmineUsersByLetterFiltered
         = filterRedmineUsersGroup(newState.batchItemCreationTMSCriteriaSetupData.redmineUsersByLetter, newState.batchItemCreationTMSCriteriaFormData.value.userToITms);
+
+    newState.itemsFromEmailsSettingsSetupData.redmineUsersByLetter = createUsersByLetter(args.redmineUsers);
+    newState.itemsFromEmailsSettingsSetupData.redmineUsersByLetterFiltered
+        = filterRedmineUsersGroup(newState.itemsFromEmailsSettingsSetupData.redmineUsersByLetter, newState.itemsFromEmailsSettingsFormData.value.user);
+
     newState.itemCreationSetupData.redmineUsersLoaded = true;
     return newState;
 }

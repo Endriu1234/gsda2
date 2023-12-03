@@ -12,13 +12,14 @@ module.exports.createItemFromEmail = async function (plainText, upperedPlainText
         const gsdaCreateIndex = upperedPlainText.indexOf("GSDA CREATE");
 
         if (gsdaCreateIndex !== -1 && (gsdaResultIndex === -1 || gsdaCreateIndex < gsdaResultIndex)) {
+
             const itemData = {
                 project: settings.project,
                 tracker: settings.tracker,
                 subject: (subject ? subject : 'Email w/o subject'),
                 description: plainText,
                 issue: '',
-                user: '',
+                user: settings.user,
                 cr: '',
                 tms: '',
                 version: '',

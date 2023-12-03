@@ -35,6 +35,21 @@
                         </mat-form-field>
                     </div>
                     <div class="row">
+                        <mat-form-field appearance="outline" class="" [style.width.%]=89>
+                            <mat-label>User</mat-label>
+                            <input type="text"  [ngrxFormControlState]="$any(formState).controls.user"
+                                matInput
+                                [matAutocomplete]="autoUser">
+                            <mat-autocomplete #autoUser="matAutocomplete">
+                                <mat-optgroup *ngFor="let group of usersFiltered$ | async" [label]="group.letter">
+                                    <mat-option *ngFor="let user of group.redmineUsers" [value]="user.name">
+                                        {{user.name}}
+                                    </mat-option>
+                                </mat-optgroup>
+                            </mat-autocomplete>
+                        </mat-form-field>
+                    </div>
+                    <div class="row">
                         <button
                         mat-fab
                         extended

@@ -76,7 +76,8 @@ const formsDataRecords = [
         values: {
             enabled: false,
             tracker: 'Bug',
-            project: 'Demo'
+            project: 'Demo',
+            user: 'Andrzej Czaja'
         }
     }
 ];
