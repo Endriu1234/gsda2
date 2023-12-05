@@ -4,20 +4,28 @@ import { RedmineUserByLetter } from "src/app/shared/store/models/redmine-user-le
 import { RedmineUser } from "src/app/shared/store/models/redmine-user.model";
 
 export interface ItemsFromEmailsSettingsFormData {
-    enabled: boolean;
+    active: boolean;
     tracker: string;
     project: string;
+    version: string,
     user: string;
+    parsingMode: string,
+    addAttachments: boolean,
+    modifiedBy: string
 }
 
 export const ITEMS_FROM_EMAILS_SETTINGS_FORMID = "ITEMS_FROM_EMAILS_SETTINGS_FORMID";
 
 export function getItemsFromEmailsSettingsFormDataInitialState(): FormGroupState<ItemsFromEmailsSettingsFormData> {
     return createFormGroupState<ItemsFromEmailsSettingsFormData>(ITEMS_FROM_EMAILS_SETTINGS_FORMID, {
-        enabled: false,
+        active: false,
         tracker: '',
         project: '',
-        user: ''
+        version: '',
+        user: '',
+        parsingMode: '',
+        addAttachments: false,
+        modifiedBy: ''
     });
 }
 

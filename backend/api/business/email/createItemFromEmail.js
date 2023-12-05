@@ -5,7 +5,7 @@ const { createItem } = require('../redmine/itemCreator');
 module.exports.createItemFromEmail = async function (plainText, upperedPlainText, subject, html, errorCallback) {
     const settings = await cacheValueProvider.getValue('items_from_emails_settings');
 
-    if (settings.enabled) {
+    if (settings.active) {
         console.log('tworzymy');
 
         const gsdaResultIndex = upperedPlainText.indexOf("GSDA RESULT");
@@ -22,7 +22,7 @@ module.exports.createItemFromEmail = async function (plainText, upperedPlainText
                 user: settings.user,
                 cr: '',
                 tms: '',
-                version: '',
+                version: settings.version,
                 est_time: '',
                 uploads: [{
                     filename: 'SOURCE_EMAIL.html',

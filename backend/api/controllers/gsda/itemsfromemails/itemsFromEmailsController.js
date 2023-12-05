@@ -6,10 +6,14 @@ module.exports.getItemsFromEmailsSettings = async (req, res) => {
     const retVal = {
         success: true,
         errorMessage: '',
-        enabled: false,
+        active: false,
         tracker: '',
         project: '',
-        user: ''
+        version: '',
+        user: '',
+        parsingMode: '',
+        addAttachments: false,
+        modifiedBy: ''
     };
 
     if (req.query.formId) {
@@ -17,10 +21,14 @@ module.exports.getItemsFromEmailsSettings = async (req, res) => {
         const result = await ItemsFromEmailsSettings.findOne({ formId: req.query.formId })
             .then(result => {
                 if (result) {
-                    retVal.enabled = result.values.enabled;
+                    retVal.active = result.values.active;
                     retVal.tracker = result.values.tracker;
                     retVal.project = result.values.project;
+                    retVal.version = result.values.version;
                     retVal.user = result.values.user;
+                    retVal.parsingMode = result.values.parsingMode;
+                    retVal.addAttachments = result.values.addAttachments;
+                    retVal.modifiedBy = result.values.modifiedBy;
                 }
                 else {
                     console.log('Cannot find Items From Emails Settings');
@@ -55,6 +63,8 @@ module.exports.saveItemsFromEmailsSettings = async (req, res) => {
 
         if (req.body.formId && req.body.values
             && req.body.values) {
+
+            req.body.values.modifiedBy = req.authData.user;
 
             await ItemsFromEmailsSettings.findOneAndUpdate({ formId: req.body.formId }, { values: req.body.values });
             cacheValueProvider.deleteValue('items_from_emails_settings');

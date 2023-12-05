@@ -6,10 +6,14 @@ const opts = { toJSON: { virtuals: true } }
 const ItemsFromEmailsSettings = new Schema({
     formId: String,
     values: {
-        enabled: Boolean,
+        active: Boolean,
         tracker: String,
         project: String,
-        user: String
+        version: String,
+        user: String,
+        parsingMode: String,
+        addAttachments: Boolean,
+        modifiedBy: String
     }
 }, opts);
 

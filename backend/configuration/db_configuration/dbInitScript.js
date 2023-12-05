@@ -74,10 +74,14 @@ const formsDataRecords = [
     {
         formId: 'ITEMS_FROM_EMAILS_SETTINGS_FORMID',
         values: {
-            enabled: false,
+            active: false,
             tracker: 'Bug',
             project: 'Demo',
-            user: 'Andrzej Czaja'
+            version: '',
+            user: 'Andrzej Czaja',
+            parsingMode: 'Plain and Html Attachment',
+            addAttachments: false,
+            modifiedBy: 'gsda'
         }
     }
 ];

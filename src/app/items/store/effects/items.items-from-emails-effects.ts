@@ -105,10 +105,14 @@ export class ItemsFromEmailsEffects {
                 .pipe(mergeMap(item => {
 
                     if (item.success) {
-                        return of(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.enabled', item.enabled),
+                        return of(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.active', item.active),
                             new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.tracker', item.tracker),
                             new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.project', item.project),
+                            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.version', item.version),
                             new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.user', item.user),
+                            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.parsingMode', item.parsingMode),
+                            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.addAttachments', item.addAttachments),
+                            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.modifiedBy', item.modifiedBy),
                             new ResetAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID),
                             endInitItemsFromEmailsSettings());
                     }
