@@ -2,9 +2,11 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
-import { catchError, from, map, mergeMap, of, startWith, switchMap, take } from "rxjs";
+import { catchError, endWith, map, mergeMap, of, switchMap, take } from "rxjs";
 import * as fromItemsState from '../state/items.state';
 import * as fromSharedState from '../../../shared/store/shared.state';
+import * as fromAuthState from '../../../auth/store/auth.state'
+import * as fromAuthStateSelectors from '../../../auth/store/auth.selectors'
 
 import { noopAction } from '../actions/items.common-actions';
 import { ResetAction, SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
@@ -24,6 +26,7 @@ export class ItemsFromEmailsEffects {
     constructor(private actions$: Actions,
         private store: Store<fromItemsState.State>,
         private sharedStore: Store<fromSharedState.State>,
+        private authStore: Store<fromAuthState.State>,
         private http: HttpClient) { }
 
     settingsFormEmailSetValue$ = createEffect(() => this.actions$.pipe(
@@ -65,8 +68,10 @@ export class ItemsFromEmailsEffects {
 
                                     this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Items From Emails Settings saved', icon: fromSharedState.SnackBarIcon.Success }));
 
-                                    return of(new SetUserDefinedPropertyAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID,
-                                        fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New));
+                                    return this.authStore.select(fromAuthStateSelectors.getUserLogin).pipe(take(1),
+                                        map(modifiedBy => new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.modifiedBy', modifiedBy)),
+                                        endWith(new SetUserDefinedPropertyAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID,
+                                            fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New)));
                                 }
                                 else {
                                     console.log(response.errorMessage);

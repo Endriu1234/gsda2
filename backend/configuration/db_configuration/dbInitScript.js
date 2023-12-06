@@ -79,7 +79,7 @@ const formsDataRecords = [
             project: 'Demo',
             version: '',
             user: 'Andrzej Czaja',
-            parsingMode: 'Plain and Html Attachment',
+            parsingMode: 'plainAndHtmlAttachment',
             addAttachments: false,
             modifiedBy: 'gsda'
         }

@@ -50,6 +50,32 @@
                         </mat-form-field>
                     </div>
                     <div class="row">
+                        <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                            <mat-label>Parsing Mode</mat-label>
+                            <mat-select [ngrxFormControlState]="$any(formState).controls.parsingMode">
+
+                                <mat-option value="plain">Plain</mat-option>
+                                <mat-option value="plainAndHtmlAttachment">Plain and Html Attachment</mat-option>
+                                <mat-option value="parsedHtml">Parsed Html</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-error *ngIf="formState.errors._itemLevel?.required">
+                            Item level is required
+                        </mat-error>
+                    </div>
+                    <div class="row">
+                        <mat-slide-toggle [ngrxFormControlState]="$any(formState).controls.addAttachments">Add
+                            attachments</mat-slide-toggle>
+                    </div>
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="mt-2" [style.width.%]=49>
+                            <mat-label>Modified By</mat-label>
+                            <input type="text" disabled="true"
+                                [ngrxFormControlState]="$any(formState).controls.modifiedBy"
+                                matInput>
+                        </mat-form-field>
+                    </div>
+                    <div class="row">
                         <button
                         mat-fab
                         extended
