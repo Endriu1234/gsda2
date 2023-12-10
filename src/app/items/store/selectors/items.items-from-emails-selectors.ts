@@ -8,11 +8,8 @@ export const getItemsFromEmailsSettingsFormData = createSelector(getItemsState,
 export const getRedmineProjectsFilteredForItemsFromEmail = createSelector(getItemsState,
     (state: State) => state.itemsFromEmailsSettingsSetupData.redmineProjectsFiltered);
 
-//export const getRedmineUsersByLetter = createSelector(getItemsState,
-//    (state: State) => state.itemCreationSetupData.redmineUsersByLetter);
+export const getRedmineVersionsByProject = createSelector(getItemsState, (state: State) => state.itemsFromEmailsSettingsSetupData.redmineVersions);
 
 export const getRedmineUsersByLetterFiltered = createSelector(getItemsState,
     (state: State) => state.itemsFromEmailsSettingsSetupData.redmineUsersByLetterFiltered);
 
-//export const getRedmineUsersByLetterLoaded = createSelector(getItemsState,
-//   (state: State) => state.itemCreationSetupData.redmineUsersByLetterLoaded);

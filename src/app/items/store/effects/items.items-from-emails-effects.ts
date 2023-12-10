@@ -17,8 +17,9 @@ import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/
 import { environment } from 'src/environments/environment';
 import { getItemsFromEmailsSettingsFormData } from '../selectors/items.items-from-emails-selectors';
 import { GsdaHttpResponse } from 'src/app/shared/http/model/gsda-http-response.model';
-import { endInitItemsFromEmailsSettings, initItemsFromEmailsSettings, setRedmineProjectsFilterForItemsFromEmail, setRedmineUsersByLetterFilterForItemsFromEmail } from '../actions/items.items-from-emails.actions';
+import { endInitItemsFromEmailsSettings, initItemsFromEmailsSettings, initRedmineVersionsForItemsFromEmail, loadRedmineVersionsForItemsFromEmail, setRedmineProjectsFilterForItemsFromEmail, setRedmineUsersByLetterFilterForItemsFromEmail } from '../actions/items.items-from-emails.actions';
 import { ItemsFromEmailSettingsHttpResponse } from '../models/itemsfromemails/Items-from-email-settings-http-response.model';
+import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
 
 @Injectable()
 export class ItemsFromEmailsEffects {
@@ -135,5 +136,11 @@ export class ItemsFromEmailsEffects {
         }))
     );
 
-
+    initRedmineVersionsForItemsFromEmail$ = createEffect(() => this.actions$.pipe(ofType(initRedmineVersionsForItemsFromEmail),
+        switchMap((param) => {
+            let params = new HttpParams();
+            params = params.append("redmineProject", param.projectName);
+            return this.http.get<RedmineVersion[]>(environment.apiUrl + '/redmine/items/get-redmine-versions', { params });
+        }), map(redmineVersions => loadRedmineVersionsForItemsFromEmail({ redmineVersions }))
+    ));
 }

@@ -2,6 +2,7 @@ import { createFormGroupState, FormGroupState } from "ngrx-forms";
 import { RedmineProject } from "src/app/shared/store/models/redmine-project.model";
 import { RedmineUserByLetter } from "src/app/shared/store/models/redmine-user-letter-model";
 import { RedmineUser } from "src/app/shared/store/models/redmine-user.model";
+import { RedmineVersion } from "src/app/shared/store/models/redmine-version.model";
 
 export interface ItemsFromEmailsSettingsFormData {
     active: boolean;
@@ -33,6 +34,8 @@ export interface ItemsFromEmailsSettingsSetupData {
     dbStateLoaded: boolean;
     dbStateLoading: boolean;
     redmineProjectsFiltered: RedmineProject[];
+    redmineVersionsLoaded: boolean;
+    redmineVersions: RedmineVersion[];
     redmineUsersLoaded: boolean;
     redmineUsers: RedmineUser[];
     redmineUsersByLetterLoaded: boolean;
@@ -45,6 +48,8 @@ export function getItemsFromEmailsSettingsSetupDataInitialState(): ItemsFromEmai
         dbStateLoaded: false,
         dbStateLoading: false,
         redmineProjectsFiltered: [],
+        redmineVersionsLoaded: false,
+        redmineVersions: [],
         redmineUsersLoaded: false,
         redmineUsers: [],
         redmineUsersByLetterLoaded: false,

@@ -8,9 +8,7 @@ export const getItemCreationSetupData = createSelector(getItemsState, (state: St
 export const getItemCreationMode = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.mode);
 export const getRedmineProjectsFilteredForItemCreation = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineProjectsFiltered);
 
-//export const getRedmineUsersByLetter = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineUsersByLetter);
 export const getRedmineUsersByLetterFiltered = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineUsersByLetterFiltered);
-//export const getRedmineUsersByLetterLoaded = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineUsersByLetterLoaded);
 export const getRedmineVersionsByProject = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineVersions);
 
 export const getValidatedCRs = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.validatedCRs);

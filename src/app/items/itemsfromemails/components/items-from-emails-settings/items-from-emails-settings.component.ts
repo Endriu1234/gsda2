@@ -13,6 +13,7 @@ import { initRedmineProjects, initRedmineTrackers, initRedmineUsers } from 'src/
 import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 import { RedmineUserByLetter } from 'src/app/shared/store/models/redmine-user-letter-model';
+import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
 
 @Component({
   selector: 'app-items-from-emails-settings',
@@ -25,6 +26,7 @@ export class ItemsFromEmailsSettingsComponent implements OnInit {
   trackers$: Observable<RedmineTracker[]> | null = null;
   projectsFiltered$: Observable<RedmineProject[]> | null = null;
   usersFiltered$: Observable<RedmineUserByLetter[]> | null = null;
+  versions$: Observable<RedmineVersion[]> | null = null;
 
 
   constructor(private store: Store<fromItemsState.State>) {
@@ -50,7 +52,7 @@ export class ItemsFromEmailsSettingsComponent implements OnInit {
 
     this.trackers$ = this.store.select(fromCommonItemsSelectors.getRedmineTrackers);
     this.projectsFiltered$ = this.store.select(fromItemsFromEmailsSelectors.getRedmineProjectsFilteredForItemsFromEmail);
-
+    this.versions$ = this.store.select(fromItemsFromEmailsSelectors.getRedmineVersionsByProject);
     this.usersFiltered$ = this.store.select(fromItemsFromEmailsSelectors.getRedmineUsersByLetterFiltered);
   }
 
