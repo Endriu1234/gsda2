@@ -4,6 +4,17 @@
             <form novalidate [ngrxFormState]="formState">
                 <div class="container-fluid">
                     <div class="row">
+                        <mat-error
+                            [style.visibility]="(formState.isTouched && formState.errors._name?.required)?'visible':'hidden'">
+                            Name is required
+                        </mat-error>
+                        <mat-form-field appearance="outline" [style.width.%]=100>
+                            <mat-label>Name</mat-label>
+                            <input type="text" matInput placeholder="Name of settings"  [ngrxFormControlState]="$any(formState).controls.name">
+                        </mat-form-field>
+
+                    </div>
+                    <div class="row">
                         <mat-slide-toggle
                             [ngrxFormControlState]="$any(formState).controls.active">Active</mat-slide-toggle>
                     </div>
@@ -69,10 +80,39 @@
                                 <mat-option value="parsedHtml">Parsed Html</mat-option>
                             </mat-select>
                         </mat-form-field>
-                        <mat-error *ngIf="formState.errors._itemLevel?.required">
-                            Item level is required
+                        <mat-error *ngIf="formState.errors._parsingMode?.required">
+                            Parsing Mode is required
                         </mat-error>
                     </div>
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                            <mat-label>Find Issues</mat-label>
+                            <mat-select [ngrxFormControlState]="$any(formState).controls.findIssues">
+                                <mat-option value="none">None</mat-option>
+                                <mat-option value="latest">Latest</mat-option>
+                                <mat-option value="earliest">Earliest</mat-option>
+                                <mat-option value="all">All</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-error *ngIf="formState.errors._findIssues?.required">
+                            Find Issues is required
+                        </mat-error>
+                    </div>
+                    <div class="row">
+                        <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                            <mat-label>Find CRs</mat-label>
+                            <mat-select [ngrxFormControlState]="$any(formState).controls.findCRs">
+                                <mat-option value="none">None</mat-option>
+                                <mat-option value="latest">Latest</mat-option>
+                                <mat-option value="earliest">Earliest</mat-option>
+                                <mat-option value="all">All</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-error *ngIf="formState.errors._findCRs?.required">
+                            Find Issues is required
+                        </mat-error>
+                    </div>
+
                     <div class="row">
                         <mat-slide-toggle [ngrxFormControlState]="$any(formState).controls.addAttachments">Add
                             attachments</mat-slide-toggle>

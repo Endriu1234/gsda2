@@ -6,12 +6,15 @@ module.exports.getItemsFromEmailsSettings = async (req, res) => {
     const retVal = {
         success: true,
         errorMessage: '',
+        name: '',
         active: false,
         tracker: '',
         project: '',
         version: '',
         user: '',
         parsingMode: '',
+        findIssues: '',
+        findCRs: '',
         addAttachments: false,
         modifiedBy: ''
     };
@@ -21,12 +24,15 @@ module.exports.getItemsFromEmailsSettings = async (req, res) => {
         const result = await ItemsFromEmailsSettings.findOne({ formId: req.query.formId })
             .then(result => {
                 if (result) {
+                    retVal.name = result.values.name;
                     retVal.active = result.values.active;
                     retVal.tracker = result.values.tracker;
                     retVal.project = result.values.project;
                     retVal.version = result.values.version;
                     retVal.user = result.values.user;
                     retVal.parsingMode = result.values.parsingMode;
+                    retVal.findIssues = result.values.findIssues;
+                    retVal.findCRs = result.values.findCRs;
                     retVal.addAttachments = result.values.addAttachments;
                     retVal.modifiedBy = result.values.modifiedBy;
                 }
