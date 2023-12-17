@@ -1,6 +1,8 @@
 import { getItemsState } from './items.common-selectors';
 import { State } from '../state/items.state';
 import { createSelector } from '@ngrx/store';
+import { ItemsFromEmailsSettingsFormData } from '../state/items.items-from-emails-state';
+import { FormGroupState } from 'ngrx-forms';
 
 export const getItemsFromEmailsSettingsFormData = createSelector(getItemsState,
     (state: State) => state.itemsFromEmailsSettingsFormData);
@@ -12,4 +14,16 @@ export const getRedmineVersionsByProject = createSelector(getItemsState, (state:
 
 export const getRedmineUsersByLetterFiltered = createSelector(getItemsState,
     (state: State) => state.itemsFromEmailsSettingsSetupData.redmineUsersByLetterFiltered);
+
+
+export const getItemsFromEmailsSettingsCanActivateSave = createSelector(getItemsFromEmailsSettingsFormData, canItemsFromEmailsSettingsFormBeSaved);
+
+
+function canItemsFromEmailsSettingsFormBeSaved(formState: FormGroupState<ItemsFromEmailsSettingsFormData>): boolean {
+    if (!formState.value || formState.isValidationPending || formState.isInvalid) {
+        return false;
+    }
+
+    return true;
+}
 

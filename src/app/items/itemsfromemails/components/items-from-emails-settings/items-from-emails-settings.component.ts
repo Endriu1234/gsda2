@@ -27,6 +27,7 @@ export class ItemsFromEmailsSettingsComponent implements OnInit {
   projectsFiltered$: Observable<RedmineProject[]> | null = null;
   usersFiltered$: Observable<RedmineUserByLetter[]> | null = null;
   versions$: Observable<RedmineVersion[]> | null = null;
+  getItemsFromEmailsSettingsCanActivateSave$: Observable<boolean> | null = null;
 
 
   constructor(private store: Store<fromItemsState.State>) {
@@ -54,6 +55,8 @@ export class ItemsFromEmailsSettingsComponent implements OnInit {
     this.projectsFiltered$ = this.store.select(fromItemsFromEmailsSelectors.getRedmineProjectsFilteredForItemsFromEmail);
     this.versions$ = this.store.select(fromItemsFromEmailsSelectors.getRedmineVersionsByProject);
     this.usersFiltered$ = this.store.select(fromItemsFromEmailsSelectors.getRedmineUsersByLetterFiltered);
+    this.getItemsFromEmailsSettingsCanActivateSave$ = this.store.select(fromItemsFromEmailsSelectors.getItemsFromEmailsSettingsCanActivateSave);
+
   }
 
 

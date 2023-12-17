@@ -168,8 +168,22 @@ export function validateProject(store: Store<State>, validateProjectError: strin
 
     return store.select(getRedmineProjects).pipe(take(1), switchMap(projects => {
         if (projects.find(p => p.name == projectName))
-            return of(new StartAsyncValidationAction(controlId, validateProjectError), new ClearAsyncErrorAction(controlId, validateProjectError), initRedmineVersions({projectName: projectName}));
+            return of(new StartAsyncValidationAction(controlId, validateProjectError), new ClearAsyncErrorAction(controlId, validateProjectError), initRedmineVersions({ projectName: projectName }));
 
         return of(new StartAsyncValidationAction(controlId, validateProjectError), new SetAsyncErrorAction(controlId, validateProjectError, "Project invalid"), clearRedmineVersions());
     }));
+}
+
+export function validateItemsFromEmailsSettingsName(store: Store<State>, validateItemsFromEmailsError: string, controlId: string, settingName: string): Observable<any> {
+    if (!settingName)
+        return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new SetAsyncErrorAction(controlId, validateItemsFromEmailsError, "Name invalid"));
+
+    return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new ClearAsyncErrorAction(controlId, validateItemsFromEmailsError));
+
+
+    //    return store.select(getRedmineProjects).pipe(take(1), switchMap(projects => {
+    //      if (projects.find(p => p.name == projectName))
+    //        return of(new StartAsyncValidationAction(controlId, validateProjectError), new ClearAsyncErrorAction(controlId, validateProjectError), initRedmineVersions({ projectName: projectName }));
+
+    //return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new SetAsyncErrorAction(controlId, validateItemsFromEmailsError, "Project invalid"), clearRedmineVersions());
 }

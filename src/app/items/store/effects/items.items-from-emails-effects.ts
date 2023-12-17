@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
-import { catchError, endWith, map, mergeMap, of, switchMap, take } from "rxjs";
+import { catchError, endWith, map, mergeMap, of, switchMap, take, from } from "rxjs";
 import * as fromItemsState from '../state/items.state';
 import * as fromSharedState from '../../../shared/store/shared.state';
 import * as fromAuthState from '../../../auth/store/auth.state'
@@ -20,6 +20,9 @@ import { GsdaHttpResponse } from 'src/app/shared/http/model/gsda-http-response.m
 import { endInitItemsFromEmailsSettings, initItemsFromEmailsSettings, initRedmineVersionsForItemsFromEmail, loadRedmineVersionsForItemsFromEmail, setRedmineProjectsFilterForItemsFromEmail, setRedmineUsersByLetterFilterForItemsFromEmail } from '../actions/items.items-from-emails.actions';
 import { ItemsFromEmailSettingsHttpResponse } from '../models/itemsfromemails/Items-from-email-settings-http-response.model';
 import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
+import { validateItemsFromEmailsSettingsName } from '../items.validation';
+
+export const validateItemsFromEmailsError = "validateItemsFromEmailsError";
 
 @Injectable()
 export class ItemsFromEmailsEffects {
@@ -33,6 +36,9 @@ export class ItemsFromEmailsEffects {
     settingsFormEmailSetValue$ = createEffect(() => this.actions$.pipe(
         ofType(SetValueAction.TYPE),
         switchMap((action: SetValueAction<any>) => {
+
+            if (action.controlId === ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.name')
+                return from(validateItemsFromEmailsSettingsName(this.store, validateItemsFromEmailsError, action.controlId, action.value));
 
             if (action.controlId === ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.project')
                 return [setRedmineProjectsFilterForItemsFromEmail()];
