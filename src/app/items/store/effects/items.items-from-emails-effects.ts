@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
-import { catchError, endWith, map, mergeMap, of, switchMap, take, from } from "rxjs";
+import { catchError, endWith, map, mergeMap, of, switchMap, take, from, startWith } from "rxjs";
 import * as fromItemsState from '../state/items.state';
 import * as fromSharedState from '../../../shared/store/shared.state';
 import * as fromAuthState from '../../../auth/store/auth.state'
@@ -17,10 +17,10 @@ import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/
 import { environment } from 'src/environments/environment';
 import { getItemsFromEmailsSettingsFormData } from '../selectors/items.items-from-emails-selectors';
 import { GsdaHttpResponse } from 'src/app/shared/http/model/gsda-http-response.model';
-import { endInitItemsFromEmailsSettings, initItemsFromEmailsSettings, initRedmineVersionsForItemsFromEmail, loadRedmineVersionsForItemsFromEmail, setRedmineProjectsFilterForItemsFromEmail, setRedmineUsersByLetterFilterForItemsFromEmail } from '../actions/items.items-from-emails.actions';
+import { clearRedmineVersionsForItemsFromEmail, endInitItemsFromEmailsSettings, initItemsFromEmailsSettings, initRedmineVersionsForItemsFromEmail, loadRedmineVersionsForItemsFromEmail, setRedmineProjectsFilterForItemsFromEmail, setRedmineUsersByLetterFilterForItemsFromEmail } from '../actions/items.items-from-emails.actions';
 import { ItemsFromEmailSettingsHttpResponse } from '../models/itemsfromemails/Items-from-email-settings-http-response.model';
 import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
-import { validateItemsFromEmailsSettingsName } from '../items.validation';
+import { validateItemsFromEmailsSettingsName, validateProject, validateUser } from '../items.validation';
 
 export const validateItemsFromEmailsError = "validateItemsFromEmailsError";
 
@@ -41,15 +41,11 @@ export class ItemsFromEmailsEffects {
                 return from(validateItemsFromEmailsSettingsName(this.store, validateItemsFromEmailsError, action.controlId, action.value));
 
             if (action.controlId === ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.project')
-                return [setRedmineProjectsFilterForItemsFromEmail()];
+                return from(validateProject(this.store, validateItemsFromEmailsError, action.controlId,
+                    action.value, clearRedmineVersionsForItemsFromEmail(), initRedmineVersionsForItemsFromEmail({ projectName: action.value })).pipe(startWith(setRedmineProjectsFilterForItemsFromEmail())));
 
             if (action.controlId === ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.user')
-                return [setRedmineUsersByLetterFilterForItemsFromEmail()];
-
-            //if (action.controlId === ITEM_CREATION_FORMID + '.user')
-            //    return from(validateUser(this.store, validateUserError, action.controlId, action.value).pipe(startWith(setRedmineUsersByLetterFilter())));
-
-            //return from(validateProject(this.store, validateProjectError, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilterForItemCreation())));
+                return from(validateUser(this.store, validateItemsFromEmailsError, action.controlId, action.value).pipe(startWith(setRedmineUsersByLetterFilterForItemsFromEmail())));
 
             return of(noopAction());
         })

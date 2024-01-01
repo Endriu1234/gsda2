@@ -12,7 +12,7 @@ import { GsdaRedmineHttpResponse } from 'src/app/shared/http/model/gsda-redmine-
 import { environment } from 'src/environments/environment';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { Item } from '../models/item.model';
-import { breakBatchItemCreation, endResetItemCreationForm, fillItemById, identifyAndFillItemById, initRedmineVersions, loadRedmineVersions, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startResetItemCreationForm } from '../actions/items.item-creation-actions';
+import { breakBatchItemCreation, clearRedmineVersions, endResetItemCreationForm, fillItemById, identifyAndFillItemById, initRedmineVersions, loadRedmineVersions, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startResetItemCreationForm } from '../actions/items.item-creation-actions';
 import { noopAction } from '../actions/items.common-actions';
 import { getItemCreationDialogState, getItemCreationFormState, getItemCreationFormWithSetup, getItemCreationMode } from '../selectors/items.item-creation-selectors';
 import { ITEM_CREATION_DIALOG, ITEM_CREATION_FORMID, ItemCreationMode } from '../state/items.item-creation-state';
@@ -44,7 +44,8 @@ export class ItemsItemCreationEffects {
                     return [noopAction()];
 
                 if (action.controlId === ITEM_CREATION_FORMID + '.project')
-                    return from(validateProject(this.store, validateProjectError, action.controlId, action.value).pipe(startWith(setRedmineProjectsFilterForItemCreation())));
+                    return from(validateProject(this.store, validateProjectError, action.controlId,
+                        action.value, clearRedmineVersions(), initRedmineVersions({ projectName: action.value })).pipe(startWith(setRedmineProjectsFilterForItemCreation())));
 
                 if (action.controlId === ITEM_CREATION_FORMID + '.user')
                     return from(validateUser(this.store, validateUserError, action.controlId, action.value).pipe(startWith(setRedmineUsersByLetterFilter())));

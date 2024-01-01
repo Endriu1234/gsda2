@@ -6,7 +6,6 @@ module.exports.createItemFromEmail = async function (plainText, upperedPlainText
     const settings = await cacheValueProvider.getValue('items_from_emails_settings');
 
     if (settings.active) {
-        console.log('tworzymy');
 
         const gsdaResultIndex = upperedPlainText.indexOf("GSDA RESULT");
         const gsdaCreateIndex = upperedPlainText.indexOf("GSDA CREATE");
@@ -42,6 +41,4 @@ module.exports.createItemFromEmail = async function (plainText, upperedPlainText
             }
         }
     }
-    else
-        console.log('NIE TWORZYMY');
 }

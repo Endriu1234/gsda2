@@ -32,7 +32,6 @@ export class ItemsFromEmailsSettingsComponent implements OnInit {
 
   constructor(private store: Store<fromItemsState.State>) {
     this.formState$ = this.store.select(getItemsFromEmailsSettingsFormData);
-    this.store.dispatch(initItemsFromEmailsSettings());
   }
 
   ngOnInit(): void {
@@ -56,6 +55,8 @@ export class ItemsFromEmailsSettingsComponent implements OnInit {
     this.versions$ = this.store.select(fromItemsFromEmailsSelectors.getRedmineVersionsByProject);
     this.usersFiltered$ = this.store.select(fromItemsFromEmailsSelectors.getRedmineUsersByLetterFiltered);
     this.getItemsFromEmailsSettingsCanActivateSave$ = this.store.select(fromItemsFromEmailsSelectors.getItemsFromEmailsSettingsCanActivateSave);
+
+    this.store.dispatch(initItemsFromEmailsSettings());
 
   }
 

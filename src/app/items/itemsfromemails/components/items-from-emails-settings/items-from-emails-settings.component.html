@@ -16,7 +16,8 @@
                         </div>
 
                         <div class="col-2">
-                            <mat-slide-toggle [style.marginTop.px]=40
+                            <mat-error *ngIf="false"></mat-error>
+                            <mat-slide-toggle [style.marginTop.px]=19
                                 [ngrxFormControlState]="$any(formState).controls.active">Active</mat-slide-toggle>
                         </div>
                         <div class="col-1 offset-6">
@@ -40,9 +41,6 @@
                                         [value]="tracker.name">{{tracker.name}}</mat-option>
                                 </mat-select>
                             </mat-form-field>
-                            <mat-error *ngIf="formState.errors._itemLevel?.required">
-                                Tracker is required
-                            </mat-error>
                         </div>
                         <div class="col-3">
                             <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
