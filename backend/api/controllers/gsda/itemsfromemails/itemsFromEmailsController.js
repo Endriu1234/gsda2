@@ -1,11 +1,22 @@
+const emailHandler = require('../../../business/email/emailHandler');
 const ItemsFromEmailsSettings = require('../../../model/gsda/itemsfromemails/ItemsFromEmailsSettings');
+const cacheValueProvider = require('../../../business/cache/cacheValueProvider');
 
 module.exports.getItemsFromEmailsSettings = async (req, res) => {
     const retVal = {
         success: true,
         errorMessage: '',
-        enabled: false,
-        interval: 0
+        name: '',
+        active: false,
+        tracker: '',
+        project: '',
+        version: '',
+        user: '',
+        parsingMode: '',
+        findIssues: '',
+        findCRs: '',
+        addAttachments: false,
+        modifiedBy: ''
     };
 
     if (req.query.formId) {
@@ -13,8 +24,17 @@ module.exports.getItemsFromEmailsSettings = async (req, res) => {
         const result = await ItemsFromEmailsSettings.findOne({ formId: req.query.formId })
             .then(result => {
                 if (result) {
-                    retVal.enabled = result.values.enabled;
-                    retVal.interval = result.values.interval;
+                    retVal.name = result.values.name;
+                    retVal.active = result.values.active;
+                    retVal.tracker = result.values.tracker;
+                    retVal.project = result.values.project;
+                    retVal.version = result.values.version;
+                    retVal.user = result.values.user;
+                    retVal.parsingMode = result.values.parsingMode;
+                    retVal.findIssues = result.values.findIssues;
+                    retVal.findCRs = result.values.findCRs;
+                    retVal.addAttachments = result.values.addAttachments;
+                    retVal.modifiedBy = result.values.modifiedBy;
                 }
                 else {
                     console.log('Cannot find Items From Emails Settings');
@@ -36,7 +56,10 @@ module.exports.getItemsFromEmailsSettings = async (req, res) => {
     return res.status(200).json(retVal);
 }
 
+
+
 module.exports.saveItemsFromEmailsSettings = async (req, res) => {
+
     const retVal = {
         success: false,
         errorMessage: ''
@@ -47,7 +70,10 @@ module.exports.saveItemsFromEmailsSettings = async (req, res) => {
         if (req.body.formId && req.body.values
             && req.body.values) {
 
+            req.body.values.modifiedBy = req.authData.user;
+
             await ItemsFromEmailsSettings.findOneAndUpdate({ formId: req.body.formId }, { values: req.body.values });
+            cacheValueProvider.deleteValue('items_from_emails_settings');
             retVal.success = true;
         }
         else {
@@ -57,6 +83,8 @@ module.exports.saveItemsFromEmailsSettings = async (req, res) => {
     catch (err) {
         retVal.errorMessage = err;
     }
+
+    emailHandler.test();
 
     return res.status(200).json(retVal);
 }

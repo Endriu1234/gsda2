@@ -11,7 +11,7 @@ import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, initSoftDev
 import { addFilesToUpload, addValidatedCR, addValidatedFromId, addValidatedIssue, addValidatedTms, clearRedmineVersions, deleteFile, endResetItemCreationForm, initRedmineVersions, loadRedmineVersions, setItemCreationFormMode, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startResetItemCreationForm } from './actions/items.item-creation-actions';
 import { continueBatchItemsCreation, forceEndBatchItemCreation, setBatchItemCreationRecords, setLinkToCurrentProposedItemAndUnselect, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection, dragAndDropBatchItemsCreationColumns, createOneRecordFromBatch, updateBatchItemCreationFormColumn, setRedmineSourceProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForTmsBatchItemCreationCriteria, setRedmineUsersByLetterFilterForTmsBatchItemCreationCriteria, initTmsClients, loadTmsClients, setTmsClientsByLetterFilter, setRedmineTargetProjectsFilterForIdsBatchItemCreationCriteria, initRedmineVersionsForIds, loadRedmineVersionsForIds, clearRedmineVersionsForIds, initRedmineVersionsForTms, loadRedmineVersionsForTms, clearRedmineVersionsForTms, initRedmineVersionsForRedmine, clearRedmineVersionsForRedmine, loadRedmineVersionsForRedmine, initRedmineVersionsForSd, loadRedmineVersionsForSd, clearRedmineVersionsForSd, setBatchItemCreationTabIndex, setBatchItemCreationSelectedTabIndex } from './actions/items.batch-item-creation-actions';
 import { ItemCreationFromData } from './state/items.item-creation-state';
-import { endInitItemsFromEmailsSettings, initItemsFromEmailsSettings } from './actions/items.items-from-emails.actions';
+import { clearRedmineVersionsForItemsFromEmail, endInitItemsFromEmailsSettings, initItemsFromEmailsSettings, initRedmineVersionsForItemsFromEmail, loadRedmineVersionsForItemsFromEmail, setRedmineProjectsFilterForItemsFromEmail, setRedmineUsersByLetterFilterForItemsFromEmail } from './actions/items.items-from-emails.actions';
 
 export const itemsReducerKey = 'items';
 
@@ -84,6 +84,12 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
 
     on(initItemsFromEmailsSettings, fromItemsFromEmailsReducerHanders.initItemsFromEmailsSettings),
     on(endInitItemsFromEmailsSettings, fromItemsFromEmailsReducerHanders.endInitItemsFromEmailsSettings),
+    on(setRedmineProjectsFilterForItemsFromEmail, fromItemsFromEmailsReducerHanders.setRedmineProjectsFilterForItemCreation),
+    on(setRedmineUsersByLetterFilterForItemsFromEmail, fromItemsFromEmailsReducerHanders.setRedmineUsersByLetterFilterForItemCreation),
+    on(initRedmineVersionsForItemsFromEmail, fromItemsFromEmailsReducerHanders.initRedmineVersions),
+    on(loadRedmineVersionsForItemsFromEmail, fromItemsFromEmailsReducerHanders.loadRedmineVersions),
+    on(clearRedmineVersionsForItemsFromEmail, fromItemsFromEmailsReducerHanders.clearRedmineVersions),
+
     on(setBatchItemCreationTabIndex, fromBatchItemCreationReducerHanders.setBatchItemCreationTabIndex),
     on(setBatchItemCreationSelectedTabIndex, fromBatchItemCreationReducerHanders.setBatchItemCreationSelectedTabIndex)
 );

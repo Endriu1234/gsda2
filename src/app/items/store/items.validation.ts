@@ -1,5 +1,5 @@
-import { Store } from "@ngrx/store";
-import { ClearAsyncErrorAction, SetAsyncErrorAction, StartAsyncValidationAction, ValidationErrors } from "ngrx-forms";
+import { Action, Store } from "@ngrx/store";
+import { ClearAsyncErrorAction, SetAsyncErrorAction, StartAsyncValidationAction } from "ngrx-forms";
 import { State } from "./state/items.state";
 import { catchError, concat, delay, mergeMap, Observable, of, switchMap, take, tap } from 'rxjs';
 import { HttpClient, HttpParams } from "@angular/common/http";
@@ -7,7 +7,7 @@ import { CRValidation } from "./models/cr-validation.model";
 import { IssueValidation } from "./models/issue-validation.model";
 import { TmsValidation } from "./models/tms-validation.model";
 import { environment } from 'src/environments/environment';
-import { addValidatedCR, addValidatedIssue, addValidatedTms, clearRedmineVersions, initRedmineVersions } from "./actions/items.item-creation-actions";
+import { addValidatedCR, addValidatedIssue, addValidatedTms } from "./actions/items.item-creation-actions";
 import { getRedmineProjects, getRedmineUsers } from "./selectors/items.common-selectors";
 import { getValidatedCRs, getValidatedIssues, getValidatedTms } from "./selectors/items.item-creation-selectors";
 
@@ -24,7 +24,6 @@ export function validateUser(store: Store<State>, validateUserError: string, con
         return of(new StartAsyncValidationAction(controlId, validateUserError), new SetAsyncErrorAction(controlId, validateUserError, "User invalid"));
     }));
 }
-
 
 export function validateCR(store: Store<State>, http: HttpClient, validateCRError: string, controlId: string, cr: string): Observable<any> {
 
@@ -161,15 +160,25 @@ export function validateFromId(store: Store<State>, http: HttpClient, validateFr
 }
 
 
-export function validateProject(store: Store<State>, validateProjectError: string, controlId: string, projectName: string): Observable<any> {
+export function validateProject(store: Store<State>, validateProjectError: string, controlId: string, projectName: string, clearVersionAction: Action, initVersionAction: Action): Observable<any> {
 
     if (!projectName)
-        return of(new StartAsyncValidationAction(controlId, validateProjectError), new SetAsyncErrorAction(controlId, validateProjectError, "Project invalid"), clearRedmineVersions());
+        return of(new StartAsyncValidationAction(controlId, validateProjectError), new SetAsyncErrorAction(controlId, validateProjectError, "Project invalid"), clearVersionAction);
 
     return store.select(getRedmineProjects).pipe(take(1), switchMap(projects => {
-        if (projects.find(p => p.name == projectName))
-            return of(new StartAsyncValidationAction(controlId, validateProjectError), new ClearAsyncErrorAction(controlId, validateProjectError), initRedmineVersions({projectName: projectName}));
 
-        return of(new StartAsyncValidationAction(controlId, validateProjectError), new SetAsyncErrorAction(controlId, validateProjectError, "Project invalid"), clearRedmineVersions());
+        if (projects.find(p => p.name == projectName))
+            return of(new StartAsyncValidationAction(controlId, validateProjectError),
+                new ClearAsyncErrorAction(controlId, validateProjectError), initVersionAction);
+
+        return of(new StartAsyncValidationAction(controlId, validateProjectError),
+            new SetAsyncErrorAction(controlId, validateProjectError, "Project invalid"), clearVersionAction);
     }));
+}
+
+export function validateItemsFromEmailsSettingsName(store: Store<State>, validateItemsFromEmailsError: string, controlId: string, settingName: string): Observable<any> {
+    if (!settingName)
+        return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new SetAsyncErrorAction(controlId, validateItemsFromEmailsError, "Name invalid"));
+
+    return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new ClearAsyncErrorAction(controlId, validateItemsFromEmailsError));
 }

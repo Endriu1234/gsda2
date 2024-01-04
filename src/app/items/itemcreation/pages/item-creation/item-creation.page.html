@@ -2,8 +2,8 @@
     <form novalidate [ngrxFormState]="formState">
         <div class="d-flex flex-md-row justify-content-md-between flex-column my-4 jkWidthMarg">
             <mat-card-title>Item Creation</mat-card-title>
-            <mat-card-subtitle><button 
-                                    mat-raised-button 
+            <mat-card-subtitle><button
+                                    mat-raised-button
                                     (click)="fillById()"
                                     *ngIf="!(isItemCreationFormCreatedFromBatch$ | async)"
                                     [style.backgroundColor]="(getItemCreationFormSuitableForDefault$ | async) ? 'rgb(160, 230, 160)' : ''"
@@ -66,12 +66,12 @@
                     <textarea type="text" matInput placeholder="Description" [ngrxFormControlState]="$any(formState).controls.description"></textarea>
                 </mat-form-field>
                 <mat-error
-                        [style.visibility]="(formState.isTouched && formState.errors._user?.$validateUserError)?'visible':'hidden'">
-                        User not matched
-                    </mat-error>
+                    [style.visibility]="(formState.isTouched && formState.errors._user?.$validateUserError)?'visible':'hidden'">
+                    User not matched
+                </mat-error>
                 <div class="d-flex flex-md-row justify-content-md-between flex-column">
                     <mat-form-field appearance="outline" class="" [style.width.%]=89>
-                        <mat-label>Redmine Users</mat-label>
+                        <mat-label>User</mat-label>
                         <input type="text"  [ngrxFormControlState]="$any(formState).controls.user"
                             matInput
                             [matAutocomplete]="autoUser">
@@ -85,10 +85,10 @@
                     </mat-form-field>
                     <mat-form-field appearance="outline" [style.width.%]=10>
                         <mat-label>Time</mat-label>
-                        <input matInput 
-                            type="number" 
-                            placeholder="" 
-                            min="0" 
+                        <input matInput
+                            type="number"
+                            placeholder=""
+                            min="0"
                             oninput="validity.valid||(value='');"
                             [ngrxFormControlState]="$any(formState).controls.est_time"
                         >

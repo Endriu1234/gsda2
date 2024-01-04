@@ -1,9 +1,13 @@
 const axios = require('axios');
 
 function getRedmineApiConfiguration() {
+    return getRedmineApiConfiguration('application/json');
+};
+
+function getRedmineApiConfiguration(contentType) {
     const config = {
         'X-Redmine-API-Key': process.env.REDMINE_API_KEY,
-        'Content-Type': 'application/json'
+        'Content-Type': contentType
     };
     return { headers: config };
 };
@@ -73,6 +77,39 @@ module.exports.postRedmineJsonData = async (endpoint, jsonData) => {
         retVal.success = false;
         logError(error);
     });
+
+    return retVal;
+}
+
+module.exports.postFiles = async (uploads) => {
+    const retVal = {
+        success: true,
+        errorMessage: ''
+    }
+
+    if (uploads && uploads.length > 0) {
+        for (const attachment of uploads) {
+            if (!retVal.success)
+                break;
+
+            const result = await axios.post(getRedmineAddress(`uploads.json?filename=${attachment.filename}`), attachment.content,
+                getRedmineApiConfiguration('application/octet-stream')).catch((error) => {
+                    retVal.success = false;
+                    retVal.errorMessage = error;
+                    logError(error);
+                });
+
+
+            if (result && result.data && result.data.upload && result.data.upload.token) {
+                attachment.token = result.data.upload.token;
+            }
+            else {
+                retVal.success = false;
+                retVal.errorMessage = 'Lack of token';
+                break;
+            }
+        }
+    }
 
     return retVal;
 }

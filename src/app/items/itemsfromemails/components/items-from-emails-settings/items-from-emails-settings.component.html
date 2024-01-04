@@ -4,25 +4,149 @@
             <form novalidate [ngrxFormState]="formState">
                 <div class="container-fluid">
                     <div class="row">
-                        <mat-slide-toggle
-                            [ngrxFormControlState]="$any(formState).controls.enabled">Enabled</mat-slide-toggle>
-                    </div>
-                    <div class="row">
-                        <mat-form-field appearance="outline" [style.width.px]=220 class="mt-3">
-                            <input  [ngrxFormControlState]="$any(formState).controls.interval"
-                              type="number" class="form-control" matInput name="value"
-                            placeholder="Interval in minutes">
-                        </mat-form-field>
-                    </div>
-                    <div class="row">
-                        <button
-                        mat-fab
-                        extended
-                        color="primary"
-                        class="mt-0"
-                        (click)="saveSettings()"
+                        <div class="col-3">
+                            <mat-error
+                                *ngIf="formState.isTouched && (formState.errors._name?.$validateItemsFromEmailsError)">
+                                Name is required
+                            </mat-error>
+                            <mat-form-field appearance="outline" [style.width.%]=100>
+                                <mat-label>Name</mat-label>
+                                <input type="text" matInput placeholder="Name of settings"  [ngrxFormControlState]="$any(formState).controls.name">
+                            </mat-form-field>
+                        </div>
 
-                    >Save</button>
+                        <div class="col-2">
+                            <mat-error *ngIf="false"></mat-error>
+                            <mat-slide-toggle [style.marginTop.px]=19
+                                [ngrxFormControlState]="$any(formState).controls.active">Active</mat-slide-toggle>
+                        </div>
+                        <div class="col-1 offset-6">
+
+                            <mat-form-field appearance="outline" [style.width.%]=100>
+                                <mat-label>Modified By</mat-label>
+                                <input type="text" disabled="true"
+                                [ngrxFormControlState]="$any(formState).controls.modifiedBy"
+                                matInput>
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-2">
+                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                                <mat-label>Tracker</mat-label>
+                                <mat-select [ngrxFormControlState]="$any(formState).controls.tracker">
+
+                                    <mat-option *ngFor="let tracker of (trackers$ | async)"
+                                        [value]="tracker.name">{{tracker.name}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-3">
+                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                                <mat-label>Redmine Project</mat-label>
+                                <input type="text"
+                                    [ngrxFormControlState]="$any(formState).controls.project"
+                                    matInput
+                                    [matAutocomplete]="autoProject">
+                                <mat-autocomplete #autoProject="matAutocomplete">
+                                    <mat-option *ngFor="let project of (projectsFiltered$ | async)"
+                                        [value]="project.name">
+                                        {{project.name}}
+                                    </mat-option>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-3">
+                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                                <mat-label>Version</mat-label>
+                                <mat-select [ngrxFormControlState]="$any(formState).controls.version">
+                                    <mat-option *ngFor="let version of versions$ | async" [value]="version.name">
+                                        {{version.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-4">
+                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                                <mat-label>User</mat-label>
+                                <input type="text"  [ngrxFormControlState]="$any(formState).controls.user"
+                                    matInput
+                                    [matAutocomplete]="autoUser">
+                                <mat-autocomplete #autoUser="matAutocomplete">
+                                    <mat-optgroup *ngFor="let group of usersFiltered$ | async" [label]="group.letter">
+                                        <mat-option *ngFor="let user of group.redmineUsers" [value]="user.name">
+                                            {{user.name}}
+                                        </mat-option>
+                                    </mat-optgroup>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                                <mat-label>Parsing Mode</mat-label>
+                                <mat-select [ngrxFormControlState]="$any(formState).controls.parsingMode">
+
+                                    <mat-option value="plain">Plain</mat-option>
+                                    <mat-option value="plainAndHtmlAttachment">Plain and Html Attachment</mat-option>
+                                    <mat-option value="parsedHtml">Parsed Html</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-error *ngIf="formState.errors._parsingMode?.required">
+                                Parsing Mode is required
+                            </mat-error>
+                        </div>
+                        <div class="col-3">
+                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                                <mat-label>Find Issues</mat-label>
+                                <mat-select [ngrxFormControlState]="$any(formState).controls.findIssues">
+                                    <mat-option value="none">None</mat-option>
+                                    <mat-option value="latest">Latest</mat-option>
+                                    <mat-option value="earliest">Earliest</mat-option>
+                                    <mat-option value="all">All</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-error *ngIf="formState.errors._findIssues?.required">
+                                Find Issues is required
+                            </mat-error>
+                        </div>
+                        <div class="col-3">
+                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                                <mat-label>Find CRs</mat-label>
+                                <mat-select [ngrxFormControlState]="$any(formState).controls.findCRs">
+                                    <mat-option value="none">None</mat-option>
+                                    <mat-option value="latest">Latest</mat-option>
+                                    <mat-option value="earliest">Earliest</mat-option>
+                                    <mat-option value="all">All</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-error *ngIf="formState.errors._findCRs?.required">
+                                Find Issues is required
+                            </mat-error>
+                        </div>
+                        <div class="col-3">
+                            <mat-slide-toggle [style.marginTop.px]=28
+                                [ngrxFormControlState]="$any(formState).controls.addAttachments">Add
+                                attachments</mat-slide-toggle>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-1">
+                            <button
+                            mat-fab
+                            extended
+                            color="primary"
+                            class="mt-0"
+                            (click)="saveSettings()"
+                            [disabled]="!(getItemsFromEmailsSettingsCanActivateSave$ | async)"
+                        >Save</button>
+                        </div>
                     </div>
 
                 </div>

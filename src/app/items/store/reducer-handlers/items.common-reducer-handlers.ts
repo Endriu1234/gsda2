@@ -13,6 +13,8 @@ export function loadRedmineProjects(state: State, args: { redmineProjects: Redmi
     newState.itemsSetupData.redmineProjectsLoaded = true;
     newState.itemCreationSetupData.redmineProjectsFiltered
         = filterRedmineProjects(args.redmineProjects, newState.itemCreationFromData.value.project);
+    newState.itemsFromEmailsSettingsSetupData.redmineProjectsFiltered
+        = filterRedmineProjects(args.redmineProjects, newState.itemsFromEmailsSettingsFormData.value.project);
     newState.batchItemCreationSdCriteriaSetupData.redmineProjectsFiltered
         = filterRedmineProjects(args.redmineProjects, newState.batchItemCreationSdCriteriaFormData.value.targetRedmineProject);
     newState.batchItemCreationTMSCriteriaSetupData.redmineTargetProjectsFiltered
@@ -24,14 +26,14 @@ export function loadRedmineProjects(state: State, args: { redmineProjects: Redmi
 
 export function initRedmineTrackers(state: State): State {
     const newState = _.cloneDeep(state);
-    newState.itemCreationSetupData.redmineTrackersLoaded = false;
+    newState.itemsSetupData.redmineTrackersLoaded = false;
     return newState;
 }
 
 export function loadRedmineTrackers(state: State, args: { redmineTrackers: RedmineTracker[] }): State {
     const newState: State = _.cloneDeep(state);
-    newState.itemCreationSetupData.redmineTrackers = args.redmineTrackers;
-    newState.itemCreationSetupData.redmineTrackersLoaded = true;
+    newState.itemsSetupData.redmineTrackers = args.redmineTrackers;
+    newState.itemsSetupData.redmineTrackersLoaded = true;
     return newState;
 
 }
@@ -46,10 +48,16 @@ export function loadRedmineUsers(state: State, args: { redmineUsers: RedmineUser
     const newState: State = _.cloneDeep(state);
     newState.itemCreationSetupData.redmineUsers = args.redmineUsers;
     newState.itemCreationSetupData.redmineUsersByLetter = createUsersByLetter(newState.itemCreationSetupData.redmineUsers);
-    newState.batchItemCreationTMSCriteriaSetupData.redmineUsersByLetter = createUsersByLetter(args.redmineUsers);
     newState.itemCreationSetupData.redmineUsersByLetterFiltered = filterRedmineUsersGroup(newState.itemCreationSetupData.redmineUsersByLetter, newState.itemCreationFromData.value.user);
+
+    newState.batchItemCreationTMSCriteriaSetupData.redmineUsersByLetter = createUsersByLetter(args.redmineUsers);
     newState.batchItemCreationTMSCriteriaSetupData.redmineUsersByLetterFiltered
         = filterRedmineUsersGroup(newState.batchItemCreationTMSCriteriaSetupData.redmineUsersByLetter, newState.batchItemCreationTMSCriteriaFormData.value.userToITms);
+
+    newState.itemsFromEmailsSettingsSetupData.redmineUsersByLetter = createUsersByLetter(args.redmineUsers);
+    newState.itemsFromEmailsSettingsSetupData.redmineUsersByLetterFiltered
+        = filterRedmineUsersGroup(newState.itemsFromEmailsSettingsSetupData.redmineUsersByLetter, newState.itemsFromEmailsSettingsFormData.value.user);
+
     newState.itemCreationSetupData.redmineUsersLoaded = true;
     return newState;
 }

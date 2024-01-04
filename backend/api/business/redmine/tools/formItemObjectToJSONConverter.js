@@ -68,5 +68,18 @@ module.exports.convertFormItemObjectToJSON = async function convertFormItemObjec
     if (custom_fields.length > 0)
         redmineItem.issue.custom_fields = custom_fields;
 
-    return JSON.stringify(redmineItem);
+    if (formItem && formItem.uploads && formItem.uploads.length > 0) {
+
+        redmineItem.issue.uploads = [];
+
+        for (const attachment of formItem.uploads) {
+            redmineItem.issue.uploads.push({
+                token: attachment.token,
+                filename: attachment.filename,
+                content_type: attachment.content_type
+            });
+        }
+    }
+
+    return redmineItem;
 }
