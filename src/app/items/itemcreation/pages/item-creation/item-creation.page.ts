@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromItemsState from '../../../store/state/items.state';
 import * as fromItemCreationSelectors from '../../../store/selectors/items.item-creation-selectors';
@@ -13,9 +13,12 @@ import { ItemCreationFromId } from "../item-creation-from-id/item-creation-from-
 import { MatDialog } from '@angular/material/dialog';
 import { FormSaveState, FORM_SAVE_STATE } from 'src/app/shared/store/shared.state';
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers } from 'src/app/items/store/actions/items.common-actions';
-import { breakBatchItemCreation, identifyAndFillItemById } from 'src/app/items/store/actions/items.item-creation-actions';
+import { addFilesToUpload, breakBatchItemCreation, deleteFile, identifyAndFillItemById } from 'src/app/items/store/actions/items.item-creation-actions';
 import { ITEM_CREATION_FORMID } from 'src/app/items/store/state/items.item-creation-state';
 import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
+import { getItemCreationFiles } from '../../../store/selectors/items.item-creation-selectors';
+import { FileToUpload } from 'src/app/shared/store/models/file-to-upload.model';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-item-creation',
@@ -32,8 +35,10 @@ export class ItemCreationPage implements OnInit, OnDestroy {
   getItemCreationFormCanActivateSave$: Observable<boolean> | null = null;
   isItemCreationFormCreatedFromBatch$: Observable<boolean> | null = null;
   versions$: Observable<RedmineVersion[]> | null = null;
+  files$: Observable<FileToUpload[]> | null = null;
   private subscriptions: (Subscription | undefined) [] = [];
   trimUpper = trimUpperConverter;
+  @ViewChild("fileSelector", {static: false}) file_selector!: ElementRef;
 
   constructor(private store: Store<fromItemsState.State>, private dialog: MatDialog) {
     this.formState$ = this.store.select(fromItemCreationSelectors.getItemCreationFormState);
@@ -97,6 +102,7 @@ export class ItemCreationPage implements OnInit, OnDestroy {
     this.getItemCreationFormCanActivateSave$ = this.store.select(fromItemCreationSelectors.getItemCreationFormCanActivateSave);
     this.isItemCreationFormCreatedFromBatch$ = this.store.select(fromItemCreationSelectors.isItemCreationFormCreatedFromBatch);
     this.versions$ = this.store.select(fromItemCreationSelectors.getRedmineVersionsByProject);
+    this.files$ = this.store.select(getItemCreationFiles);
   }
 
   ngOnDestroy() {
@@ -113,6 +119,34 @@ export class ItemCreationPage implements OnInit, OnDestroy {
 
   breakBatchItemCreation() {
     this.store.dispatch(breakBatchItemCreation());
+  }
+
+  openFile() {
+    const file_selection = this.file_selector.nativeElement;
+    file_selection.click();
+  }
+
+  onChange(event: Event) {
+    const element = event.currentTarget as HTMLInputElement;
+    let fileList: FileList | null = element.files;
+    if (fileList) {
+      this.addFile(fileList);
+    }
+  }
+
+  addFile(event: FileList) {
+    let tblFiles: File[] = [];
+    for (let index = 0; index < event.length; index++) {
+      const elem = event.item(index);
+      if (elem) {
+        tblFiles.push(elem);
+      }
+    }
+    this.store.dispatch(addFilesToUpload({filesToUpload: tblFiles}));
+  }
+
+  deleteFile(file: FileToUpload) {
+    this.store.dispatch(deleteFile({fileToDeleteId: file.id}));
   }
 
 }

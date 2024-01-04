@@ -8,6 +8,7 @@ import { IssueValidation } from "../models/issue-validation.model";
 import { TmsValidation } from "../models/tms-validation.model";
 import { FromIdValidation } from "../models/fromId-validation.model";
 import { RedmineVersion } from "../../../shared/store/models/redmine-version.model";
+import { FileToUpload } from "src/app/shared/store/models/file-to-upload.model";
 
 export enum ItemCreationMode {
     SingleItem = "SINGLE_ITEM_CREATION",
@@ -96,4 +97,14 @@ export function getItemCreationFromIdDialogInitialState(): FormGroupState<ItemCr
     return createFormGroupState<ItemCreationFromIdDialog>(ITEM_CREATION_DIALOG, {
         fromId: ''
     });
+}
+
+export interface ItemCreationFiles {
+    files: FileToUpload[]
+}
+
+export function getItemCreationFilesInitialState(): ItemCreationFiles {
+    return {
+        files: []
+    };
 }
