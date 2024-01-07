@@ -14,6 +14,8 @@ import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 import { RedmineUserByLetter } from 'src/app/shared/store/models/redmine-user-letter-model';
 import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
+import { MatTableDataSource } from '@angular/material/table';
+import { ItemsFromEmailsSettings } from 'src/app/items/store/models/itemsfromemails/items-from-emails-settings.model';
 
 @Component({
   selector: 'app-items-from-emails-settings',
@@ -28,6 +30,12 @@ export class ItemsFromEmailsSettingsComponent implements OnInit {
   usersFiltered$: Observable<RedmineUserByLetter[]> | null = null;
   versions$: Observable<RedmineVersion[]> | null = null;
   getItemsFromEmailsSettingsCanActivateSave$: Observable<boolean> | null = null;
+  dataSource: MatTableDataSource<ItemsFromEmailsSettings> = new MatTableDataSource<ItemsFromEmailsSettings>([]);
+  expandedElement: ItemsFromEmailsSettings | null = null;
+  allColumns$: Observable<string[]> | null = null;
+  columnsLength$: Observable<number> | null = null;
+
+
 
 
   constructor(private store: Store<fromItemsState.State>) {
@@ -63,5 +71,13 @@ export class ItemsFromEmailsSettingsComponent implements OnInit {
 
   saveSettings() {
     this.store.dispatch(new SetUserDefinedPropertyAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID, FORM_SAVE_STATE, FormSaveState.Saving))
+  }
+
+  applyFilter(event: Event) {
+    // const filterValue = (event.target as HTMLInputElement).value;
+    // this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    // if (this.dataSource.paginator)
+    //   this.dataSource.paginator.firstPage();
   }
 }
