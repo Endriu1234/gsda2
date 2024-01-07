@@ -36,3 +36,15 @@ form {
 .jk-form-field {
     margin-bottom: -1em;
 }
+
+.jk ::ng-deep .mdc-notched-outline > * {
+    border-color: rgba(255, 166, 0, 0.8) !important;
+  }
+
+.jk ::ng-deep .mdc-text-field--focused .mdc-notched-outline > * {
+    border-color: none !important;
+  }
+
+.jk ::ng-deep .mdc-text-field--invalid .mdc-notched-outline > * {
+    border-color: red !important;
+  }

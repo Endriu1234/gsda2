@@ -63,10 +63,11 @@
                 <mat-error class="jk-error" [style.visibility]="(formState.isTouched && (formState.errors._name?.$validateNameError || formState.errors._name?.required))?'visible':'hidden'">
                     Name is required
                 </mat-error>
-                <mat-form-field class="jk-form-field" appearance="outline" [style.width.%]=100>
+                <mat-form-field class="jk-form-field jk" appearance="outline" [style.width.%]=100>
                     <mat-label>Name</mat-label>
                     <input type="text" 
                         matInput 
+                        class="jk"
                         [ngrxFormControlState]="$any(formState).controls.name" 
                         placeholder="Name of the project"
                         [disabled]="formState.controls.version.value.length > 0">

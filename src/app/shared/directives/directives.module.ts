@@ -1,13 +1,16 @@
 import { NgModule } from "@angular/core";
 import { DisableMatFabButtonDirective } from "./disable-control.directive";
 import { ReactiveFormsModule } from "@angular/forms";
+import { DragAndDropDirective } from './drag-and-drop.directive';
 
 @NgModule({
     declarations: [
-        DisableMatFabButtonDirective
+        DisableMatFabButtonDirective,
+        DragAndDropDirective
     ],
     exports: [
-        DisableMatFabButtonDirective
+        DisableMatFabButtonDirective,
+        DragAndDropDirective
     ],
     imports: [
         ReactiveFormsModule

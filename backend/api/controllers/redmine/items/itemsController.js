@@ -92,3 +92,10 @@ module.exports.getPotentialRedmineItemsFromRedmineProject = async (req, res) => 
 
     return res.status(200).json(retVal);
 }
+
+module.exports.saveRedmineAttachement = async (req, res) => {
+    
+    console.dir(req.body);
+
+    return res.status(200).json(req.body);
+}

@@ -139,6 +139,33 @@
                         <span *ngIf="!formState.controls.tms.isValidationPending">Invalid TMS value</span>
                     </mat-error>
                 </div>
+                <mat-list fileDragAndDrop (onFileDropped)="addFile($event)">
+                    <form 
+                        class="" [style.visibility]="'hidden'">
+                        <input type="file" #fileSelector
+                            (change)="onChange($event)">
+                    </form>
+                    <mat-list-item *ngFor="let file of (files$ | async)">
+                        <div class="d-flex flex-md-row flex-column">
+                            <b>              </b>
+                            {{file.file.name}}
+                            <button 
+                                mat-mini-fab 
+                                class="clButton" 
+                                matTooltip="Delete" 
+                                matTooltipPosition="after"
+                                (click)="deleteFile(file)"
+                            ><mat-icon fontIcon="delete"></mat-icon></button>
+                        </div>
+                    </mat-list-item>
+                    <mat-list-item>
+                        <div class="d-flex flex-md-row flex-column">
+                            <b>Attachements: </b>
+                            <button mat-fab extended class="clButton" matTooltip="Add file" matTooltipPosition="before" (click)="openFile()"
+                            >Choose file...</button>
+                        </div>
+                    </mat-list-item>
+                  </mat-list>
             </mat-card-content>
         </mat-card>
         <mat-card-actions [align]="'end'" class="jkWidthMarg">
