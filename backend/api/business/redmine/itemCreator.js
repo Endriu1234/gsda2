@@ -13,11 +13,11 @@ module.exports.createItem = async function (values) {
 
     if (validationResult.isValid) {
 
-        if (values.uploads) {
-            const fileResult = await postFiles(values.uploads);
+        if (values.files && values.files.length > 0) {
+            const fileResult = await postFiles(values.files);
 
             if (!fileResult.success)
-                values.uploads = null;
+                values.files = null;
         }
         const itemJson = await convertFormItemObjectToJSON(values);
         const result = await postRedmineJsonData('issues.json', itemJson);

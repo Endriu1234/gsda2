@@ -32,6 +32,7 @@ module.exports.getRedmineVersions = async (req, res) => {
 
 module.exports.createRedmineItem = async (req, res) => {
 
+    req.body.files = req.files;
     const retVal = await createItem(req.body);
     return res.status(200).json(retVal);
 }
@@ -94,7 +95,7 @@ module.exports.getPotentialRedmineItemsFromRedmineProject = async (req, res) => 
 }
 
 module.exports.saveRedmineAttachement = async (req, res) => {
-    
+
     console.dir(req.body);
 
     return res.status(200).json(req.body);

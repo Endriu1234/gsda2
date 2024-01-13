@@ -23,11 +23,12 @@ module.exports.createItemFromEmail = async function (plainText, upperedPlainText
                 tms: '',
                 version: settings.version,
                 est_time: '',
-                uploads: [{
-                    filename: 'SOURCE_EMAIL.html',
-                    content_type: 'text/html',
+                files: [{
+                    originalname: 'SOURCE_EMAIL.html',
+                    mimetype: 'text/html',
                     token: '',
-                    content: Buffer.from(html, "utf-8")
+                    encoding: 'utf-8',
+                    buffer: Buffer.from(html, "utf-8")
                 }]
             };
 

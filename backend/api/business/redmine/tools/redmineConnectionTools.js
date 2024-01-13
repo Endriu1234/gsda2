@@ -81,18 +81,19 @@ module.exports.postRedmineJsonData = async (endpoint, jsonData) => {
     return retVal;
 }
 
-module.exports.postFiles = async (uploads) => {
+module.exports.postFiles = async (files) => {
     const retVal = {
         success: true,
         errorMessage: ''
     }
 
-    if (uploads && uploads.length > 0) {
-        for (const attachment of uploads) {
+    if (files && files.length > 0) {
+        for (const file of files) {
+
             if (!retVal.success)
                 break;
 
-            const result = await axios.post(getRedmineAddress(`uploads.json?filename=${attachment.filename}`), attachment.content,
+            const result = await axios.post(getRedmineAddress(`uploads.json?filename=${file.originalname}`), file.buffer,
                 getRedmineApiConfiguration('application/octet-stream')).catch((error) => {
                     retVal.success = false;
                     retVal.errorMessage = error;
@@ -101,7 +102,7 @@ module.exports.postFiles = async (uploads) => {
 
 
             if (result && result.data && result.data.upload && result.data.upload.token) {
-                attachment.token = result.data.upload.token;
+                file.token = result.data.upload.token;
             }
             else {
                 retVal.success = false;

@@ -1,6 +1,6 @@
 import { FormGroupState } from "ngrx-forms";
 import { BATCH_ITEM_CREATION_GRID_REMOVABLE_COLUMNS, BatchItemCreation, BatchItemCreationFormData, BatchItemCreationFormDataAddon, BatchItemCreationIdsCriteriaFormData, BatchItemCreationIdsCriteriaSetupData, BatchItemCreationRecords, BatchItemCreationRedmineCriteriaFormData, BatchItemCreationRedmineCriteriaSetupData, BatchItemCreationSdCriteriaFormData, BatchItemCreationSdCriteriaSetupData, BatchItemCreationTMSCriteriaFormData, BatchItemCreationTmsCriteriaSetupData, getBatchItemCreationFormDataAddonInitialState, getBatchItemCreationFormDataInitialState, getBatchItemCreationIdsCriteriaFormDataInitialState, getBatchItemCreationIdsCriteriaSetupDataInitialState, getBatchItemCreationRecordsInitialState, getBatchItemCreationRedmineCriteriaFormDataInitialState, getBatchItemCreationRedmineCriteriaSetupDataInitialState, getBatchItemCreationSdCriteriaFormDataInitialState, getBatchItemCreationSdCriteriaSetupDataInitialState, getBatchItemCreationTMSCriteriaFormDataInitialState, getBatchItemCreationTmsCriteriaSetupDataInitialState, getBatchItemCreationnitialState } from "./items.batch-item-creation-state";
-import { getItemCreationFilesInitialState, getItemCreationFromDataInitialState, getItemCreationFromIdDialogInitialState, getItemCreationSetupDataInitialState, ItemCreationFiles, ItemCreationFromData, ItemCreationFromIdDialog, ItemCreationSetupData } from "./items.item-creation-state";
+import { getItemCreationFromDataInitialState, getItemCreationFromIdDialogInitialState, getItemCreationSetupDataInitialState, ItemCreationFromData, ItemCreationFromIdDialog, ItemCreationSetupData } from "./items.item-creation-state";
 import { ItemsSetupData, getItemsSetupDataInitialState } from "./items.common-state";
 import {
     ItemsFromEmailsSettingsFormData, ItemsFromEmailsSettingsSetupData, getItemsFromEmailsSettingsFormDataInitialState,
@@ -13,7 +13,6 @@ export interface State {
     batchItemCreationSdCriteriaSetupData: BatchItemCreationSdCriteriaSetupData;
     itemCreationFromData: FormGroupState<ItemCreationFromData>;
     itemCreationFromIdDialog: FormGroupState<ItemCreationFromIdDialog>;
-    itemCreationFiles: ItemCreationFiles;
     batchItemCreationSdCriteriaFormData: FormGroupState<BatchItemCreationSdCriteriaFormData>;
     batchItemCreation: BatchItemCreation;
     batchItemCreationRecords: BatchItemCreationRecords;
@@ -36,7 +35,6 @@ export const initialState: State = {
     itemCreationSetupData: getItemCreationSetupDataInitialState(),
     itemCreationFromData: getItemCreationFromDataInitialState(),
     itemCreationFromIdDialog: getItemCreationFromIdDialogInitialState(),
-    itemCreationFiles: getItemCreationFilesInitialState(),
     batchItemCreation: getBatchItemCreationnitialState(),
 
     batchItemCreationSdCriteriaSetupData: getBatchItemCreationSdCriteriaSetupDataInitialState(),

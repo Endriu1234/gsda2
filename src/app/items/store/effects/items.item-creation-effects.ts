@@ -12,14 +12,16 @@ import { GsdaRedmineHttpResponse } from 'src/app/shared/http/model/gsda-redmine-
 import { environment } from 'src/environments/environment';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { Item } from '../models/item.model';
-import { addFilesToUpload, breakBatchItemCreation, clearRedmineVersions, endResetItemCreationForm, fillItemById, identifyAndFillItemById, initRedmineVersions, loadRedmineVersions, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startResetItemCreationForm, updateFiles } from '../actions/items.item-creation-actions';
+import {
+    breakBatchItemCreation, clearRedmineVersions, endResetItemCreationForm, fillItemById, identifyAndFillItemById, initRedmineVersions,
+    loadRedmineVersions, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startResetItemCreationForm
+} from '../actions/items.item-creation-actions';
 import { noopAction } from '../actions/items.common-actions';
 import { getItemCreationDialogState, getItemCreationFormState, getItemCreationFormWithSetup, getItemCreationMode } from '../selectors/items.item-creation-selectors';
 import { ITEM_CREATION_DIALOG, ITEM_CREATION_FORMID, ItemCreationMode } from '../state/items.item-creation-state';
 import { SnackBarIcon } from '../../../shared/store/shared.state';
 import { continueBatchItemsCreation, forceEndBatchItemCreation, setLinkToCurrentProposedItemAndUnselect } from '../actions/items.batch-item-creation-actions';
 import { RedmineVersion } from '../../../shared/store/models/redmine-version.model';
-import { FileToUpload } from 'src/app/shared/store/models/file-to-upload.model';
 
 export const validateUserError = "validateUserError";
 export const validateCRError = "validateCRError";
@@ -78,7 +80,26 @@ export class ItemsItemCreationEffects {
 
                         return this.store.select(getItemCreationFormWithSetup).pipe(take(1), switchMap(formData => {
                             let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
-                            return this.http.post<GsdaRedmineHttpResponse>(environment.apiUrl + '/redmine/items/create-redmine-item', formData.creationFormState.value, { context }).pipe(switchMap(response => {
+
+
+                            const postData = new FormData();
+                            Object.keys(formData.creationFormState.value as any).forEach(key => {
+
+                                if (key === 'files') {
+                                    const files = (formData.creationFormState.value as any)[key];
+                                    if (files.length > 0) {
+                                        files.forEach((file: File) => {
+                                            postData.append('files', file, file.name);
+                                        });
+                                    }
+                                }
+                                else {
+                                    postData.append(key, (formData.creationFormState.value as any)[key])
+                                }
+
+                            });
+
+                            return this.http.post<GsdaRedmineHttpResponse>(environment.apiUrl + '/redmine/items/create-redmine-item', postData, { context }).pipe(switchMap(response => {
                                 if (response.success) {
 
                                     if (formData.creationFormSetupState.mode === ItemCreationMode.SingleItem) {
@@ -148,6 +169,7 @@ export class ItemsItemCreationEffects {
                 new SetValueAction(ITEM_CREATION_FORMID + '.issue', ''),
                 new SetValueAction(ITEM_CREATION_FORMID + '.cr', ''),
                 new SetValueAction(ITEM_CREATION_FORMID + '.tms', ''),
+                new SetValueAction(ITEM_CREATION_FORMID + '.files', []),
                 new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID,
                     fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New),
                 new ResetAction(ITEM_CREATION_FORMID), endResetItemCreationForm());
@@ -222,17 +244,6 @@ export class ItemsItemCreationEffects {
             params = params.append("redmineProject", param.projectName);
             return this.http.get<RedmineVersion[]>(environment.apiUrl + '/redmine/items/get-redmine-versions', { params });
         }), map(redmineVersions => loadRedmineVersions({ redmineVersions }))
-    ));
-
-    addFilesToUpload$ = createEffect(() => this.actions$.pipe(ofType(addFilesToUpload),
-        switchMap((param) => {
-            //let params = new HttpParams();
-            //params = params.append("redmineProject", param.filesToUpload);
-            console.dir(param.filesToUpload[0]);
-            const form_data = new FormData();
-            form_data.append('file', param.filesToUpload[0]);
-            return this.http.post<FileToUpload[]>(environment.apiUrl + '/redmine/items/save-redmine-attachement', form_data);
-        }), map(fileToUpload => updateFiles({ fileToUpload }))
     ));
 
 }

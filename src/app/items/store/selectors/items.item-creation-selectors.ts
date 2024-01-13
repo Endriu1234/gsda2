@@ -2,7 +2,7 @@ import { createSelector } from '@ngrx/store';
 import { State } from '../state/items.state';
 import { getItemsState } from './items.common-selectors';
 import { FormControlState, FormGroupState } from 'ngrx-forms';
-import { ItemCreationFromData, ItemCreationMode, ItemCreationSetupData } from '../state/items.item-creation-state';
+import { ItemCreationFromData, ItemCreationMode } from '../state/items.item-creation-state';
 
 export const getItemCreationSetupData = createSelector(getItemsState, (state: State) => state.itemCreationSetupData);
 export const getItemCreationMode = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.mode);
@@ -22,7 +22,6 @@ export const getItemCreationFormCRControl = createSelector(getItemsState, (state
 export const getItemCreationFormIssueControl = createSelector(getItemsState, (state: State) => state.itemCreationFromData.controls.issue);
 export const getItemCreationFormDescriptionControl = createSelector(getItemsState, (state: State) => state.itemCreationFromData.controls.description);
 export const getItemCreationFormSubjectControl = createSelector(getItemsState, (state: State) => state.itemCreationFromData.controls.subject);
-export const getItemCreationFiles = createSelector(getItemsState, (state: State) => state.itemCreationFiles.files);
 
 export const getItemCreationFormWithSetup = createSelector(getItemCreationFormState, getItemCreationSetupData, (creationFormState, creationFormSetupState) => {
     return {

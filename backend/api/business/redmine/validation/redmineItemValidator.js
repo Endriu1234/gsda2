@@ -106,31 +106,25 @@ module.exports.validateRedmineItem = async (item) => {
         }
     }
 
-    if (item.uploads) {
+    if (item.files && item.files.length > 0) {
 
-        if (item.uploads.length === 0) {
-            retVal.isValid = false;
-            retVal.errorMsg = 'No attachments were provided';
-            return retVal;
-        }
+        for (const file of item.files) {
 
-        for (const attachment of item.uploads) {
-
-            if (!attachment.content_type || attachment.content_type.length === 0) {
+            if (!file.mimetype || file.mimetype.length === 0) {
                 retVal.isValid = false;
-                retVal.errorMsg = 'There is an attachment w/o content type';
+                retVal.errorMsg = 'There is an file w/o mimetype';
                 return retVal;
             }
 
-            if (!attachment.filename || attachment.filename.length === 0) {
+            if (!file.originalname || file.originalname.length === 0) {
                 retVal.isValid = false;
-                retVal.errorMsg = 'There is an attachment w/o file name';
+                retVal.errorMsg = 'There is a file w/o file name';
                 return retVal;
             }
 
-            if (!attachment.content) {
+            if (!file.buffer) {
                 retVal.isValid = false;
-                retVal.errorMsg = 'There is an attachment w/o content';
+                retVal.errorMsg = 'There is a file w/o buffer';
                 return retVal;
             }
         }

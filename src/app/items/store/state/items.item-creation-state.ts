@@ -1,6 +1,5 @@
 import { RedmineProject } from "src/app/shared/store/models/redmine-project.model";
 import { createFormGroupState, FormGroupState } from "ngrx-forms";
-import { RedmineTracker } from "../models/redmine-tracker.model";
 import { RedmineUser } from "../../../shared/store/models/redmine-user.model";
 import { RedmineUserByLetter } from "../../../shared/store/models/redmine-user-letter-model";
 import { CRValidation } from "../models/cr-validation.model";
@@ -8,7 +7,6 @@ import { IssueValidation } from "../models/issue-validation.model";
 import { TmsValidation } from "../models/tms-validation.model";
 import { FromIdValidation } from "../models/fromId-validation.model";
 import { RedmineVersion } from "../../../shared/store/models/redmine-version.model";
-import { FileToUpload } from "src/app/shared/store/models/file-to-upload.model";
 
 export enum ItemCreationMode {
     SingleItem = "SINGLE_ITEM_CREATION",
@@ -64,6 +62,7 @@ export interface ItemCreationFromData {
     tms: string;
     version: string;
     est_time: string;
+    files: File[]
 }
 
 export const ITEM_CREATION_FORMID = "ITEM_CREATION_FORMID";
@@ -79,7 +78,8 @@ export function getItemCreationFromDataInitialState(): FormGroupState<ItemCreati
         cr: '',
         tms: '',
         version: '',
-        est_time: ''
+        est_time: '',
+        files: []
     });
 }
 
@@ -93,14 +93,4 @@ export function getItemCreationFromIdDialogInitialState(): FormGroupState<ItemCr
     return createFormGroupState<ItemCreationFromIdDialog>(ITEM_CREATION_DIALOG, {
         fromId: ''
     });
-}
-
-export interface ItemCreationFiles {
-    files: FileToUpload[]
-}
-
-export function getItemCreationFilesInitialState(): ItemCreationFiles {
-    return {
-        files: []
-    };
 }

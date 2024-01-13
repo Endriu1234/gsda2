@@ -5,7 +5,6 @@ import { TmsValidation } from '../models/tms-validation.model';
 import { FromIdValidation } from '../models/fromId-validation.model';
 import { ItemCreationMode } from '../state/items.item-creation-state';
 import { RedmineVersion } from '../../../shared/store/models/redmine-version.model';
-import { FileToUpload } from 'src/app/shared/store/models/file-to-upload.model';
 
 export const startResetItemCreationForm = createAction('[Items Component] Start Reset Item Creation From');
 export const endResetItemCreationForm = createAction('[Items Component] End Reset Item Creation From');
@@ -26,6 +25,4 @@ export const initRedmineVersions = createAction('[Items Component] Init Redmine 
 export const loadRedmineVersions = createAction('[Items Component] Load Redmine Versions', props<{ redmineVersions: RedmineVersion[] }>());
 export const clearRedmineVersions = createAction('[Items Component] Clear Redmine Versions');
 
-export const addFilesToUpload = createAction('[Items Component] Add Files To Upload', props<{ filesToUpload: File[] }>());
-export const deleteFile = createAction('[Items Component] Delete File To Upload', props<{ fileToDeleteId: number }>());
-export const updateFiles = createAction('[Items Component] Update Files', props<{ fileToUpload: FileToUpload[] }>());
+
