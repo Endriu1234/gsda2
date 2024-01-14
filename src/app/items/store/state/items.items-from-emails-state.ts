@@ -3,6 +3,7 @@ import { RedmineProject } from "src/app/shared/store/models/redmine-project.mode
 import { RedmineUserByLetter } from "src/app/shared/store/models/redmine-user-letter-model";
 import { RedmineUser } from "src/app/shared/store/models/redmine-user.model";
 import { RedmineVersion } from "src/app/shared/store/models/redmine-version.model";
+import { ItemsFromEmailsSettings } from "../models/itemsfromemails/items-from-emails-settings.model";
 
 export interface ItemsFromEmailsSettingsFormData {
     name: string;
@@ -37,8 +38,6 @@ export function getItemsFromEmailsSettingsFormDataInitialState(): FormGroupState
 }
 
 export interface ItemsFromEmailsSettingsSetupData {
-    dbStateLoaded: boolean;
-    dbStateLoading: boolean;
     redmineProjectsFiltered: RedmineProject[];
     redmineVersionsLoaded: boolean;
     redmineVersions: RedmineVersion[];
@@ -51,8 +50,6 @@ export interface ItemsFromEmailsSettingsSetupData {
 
 export function getItemsFromEmailsSettingsSetupDataInitialState(): ItemsFromEmailsSettingsSetupData {
     return {
-        dbStateLoaded: false,
-        dbStateLoading: false,
         redmineProjectsFiltered: [],
         redmineVersionsLoaded: false,
         redmineVersions: [],
@@ -63,3 +60,43 @@ export function getItemsFromEmailsSettingsSetupDataInitialState(): ItemsFromEmai
         redmineUsersByLetterFiltered: [],
     };
 }
+
+export interface ItemsFromEmailsSettingsGridData {
+    currentIndex: number;
+    records: ItemsFromEmailsSettings[];
+}
+
+export function getItemsFromEmailsSettingsGridDataInitialState(): ItemsFromEmailsSettingsGridData {
+    return {
+        currentIndex: -1,
+        records: []
+    }
+}
+
+export interface ItemsFromEmailsSettingsGridSetup {
+    dbStateLoaded: boolean;
+    dbStateLoading: boolean;
+    displayedColumns: string[];
+}
+
+export function getItemsFromEmailsSettingsGridSetupInitialState(): ItemsFromEmailsSettingsGridSetup {
+    return {
+        dbStateLoaded: false,
+        dbStateLoading: false,
+        displayedColumns: ['name', 'active', 'project', 'version', 'modifiedBy', 'expand']
+    };
+}
+
+/* 
+        name: '',
+        active: false,
+        tracker: '',
+        project: '',
+        version: '',
+        user: '',
+        parsingMode: '',
+        findIssues: '',
+        findCRs: '',
+        addAttachments: false,
+        modifiedBy: ''
+*/

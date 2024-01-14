@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable, take } from 'rxjs';
+import { Observable, Subscription, take } from 'rxjs';
 import { FormGroupState, SetUserDefinedPropertyAction } from 'ngrx-forms';
 import { getItemsFromEmailsSettingsFormData } from 'src/app/items/store/selectors/items.items-from-emails-selectors';
 import * as fromItemsState from '../../../store/state/items.state';
@@ -22,7 +22,7 @@ import { ItemsFromEmailsSettings } from 'src/app/items/store/models/itemsfromema
   templateUrl: './items-from-emails-settings.component.html',
   styleUrls: ['./items-from-emails-settings.component.scss']
 })
-export class ItemsFromEmailsSettingsComponent implements OnInit {
+export class ItemsFromEmailsSettingsComponent implements OnInit, OnDestroy {
 
   formState$: Observable<FormGroupState<any>>;
   trackers$: Observable<RedmineTracker[]> | null = null;
@@ -31,6 +31,7 @@ export class ItemsFromEmailsSettingsComponent implements OnInit {
   versions$: Observable<RedmineVersion[]> | null = null;
   getItemsFromEmailsSettingsCanActivateSave$: Observable<boolean> | null = null;
   dataSource: MatTableDataSource<ItemsFromEmailsSettings> = new MatTableDataSource<ItemsFromEmailsSettings>([]);
+  recordsSubscription: Subscription | null = null;
   expandedElement: ItemsFromEmailsSettings | null = null;
   allColumns$: Observable<string[]> | null = null;
   columnsLength$: Observable<number> | null = null;
@@ -43,6 +44,10 @@ export class ItemsFromEmailsSettingsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.recordsSubscription = this.store.select(fromItemsFromEmailsSelectors.getItemsFromEmailsSettingsGridData).subscribe(data => {
+      this.dataSource.data = data.records;
+    });
+
     this.store.select(fromCommonItemsSelectors.getRedmineTrackersLoaded).pipe(take(1)).subscribe((loaded: boolean) => {
       if (!loaded)
         this.store.dispatch(initRedmineTrackers());
@@ -58,14 +63,24 @@ export class ItemsFromEmailsSettingsComponent implements OnInit {
         this.store.dispatch(initRedmineUsers());
     });
 
+    this.columnsLength$ = this.store.select(fromItemsFromEmailsSelectors.getItemsFromEmailsSettingsGridColumnsLength);
+
     this.trackers$ = this.store.select(fromCommonItemsSelectors.getRedmineTrackers);
     this.projectsFiltered$ = this.store.select(fromItemsFromEmailsSelectors.getRedmineProjectsFilteredForItemsFromEmail);
     this.versions$ = this.store.select(fromItemsFromEmailsSelectors.getRedmineVersionsByProject);
     this.usersFiltered$ = this.store.select(fromItemsFromEmailsSelectors.getRedmineUsersByLetterFiltered);
     this.getItemsFromEmailsSettingsCanActivateSave$ = this.store.select(fromItemsFromEmailsSelectors.getItemsFromEmailsSettingsCanActivateSave);
+    this.allColumns$ = this.store.select(fromItemsFromEmailsSelectors.getItemsFromEmailsSettingsColumns);
+
+
+
 
     this.store.dispatch(initItemsFromEmailsSettings());
 
+  }
+
+  ngOnDestroy(): void {
+    this.recordsSubscription?.unsubscribe();
   }
 
 

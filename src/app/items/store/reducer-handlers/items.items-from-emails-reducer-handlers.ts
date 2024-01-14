@@ -3,19 +3,21 @@ import * as _ from 'lodash';
 import { State } from "../state/items.state";
 import { filterRedmineProjects, filterRedmineUsersGroup } from 'src/app/shared/store/shared.reducer-handlers';
 import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
+import { ItemsFromEmailsSettings } from '../models/itemsfromemails/items-from-emails-settings.model';
 
 
 export function initItemsFromEmailsSettings(state: State): State {
     const newState: State = _.cloneDeep(state);
-    newState.itemsFromEmailsSettingsSetupData.dbStateLoaded = false;
-    newState.itemsFromEmailsSettingsSetupData.dbStateLoading = true;
+    newState.itemsFromEmailsSettingsGridSetup.dbStateLoaded = false;
+    newState.itemsFromEmailsSettingsGridSetup.dbStateLoading = true;
     return newState;
 }
 
-export function endInitItemsFromEmailsSettings(state: State): State {
+export function endInitItemsFromEmailsSettings(state: State, args: { records: ItemsFromEmailsSettings[] }): State {
     const newState: State = _.cloneDeep(state);
-    newState.itemsFromEmailsSettingsSetupData.dbStateLoaded = true;
-    newState.itemsFromEmailsSettingsSetupData.dbStateLoading = false;
+    newState.itemsFromEmailsSettingsGridData.records = args.records;
+    newState.itemsFromEmailsSettingsGridSetup.dbStateLoaded = true;
+    newState.itemsFromEmailsSettingsGridSetup.dbStateLoading = false;
     return newState;
 }
 

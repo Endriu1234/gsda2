@@ -27,3 +27,11 @@ function canItemsFromEmailsSettingsFormBeSaved(formState: FormGroupState<ItemsFr
     return true;
 }
 
+export const getItemsFromEmailsSettingsColumns = createSelector(getItemsState,
+    (state: State) => state.itemsFromEmailsSettingsGridSetup.displayedColumns);
+
+
+export const getItemsFromEmailsSettingsGridData = createSelector(getItemsState, (state: State) => state.itemsFromEmailsSettingsGridData);
+
+export const getItemsFromEmailsSettingsGridColumnsLength = createSelector(getItemsState, (state: State) => state.itemsFromEmailsSettingsGridSetup.displayedColumns.length);
+

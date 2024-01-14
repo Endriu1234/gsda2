@@ -53,43 +53,66 @@ console.log('Script Started');
 db = connect(mongoDBAddress);
 
 // 1. Handling formsData collection:
-formsDataCollectionName = 'forms';
-console.log(`Handling ${formsDataCollectionName} collection`);
+itemsFromEmailsSettingsName = 'itemsFromEmailsSettings';
+console.log(`Handling ${itemsFromEmailsSettingsName} collection`);
 
 if (removeCollectionsBeforeInitialization) {
-    removeCollection(formsDataCollectionName);
+    removeCollection(itemsFromEmailsSettingsName);
 }
 
-formsDataCollectionIndex = {
-    formId: "text"
+itemsFromEmailsSettingsCollectionIndex = {
+    name: "text"
 };
 
-formsDataCollectionIndexOptions = {
-    unique: true
+itemsFromEmailsSettingsCollectionIndexOptions = {
+    unique: false
 }
 
-createCollection(formsDataCollectionName, formsDataCollectionIndex, formsDataCollectionIndexOptions);
+createCollection(itemsFromEmailsSettingsName, itemsFromEmailsSettingsCollectionIndex, itemsFromEmailsSettingsCollectionIndexOptions);
 
-const formsDataRecords = [
+const itemsFromEmailsSettingsRecords = [
     {
-        formId: 'ITEMS_FROM_EMAILS_SETTINGS_FORMID',
-        values: {
-            name: 'General',
-            active: false,
-            tracker: 'Bug',
-            project: 'Demo',
-            version: '',
-            user: 'Andrzej Czaja',
-            parsingMode: 'plainAndHtmlAttachment',
-            findIssues: 'latest',
-            findCRs: 'latest',
-            addAttachments: false,
-            modifiedBy: 'gsda'
-        }
+        name: 'General',
+        active: false,
+        tracker: 'Bug',
+        project: 'Demo',
+        version: '',
+        user: 'Andrzej Czaja',
+        parsingMode: 'plainAndHtmlAttachment',
+        findIssues: 'latest',
+        findCRs: 'latest',
+        addAttachments: false,
+        modifiedBy: 'gsda'
+    },
+    {
+        name: 'Alias 1',
+        active: false,
+        tracker: 'Bug',
+        project: 'Demo',
+        version: '',
+        user: 'Andrzej Czaja',
+        parsingMode: 'plainAndHtmlAttachment',
+        findIssues: 'latest',
+        findCRs: 'latest',
+        addAttachments: false,
+        modifiedBy: 'aczaja'
+    },
+    {
+        name: 'Alias 2',
+        active: false,
+        tracker: 'Bug',
+        project: 'Demo',
+        version: '',
+        user: 'Andrzej Czaja',
+        parsingMode: 'plainAndHtmlAttachment',
+        findIssues: 'latest',
+        findCRs: 'latest',
+        addAttachments: false,
+        modifiedBy: 'aczaja'
     }
 ];
 
-insertManyIntoCollection(formsDataCollectionName, formsDataRecords);
+insertManyIntoCollection(itemsFromEmailsSettingsName, itemsFromEmailsSettingsRecords);
 
 // End of script
 console.log('Script Finished');

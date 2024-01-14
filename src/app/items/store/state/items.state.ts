@@ -3,8 +3,8 @@ import { BATCH_ITEM_CREATION_GRID_REMOVABLE_COLUMNS, BatchItemCreation, BatchIte
 import { getItemCreationFromDataInitialState, getItemCreationFromIdDialogInitialState, getItemCreationSetupDataInitialState, ItemCreationFromData, ItemCreationFromIdDialog, ItemCreationSetupData } from "./items.item-creation-state";
 import { ItemsSetupData, getItemsSetupDataInitialState } from "./items.common-state";
 import {
-    ItemsFromEmailsSettingsFormData, ItemsFromEmailsSettingsSetupData, getItemsFromEmailsSettingsFormDataInitialState,
-    getItemsFromEmailsSettingsSetupDataInitialState
+    ItemsFromEmailsSettingsFormData, ItemsFromEmailsSettingsGridSetup, ItemsFromEmailsSettingsSetupData, getItemsFromEmailsSettingsFormDataInitialState,
+    getItemsFromEmailsSettingsSetupDataInitialState, getItemsFromEmailsSettingsGridSetupInitialState, getItemsFromEmailsSettingsGridDataInitialState, ItemsFromEmailsSettingsGridData
 } from "./items.items-from-emails-state";
 
 export interface State {
@@ -27,6 +27,8 @@ export interface State {
     batchItemCreationIdsCriteriaFormData: FormGroupState<BatchItemCreationIdsCriteriaFormData>;
     itemsFromEmailsSettingsFormData: FormGroupState<ItemsFromEmailsSettingsFormData>;
     itemsFromEmailsSettingsSetupData: ItemsFromEmailsSettingsSetupData;
+    itemsFromEmailsSettingsGridSetup: ItemsFromEmailsSettingsGridSetup;
+    itemsFromEmailsSettingsGridData: ItemsFromEmailsSettingsGridData;
 }
 
 export const initialState: State = {
@@ -54,5 +56,7 @@ export const initialState: State = {
     batchItemCreationIdsCriteriaFormData: getBatchItemCreationIdsCriteriaFormDataInitialState(),
 
     itemsFromEmailsSettingsFormData: getItemsFromEmailsSettingsFormDataInitialState(),
-    itemsFromEmailsSettingsSetupData: getItemsFromEmailsSettingsSetupDataInitialState()
+    itemsFromEmailsSettingsSetupData: getItemsFromEmailsSettingsSetupDataInitialState(),
+    itemsFromEmailsSettingsGridSetup: getItemsFromEmailsSettingsGridSetupInitialState(),
+    itemsFromEmailsSettingsGridData: getItemsFromEmailsSettingsGridDataInitialState()
 }

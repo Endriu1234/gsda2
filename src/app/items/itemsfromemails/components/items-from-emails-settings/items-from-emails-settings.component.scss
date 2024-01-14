@@ -1,0 +1,102 @@
+table {
+    width: 100%;
+    opacity: .9;
+}
+
+.filter {
+    padding-top: 10px;
+    width: 25%;
+}
+
+.jktable {
+    width: 90%;
+}
+
+.jkshadow {
+    margin: auto;
+    margin-top: 0px;
+    opacity: .9;
+
+    box-shadow:
+        0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+        0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+        0 12.5px 10px rgba(0, 0, 0, 0.06),
+        0 22.3px 17.9px rgba(0, 0, 0, 0.072),
+        0 41.8px 33.4px rgba(0, 0, 0, 0.086),
+        0 100px 80px rgba(0, 0, 0, 0.12);
+
+    background: white;
+    border-radius: 5px;
+}
+
+.jk-primary-chekbox {
+    border-radius: 30px;
+    border-top: 5px solid #3f51b5;
+    border-bottom: 3px solid #3f51b5;
+    border-right: 20px solid #3f51b5;
+    border-left: 10px solid #3f51b5;
+    background: #3f51b5;
+    --mdc-checkbox-unselected-focus-icon-color: white;
+    --mdc-checkbox-unselected-hover-icon-color: white;
+    --mdc-checkbox-disabled-selected-icon-color: white;
+    --mdc-checkbox-disabled-unselected-icon-color: white;
+    --mdc-checkbox-unselected-icon-color: white;
+    --mdc-checkbox-unselected-pressed-icon-color: white;
+    --mdc-fab-icon-color: #fff;
+    --mat-mdc-fab-color: #fff;
+    --mat-mdc-checkbox-color: white;
+    --mdc-checkbox-text-color: white;
+}
+
+:host ::ng-deep {
+    .jk-primary-chekbox.mat-mdc-checkbox .mdc-form-field {
+        color: white;
+    }
+}
+
+mat-form-field {
+    margin-bottom: -1.5em;
+}
+
+mat-card {
+    width: 65%;
+    margin: auto;
+    margin-top: 30px;
+    opacity: .9;
+
+    box-shadow:
+        0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+        0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+        0 12.5px 10px rgba(0, 0, 0, 0.06),
+        0 22.3px 17.9px rgba(0, 0, 0, 0.072),
+        0 41.8px 33.4px rgba(0, 0, 0, 0.086),
+        0 100px 80px rgba(0, 0, 0, 0.12);
+
+    background: white;
+    border-radius: 5px;
+}
+
+tr.example-detail-row {
+    height: 0;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+    background: whitesmoke;
+}
+
+tr.example-element-row:not(.example-expanded-row):active {
+    background: #efefef;
+}
+
+.example-element-row td {
+    border-bottom-width: 0;
+}
+
+.example-element-detail {
+    overflow: hidden;
+    display: flex;
+}
+
+.example-element-description {
+    padding: 16px;
+}
