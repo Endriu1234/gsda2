@@ -83,7 +83,7 @@ export function getItemsFromEmailsSettingsGridSetupInitialState(): ItemsFromEmai
     return {
         dbStateLoaded: false,
         dbStateLoading: false,
-        displayedColumns: ['name', 'active', 'project', 'version', 'modifiedBy', 'expand']
+        displayedColumns: ['name', 'active', 'project', 'version', 'tracker', 'expand', 'edit', 'delete']
     };
 }
 

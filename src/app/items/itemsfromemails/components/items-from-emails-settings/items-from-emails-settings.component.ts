@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription, take } from 'rxjs';
 import { FormGroupState, SetUserDefinedPropertyAction } from 'ngrx-forms';
@@ -16,12 +16,23 @@ import { RedmineUserByLetter } from 'src/app/shared/store/models/redmine-user-le
 import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { ItemsFromEmailsSettings } from 'src/app/items/store/models/itemsfromemails/items-from-emails-settings.model';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-items-from-emails-settings',
   templateUrl: './items-from-emails-settings.component.html',
-  styleUrls: ['./items-from-emails-settings.component.scss']
+  styleUrls: ['./items-from-emails-settings.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed, void', style({ height: '0px' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+      transition('expanded <=> void', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))])
+  ],
 })
+
 export class ItemsFromEmailsSettingsComponent implements OnInit, OnDestroy {
 
   formState$: Observable<FormGroupState<any>>;
@@ -36,7 +47,8 @@ export class ItemsFromEmailsSettingsComponent implements OnInit, OnDestroy {
   allColumns$: Observable<string[]> | null = null;
   columnsLength$: Observable<number> | null = null;
 
-
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
 
   constructor(private store: Store<fromItemsState.State>) {
@@ -71,12 +83,12 @@ export class ItemsFromEmailsSettingsComponent implements OnInit, OnDestroy {
     this.usersFiltered$ = this.store.select(fromItemsFromEmailsSelectors.getRedmineUsersByLetterFiltered);
     this.getItemsFromEmailsSettingsCanActivateSave$ = this.store.select(fromItemsFromEmailsSelectors.getItemsFromEmailsSettingsCanActivateSave);
     this.allColumns$ = this.store.select(fromItemsFromEmailsSelectors.getItemsFromEmailsSettingsColumns);
-
-
-
-
     this.store.dispatch(initItemsFromEmailsSettings());
+  }
 
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   ngOnDestroy(): void {
@@ -88,11 +100,24 @@ export class ItemsFromEmailsSettingsComponent implements OnInit, OnDestroy {
     this.store.dispatch(new SetUserDefinedPropertyAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID, FORM_SAVE_STATE, FormSaveState.Saving))
   }
 
-  applyFilter(event: Event) {
-    // const filterValue = (event.target as HTMLInputElement).value;
-    // this.dataSource.filter = filterValue.trim().toLowerCase();
+  addNewSettings() {
 
-    // if (this.dataSource.paginator)
-    //   this.dataSource.paginator.firstPage();
   }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator)
+      this.dataSource.paginator.firstPage();
+  }
+
+  editAlias(alias: ItemsFromEmailsSettings) {
+
+  }
+
+  deleteAlias(alias: ItemsFromEmailsSettings) {
+
+  }
+
 }
