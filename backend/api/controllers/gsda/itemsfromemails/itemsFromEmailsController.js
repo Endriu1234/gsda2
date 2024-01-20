@@ -19,6 +19,7 @@ module.exports.getItemsFromEmailsSettings = async (req, res) => {
                     retVal.records.push({
                         name: record.name,
                         active: record.active,
+                        type: record.type,
                         tracker: record.tracker,
                         project: record.project,
                         version: record.version,
@@ -27,6 +28,8 @@ module.exports.getItemsFromEmailsSettings = async (req, res) => {
                         findIssues: record.findIssues,
                         findCRs: record.findCRs,
                         addAttachments: record.addAttachments,
+                        closeItemsAfterAttach: record.closeItemsAfterAttach,
+                        sendAttachResultTo: record.sendAttachResultTo,
                         modifiedBy: record.modifiedBy
                     })
                 });

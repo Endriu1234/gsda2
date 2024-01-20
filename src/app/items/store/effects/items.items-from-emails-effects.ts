@@ -105,29 +105,13 @@ export class ItemsFromEmailsEffects {
 
             let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
 
-            console.log('IDZIEMY po settingsy');
             return this.http.get<ItemsFromEmailSettingsHttpResponse>(environment.apiUrl + '/gsda/items-from-emails/get-items-from-emails-settings',
                 { context })
                 .pipe(mergeMap(response => {
 
                     if (response.success) {
-                        console.log('przylazlo z servea Settingsy:');
-                        console.dir(response);
-                        console.dir(response.records);
                         return of(
 
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.name', item.name),
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.active', item.active),
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.tracker', item.tracker),
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.project', item.project),
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.version', item.version),
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.user', item.user),
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.parsingMode', item.parsingMode),
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.findIssues', item.findIssues),
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.findCRs', item.findCRs),
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.addAttachments', item.addAttachments),
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.modifiedBy', item.modifiedBy),
-                            // new ResetAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID),
                             endInitItemsFromEmailsSettings({ records: response.records }));
                     }
                     else {
