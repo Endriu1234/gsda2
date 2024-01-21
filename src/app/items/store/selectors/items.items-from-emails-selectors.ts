@@ -7,6 +7,18 @@ import { FormGroupState } from 'ngrx-forms';
 export const getItemsFromEmailsSettingsFormData = createSelector(getItemsState,
     (state: State) => state.itemsFromEmailsSettingsFormData);
 
+export const getItemsFromEmailsSettingsFormSetup = createSelector(getItemsState,
+    (state: State) => state.itemsFromEmailsSettingsSetupData);
+
+export const getItemsFromEmailsSettingsFormWithSetup = createSelector(getItemsFromEmailsSettingsFormData, getItemsFromEmailsSettingsFormSetup,
+    (formData, formSetup) => {
+        return {
+            formData,
+            formSetup
+        }
+    });
+
+
 export const getRedmineProjectsFilteredForItemsFromEmail = createSelector(getItemsState,
     (state: State) => state.itemsFromEmailsSettingsSetupData.redmineProjectsFiltered);
 

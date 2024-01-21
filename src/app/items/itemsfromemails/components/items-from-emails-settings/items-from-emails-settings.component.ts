@@ -6,7 +6,7 @@ import { getItemsFromEmailsSettingsFormData } from 'src/app/items/store/selector
 import * as fromItemsState from '../../../store/state/items.state';
 import { FORM_SAVE_STATE, FormSaveState } from 'src/app/shared/store/shared.state';
 import { ITEMS_FROM_EMAILS_SETTINGS_FORMID } from 'src/app/items/store/state/items.items-from-emails-state';
-import { initItemsFromEmailsSettings } from 'src/app/items/store/actions/items.items-from-emails.actions';
+import { deleteItemsFromEmailsSetting, editItemsFromEmailsSetting, initItemsFromEmailsSettings } from 'src/app/items/store/actions/items.items-from-emails.actions';
 import * as fromCommonItemsSelectors from '../../../store/selectors/items.common-selectors';
 import * as fromItemsFromEmailsSelectors from '../../../store/selectors/items.items-from-emails-selectors';
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers } from 'src/app/items/store/actions/items.common-actions';
@@ -95,6 +95,13 @@ export class ItemsFromEmailsSettingsComponent implements OnInit, OnDestroy {
     this.recordsSubscription?.unsubscribe();
   }
 
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator)
+      this.dataSource.paginator.firstPage();
+  }
 
   saveSettings() {
     this.store.dispatch(new SetUserDefinedPropertyAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID, FORM_SAVE_STATE, FormSaveState.Saving))
@@ -104,20 +111,12 @@ export class ItemsFromEmailsSettingsComponent implements OnInit, OnDestroy {
 
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator)
-      this.dataSource.paginator.firstPage();
-  }
-
   editAlias(alias: ItemsFromEmailsSettings) {
-
+    this.store.dispatch(editItemsFromEmailsSetting({ settings: alias }));
   }
 
   deleteAlias(alias: ItemsFromEmailsSettings) {
-
+    this.store.dispatch(deleteItemsFromEmailsSetting({ settings: alias }));
   }
 
 }

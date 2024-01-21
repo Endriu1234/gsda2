@@ -88,7 +88,7 @@ const itemsFromEmailsSettingsRecords = [
         modifiedBy: 'gsda'
     },
     {
-        name: 'General',
+        name: 'Alias 1',
         active: false,
         type: 'create',
         tracker: 'Bug',
@@ -104,7 +104,7 @@ const itemsFromEmailsSettingsRecords = [
         modifiedBy: 'gsda'
     },
     {
-        name: 'General',
+        name: 'Creation 1',
         active: false,
         type: 'create',
         tracker: 'Email',
@@ -120,7 +120,7 @@ const itemsFromEmailsSettingsRecords = [
         modifiedBy: 'gsda'
     },
     {
-        name: 'General',
+        name: 'Both alias 1',
         active: false,
         type: 'both',
         tracker: 'Bug',
@@ -136,7 +136,7 @@ const itemsFromEmailsSettingsRecords = [
         modifiedBy: 'gsda'
     },
     {
-        name: 'General',
+        name: 'Attach Alias 1',
         active: false,
         type: 'attach',
         tracker: 'Bug',

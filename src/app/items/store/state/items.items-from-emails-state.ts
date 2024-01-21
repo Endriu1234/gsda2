@@ -52,6 +52,7 @@ export interface ItemsFromEmailsSettingsSetupData {
     redmineUsersByLetterLoaded: boolean;
     redmineUsersByLetter: RedmineUserByLetter[];
     redmineUsersByLetterFiltered: RedmineUserByLetter[];
+    editedSetting: ItemsFromEmailsSettings | null;
 }
 
 export function getItemsFromEmailsSettingsSetupDataInitialState(): ItemsFromEmailsSettingsSetupData {
@@ -64,17 +65,16 @@ export function getItemsFromEmailsSettingsSetupDataInitialState(): ItemsFromEmai
         redmineUsersByLetterLoaded: false,
         redmineUsersByLetter: [],
         redmineUsersByLetterFiltered: [],
+        editedSetting: null
     };
 }
 
 export interface ItemsFromEmailsSettingsGridData {
-    currentIndex: number;
     records: ItemsFromEmailsSettings[];
 }
 
 export function getItemsFromEmailsSettingsGridDataInitialState(): ItemsFromEmailsSettingsGridData {
     return {
-        currentIndex: -1,
         records: []
     }
 }
