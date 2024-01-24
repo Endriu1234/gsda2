@@ -74,6 +74,7 @@ const itemsFromEmailsSettingsRecords = [
     {
         name: 'General',
         active: false,
+        type: 'create',
         tracker: 'Bug',
         project: 'Demo',
         version: '',
@@ -82,11 +83,14 @@ const itemsFromEmailsSettingsRecords = [
         findIssues: 'latest',
         findCRs: 'latest',
         addAttachments: false,
+        closeItemsAfterAttach: 'none',
+        sendAttachResultTo: 'none',
         modifiedBy: 'gsda'
     },
     {
         name: 'Alias 1',
         active: false,
+        type: 'create',
         tracker: 'Bug',
         project: 'Demo',
         version: '',
@@ -95,11 +99,30 @@ const itemsFromEmailsSettingsRecords = [
         findIssues: 'latest',
         findCRs: 'latest',
         addAttachments: false,
-        modifiedBy: 'aczaja'
+        closeItemsAfterAttach: 'none',
+        sendAttachResultTo: 'none',
+        modifiedBy: 'gsda'
     },
     {
-        name: 'Alias 2',
+        name: 'Creation 1',
         active: false,
+        type: 'create',
+        tracker: 'Email',
+        project: 'Demo',
+        version: '',
+        user: 'Andrzej Czaja',
+        parsingMode: 'plainAndHtmlAttachment',
+        findIssues: 'latest',
+        findCRs: 'latest',
+        addAttachments: false,
+        closeItemsAfterAttach: 'none',
+        sendAttachResultTo: 'none',
+        modifiedBy: 'gsda'
+    },
+    {
+        name: 'Both alias 1',
+        active: false,
+        type: 'both',
         tracker: 'Bug',
         project: 'Demo',
         version: '',
@@ -108,7 +131,25 @@ const itemsFromEmailsSettingsRecords = [
         findIssues: 'latest',
         findCRs: 'latest',
         addAttachments: false,
-        modifiedBy: 'aczaja'
+        closeItemsAfterAttach: 'all',
+        sendAttachResultTo: 'all',
+        modifiedBy: 'gsda'
+    },
+    {
+        name: 'Attach Alias 1',
+        active: false,
+        type: 'attach',
+        tracker: 'Bug',
+        project: 'Demo',
+        version: '',
+        user: 'Andrzej Czaja',
+        parsingMode: 'plainAndHtmlAttachment',
+        findIssues: 'latest',
+        findCRs: 'latest',
+        addAttachments: false,
+        closeItemsAfterAttach: 'latest',
+        sendAttachResultTo: 'sender',
+        modifiedBy: 'gsda'
     }
 ];
 

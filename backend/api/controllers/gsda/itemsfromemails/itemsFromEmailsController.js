@@ -19,6 +19,7 @@ module.exports.getItemsFromEmailsSettings = async (req, res) => {
                     retVal.records.push({
                         name: record.name,
                         active: record.active,
+                        type: record.type,
                         tracker: record.tracker,
                         project: record.project,
                         version: record.version,
@@ -27,6 +28,8 @@ module.exports.getItemsFromEmailsSettings = async (req, res) => {
                         findIssues: record.findIssues,
                         findCRs: record.findCRs,
                         addAttachments: record.addAttachments,
+                        closeItemsAfterAttach: record.closeItemsAfterAttach,
+                        sendAttachResultTo: record.sendAttachResultTo,
                         modifiedBy: record.modifiedBy
                     })
                 });
@@ -57,13 +60,18 @@ module.exports.saveItemsFromEmailsSettings = async (req, res) => {
     };
 
     try {
-
-        if (req.body.formId && req.body.values
-            && req.body.values) {
+        if (req.body.values) {
 
             req.body.values.modifiedBy = req.authData.user;
 
-            await ItemsFromEmailsSettings.findOneAndUpdate({ name: body.name }, { values: req.body });
+            if (req.body.editedSetting) {
+                await ItemsFromEmailsSettings.findOneAndUpdate(
+                    { name: req.body.editedSetting.name, type: req.body.editedSetting.type }, req.body.values);
+            }
+            else {
+                await ItemsFromEmailsSettings.insertOne(req.body.values);
+            }
+
             cacheValueProvider.deleteValue('items_from_emails_settings');
             retVal.success = true;
         }
@@ -77,5 +85,15 @@ module.exports.saveItemsFromEmailsSettings = async (req, res) => {
 
     emailHandler.test();
 
+    return res.status(200).json(retVal);
+}
+
+module.exports.deleteSettings = async (req, res) => {
+    const retVal = {
+        success: true,
+        errorMessage: ''
+    };
+
+    const result = await ItemsFromEmailsSettings.findOneAndDelete({ name: req.body.name, type: req.body.type });
     return res.status(200).json(retVal);
 }

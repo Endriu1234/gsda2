@@ -8,6 +8,7 @@ import { ItemsFromEmailsSettings } from "../models/itemsfromemails/items-from-em
 export interface ItemsFromEmailsSettingsFormData {
     name: string;
     active: boolean;
+    type: string;
     tracker: string;
     project: string;
     version: string,
@@ -16,6 +17,8 @@ export interface ItemsFromEmailsSettingsFormData {
     findIssues: string,
     findCRs: string,
     addAttachments: boolean,
+    closeItemsAfterAttach: string,
+    sendAttachResultTo: string,
     modifiedBy: string
 }
 
@@ -25,6 +28,7 @@ export function getItemsFromEmailsSettingsFormDataInitialState(): FormGroupState
     return createFormGroupState<ItemsFromEmailsSettingsFormData>(ITEMS_FROM_EMAILS_SETTINGS_FORMID, {
         name: '',
         active: false,
+        type: '',
         tracker: '',
         project: '',
         version: '',
@@ -33,6 +37,8 @@ export function getItemsFromEmailsSettingsFormDataInitialState(): FormGroupState
         findIssues: '',
         findCRs: '',
         addAttachments: false,
+        closeItemsAfterAttach: '',
+        sendAttachResultTo: '',
         modifiedBy: ''
     });
 }
@@ -46,6 +52,7 @@ export interface ItemsFromEmailsSettingsSetupData {
     redmineUsersByLetterLoaded: boolean;
     redmineUsersByLetter: RedmineUserByLetter[];
     redmineUsersByLetterFiltered: RedmineUserByLetter[];
+    editedSetting: ItemsFromEmailsSettings | null;
 }
 
 export function getItemsFromEmailsSettingsSetupDataInitialState(): ItemsFromEmailsSettingsSetupData {
@@ -58,17 +65,16 @@ export function getItemsFromEmailsSettingsSetupDataInitialState(): ItemsFromEmai
         redmineUsersByLetterLoaded: false,
         redmineUsersByLetter: [],
         redmineUsersByLetterFiltered: [],
+        editedSetting: null
     };
 }
 
 export interface ItemsFromEmailsSettingsGridData {
-    currentIndex: number;
     records: ItemsFromEmailsSettings[];
 }
 
 export function getItemsFromEmailsSettingsGridDataInitialState(): ItemsFromEmailsSettingsGridData {
     return {
-        currentIndex: -1,
         records: []
     }
 }
@@ -83,20 +89,6 @@ export function getItemsFromEmailsSettingsGridSetupInitialState(): ItemsFromEmai
     return {
         dbStateLoaded: false,
         dbStateLoading: false,
-        displayedColumns: ['name', 'active', 'project', 'version', 'modifiedBy', 'expand']
+        displayedColumns: ['name', 'active', 'type', 'project', 'version', 'tracker', 'expand', 'edit', 'delete']
     };
 }
-
-/* 
-        name: '',
-        active: false,
-        tracker: '',
-        project: '',
-        version: '',
-        user: '',
-        parsingMode: '',
-        findIssues: '',
-        findCRs: '',
-        addAttachments: false,
-        modifiedBy: ''
-*/

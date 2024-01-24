@@ -53,3 +53,28 @@ export function clearRedmineVersions(state: State): State {
     newState.itemsFromEmailsSettingsSetupData.redmineVersionsLoaded = false;
     return newState;
 }
+
+
+export function deleteItemsFromEmailsSetting(state: State, args: { settings: ItemsFromEmailsSettings }): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemsFromEmailsSettingsGridData.records = newState.itemsFromEmailsSettingsGridData.records
+        .filter(s => !(s.name === args.settings.name && s.type === args.settings.type));
+
+    return newState;
+}
+
+export function editItemsFromEmailsSetting(state: State, args: { settings: ItemsFromEmailsSettings }): State {
+    const newState: State = _.cloneDeep(state);
+
+    newState.itemsFromEmailsSettingsSetupData.editedSetting = args.settings;
+    return newState;
+}
+
+export function updateEditedItemsFromEmailsSetting(state: State, args: { originalSetting: ItemsFromEmailsSettings, currentSetting: ItemsFromEmailsSettings }): State {
+    const newState: State = _.cloneDeep(state);
+
+    newState.itemsFromEmailsSettingsGridData.records = newState.itemsFromEmailsSettingsGridData.records
+        .map(s => s.name === args.originalSetting.name && s.type === args.originalSetting.type ? args.currentSetting : s);
+
+    return newState;
+}

@@ -10,3 +10,8 @@ export const initRedmineVersionsForItemsFromEmail = createAction('[Items Compone
     props<{ projectName: string }>());
 export const loadRedmineVersionsForItemsFromEmail = createAction('[Items Component] Load Redmine Versions For Items From Email', props<{ redmineVersions: RedmineVersion[] }>());
 export const clearRedmineVersionsForItemsFromEmail = createAction('[Items Component] Clear Redmine Versions For Items From Email');
+export const deleteItemsFromEmailsSetting = createAction('[Items Component] Delete Items From Emails Settings', props<{ settings: ItemsFromEmailsSettings }>());
+export const editItemsFromEmailsSetting = createAction('[Items Component] Edit Items From Emails Settings', props<{ settings: ItemsFromEmailsSettings }>());
+export const updateEditedItemsFromEmailsSetting = createAction('[Items Component] Update Edited Items From Emails Settings',
+    props<{ originalSetting: ItemsFromEmailsSettings, currentSetting: ItemsFromEmailsSettings }>());
+

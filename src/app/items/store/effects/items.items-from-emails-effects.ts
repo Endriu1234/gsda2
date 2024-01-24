@@ -15,9 +15,9 @@ import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 
 import { environment } from 'src/environments/environment';
-import { getItemsFromEmailsSettingsFormData } from '../selectors/items.items-from-emails-selectors';
+import { getItemsFromEmailsSettingsFormData, getItemsFromEmailsSettingsFormWithSetup } from '../selectors/items.items-from-emails-selectors';
 import { GsdaHttpResponse } from 'src/app/shared/http/model/gsda-http-response.model';
-import { clearRedmineVersionsForItemsFromEmail, endInitItemsFromEmailsSettings, initItemsFromEmailsSettings, initRedmineVersionsForItemsFromEmail, loadRedmineVersionsForItemsFromEmail, setRedmineProjectsFilterForItemsFromEmail, setRedmineUsersByLetterFilterForItemsFromEmail } from '../actions/items.items-from-emails.actions';
+import { clearRedmineVersionsForItemsFromEmail, deleteItemsFromEmailsSetting, editItemsFromEmailsSetting, endInitItemsFromEmailsSettings, initItemsFromEmailsSettings, initRedmineVersionsForItemsFromEmail, loadRedmineVersionsForItemsFromEmail, setRedmineProjectsFilterForItemsFromEmail, setRedmineUsersByLetterFilterForItemsFromEmail, updateEditedItemsFromEmailsSetting } from '../actions/items.items-from-emails.actions';
 import { ItemsFromEmailSettingsHttpResponse } from '../models/itemsfromemails/Items-from-email-settings-http-response.model';
 import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
 import { validateItemsFromEmailsSettingsName, validateProject, validateUser } from '../items.validation';
@@ -59,12 +59,12 @@ export class ItemsFromEmailsEffects {
                 if (action.name == fromSharedState.FORM_SAVE_STATE) {
                     if (action.value == fromSharedState.FormSaveState.Saving) {
 
-                        return this.store.select(getItemsFromEmailsSettingsFormData).pipe(take(1), switchMap(formData => {
+                        return this.store.select(getItemsFromEmailsSettingsFormWithSetup).pipe(take(1), switchMap(formDataWithSetup => {
                             let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
 
                             const dataToSave = {
-                                formId: ITEMS_FROM_EMAILS_SETTINGS_FORMID,
-                                values: formData.value
+                                editedSetting: formDataWithSetup.formSetup.editedSetting,
+                                values: formDataWithSetup.formData.value
                             }
                             return this.http.post<GsdaHttpResponse>(environment.apiUrl + '/gsda/items-from-emails/save-items-from-emails-settings', dataToSave, { context }).pipe(switchMap(response => {
                                 if (response.success) {
@@ -72,9 +72,24 @@ export class ItemsFromEmailsEffects {
                                     this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Items From Emails Settings saved', icon: fromSharedState.SnackBarIcon.Success }));
 
                                     return this.authStore.select(fromAuthStateSelectors.getUserLogin).pipe(take(1),
-                                        map(modifiedBy => new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.modifiedBy', modifiedBy)),
-                                        endWith(new SetUserDefinedPropertyAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID,
-                                            fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New)));
+                                        switchMap(modifiedBy => {
+                                            const actions: any[] = [new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.modifiedBy', modifiedBy),
+                                            new SetUserDefinedPropertyAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID, fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New),
+                                            ];
+
+                                            if (formDataWithSetup.formSetup.editedSetting) {
+
+                                                const change = {
+                                                    originalSetting: formDataWithSetup.formSetup.editedSetting,
+                                                    currentSetting: { ...formDataWithSetup.formData.value }
+                                                }
+
+                                                change.currentSetting.modifiedBy = modifiedBy ? modifiedBy : 'unknown';
+                                                actions.unshift(updateEditedItemsFromEmailsSetting(change));
+                                            }
+
+                                            return actions;
+                                        }));
                                 }
                                 else {
                                     console.log(response.errorMessage);
@@ -105,29 +120,13 @@ export class ItemsFromEmailsEffects {
 
             let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
 
-            console.log('IDZIEMY po settingsy');
             return this.http.get<ItemsFromEmailSettingsHttpResponse>(environment.apiUrl + '/gsda/items-from-emails/get-items-from-emails-settings',
                 { context })
                 .pipe(mergeMap(response => {
 
                     if (response.success) {
-                        console.log('przylazlo z servea Settingsy:');
-                        console.dir(response);
-                        console.dir(response.records);
                         return of(
 
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.name', item.name),
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.active', item.active),
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.tracker', item.tracker),
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.project', item.project),
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.version', item.version),
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.user', item.user),
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.parsingMode', item.parsingMode),
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.findIssues', item.findIssues),
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.findCRs', item.findCRs),
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.addAttachments', item.addAttachments),
-                            // new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.modifiedBy', item.modifiedBy),
-                            // new ResetAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID),
                             endInitItemsFromEmailsSettings({ records: response.records }));
                     }
                     else {
@@ -152,4 +151,39 @@ export class ItemsFromEmailsEffects {
             return this.http.get<RedmineVersion[]>(environment.apiUrl + '/redmine/items/get-redmine-versions', { params });
         }), map(redmineVersions => loadRedmineVersionsForItemsFromEmail({ redmineVersions }))
     ));
+
+    deleteItemsFromEmailsSetting$ = createEffect(() => this.actions$.pipe(ofType(deleteItemsFromEmailsSetting), switchMap((deleteAction) => {
+        let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
+        return this.http.post<GsdaHttpResponse>(environment.apiUrl + '/gsda/items-from-emails/delete-settings', deleteAction.settings, { context }).pipe(switchMap(response => {
+            if (response.success)
+                this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Settings were deleted successfully', icon: fromSharedState.SnackBarIcon.Success }));
+            else
+                this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Deleting Settings failed', icon: fromSharedState.SnackBarIcon.Error }));
+
+            return of(noopAction());
+        }));
+    })));
+
+    editItemsFromEmailsSetting$ = createEffect(() => this.actions$.pipe(ofType(editItemsFromEmailsSetting), switchMap((deleteAction) => {
+
+        const actions: any[] = [
+            new ResetAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.name', deleteAction.settings.name),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.active', deleteAction.settings.active),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.type', deleteAction.settings.type),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.tracker', deleteAction.settings.tracker),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.project', deleteAction.settings.project),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.version', deleteAction.settings.version),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.user', deleteAction.settings.user),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.parsingMode', deleteAction.settings.parsingMode),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.findIssues', deleteAction.settings.findIssues),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.findCRs', deleteAction.settings.findCRs),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.addAttachments', deleteAction.settings.addAttachments),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.closeItemsAfterAttach', deleteAction.settings.closeItemsAfterAttach),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.sendAttachResultTo', deleteAction.settings.sendAttachResultTo),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.modifiedBy', deleteAction.settings.modifiedBy)
+        ];
+
+        return actions;
+    })));
 }

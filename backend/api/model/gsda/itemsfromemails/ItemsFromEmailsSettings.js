@@ -6,6 +6,7 @@ const opts = { toJSON: { virtuals: true } }
 const ItemsFromEmailsSettings = new Schema({
     name: String,
     active: Boolean,
+    type: String,
     tracker: String,
     project: String,
     version: String,
@@ -14,6 +15,8 @@ const ItemsFromEmailsSettings = new Schema({
     findIssues: String,
     findCRs: String,
     addAttachments: Boolean,
+    closeItemsAfterAttach: String,
+    sendAttachResultTo: String,
     modifiedBy: String
 }, opts);
 

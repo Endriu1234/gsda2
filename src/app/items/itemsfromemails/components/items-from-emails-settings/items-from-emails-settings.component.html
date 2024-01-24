@@ -14,13 +14,26 @@
                                 <input type="text" matInput placeholder="Name of settings"  [ngrxFormControlState]="$any(formState).controls.name">
                             </mat-form-field>
                         </div>
+                        <div class="col-2">
+                            <mat-form-field appearance="outline" [style.width.%]=100>
+                                <mat-label>Type</mat-label>
+                                <mat-select [ngrxFormControlState]="$any(formState).controls.type">
+                                    <mat-option value="create">Create</mat-option>
+                                    <mat-option value="attach">Attach</mat-option>
+                                    <mat-option value="both">Both</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-error *ngIf="formState.errors._findIssues?.required">
+                                Find Issues is required
+                            </mat-error>
+                        </div>
 
                         <div class="col-2">
                             <mat-error *ngIf="false"></mat-error>
                             <mat-slide-toggle [style.marginTop.px]=19
                                 [ngrxFormControlState]="$any(formState).controls.active">Active</mat-slide-toggle>
                         </div>
-                        <div class="col-1 offset-6">
+                        <div class="col-3 offset-2">
 
                             <mat-form-field appearance="outline" [style.width.%]=100>
                                 <mat-label>Modified By</mat-label>
@@ -31,9 +44,9 @@
                         </div>
 
                     </div>
-                    <div class="row">
+                    <div class="row mt-3" *ngIf="$any(formState).value.type !== 'attach'">
                         <div class="col-2">
-                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                            <mat-form-field appearance="outline" [style.width.%]=100>
                                 <mat-label>Tracker</mat-label>
                                 <mat-select [ngrxFormControlState]="$any(formState).controls.tracker">
 
@@ -43,7 +56,7 @@
                             </mat-form-field>
                         </div>
                         <div class="col-3">
-                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                            <mat-form-field appearance="outline" [style.width.%]=100>
                                 <mat-label>Redmine Project</mat-label>
                                 <input type="text"
                                     [ngrxFormControlState]="$any(formState).controls.project"
@@ -58,7 +71,7 @@
                             </mat-form-field>
                         </div>
                         <div class="col-3">
-                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                            <mat-form-field appearance="outline" [style.width.%]=100>
                                 <mat-label>Version</mat-label>
                                 <mat-select [ngrxFormControlState]="$any(formState).controls.version">
                                     <mat-option *ngFor="let version of versions$ | async" [value]="version.name">
@@ -68,7 +81,7 @@
                             </mat-form-field>
                         </div>
                         <div class="col-4">
-                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                            <mat-form-field appearance="outline" [style.width.%]=100>
                                 <mat-label>User</mat-label>
                                 <input type="text"  [ngrxFormControlState]="$any(formState).controls.user"
                                     matInput
@@ -83,9 +96,9 @@
                             </mat-form-field>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mt-3">
                         <div class="col-3">
-                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                            <mat-form-field appearance="outline" [style.width.%]=100>
                                 <mat-label>Parsing Mode</mat-label>
                                 <mat-select [ngrxFormControlState]="$any(formState).controls.parsingMode">
 
@@ -98,8 +111,8 @@
                                 Parsing Mode is required
                             </mat-error>
                         </div>
-                        <div class="col-3">
-                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                        <div class="col-3" *ngIf="$any(formState).value.type !== 'attach'">
+                            <mat-form-field appearance="outline" [style.width.%]=100>
                                 <mat-label>Find Issues</mat-label>
                                 <mat-select [ngrxFormControlState]="$any(formState).controls.findIssues">
                                     <mat-option value="none">None</mat-option>
@@ -112,8 +125,8 @@
                                 Find Issues is required
                             </mat-error>
                         </div>
-                        <div class="col-3">
-                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                        <div class="col-3" *ngIf="$any(formState).value.type !== 'attach'">
+                            <mat-form-field appearance="outline" [style.width.%]=100>
                                 <mat-label>Find CRs</mat-label>
                                 <mat-select [ngrxFormControlState]="$any(formState).controls.findCRs">
                                     <mat-option value="none">None</mat-option>
@@ -126,23 +139,87 @@
                                 Find Issues is required
                             </mat-error>
                         </div>
-                        <div class="col-3">
-                            <mat-slide-toggle [style.marginTop.px]=28
+                        <div class="col-3" *ngIf="$any(formState).value.type !== 'attach'">
+                            <mat-slide-toggle [style.marginTop.px]=20
                                 [ngrxFormControlState]="$any(formState).controls.addAttachments">Add
                                 attachments</mat-slide-toggle>
+                        </div>
+                        <div class="col-3" *ngIf="$any(formState).value.type == 'attach'">
+                            <mat-form-field appearance="outline" [style.width.%]=100>
+                                <mat-label>Close Items After Attach</mat-label>
+                                <mat-select [ngrxFormControlState]="$any(formState).controls.closeItemsAfterAttach">
+                                    <mat-option value="none">None</mat-option>
+                                    <mat-option value="latest">Latest</mat-option>
+                                    <mat-option value="earliest">Earliest</mat-option>
+                                    <mat-option value="all">All</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-error *ngIf="formState.errors._findIssues?.required">
+                                Close Items After Attach
+                            </mat-error>
+                        </div>
+                        <div class="col-3" *ngIf="$any(formState).value.type == 'attach'">
+                            <mat-form-field appearance="outline" [style.width.%]=100>
+                                <mat-label>Send Attach Result To</mat-label>
+                                <mat-select [ngrxFormControlState]="$any(formState).controls.sendAttachResultTo">
+                                    <mat-option value="none">None</mat-option>
+                                    <mat-option value="sender">Sender</mat-option>
+                                    <mat-option value="all">All</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-error *ngIf="formState.errors._findIssues?.required">
+                                Close Items After Attach
+                            </mat-error>
+                        </div>
+
+                    </div>
+                    <div class="row mt-3" *ngIf="$any(formState).value.type === 'both'">
+                        <div class="col-3">
+                            <mat-form-field appearance="outline" [style.width.%]=100>
+                                <mat-label>Close Items After Attach</mat-label>
+                                <mat-select [ngrxFormControlState]="$any(formState).controls.closeItemsAfterAttach">
+                                    <mat-option value="none">None</mat-option>
+                                    <mat-option value="latest">Latest</mat-option>
+                                    <mat-option value="earliest">Earliest</mat-option>
+                                    <mat-option value="all">All</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-error *ngIf="formState.errors._findIssues?.required">
+                                Close Items After Attach
+                            </mat-error>
+                        </div>
+                        <div class="col-3">
+                            <mat-form-field appearance="outline" [style.width.%]=100>
+                                <mat-label>Send Attach Result To</mat-label>
+                                <mat-select [ngrxFormControlState]="$any(formState).controls.sendAttachResultTo">
+                                    <mat-option value="none">None</mat-option>
+                                    <mat-option value="sender">Sender</mat-option>
+                                    <mat-option value="all">All</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-error *ngIf="formState.errors._findIssues?.required">
+                                Close Items After Attach
+                            </mat-error>
                         </div>
 
                     </div>
 
+                    <div class="row mt-3">
 
-                    <div class="row">
+                        <div class="col-2">
+                            <button
+                            mat-fab
+                            extended
+                            color="accent"
+                            (click)="addNewSettings()"
+                        >Add New</button>
+                        </div>
 
-                        <div class="col-1">
+                        <div class="col-1  offset-9">
                             <button
                             mat-fab
                             extended
                             color="primary"
-                            class="mt-0"
                             (click)="saveSettings()"
                             [disabled]="!(getItemsFromEmailsSettingsCanActivateSave$ | async)"
                         >Save</button>
@@ -162,33 +239,43 @@
                 </mat-form-field>
             </div>
             <div>
-                <table mat-table [dataSource]="dataSource" multiTemplateDataRows matSort cdkDropList
-                    cdkDropListOrientation="horizontal" class="mat-elevation-z1">
+                <table mat-table [dataSource]="dataSource" multiTemplateDataRows matSort class="mat-elevation-z1">
 
                     <ng-container matColumnDef="name">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header> Name</th>
+
+
                         <td mat-cell *matCellDef="let element"> {{element.name}} </td>
                     </ng-container>
 
                     <ng-container matColumnDef="active">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header cdkDrag> Active</th>
-                        <td mat-cell *matCellDef="let element"> {{element.active}} </td>
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Active</th>
+                        <td mat-cell *matCellDef="let row">
+                            <mat-checkbox color="primary" [checked]="row.active" [disabled]="true">
+                            </mat-checkbox>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="type">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Type</th>
+                        <td mat-cell *matCellDef="let element"> {{element.type}} </td>
                     </ng-container>
 
                     <ng-container matColumnDef="project">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header cdkDrag> Project</th>
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Project</th>
                         <td mat-cell *matCellDef="let element"> {{element.project}} </td>
                     </ng-container>
 
                     <ng-container matColumnDef="version">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header cdkDrag> Version</th>
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Version</th>
                         <td mat-cell *matCellDef="let element"> {{element.version}} </td>
                     </ng-container>
 
-                    <ng-container matColumnDef="modifiedBy">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header cdkDrag> Modified By</th>
-                        <td mat-cell *matCellDef="let element"> {{element.modifiedBy}} </td>
+                    <ng-container matColumnDef="tracker">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Tracker</th>
+                        <td mat-cell *matCellDef="let element"> {{element.tracker}} </td>
                     </ng-container>
+
 
                     <ng-container matColumnDef="expand">
                         <th mat-header-cell *matHeaderCellDef>&nbsp;</th>
@@ -201,12 +288,56 @@
                         </td>
                     </ng-container>
 
+                    <ng-container matColumnDef="edit">
+                        <th mat-header-cell *matHeaderCellDef> Edit</th>
+                        <td mat-cell *matCellDef="let element">
+                            <button mat-mini-fab color="primary" matTooltip="Edit" matTooltipPosition="before"
+                                (click)="editAlias(element);$event.stopPropagation()">
+                                <mat-icon fontIcon="edit"></mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="delete">
+                        <th mat-header-cell *matHeaderCellDef> Delete</th>
+                        <td mat-cell *matCellDef="let element">
+                            <button mat-mini-fab color="warn" matTooltip="Delete" matTooltipPosition="before"
+                                (click)="deleteAlias(element);$event.stopPropagation()">
+                                <mat-icon fontIcon="delete"></mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+
                     <ng-container matColumnDef="expandedDetail">
                         <td mat-cell *matCellDef="let element" [attr.colspan]="(columnsLength$ | async)">
                             <div class="example-element-detail"
                                 [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
                                 <div class="example-element-description">
-                                    {{element.project}}
+                                    <p *ngIf="element.type == 'create'">
+                                        <strong>User: </strong><span>{{element.user}}</span>
+                                        <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parsing Mode: </strong><span>{{element.parsingMode}}</span>
+                                        <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Find Issues: </strong><span>{{element.findIssues}}</span>
+                                        <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Find CRs: </strong><span>{{element.findCRs}}</span>
+                                        <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add Attachments: </strong><span>{{element.addAttachments}}</span>
+                                        <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Modified By: </strong><span>{{element.modifiedBy}}</span>
+                                    </p>
+                                    <p *ngIf="element.type == 'both'">
+                                        <strong>User: </strong><span>{{element.user}}</span>
+                                        <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Parsing Mode: </strong><span>{{element.parsingMode}}</span>
+                                        <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Find Issues: </strong><span>{{element.findIssues}}</span>
+                                        <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Find CRs: </strong><span>{{element.findCRs}}</span>
+                                        <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add Attachments: </strong><span>{{element.addAttachments}}</span>
+                                        <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Close Items After Attach: </strong><span>{{element.closeItemsAfterAttach}}</span>
+                                        <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Send Attach Result To: </strong><span>{{element.sendAttachResultTo}}</span>
+                                        <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Modified By: </strong><span>{{element.modifiedBy}}</span>
+                                    </p>
+                                    <p *ngIf="element.type == 'attach'">
+                                        <strong>Parsing Mode: </strong><span>{{element.parsingMode}}</span>
+                                        <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Close Items After Attach: </strong><span>{{element.closeItemsAfterAttach}}</span>
+                                        <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Send Attach Result To: </strong><span>{{element.sendAttachResultTo}}</span>
+                                        <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Modified By: </strong><span>{{element.modifiedBy}}</span>
+                                    </p>
                                 </div>
                             </div>
                         </td>
