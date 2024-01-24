@@ -62,13 +62,7 @@ module.exports.getPotentialRedmineItemsFromSDProject = async (req, res) => {
         } else {
             for (const softDevRecord of queryResults) {
                 let target = redmineItems.issues.find((r) => {
-                    return r.subject && softDevRecord.SUBJECT && 
-                    (r.subject === softDevRecord.SUBJECT 
-                        || r.subject.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.SUBJECT.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
-                    && r.description && softDevRecord.DESCRIPTION &&
-                    (r.description === softDevRecord.DESCRIPTION
-                        || r.description.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.DESCRIPTION.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
-                    && redmineDataProvider.getCustomFieldValue(r, process.env.REDMINE_CR_NAME) === softDevRecord.CR
+                    return redmineDataProvider.getCustomFieldValue(r, process.env.REDMINE_CR_NAME) === softDevRecord.CR;
                 });
 
                 if (target) {
@@ -138,10 +132,7 @@ module.exports.getPotentialRedmineItemsFromIds = async (req, res) => {
 
         for (const softDevRecord of crsQueryResults) {
             let target = redmineItems.issues.find((r) => {
-                return r.description && softDevRecord.DESCRIPTION &&
-                (r.description === softDevRecord.DESCRIPTION
-                    || r.description.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.DESCRIPTION.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
-                && redmineDataProvider.getCustomFieldValue(r, process.env.REDMINE_CR_NAME) === softDevRecord.CR
+                return redmineDataProvider.getCustomFieldValue(r, process.env.REDMINE_CR_NAME) === softDevRecord.CR
             });
 
             if (target) {
@@ -157,12 +148,9 @@ module.exports.getPotentialRedmineItemsFromIds = async (req, res) => {
 
         for (const softDevRecord of issQueryResults) {
             let target = redmineItems.issues.find((r) => {
-                return r.description && softDevRecord.DESCRIPTION &&
-                (r.description === softDevRecord.DESCRIPTION
-                    || r.description.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.DESCRIPTION.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
-                && redmineDataProvider.getCustomFieldValue(r, process.env.REDMINE_ISSUE_NAME) === softDevRecord.ISSUE
+                return redmineDataProvider.getCustomFieldValue(r, process.env.REDMINE_ISSUE_NAME) === softDevRecord.ISSUE;
             });
-
+            
             if (target) {
                 softDevRecord.REDMINE_LINK = `${getRedmineAddress(`issues/${target.id}`)}`;
                 softDevRecord.SELECTED = false;
@@ -176,10 +164,7 @@ module.exports.getPotentialRedmineItemsFromIds = async (req, res) => {
 
         for (const softDevRecord of tmsQueryResults) {
             let target = redmineItems.issues.find((r) => {
-                return r.description && softDevRecord.DESCRIPTION &&
-                (r.description === softDevRecord.DESCRIPTION
-                    || r.description.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.DESCRIPTION.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
-                && redmineDataProvider.getCustomFieldValue(r, process.env.REDMINE_TMS_TASK_NAME) === softDevRecord.TMS
+                return redmineDataProvider.getCustomFieldValue(r, process.env.REDMINE_TMS_TASK_NAME) === softDevRecord.TMS
             });
 
             if (target) {

@@ -11,10 +11,10 @@ export class ProposedItem {
     public ASSIGNEE: string;
     public REDMINE_LINK: string;
     public REDMINE_VERSION: string;
-    public CR_EST_HOURS: number;
+    public CR_EST_HOURS: string;
 
     constructor(SELECTED: boolean, REDMINE_PROJECT: string, TRACKER: string, STATUS: string, SUBJECT: string, DESCRIPTION: string, ISSUE: string,
-        CR: string, TMS: string, ASSIGNEE: string, REDMINE_LINK: string, REDMINE_VERSION: string, CR_EST_HOURS: number) {
+        CR: string, TMS: string, ASSIGNEE: string, REDMINE_LINK: string, REDMINE_VERSION: string, CR_EST_HOURS: string) {
         this.SELECTED = SELECTED;
         this.REDMINE_PROJECT = REDMINE_PROJECT;
         this.TRACKER = TRACKER;

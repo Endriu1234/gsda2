@@ -94,7 +94,11 @@ export class ItemsItemCreationEffects {
                                     }
                                 }
                                 else {
-                                    postData.append(key, (formData.creationFormState.value as any)[key])
+                                    const value = (formData.creationFormState.value as any)[key];
+
+
+                                    if (value)
+                                        postData.append(key, (formData.creationFormState.value as any)[key]);
                                 }
 
                             });
@@ -169,6 +173,8 @@ export class ItemsItemCreationEffects {
                 new SetValueAction(ITEM_CREATION_FORMID + '.issue', ''),
                 new SetValueAction(ITEM_CREATION_FORMID + '.cr', ''),
                 new SetValueAction(ITEM_CREATION_FORMID + '.tms', ''),
+                new SetValueAction(ITEM_CREATION_FORMID + '.version', ''),
+                new SetValueAction(ITEM_CREATION_FORMID + '.est_time', ''),
                 new SetValueAction(ITEM_CREATION_FORMID + '.files', []),
                 new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID,
                     fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New),

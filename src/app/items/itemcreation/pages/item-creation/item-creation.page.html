@@ -63,7 +63,14 @@
                 </mat-error>
                 <mat-form-field appearance="outline" [style.width.%]=100>
                     <mat-label>Description</mat-label>
-                    <textarea type="text" matInput placeholder="Description" [ngrxFormControlState]="$any(formState).controls.description"></textarea>
+                    <textarea type="text" 
+                        matInput 
+                        placeholder="Description" 
+                        [ngrxFormControlState]="$any(formState).controls.description"
+                        fileDragAndDrop 
+                        (onFileDropped)="addFileToTextarea($event)"
+                        (paste)="onPaste($event)"
+                    ></textarea>
                 </mat-form-field>
                 <mat-error
                     [style.visibility]="(formState.isTouched && formState.errors._user?.$validateUserError)?'visible':'hidden'">
@@ -140,25 +147,29 @@
                     </mat-error>
                 </div>
                 <mat-list fileDragAndDrop (onFileDropped)="addFile($event)">
-                    <form class="" [style.visibility]="'hidden'">
+                    <b>Attachements: </b>
+                    <form class="jkNoForm" [style.visibility]="'hidden'">
                         <input type="file" #fileSelector
                             (change)="onChange($event)" multiple>
                     </form>
-                    <!-- <mat-list-item *ngFor="let file of (files$ | async)">
-                        <div class="d-flex flex-md-row flex-column">
-                            <b>              </b>
-                            {{file.file.name}}
-                            <button
-                                mat-mini-fab
-                                class="clButton"
-                                matTooltip="Delete"
-                                matTooltipPosition="after"
-                            ><mat-icon fontIcon="delete"></mat-icon></button>
+                    <mat-list-item *ngFor="let file of (files$ | async)">  
+                        <div class="row">
+                            <div class="col-8 jkCenter">
+                                {{file.name}}
+                            </div>
+                            <div class="col-2">
+                                <button
+                                    mat-mini-fab
+                                    class="clButton"
+                                    matTooltip="Delete"
+                                    matTooltipPosition="after"
+                                    (click)="deleteFile(file)"
+                                ><mat-icon fontIcon="delete"></mat-icon></button>
+                            </div>
                         </div>
-                    </mat-list-item> -->
+                    </mat-list-item> 
                     <mat-list-item>
                         <div class="d-flex flex-md-row flex-column">
-                            <b>Attachements: </b>
                             <button mat-fab extended class="clButton" matTooltip="Add file" matTooltipPosition="before" (click)="openFile()"
                             >Choose file...</button>
                         </div>

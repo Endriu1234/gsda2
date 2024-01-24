@@ -28,7 +28,7 @@ module.exports.convertFormItemObjectToJSON = async function convertFormItemObjec
     const tracker = trackers.find(t => t.name === formItem.tracker);
     redmineItem.issue.tracker_id = parseInt(tracker.id);
 
-    redmineItem.issue.subject = formItem.subject;
+    redmineItem.issue.subject = formItem.subject.length <= 255 ? formItem.subject : formItem.subject.substring(0,250) + '...';
     redmineItem.issue.description = formItem.description;
 
     if (formItem.user) {

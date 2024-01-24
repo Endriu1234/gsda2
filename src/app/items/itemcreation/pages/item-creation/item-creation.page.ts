@@ -6,17 +6,18 @@ import * as fromCommonItemsSelectors from '../../../store/selectors/items.common
 import { RedmineTracker } from 'src/app/items/store/models/redmine-tracker.model';
 import { RedmineUserByLetter } from 'src/app/shared/store/models/redmine-user-letter-model';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
-import { Observable, Subscription, take } from 'rxjs';
+import { Observable, Subscription, map, take } from 'rxjs';
 import { FormGroupState, SetUserDefinedPropertyAction, SetValueAction } from 'ngrx-forms';
 import { trimUpperConverter } from '../../../../shared/tools/validators/ngrxValueConverters';
 import { ItemCreationFromId } from "../item-creation-from-id/item-creation-from-id";
 import { MatDialog } from '@angular/material/dialog';
-import { FormSaveState, FORM_SAVE_STATE } from 'src/app/shared/store/shared.state';
+import { FormSaveState, FORM_SAVE_STATE, SnackBarIcon } from 'src/app/shared/store/shared.state';
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers } from 'src/app/items/store/actions/items.common-actions';
 import { breakBatchItemCreation, identifyAndFillItemById } from 'src/app/items/store/actions/items.item-creation-actions';
 import { ITEM_CREATION_FORMID } from 'src/app/items/store/state/items.item-creation-state';
 import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
 import * as _ from 'lodash';
+import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 
 @Component({
   selector: 'app-item-creation',
@@ -33,6 +34,7 @@ export class ItemCreationPage implements OnInit, OnDestroy {
   getItemCreationFormCanActivateSave$: Observable<boolean> | null = null;
   isItemCreationFormCreatedFromBatch$: Observable<boolean> | null = null;
   versions$: Observable<RedmineVersion[]> | null = null;
+  files$: Observable<File[]> | null = null;
   private subscriptions: (Subscription | undefined)[] = [];
   trimUpper = trimUpperConverter;
   @ViewChild("fileSelector", { static: false }) file_selector!: ElementRef;
@@ -99,6 +101,7 @@ export class ItemCreationPage implements OnInit, OnDestroy {
     this.getItemCreationFormCanActivateSave$ = this.store.select(fromItemCreationSelectors.getItemCreationFormCanActivateSave);
     this.isItemCreationFormCreatedFromBatch$ = this.store.select(fromItemCreationSelectors.isItemCreationFormCreatedFromBatch);
     this.versions$ = this.store.select(fromItemCreationSelectors.getRedmineVersionsByProject);
+    this.files$ = this.store.select(fromItemCreationSelectors.getItemCreationFormFilestControl);
   }
 
   ngOnDestroy() {
@@ -132,17 +135,105 @@ export class ItemCreationPage implements OnInit, OnDestroy {
     element.value = '';
   }
 
-  addFile(event: FileList) {
+  onPaste(event: any) {
+    const items = (event.clipboardData || event.originalEvent.clipboardData).items;
     let tblFiles: File[] = [];
-    for (let index = 0; index < event.length; index++) {
-      const elem = event.item(index);
-      if (elem) {
-        tblFiles.push(elem);
+    let file: File;
+    let txt: string  = '';
+
+    for (const item of items) {
+      file = item.getAsFile();
+      if (file && this.validateFile(file)) {
+        if (file.type.indexOf('image') === 0) {
+          if (txt && txt.length > 0) {
+            txt += '\n';
+          }
+          txt += '!' + file.name + '!';
+        }
+        tblFiles.push(file);
       }
     }
 
-    this.store.dispatch(new SetValueAction(ITEM_CREATION_FORMID + '.files', tblFiles));
+    if (tblFiles.length > 0) {
+      let textarea: HTMLTextAreaElement = event.target;
+      let start = textarea.selectionStart;
+      let end = textarea.selectionEnd;
+      
+      this.subscriptions.push(this.store.select(fromItemCreationSelectors.getItemCreationFormDescriptionControl).pipe(take(1)).subscribe(descCtrl => {
+        this.store.dispatch(new SetValueAction(ITEM_CREATION_FORMID + '.description', descCtrl.value.substring(0,start) + txt + descCtrl.value.substring(end)));
+      }));
+
+      this.subscriptions.push(this.store.select(fromItemCreationSelectors.getItemCreationFormFilestControl).pipe(take(1)).subscribe(fls => {
+        tblFiles.unshift(...fls);
+        this.store.dispatch(new SetValueAction(ITEM_CREATION_FORMID + '.files', tblFiles));
+      }));
+    }
   }
 
+  addFileToTextarea(event: FileList) {
+    let tblFiles: File[] = [];
+    let txt: string  = '';
+    for (let index = 0; index < event.length; index++) {
+      const file = event.item(index);
+      if (file && this.validateFile(file)) {
+        if (file.type.indexOf('image') === 0) {
+          if (txt && txt.length > 0) {
+            txt += '\n';
+          }
+          txt += '!' + file.name + '!';
+        }
+        tblFiles.push(file);
+      }
+    }
+
+    if (tblFiles.length > 0) {
+      this.subscriptions.push(this.store.select(fromItemCreationSelectors.getItemCreationFormDescriptionControl).pipe(take(1)).subscribe(descCtrl => {
+        this.store.dispatch(new SetValueAction(ITEM_CREATION_FORMID + '.description', descCtrl.value + txt));
+      }));
+
+      this.subscriptions.push(this.store.select(fromItemCreationSelectors.getItemCreationFormFilestControl).pipe(take(1)).subscribe(fls => {
+        tblFiles.unshift(...fls);
+        this.store.dispatch(new SetValueAction(ITEM_CREATION_FORMID + '.files', tblFiles));
+      }));
+    }
+  }
+
+  addFile(event: FileList) {
+    let tblFiles: File[] = [];
+    for (let index = 0; index < event.length; index++) {
+      const file = event.item(index);
+      if (file && this.validateFile(file)) {
+        tblFiles.push(file);
+      }
+    }
+
+    if (tblFiles.length > 0) {
+      this.subscriptions.push(this.store.select(fromItemCreationSelectors.getItemCreationFormFilestControl).pipe(take(1)).subscribe(fls => {
+        tblFiles.unshift(...fls);
+        this.store.dispatch(new SetValueAction(ITEM_CREATION_FORMID + '.files', tblFiles));
+      }));
+    }
+  }
+
+  deleteFile(file: File) {
+    this.subscriptions.push(this.store.select(fromItemCreationSelectors.getItemCreationFormFilestControl).pipe(take(1)).subscribe(fls => {
+      let tblFile: File[] = fls.filter(item => item.name !== file.name);
+      this.store.dispatch(new SetValueAction(ITEM_CREATION_FORMID + '.files', tblFile))
+    }));
+  }
+
+  private validateFile(file: File): boolean {
+    let bRet:boolean = true;
+
+    if ((file.size/1024/1024) > 5) { //max 5MB
+      this.store.dispatch(addSnackbarNotification({ 
+        notification: "File: '" + file.name + "' cannot be uploaded because it exceeds the maximum allowed file size (5 MB)", 
+        icon: SnackBarIcon.Info 
+      }));
+      bRet = false;
+    }
+
+    return bRet;
+  }
 
 }

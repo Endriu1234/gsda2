@@ -22,6 +22,7 @@ export const getItemCreationFormCRControl = createSelector(getItemsState, (state
 export const getItemCreationFormIssueControl = createSelector(getItemsState, (state: State) => state.itemCreationFromData.controls.issue);
 export const getItemCreationFormDescriptionControl = createSelector(getItemsState, (state: State) => state.itemCreationFromData.controls.description);
 export const getItemCreationFormSubjectControl = createSelector(getItemsState, (state: State) => state.itemCreationFromData.controls.subject);
+export const getItemCreationFormFilestControl = createSelector(getItemsState, (state: State) => state.itemCreationFromData.controls.files.value);
 
 export const getItemCreationFormWithSetup = createSelector(getItemCreationFormState, getItemCreationSetupData, (creationFormState, creationFormSetupState) => {
     return {
