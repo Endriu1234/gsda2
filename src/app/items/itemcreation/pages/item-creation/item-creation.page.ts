@@ -216,6 +216,12 @@ export class ItemCreationPage implements OnInit, OnDestroy {
   }
 
   deleteFile(file: File) {
+    if (file.type.indexOf('image') === 0) {
+        this.subscriptions.push(this.store.select(fromItemCreationSelectors.getItemCreationFormDescriptionControl).pipe(take(1)).subscribe(descCtrl => {
+          this.store.dispatch(new SetValueAction(ITEM_CREATION_FORMID + '.description', descCtrl.value.replace(new RegExp('!' + file.name + '!', 'g'), '')));
+      }));
+    }
+    
     this.subscriptions.push(this.store.select(fromItemCreationSelectors.getItemCreationFormFilestControl).pipe(take(1)).subscribe(fls => {
       let tblFile: File[] = fls.filter(item => item.name !== file.name);
       this.store.dispatch(new SetValueAction(ITEM_CREATION_FORMID + '.files', tblFile))
