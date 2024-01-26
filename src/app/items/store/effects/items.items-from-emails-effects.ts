@@ -17,7 +17,7 @@ import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/
 import { environment } from 'src/environments/environment';
 import { getItemsFromEmailsSettingsFormData, getItemsFromEmailsSettingsFormWithSetup } from '../selectors/items.items-from-emails-selectors';
 import { GsdaHttpResponse } from 'src/app/shared/http/model/gsda-http-response.model';
-import { clearRedmineVersionsForItemsFromEmail, deleteItemsFromEmailsSetting, editItemsFromEmailsSetting, endInitItemsFromEmailsSettings, initItemsFromEmailsSettings, initRedmineVersionsForItemsFromEmail, loadRedmineVersionsForItemsFromEmail, setRedmineProjectsFilterForItemsFromEmail, setRedmineUsersByLetterFilterForItemsFromEmail, updateEditedItemsFromEmailsSetting } from '../actions/items.items-from-emails.actions';
+import { addItemsFromEmailsSetting, clearRedmineVersionsForItemsFromEmail, deleteItemsFromEmailsSetting, editItemsFromEmailsSetting, endInitItemsFromEmailsSettings, initItemsFromEmailsSettings, initRedmineVersionsForItemsFromEmail, loadRedmineVersionsForItemsFromEmail, setRedmineProjectsFilterForItemsFromEmail, setRedmineUsersByLetterFilterForItemsFromEmail, updateEditedItemsFromEmailsSetting } from '../actions/items.items-from-emails.actions';
 import { ItemsFromEmailSettingsHttpResponse } from '../models/itemsfromemails/Items-from-email-settings-http-response.model';
 import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
 import { validateItemsFromEmailsSettingsName, validateProject, validateUser } from '../items.validation';
@@ -77,16 +77,13 @@ export class ItemsFromEmailsEffects {
                                             new SetUserDefinedPropertyAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID, fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New),
                                             ];
 
-                                            if (formDataWithSetup.formSetup.editedSetting) {
-
-                                                const change = {
-                                                    originalSetting: formDataWithSetup.formSetup.editedSetting,
-                                                    currentSetting: { ...formDataWithSetup.formData.value }
-                                                }
-
-                                                change.currentSetting.modifiedBy = modifiedBy ? modifiedBy : 'unknown';
-                                                actions.unshift(updateEditedItemsFromEmailsSetting(change));
+                                            const change = {
+                                                originalSetting: formDataWithSetup.formSetup.editedSetting,
+                                                currentSetting: { ...formDataWithSetup.formData.value }
                                             }
+
+                                            change.currentSetting.modifiedBy = modifiedBy ? modifiedBy : 'unknown';
+                                            actions.unshift(updateEditedItemsFromEmailsSetting(change));
 
                                             return actions;
                                         }));
@@ -182,6 +179,29 @@ export class ItemsFromEmailsEffects {
             new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.closeItemsAfterAttach', deleteAction.settings.closeItemsAfterAttach),
             new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.sendAttachResultTo', deleteAction.settings.sendAttachResultTo),
             new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.modifiedBy', deleteAction.settings.modifiedBy)
+        ];
+
+        return actions;
+    })));
+
+    addItemsFromEmailsSetting$ = createEffect(() => this.actions$.pipe(ofType(addItemsFromEmailsSetting), switchMap((deleteAction) => {
+
+        const actions: any[] = [
+            new ResetAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.name', ''),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.active', false),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.type', ''),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.tracker', ''),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.project', ''),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.version', ''),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.user', ''),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.parsingMode', ''),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.findIssues', ''),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.findCRs', ''),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.addAttachments', false),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.closeItemsAfterAttach', ''),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.sendAttachResultTo', ''),
+            new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.modifiedBy', '')
         ];
 
         return actions;

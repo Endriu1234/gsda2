@@ -13,5 +13,7 @@ export const clearRedmineVersionsForItemsFromEmail = createAction('[Items Compon
 export const deleteItemsFromEmailsSetting = createAction('[Items Component] Delete Items From Emails Settings', props<{ settings: ItemsFromEmailsSettings }>());
 export const editItemsFromEmailsSetting = createAction('[Items Component] Edit Items From Emails Settings', props<{ settings: ItemsFromEmailsSettings }>());
 export const updateEditedItemsFromEmailsSetting = createAction('[Items Component] Update Edited Items From Emails Settings',
-    props<{ originalSetting: ItemsFromEmailsSettings, currentSetting: ItemsFromEmailsSettings }>());
+    props<{ originalSetting: ItemsFromEmailsSettings | null, currentSetting: ItemsFromEmailsSettings }>());
+export const addItemsFromEmailsSetting = createAction('[Items Component] Add Items From Emails Setting');
+
 

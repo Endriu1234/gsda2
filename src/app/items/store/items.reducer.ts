@@ -12,6 +12,7 @@ import { addValidatedCR, addValidatedFromId, addValidatedIssue, addValidatedTms,
 import { continueBatchItemsCreation, forceEndBatchItemCreation, setBatchItemCreationRecords, setLinkToCurrentProposedItemAndUnselect, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection, dragAndDropBatchItemsCreationColumns, createOneRecordFromBatch, updateBatchItemCreationFormColumn, setRedmineSourceProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForTmsBatchItemCreationCriteria, setRedmineUsersByLetterFilterForTmsBatchItemCreationCriteria, initTmsClients, loadTmsClients, setTmsClientsByLetterFilter, setRedmineTargetProjectsFilterForIdsBatchItemCreationCriteria, initRedmineVersionsForIds, loadRedmineVersionsForIds, clearRedmineVersionsForIds, initRedmineVersionsForTms, loadRedmineVersionsForTms, clearRedmineVersionsForTms, initRedmineVersionsForRedmine, clearRedmineVersionsForRedmine, loadRedmineVersionsForRedmine, initRedmineVersionsForSd, loadRedmineVersionsForSd, clearRedmineVersionsForSd, setBatchItemCreationTabIndex, setBatchItemCreationSelectedTabIndex } from './actions/items.batch-item-creation-actions';
 import { ItemCreationFromData } from './state/items.item-creation-state';
 import {
+    addItemsFromEmailsSetting,
     clearRedmineVersionsForItemsFromEmail, deleteItemsFromEmailsSetting, editItemsFromEmailsSetting,
     endInitItemsFromEmailsSettings, initItemsFromEmailsSettings, initRedmineVersionsForItemsFromEmail,
     loadRedmineVersionsForItemsFromEmail, setRedmineProjectsFilterForItemsFromEmail, setRedmineUsersByLetterFilterForItemsFromEmail, updateEditedItemsFromEmailsSetting
@@ -93,6 +94,7 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
     on(clearRedmineVersionsForItemsFromEmail, fromItemsFromEmailsReducerHanders.clearRedmineVersions),
     on(deleteItemsFromEmailsSetting, fromItemsFromEmailsReducerHanders.deleteItemsFromEmailsSetting),
     on(editItemsFromEmailsSetting, fromItemsFromEmailsReducerHanders.editItemsFromEmailsSetting),
+    on(addItemsFromEmailsSetting, fromItemsFromEmailsReducerHanders.addItemsFromEmailsSetting),
     on(updateEditedItemsFromEmailsSetting, fromItemsFromEmailsReducerHanders.updateEditedItemsFromEmailsSetting),
 
     on(setBatchItemCreationTabIndex, fromBatchItemCreationReducerHanders.setBatchItemCreationTabIndex),

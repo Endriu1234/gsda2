@@ -69,7 +69,7 @@ module.exports.saveItemsFromEmailsSettings = async (req, res) => {
                     { name: req.body.editedSetting.name, type: req.body.editedSetting.type }, req.body.values);
             }
             else {
-                await ItemsFromEmailsSettings.insertOne(req.body.values);
+                await ItemsFromEmailsSettings.create(req.body.values);
             }
 
             cacheValueProvider.deleteValue('items_from_emails_settings');
@@ -80,6 +80,7 @@ module.exports.saveItemsFromEmailsSettings = async (req, res) => {
         }
     }
     catch (err) {
+        console.dir(err);
         retVal.errorMessage = err;
     }
 
