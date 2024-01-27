@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
-import { catchError, endWith, map, mergeMap, of, switchMap, take, from, startWith } from "rxjs";
+import { catchError, map, mergeMap, of, switchMap, take, from, startWith } from "rxjs";
 import * as fromItemsState from '../state/items.state';
 import * as fromSharedState from '../../../shared/store/shared.state';
 import * as fromAuthState from '../../../auth/store/auth.state'
@@ -15,12 +15,12 @@ import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 
 import { environment } from 'src/environments/environment';
-import { getItemsFromEmailsSettingsFormData, getItemsFromEmailsSettingsFormWithSetup } from '../selectors/items.items-from-emails-selectors';
+import { getItemsFromEmailsSettingsFormWithSetup } from '../selectors/items.items-from-emails-selectors';
 import { GsdaHttpResponse } from 'src/app/shared/http/model/gsda-http-response.model';
 import { addItemsFromEmailsSetting, clearRedmineVersionsForItemsFromEmail, deleteItemsFromEmailsSetting, editItemsFromEmailsSetting, endInitItemsFromEmailsSettings, initItemsFromEmailsSettings, initRedmineVersionsForItemsFromEmail, loadRedmineVersionsForItemsFromEmail, setRedmineProjectsFilterForItemsFromEmail, setRedmineUsersByLetterFilterForItemsFromEmail, updateEditedItemsFromEmailsSetting } from '../actions/items.items-from-emails.actions';
 import { ItemsFromEmailSettingsHttpResponse } from '../models/itemsfromemails/Items-from-email-settings-http-response.model';
 import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
-import { validateItemsFromEmailsSettingsName, validateProject, validateUser } from '../items.validation';
+import { validateItemsFromEmailsSettingsCloseItemsAfterAttach, validateItemsFromEmailsSettingsFindCRs, validateItemsFromEmailsSettingsFindIssues, validateItemsFromEmailsSettingsName, validateItemsFromEmailsSettingsParsingMode, validateItemsFromEmailsSettingsSendAttachResultTo, validateItemsFromEmailsSettingsTracker, validateItemsFromEmailsSettingsType, validateItemsFromEmailsSettingsVersion, validateProject, validateProjectForItemsFromEmails, validateUser } from '../items.validation';
 
 export const validateItemsFromEmailsError = "validateItemsFromEmailsError";
 
@@ -40,8 +40,49 @@ export class ItemsFromEmailsEffects {
             if (action.controlId === ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.name')
                 return from(validateItemsFromEmailsSettingsName(this.store, validateItemsFromEmailsError, action.controlId, action.value));
 
+            if (action.controlId === ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.type') {
+                const actions: any[] = [];
+
+                if (action.value === 'create') {
+                    actions.push(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.closeItemsAfterAttach', ''));
+                    actions.push(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.sendAttachResultTo', ''));
+                }
+                else if (action.value === 'attach') {
+                    actions.push(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.version', ''));
+                    actions.push(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.project', ''));
+                    actions.push(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.user', ''));
+                    actions.push(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.findIssues', ''));
+                    actions.push(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.findCRs', ''));
+                    actions.push(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.tracker', ''));
+                    actions.push(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.addAttachments', false));
+                }
+
+                return validateItemsFromEmailsSettingsType(validateItemsFromEmailsError, action.controlId, action.value, actions);
+            }
+
+            if (action.controlId === ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.parsingMode')
+                return from(validateItemsFromEmailsSettingsParsingMode(validateItemsFromEmailsError, action.controlId, action.value));
+
+            if (action.controlId === ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.findIssues')
+                return from(validateItemsFromEmailsSettingsFindIssues(this.store, validateItemsFromEmailsError, action.controlId, action.value));
+
+            if (action.controlId === ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.findCRs')
+                return from(validateItemsFromEmailsSettingsFindCRs(this.store, validateItemsFromEmailsError, action.controlId, action.value));
+
+            if (action.controlId === ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.version')
+                return from(validateItemsFromEmailsSettingsVersion(this.store, validateItemsFromEmailsError, action.controlId, action.value));
+
+            if (action.controlId === ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.closeItemsAfterAttach')
+                return from(validateItemsFromEmailsSettingsCloseItemsAfterAttach(this.store, validateItemsFromEmailsError, action.controlId, action.value));
+
+            if (action.controlId === ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.tracker')
+                return from(validateItemsFromEmailsSettingsTracker(this.store, validateItemsFromEmailsError, action.controlId, action.value));
+
+            if (action.controlId === ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.sendAttachResultTo')
+                return from(validateItemsFromEmailsSettingsSendAttachResultTo(this.store, validateItemsFromEmailsError, action.controlId, action.value));
+
             if (action.controlId === ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.project')
-                return from(validateProject(this.store, validateItemsFromEmailsError, action.controlId,
+                return from(validateProjectForItemsFromEmails(this.store, validateItemsFromEmailsError, action.controlId,
                     action.value, clearRedmineVersionsForItemsFromEmail(), initRedmineVersionsForItemsFromEmail({ projectName: action.value })).pipe(startWith(setRedmineProjectsFilterForItemsFromEmail())));
 
             if (action.controlId === ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.user')

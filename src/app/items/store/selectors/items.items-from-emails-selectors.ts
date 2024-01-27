@@ -1,4 +1,4 @@
-import { getItemsState } from './items.common-selectors';
+import { getItemsState, getRedmineTrackers } from './items.common-selectors';
 import { State } from '../state/items.state';
 import { createSelector } from '@ngrx/store';
 import { ItemsFromEmailsSettingsFormData } from '../state/items.items-from-emails-state';
@@ -18,6 +18,14 @@ export const getItemsFromEmailsSettingsFormWithSetup = createSelector(getItemsFr
         }
     });
 
+export const getItemsFromEmailsSettingsFormWithSetupAndTrackers = createSelector(getItemsFromEmailsSettingsFormData, getItemsFromEmailsSettingsFormSetup, getRedmineTrackers,
+    (formData, formSetup, trackers) => {
+        return {
+            formData,
+            formSetup,
+            trackers
+        }
+    });
 
 export const getRedmineProjectsFilteredForItemsFromEmail = createSelector(getItemsState,
     (state: State) => state.itemsFromEmailsSettingsSetupData.redmineProjectsFiltered);
@@ -47,3 +55,12 @@ export const getItemsFromEmailsSettingsGridData = createSelector(getItemsState, 
 
 export const getItemsFromEmailsSettingsGridColumnsLength = createSelector(getItemsState, (state: State) => state.itemsFromEmailsSettingsGridSetup.displayedColumns.length);
 
+export const getItemsFromEmailsSettingsFormWithSetupAndAllGridData
+    = createSelector(getItemsFromEmailsSettingsFormData, getItemsFromEmailsSettingsFormSetup, getItemsFromEmailsSettingsGridData,
+        (formData, formSetup, gridData) => {
+            return {
+                formData,
+                formSetup,
+                gridData
+            }
+        });
