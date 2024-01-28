@@ -1,6 +1,7 @@
 const emailHandler = require('../../../business/email/emailHandler');
 const ItemsFromEmailsSettings = require('../../../model/gsda/itemsfromemails/ItemsFromEmailsSettings');
 const cacheValueProvider = require('../../../business/cache/cacheValueProvider');
+const { validateEmailAlias } = require('../../../business/email/emailAliasValidator');
 
 module.exports.getItemsFromEmailsSettings = async (req, res) => {
     const retVal = {
@@ -50,8 +51,6 @@ module.exports.getItemsFromEmailsSettings = async (req, res) => {
     return res.status(200).json(retVal);
 }
 
-
-
 module.exports.saveItemsFromEmailsSettings = async (req, res) => {
 
     const retVal = {
@@ -60,7 +59,9 @@ module.exports.saveItemsFromEmailsSettings = async (req, res) => {
     };
 
     try {
-        if (req.body.values) {
+        const validationResult = await validateEmailAlias(req.body);
+
+        if (validationResult.success) {
 
             req.body.values.modifiedBy = req.authData.user;
 
@@ -76,7 +77,7 @@ module.exports.saveItemsFromEmailsSettings = async (req, res) => {
             retVal.success = true;
         }
         else {
-            retVal.errorMessage = 'Incorrect Data provided for Items From Emails Save';
+            retVal.errorMessage = validationResult.errorMessage;
         }
     }
     catch (err) {

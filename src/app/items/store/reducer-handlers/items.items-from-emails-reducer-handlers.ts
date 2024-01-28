@@ -90,5 +90,7 @@ export function updateEditedItemsFromEmailsSetting(state: State, args: { origina
         newState.itemsFromEmailsSettingsGridData.records = newRecords;
     }
 
+    newState.itemsFromEmailsSettingsSetupData.editedSetting = args.currentSetting;
+
     return newState;
 }

@@ -40,7 +40,7 @@ export const getItemsFromEmailsSettingsCanActivateSave = createSelector(getItems
 
 
 function canItemsFromEmailsSettingsFormBeSaved(formState: FormGroupState<ItemsFromEmailsSettingsFormData>): boolean {
-    if (!formState.value || formState.isValidationPending || formState.isInvalid) {
+    if (!formState.value || formState.isValidationPending || formState.isInvalid || !formState.value.name || !formState.value.type) {
         return false;
     }
 
