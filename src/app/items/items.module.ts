@@ -21,7 +21,6 @@ import { ItemsItemCreationEffects } from './store/effects/items.item-creation-ef
 import { ItemsBatchItemCreationEffects } from './store/effects/items.batch-item-creation-effects';
 import { DirectivesModule } from '../shared/directives/directives.module';
 import { ItemsFromEmailsPage } from './itemsfromemails/pages/items-from-emails/items-from-emails.page';
-import { ItemsFromEmailsComponent } from './itemsfromemails/components/items-from-emails/items-from-emails.component';
 import { ItemsFromEmailsSettingsComponent } from './itemsfromemails/components/items-from-emails-settings/items-from-emails-settings.component';
 import { ItemsFromEmailsEffects } from './store/effects/items.items-from-emails-effects';
 
@@ -38,7 +37,6 @@ import { ItemsFromEmailsEffects } from './store/effects/items.items-from-emails-
     BatchCreationRedmineCriteriaComponent,
     BatchCreationIdscriteriaComponent,
     ItemsFromEmailsPage,
-    ItemsFromEmailsComponent,
     ItemsFromEmailsSettingsComponent
   ],
   imports: [
