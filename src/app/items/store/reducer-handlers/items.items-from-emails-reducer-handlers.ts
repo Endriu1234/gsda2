@@ -70,11 +70,33 @@ export function editItemsFromEmailsSetting(state: State, args: { settings: Items
     return newState;
 }
 
-export function updateEditedItemsFromEmailsSetting(state: State, args: { originalSetting: ItemsFromEmailsSettings, currentSetting: ItemsFromEmailsSettings }): State {
+export function addItemsFromEmailsSetting(state: State): State {
     const newState: State = _.cloneDeep(state);
 
-    newState.itemsFromEmailsSettingsGridData.records = newState.itemsFromEmailsSettingsGridData.records
-        .map(s => s.name === args.originalSetting.name && s.type === args.originalSetting.type ? args.currentSetting : s);
+    newState.itemsFromEmailsSettingsSetupData.editedSetting = null;
+    return newState;
+}
+
+export function clearEditedItemsFromEmailsSetting(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemsFromEmailsSettingsSetupData.editedSetting = null;
+    return newState;
+}
+
+export function updateEditedItemsFromEmailsSetting(state: State, args: { originalSetting: ItemsFromEmailsSettings | null, currentSetting: ItemsFromEmailsSettings }): State {
+    const newState: State = _.cloneDeep(state);
+
+    if (args.originalSetting) {
+        newState.itemsFromEmailsSettingsGridData.records = newState.itemsFromEmailsSettingsGridData.records
+            .map(s => s.name === args.originalSetting!.name && s.type === args.originalSetting!.type ? args.currentSetting : s);
+    }
+    else {
+        const newRecords = [...newState.itemsFromEmailsSettingsGridData.records];
+        newRecords.unshift(args.currentSetting);
+        newState.itemsFromEmailsSettingsGridData.records = newRecords;
+    }
+
+    newState.itemsFromEmailsSettingsSetupData.editedSetting = args.currentSetting;
 
     return newState;
 }

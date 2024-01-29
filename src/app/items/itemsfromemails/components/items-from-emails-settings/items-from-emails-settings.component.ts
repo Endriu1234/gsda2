@@ -6,7 +6,7 @@ import { getItemsFromEmailsSettingsFormData } from 'src/app/items/store/selector
 import * as fromItemsState from '../../../store/state/items.state';
 import { FORM_SAVE_STATE, FormSaveState } from 'src/app/shared/store/shared.state';
 import { ITEMS_FROM_EMAILS_SETTINGS_FORMID } from 'src/app/items/store/state/items.items-from-emails-state';
-import { deleteItemsFromEmailsSetting, editItemsFromEmailsSetting, initItemsFromEmailsSettings } from 'src/app/items/store/actions/items.items-from-emails.actions';
+import { addItemsFromEmailsSetting, deleteItemsFromEmailsSetting, editItemsFromEmailsSetting, initItemsFromEmailsSettings } from 'src/app/items/store/actions/items.items-from-emails.actions';
 import * as fromCommonItemsSelectors from '../../../store/selectors/items.common-selectors';
 import * as fromItemsFromEmailsSelectors from '../../../store/selectors/items.items-from-emails-selectors';
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers } from 'src/app/items/store/actions/items.common-actions';
@@ -108,7 +108,7 @@ export class ItemsFromEmailsSettingsComponent implements OnInit, OnDestroy {
   }
 
   addNewSettings() {
-
+    this.store.dispatch(addItemsFromEmailsSetting());
   }
 
   editAlias(alias: ItemsFromEmailsSettings) {

@@ -1,7 +1,7 @@
 import { Action, Store } from "@ngrx/store";
-import { ClearAsyncErrorAction, SetAsyncErrorAction, StartAsyncValidationAction } from "ngrx-forms";
+import { ClearAsyncErrorAction, SetAsyncErrorAction, SetValueAction, StartAsyncValidationAction } from "ngrx-forms";
 import { State } from "./state/items.state";
-import { catchError, concat, delay, mergeMap, Observable, of, switchMap, take, tap } from 'rxjs';
+import { catchError, concat, delay, from, mergeMap, Observable, of, switchMap, take, tap } from 'rxjs';
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { CRValidation } from "./models/cr-validation.model";
 import { IssueValidation } from "./models/issue-validation.model";
@@ -10,18 +10,36 @@ import { environment } from 'src/environments/environment';
 import { addValidatedCR, addValidatedIssue, addValidatedTms } from "./actions/items.item-creation-actions";
 import { getRedmineProjects, getRedmineUsers } from "./selectors/items.common-selectors";
 import { getValidatedCRs, getValidatedIssues, getValidatedTms } from "./selectors/items.item-creation-selectors";
+import { getItemsFromEmailsSettingsFormData, getItemsFromEmailsSettingsFormWithSetup, getItemsFromEmailsSettingsFormWithSetupAndAllGridData, getItemsFromEmailsSettingsFormWithSetupAndTrackers } from "./selectors/items.items-from-emails-selectors";
+import { ITEMS_FROM_EMAILS_SETTINGS_FORMID } from "./state/items.items-from-emails-state";
+import { clearRedmineVersionsForItemsFromEmail, initRedmineVersionsForItemsFromEmail } from "./actions/items.items-from-emails.actions";
 
 
-export function validateUser(store: Store<State>, validateUserError: string, controlId: string, userName: string): Observable<any> {
+export function validateUser(store: Store<State>, validateUserError: string, controlId: string, userName: string, required: boolean): Observable<any> {
 
-    if (!userName)
+    if (!userName) {
+        if (required)
+            return of(new StartAsyncValidationAction(controlId, validateUserError), new SetAsyncErrorAction(controlId, validateUserError, "User invalid"));
+
         return of(new StartAsyncValidationAction(controlId, validateUserError), new ClearAsyncErrorAction(controlId, validateUserError));
-
+    }
     return store.select(getRedmineUsers).pipe(take(1), switchMap(users => {
         if (users.find(u => u.name == userName))
             return of(new StartAsyncValidationAction(controlId, validateUserError), new ClearAsyncErrorAction(controlId, validateUserError));
 
         return of(new StartAsyncValidationAction(controlId, validateUserError), new SetAsyncErrorAction(controlId, validateUserError, "User invalid"));
+    }));
+}
+
+export function validateUserForItemsFromEmails(store: Store<State>, validateUserError: string, controlId: string, userName: string): Observable<any> {
+
+    return store.select(getItemsFromEmailsSettingsFormWithSetup).pipe(take(1), switchMap(settingsFormData => {
+        if (!settingsFormData.formData.value.type || settingsFormData.formData.value.type == 'attach') {
+            return of(new StartAsyncValidationAction(controlId, validateUserError),
+                new ClearAsyncErrorAction(controlId, validateUserError));
+        }
+
+        return validateUser(store, validateUserError, controlId, userName, true);
     }));
 }
 
@@ -160,6 +178,17 @@ export function validateFromId(store: Store<State>, http: HttpClient, validateFr
 }
 
 
+export function validateProjectForItemsFromEmails(store: Store<State>, validateProjectError: string, controlId: string, projectName: string, clearVersionAction: Action, initVersionAction: Action): Observable<any> {
+    return store.select(getItemsFromEmailsSettingsFormWithSetup).pipe(take(1), switchMap(settingsFormData => {
+        if (!settingsFormData.formData.value.type || settingsFormData.formData.value.type == 'attach') {
+            return of(new StartAsyncValidationAction(controlId, validateProjectError),
+                new ClearAsyncErrorAction(controlId, validateProjectError), clearVersionAction);
+        }
+
+        return validateProject(store, validateProjectError, controlId, projectName, clearVersionAction, initVersionAction);
+    }));
+}
+
 export function validateProject(store: Store<State>, validateProjectError: string, controlId: string, projectName: string, clearVersionAction: Action, initVersionAction: Action): Observable<any> {
 
     if (!projectName)
@@ -180,5 +209,151 @@ export function validateItemsFromEmailsSettingsName(store: Store<State>, validat
     if (!settingName)
         return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new SetAsyncErrorAction(controlId, validateItemsFromEmailsError, "Name invalid"));
 
-    return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new ClearAsyncErrorAction(controlId, validateItemsFromEmailsError));
+    return store.select(getItemsFromEmailsSettingsFormWithSetupAndAllGridData).pipe(take(1), switchMap(settingsData => {
+        const nameOccurenceInGrid = settingsData.gridData.records.filter(p => p.name === settingName).length;
+        let retVal = false;
+
+        if (settingsData.formSetup.editedSetting) {
+            if (settingsData.formSetup.editedSetting.name === settingsData.formData.value.name)
+                retVal = nameOccurenceInGrid === 1;
+            else
+                retVal = nameOccurenceInGrid === 0;
+        }
+        else
+            retVal = nameOccurenceInGrid === 0;
+
+        if (retVal)
+            return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new ClearAsyncErrorAction(controlId, validateItemsFromEmailsError));
+
+        return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new SetAsyncErrorAction(controlId, validateItemsFromEmailsError, "Name invalid"));
+    }));
+
+}
+
+export function validateItemsFromEmailsSettingsFindIssues(store: Store<State>, validateItemsFromEmailsError: string, controlId: string, findIssues: string): Observable<any> {
+
+    return store.select(getItemsFromEmailsSettingsFormWithSetup).pipe(take(1), switchMap(settingsData => {
+
+        if (!settingsData.formData.value.type || settingsData.formData.value.type === 'attach' || findIssues === 'none' || findIssues === 'latest' || findIssues === 'earliest' || findIssues === 'all')
+            return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new ClearAsyncErrorAction(controlId, validateItemsFromEmailsError));
+
+        return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new SetAsyncErrorAction(controlId, validateItemsFromEmailsError, "Find Issues invalid"));
+    }));
+}
+
+export function validateItemsFromEmailsSettingsFindCRs(store: Store<State>, validateItemsFromEmailsError: string, controlId: string, findCRs: string): Observable<any> {
+
+    return store.select(getItemsFromEmailsSettingsFormWithSetup).pipe(take(1), switchMap(settingsData => {
+
+        if (!settingsData.formData.value.type || settingsData.formData.value.type === 'attach' || findCRs === 'none' || findCRs === 'latest' || findCRs === 'earliest' || findCRs === 'all')
+            return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new ClearAsyncErrorAction(controlId, validateItemsFromEmailsError));
+
+        return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new SetAsyncErrorAction(controlId, validateItemsFromEmailsError, "Find CRs invalid"));
+    }));
+}
+
+export function validateItemsFromEmailsSettingsCloseItemsAfterAttach(store: Store<State>, validateItemsFromEmailsError: string, controlId: string, closeItemsAfterAttach: string): Observable<any> {
+
+    return store.select(getItemsFromEmailsSettingsFormWithSetup).pipe(take(1), switchMap(settingsData => {
+
+        if (settingsData.formData.value.type === 'create' || closeItemsAfterAttach === 'none' || closeItemsAfterAttach === 'latest' || closeItemsAfterAttach === 'earliest' || closeItemsAfterAttach === 'all')
+            return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new ClearAsyncErrorAction(controlId, validateItemsFromEmailsError));
+
+        return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError),
+            new SetAsyncErrorAction(controlId, validateItemsFromEmailsError, "Close Items After Attach invalid"));
+    }));
+}
+
+export function validateItemsFromEmailsSettingsTracker(store: Store<State>, validateItemsFromEmailsError: string, controlId: string, tracker: string): Observable<any> {
+
+    return store.select(getItemsFromEmailsSettingsFormWithSetupAndTrackers).pipe(take(1), switchMap(settingsData => {
+
+        if (!settingsData.formData.value.type || settingsData.formData.value.type === 'attach' || settingsData.trackers.filter(t => t.name === tracker).length === 1)
+            return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new ClearAsyncErrorAction(controlId, validateItemsFromEmailsError));
+
+        return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError),
+            new SetAsyncErrorAction(controlId, validateItemsFromEmailsError, "Tracker invalid"));
+    }));
+}
+
+export function validateItemsFromEmailsSettingsSendAttachResultTo(store: Store<State>, validateItemsFromEmailsError: string, controlId: string, sendAttachResultTo: string): Observable<any> {
+
+    return store.select(getItemsFromEmailsSettingsFormWithSetup).pipe(take(1), switchMap(settingsData => {
+
+        if (!settingsData.formData.value.type || settingsData.formData.value.type === 'create' || sendAttachResultTo === 'none' || sendAttachResultTo === 'sender' || sendAttachResultTo === 'all')
+            return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new ClearAsyncErrorAction(controlId, validateItemsFromEmailsError));
+
+        return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new SetAsyncErrorAction(controlId, validateItemsFromEmailsError, "Send Attach Result To invalid"));
+    }));
+}
+
+
+export function validateItemsFromEmailsSettingsParsingMode(store: Store<State>, validateItemsFromEmailsError: string, controlId: string, parsingMode: string): Observable<any> {
+    return store.select(getItemsFromEmailsSettingsFormData).pipe(take(1), switchMap(settingsData => {
+
+        if (!settingsData.value.type || parsingMode === 'plain' || parsingMode === 'plainAndHtmlAttachment' || parsingMode === 'parsedHtml')
+            return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new ClearAsyncErrorAction(controlId, validateItemsFromEmailsError));
+
+        return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new SetAsyncErrorAction(controlId, validateItemsFromEmailsError, "Parsing Mode invalid"));
+    }));
+}
+
+export function validateItemsFromEmailsSettingsType(store: Store<State>, validateItemsFromEmailsError: string, controlId: string, settingType: string): Observable<any> {
+
+    return store.select(getItemsFromEmailsSettingsFormWithSetup).pipe(take(1), switchMap(form => {
+        if (!settingType || !(settingType === 'create' || settingType === 'attach' || settingType === 'both'))
+            return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new ClearAsyncErrorAction(controlId, validateItemsFromEmailsError));
+
+        const postValidationActions: any[] = [];
+
+        if (settingType === 'both') {
+            return concat(
+                validateItemsFromEmailsSettingsName(store, validateItemsFromEmailsError, ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.name', form.formData.value.name),
+                validateItemsFromEmailsSettingsParsingMode(store, validateItemsFromEmailsError, ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.parsingMode', form.formData.value.parsingMode),
+                validateItemsFromEmailsSettingsTracker(store, validateItemsFromEmailsError, ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.tracker', form.formData.value.tracker),
+                validateUserForItemsFromEmails(store, validateItemsFromEmailsError, ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.user', form.formData.value.user),
+                validateItemsFromEmailsSettingsFindIssues(store, validateItemsFromEmailsError, ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.findIssues', form.formData.value.findIssues),
+                validateItemsFromEmailsSettingsFindCRs(store, validateItemsFromEmailsError, ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.findCRs', form.formData.value.findCRs),
+                validateItemsFromEmailsSettingsCloseItemsAfterAttach(store, validateItemsFromEmailsError, ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.closeItemsAfterAttach', form.formData.value.closeItemsAfterAttach),
+                validateItemsFromEmailsSettingsSendAttachResultTo(store, validateItemsFromEmailsError, ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.sendAttachResultTo', form.formData.value.sendAttachResultTo),
+                validateProjectForItemsFromEmails(store, validateItemsFromEmailsError, ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.project',
+                    form.formData.value.project, clearRedmineVersionsForItemsFromEmail(), initRedmineVersionsForItemsFromEmail({ projectName: form.formData.value.project }))
+            );
+        }
+        else if (settingType === 'create') {
+            postValidationActions.push(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.closeItemsAfterAttach', ''));
+            postValidationActions.push(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.sendAttachResultTo', ''));
+
+            return concat(
+                from(postValidationActions),
+                validateItemsFromEmailsSettingsName(store, validateItemsFromEmailsError, ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.name', form.formData.value.name),
+                validateItemsFromEmailsSettingsParsingMode(store, validateItemsFromEmailsError, ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.parsingMode', form.formData.value.parsingMode),
+                validateItemsFromEmailsSettingsTracker(store, validateItemsFromEmailsError, ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.tracker', form.formData.value.tracker),
+                validateUserForItemsFromEmails(store, validateItemsFromEmailsError, ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.user', form.formData.value.user),
+                validateItemsFromEmailsSettingsFindIssues(store, validateItemsFromEmailsError, ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.findIssues', form.formData.value.findIssues),
+                validateItemsFromEmailsSettingsFindCRs(store, validateItemsFromEmailsError, ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.findCRs', form.formData.value.findCRs),
+                validateProjectForItemsFromEmails(store, validateItemsFromEmailsError, ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.project',
+                    form.formData.value.project, clearRedmineVersionsForItemsFromEmail(), initRedmineVersionsForItemsFromEmail({ projectName: form.formData.value.project }))
+            );
+        }
+
+        //attach..
+
+        postValidationActions.push(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.version', ''));
+        postValidationActions.push(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.project', ''));
+        postValidationActions.push(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.user', ''));
+        postValidationActions.push(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.findIssues', ''));
+        postValidationActions.push(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.findCRs', ''));
+        postValidationActions.push(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.tracker', ''));
+        postValidationActions.push(new SetValueAction(ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.addAttachments', false));
+
+        return concat(
+            from(postValidationActions),
+            validateItemsFromEmailsSettingsName(store, validateItemsFromEmailsError, ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.name', form.formData.value.name),
+            validateItemsFromEmailsSettingsCloseItemsAfterAttach(store, validateItemsFromEmailsError, ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.closeItemsAfterAttach', form.formData.value.closeItemsAfterAttach),
+            validateItemsFromEmailsSettingsSendAttachResultTo(store, validateItemsFromEmailsError, ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.sendAttachResultTo', form.formData.value.sendAttachResultTo),
+            validateItemsFromEmailsSettingsParsingMode(store, validateItemsFromEmailsError, ITEMS_FROM_EMAILS_SETTINGS_FORMID + '.parsingMode', form.formData.value.parsingMode)
+
+        );
+    }));
 }

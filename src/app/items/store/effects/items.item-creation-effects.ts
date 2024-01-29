@@ -51,7 +51,7 @@ export class ItemsItemCreationEffects {
                         action.value, clearRedmineVersions(), initRedmineVersions({ projectName: action.value })).pipe(startWith(setRedmineProjectsFilterForItemCreation())));
 
                 if (action.controlId === ITEM_CREATION_FORMID + '.user')
-                    return from(validateUser(this.store, validateUserError, action.controlId, action.value).pipe(startWith(setRedmineUsersByLetterFilter())));
+                    return from(validateUser(this.store, validateUserError, action.controlId, action.value, false).pipe(startWith(setRedmineUsersByLetterFilter())));
 
                 if (action.controlId === ITEM_CREATION_FORMID + '.cr')
                     return from(validateCR(this.store, this.http, validateCRError, action.controlId, action.value));
