@@ -77,6 +77,12 @@ export function addItemsFromEmailsSetting(state: State): State {
     return newState;
 }
 
+export function clearEditedItemsFromEmailsSetting(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemsFromEmailsSettingsSetupData.editedSetting = null;
+    return newState;
+}
+
 export function updateEditedItemsFromEmailsSetting(state: State, args: { originalSetting: ItemsFromEmailsSettings | null, currentSetting: ItemsFromEmailsSettings }): State {
     const newState: State = _.cloneDeep(state);
 

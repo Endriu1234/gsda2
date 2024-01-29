@@ -15,5 +15,6 @@ export const editItemsFromEmailsSetting = createAction('[Items Component] Edit I
 export const updateEditedItemsFromEmailsSetting = createAction('[Items Component] Update Edited Items From Emails Settings',
     props<{ originalSetting: ItemsFromEmailsSettings | null, currentSetting: ItemsFromEmailsSettings }>());
 export const addItemsFromEmailsSetting = createAction('[Items Component] Add Items From Emails Setting');
+export const clearEditedItemsFromEmailsSetting = createAction('[Items Component] Clear Edited Items From Emails Setting');
 
 

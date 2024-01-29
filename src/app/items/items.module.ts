@@ -22,9 +22,7 @@ import { ItemsBatchItemCreationEffects } from './store/effects/items.batch-item-
 import { DirectivesModule } from '../shared/directives/directives.module';
 import { ItemsFromEmailsPage } from './itemsfromemails/pages/items-from-emails/items-from-emails.page';
 import { ItemsFromEmailsComponent } from './itemsfromemails/components/items-from-emails/items-from-emails.component';
-import { ItemsFromEmailsLogsComponent } from './itemsfromemails/components/items-from-emails-logs/items-from-emails-logs.component';
 import { ItemsFromEmailsSettingsComponent } from './itemsfromemails/components/items-from-emails-settings/items-from-emails-settings.component';
-import { ItemsFromEmailsAliasesComponent } from './itemsfromemails/components/items-from-emails-aliases/items-from-emails-aliases.component';
 import { ItemsFromEmailsEffects } from './store/effects/items.items-from-emails-effects';
 
 
@@ -41,9 +39,7 @@ import { ItemsFromEmailsEffects } from './store/effects/items.items-from-emails-
     BatchCreationIdscriteriaComponent,
     ItemsFromEmailsPage,
     ItemsFromEmailsComponent,
-    ItemsFromEmailsLogsComponent,
-    ItemsFromEmailsSettingsComponent,
-    ItemsFromEmailsAliasesComponent
+    ItemsFromEmailsSettingsComponent
   ],
   imports: [
     CommonModule,

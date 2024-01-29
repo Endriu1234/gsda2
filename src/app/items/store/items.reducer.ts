@@ -13,6 +13,7 @@ import { continueBatchItemsCreation, forceEndBatchItemCreation, setBatchItemCrea
 import { ItemCreationFromData } from './state/items.item-creation-state';
 import {
     addItemsFromEmailsSetting,
+    clearEditedItemsFromEmailsSetting,
     clearRedmineVersionsForItemsFromEmail, deleteItemsFromEmailsSetting, editItemsFromEmailsSetting,
     endInitItemsFromEmailsSettings, initItemsFromEmailsSettings, initRedmineVersionsForItemsFromEmail,
     loadRedmineVersionsForItemsFromEmail, setRedmineProjectsFilterForItemsFromEmail, setRedmineUsersByLetterFilterForItemsFromEmail, updateEditedItemsFromEmailsSetting
@@ -95,6 +96,7 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
     on(deleteItemsFromEmailsSetting, fromItemsFromEmailsReducerHanders.deleteItemsFromEmailsSetting),
     on(editItemsFromEmailsSetting, fromItemsFromEmailsReducerHanders.editItemsFromEmailsSetting),
     on(addItemsFromEmailsSetting, fromItemsFromEmailsReducerHanders.addItemsFromEmailsSetting),
+    on(clearEditedItemsFromEmailsSetting, fromItemsFromEmailsReducerHanders.clearEditedItemsFromEmailsSetting),
     on(updateEditedItemsFromEmailsSetting, fromItemsFromEmailsReducerHanders.updateEditedItemsFromEmailsSetting),
 
     on(setBatchItemCreationTabIndex, fromBatchItemCreationReducerHanders.setBatchItemCreationTabIndex),
