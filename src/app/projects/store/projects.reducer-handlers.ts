@@ -80,28 +80,7 @@ export function initRedmineVersions(state: State): State {
 
 export function loadRedmineVersions(state: State, args: { redmineVersions: RedmineVersion[] }): State {
     const newState: State = _.cloneDeep(state);
-    let rv:RedmineVersion[] = [{
-        id: 0,
-        name: '',
-        description: '',
-        project: {
-            id: 0,
-            name: ''
-        },
-        status: '',
-        due_date: new Date(),
-        sharing: '',
-        wiki_page_title: '',
-        created_on: new Date(),
-        updated_on: new Date(),
-        currentProject: {
-            id: 0,
-            name: ''
-        },
-        wiki: ''
-    }];
-    rv.push(...args.redmineVersions);
-    newState.versionCreationSetupData.redmineVersions = rv;
+    newState.versionCreationSetupData.redmineVersions = args.redmineVersions;
     newState.versionCreationSetupData.redmineVersionsLoaded = true;
     return newState;
 }

@@ -25,7 +25,8 @@ module.exports.getRedmineVersions = async (req, res) => {
         return res.status(402).json('Error');
     }
 
-    const versions = await redmineDataProvider.getRedmineVersionsByProject(req.query.redmineProject);
+    let versions = await redmineDataProvider.getRedmineVersionsByProject(req.query.redmineProject);
+    versions = addEmptyVersion(versions);
 
     return res.status(200).json(versions);
 }
@@ -99,4 +100,31 @@ module.exports.saveRedmineAttachement = async (req, res) => {
     console.dir(req.body);
 
     return res.status(200).json(req.body);
+}
+
+function addEmptyVersion(versions /*array*/) {
+    let rv = {
+        id: 0,
+        name: '',
+        description: '',
+        project: {
+            id: 0,
+            name: ''
+        },
+        status: '',
+        due_date: new Date(),
+        sharing: '',
+        wiki_page_title: '',
+        created_on: new Date(),
+        updated_on: new Date(),
+        currentProject: {
+            id: 0,
+            name: ''
+        },
+        wiki: ''
+    };
+    
+    versions.unshift(rv);
+
+    return versions;
 }

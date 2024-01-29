@@ -144,11 +144,13 @@ export class ItemCreationPage implements OnInit, OnDestroy {
     for (const item of items) {
       file = item.getAsFile();
       if (file && this.validateFile(file)) {
+        if (txt && txt.length > 0) {
+          txt += '\n';
+        }
         if (file.type.indexOf('image') === 0) {
-          if (txt && txt.length > 0) {
-            txt += '\n';
-          }
           txt += '!' + file.name + '!';
+        } else {
+          txt += `See '${file.name}' attachment`
         }
         tblFiles.push(file);
       }
@@ -176,11 +178,13 @@ export class ItemCreationPage implements OnInit, OnDestroy {
     for (let index = 0; index < event.length; index++) {
       const file = event.item(index);
       if (file && this.validateFile(file)) {
+        if (txt && txt.length > 0) {
+          txt += '\n';
+        }
         if (file.type.indexOf('image') === 0) {
-          if (txt && txt.length > 0) {
-            txt += '\n';
-          }
           txt += '!' + file.name + '!';
+        } else {
+          txt += `See '${file.name}' attachment`
         }
         tblFiles.push(file);
       }
@@ -216,11 +220,11 @@ export class ItemCreationPage implements OnInit, OnDestroy {
   }
 
   deleteFile(file: File) {
-    if (file.type.indexOf('image') === 0) {
-        this.subscriptions.push(this.store.select(fromItemCreationSelectors.getItemCreationFormDescriptionControl).pipe(take(1)).subscribe(descCtrl => {
-          this.store.dispatch(new SetValueAction(ITEM_CREATION_FORMID + '.description', descCtrl.value.replace(new RegExp('!' + file.name + '!', 'g'), '')));
-      }));
-    }
+
+    this.subscriptions.push(this.store.select(fromItemCreationSelectors.getItemCreationFormDescriptionControl).pipe(take(1)).subscribe(descCtrl => {
+      let removeText = file.type.indexOf('image') === 0 ? '!' + file.name + '!' : `See '${file.name}' attachment`;
+      this.store.dispatch(new SetValueAction(ITEM_CREATION_FORMID + '.description', descCtrl.value.replace(new RegExp(removeText, 'g'), '')));
+    }));
     
     this.subscriptions.push(this.store.select(fromItemCreationSelectors.getItemCreationFormFilestControl).pipe(take(1)).subscribe(fls => {
       let tblFile: File[] = fls.filter(item => item.name !== file.name);

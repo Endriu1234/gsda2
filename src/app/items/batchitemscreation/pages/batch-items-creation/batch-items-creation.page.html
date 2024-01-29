@@ -1,6 +1,9 @@
 <div class="container-fluid">
     <div class="row jktmp">
         <mat-tab-group [selectedIndex]="(activatedTabIndex$ | async)" (selectedIndexChange)="selectedTabIndexChanged($event)">
+            <mat-tab label="SD / TMS Ids">
+                <app-batch-creation-idscriteria></app-batch-creation-idscriteria>
+            </mat-tab>
             <mat-tab label="SD Project / Packet">
                 <app-batch-creation-sdcriteria></app-batch-creation-sdcriteria>
             </mat-tab>
@@ -9,9 +12,6 @@
             </mat-tab>
             <mat-tab label="Redmine">
                 <app-batch-creation-redmine-criteria></app-batch-creation-redmine-criteria>
-            </mat-tab>
-            <mat-tab label="SD / TMS Ids">
-                <app-batch-creation-idscriteria></app-batch-creation-idscriteria>
             </mat-tab>
         </mat-tab-group>
     </div>

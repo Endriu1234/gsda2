@@ -8,6 +8,7 @@
                             <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
                                 <mat-label>Ids (CR/Issue/Tms Task)</mat-label>
                                 <textarea matInput 
+                                    rows="4"
                                     [ngrxFormControlState]="$any(formState).controls.allIds"
                                     [ngrxValueConverter]="trimUpper"></textarea>
                             </mat-form-field>
@@ -17,49 +18,58 @@
                                 'Incorect Id(s) - CR/Issue/Tms Task'
                             </mat-error>
                         </div>
-                        <div class="col-4">
-                            <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
-                                <mat-label>Redmine Target Project</mat-label>
-                                <input type="text"
-                            matInput
-                            [ngrxFormControlState]="$any(formState).controls.targetRedmineProject"
-                            [matAutocomplete]="autoRedmineProject">
-                                <mat-autocomplete #autoRedmineProject="matAutocomplete">
-                                    <mat-option *ngFor="let project of (redmineProjectsFiltered$ | async)"
-                                        [value]="project.name">
-                                        {{project.name}}
-                                    </mat-option>
-                                </mat-autocomplete>
-                            </mat-form-field>
-                            <mat-error
-                            [style.visibility]="(formState.isTouched && (formState.errors._targetRedmineProject?.$validateIdsTargetRedmineProjectError || formState.errors._targetRedmineProject?.required))?'visible':'hidden'">
-                                Redmine Project is required
-                            </mat-error>
-                        </div>
-                        <div class="col-4">
-                            <mat-checkbox color="primary" [ngrxFormControlState]="$any(formState).controls.showCreated">Show
-                                Created</mat-checkbox>
-                            <button
-                                mat-fab
-                                extended
-                                color="primary"
-                                class="ms-3 my-2"
-                                [disabled]="!(getBatchItemCreationIdsCriteriaCanActivateFind$ | async)"
-                                (click)="search()"
-                            >Find</button>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-4"></div>
-                        <div class="col-4">
-                            <mat-form-field appearance="outline" [style.width.%]=100>
-                                <mat-label>Version</mat-label>
-                                <mat-select [ngrxFormControlState]="$any(formState).controls.version">
-                                    <mat-option *ngFor="let version of versions$ | async" [value]="version.name">
-                                        {{version.name}}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col-6">
+                                    <mat-form-field appearance="outline" class="mt-2" [style.width.%]=100>
+                                        <mat-label>Redmine Target Project</mat-label>
+                                        <input type="text"
+                                    matInput
+                                    [ngrxFormControlState]="$any(formState).controls.targetRedmineProject"
+                                    [matAutocomplete]="autoRedmineProject">
+                                        <mat-autocomplete #autoRedmineProject="matAutocomplete">
+                                            <mat-option *ngFor="let project of (redmineProjectsFiltered$ | async)"
+                                                [value]="project.name">
+                                                {{project.name}}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                    <mat-error
+                                    [style.visibility]="(formState.isTouched && (formState.errors._targetRedmineProject?.$validateIdsTargetRedmineProjectError || formState.errors._targetRedmineProject?.required))?'visible':'hidden'">
+                                        Redmine Project is required
+                                    </mat-error>
+                                </div>
+                                <div class="col-6">
+                                    <mat-checkbox color="primary" [ngrxFormControlState]="$any(formState).controls.showCreated">Show
+                                        Created</mat-checkbox>
+                                    <button
+                                        mat-fab
+                                        extended
+                                        color="primary"
+                                        class="ms-3 my-2"
+                                        [disabled]="!(getBatchItemCreationIdsCriteriaCanActivateFind$ | async)"
+                                        (click)="search()"
+                                    >Find</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <mat-form-field appearance="outline" [style.width.%]=100>
+                                        <mat-label>Version</mat-label>
+                                        <mat-select [ngrxFormControlState]="$any(formState).controls.version">
+                                            <mat-option *ngFor="let version of versions$ | async" [value]="version.name">
+                                                {{version.name}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <app-small-spinner class="float-start ms-5"
+                                        [style.visibility]="formState.controls.targetRedmineProject.value && !(formState.errors._targetRedmineProject?.$validateIdsTargetRedmineProjectError) && ((versions$ | async) == null || !(versions$ | async)?.length)?'visible':'hidden'"></app-small-spinner>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

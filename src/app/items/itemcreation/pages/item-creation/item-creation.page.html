@@ -37,6 +37,10 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
+                <div>
+                    <app-small-spinner class="float-start ms-5" [style.width.%]=100
+                        [style.visibility]="formState.controls.project.value && !(formState.errors._project?.$validateProjectError) && ((versions$ | async) == null || !(versions$ | async)?.length)?'visible':'hidden'"></app-small-spinner>
+                </div>
             </mat-card-content>
         </mat-card>
         <mat-card>

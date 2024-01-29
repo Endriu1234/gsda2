@@ -3,5 +3,5 @@ module.exports.convertFormProjectWikiObjectToJSON = async function convertFormPr
 
     wiki.wiki_page.text = formProjectWiki.wiki;
 
-    return JSON.stringify(wiki);
+    return wiki;
 }

@@ -67,6 +67,6 @@ export class BatchCreationTMSCriteriaComponent implements OnInit {
 
   search(): void {
     this.store.dispatch(new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_TMSCRITERIA_FORMID, FORM_SEARCH_STATE, FormSearchState.Searching));
-    this.store.dispatch(setBatchItemCreationTabIndex({index: 1}));
+    this.store.dispatch(setBatchItemCreationTabIndex({index: 2}));
   }
 }

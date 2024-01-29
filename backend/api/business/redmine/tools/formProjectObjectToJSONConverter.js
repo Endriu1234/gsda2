@@ -21,7 +21,7 @@ module.exports.convertFormProjectObjectToJSON = async function convertFormProjec
         redmineProject.project.parent_id = project.id;
     }
 
-    return JSON.stringify(redmineProject);
+    return redmineProject;
 }
 
 module.exports.convertFormVersionObjectToJSON = async function convertFormVersionObjectToJSON(formVersion) {
@@ -40,5 +40,5 @@ module.exports.convertFormVersionObjectToJSON = async function convertFormVersio
         redmineVersion.version.wiki_page_title = formVersion.wiki_title;
     }
 
-    return JSON.stringify(redmineVersion);
+    return redmineVersion;
 }

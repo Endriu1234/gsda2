@@ -52,6 +52,6 @@ export class BatchCreationSDCriteriaComponent implements OnInit {
 
   search(): void {
     this.store.dispatch(new SetUserDefinedPropertyAction(BATCH_ITEM_CREATION_SDCRITERIA_FORMID, FORM_SEARCH_STATE, FormSearchState.Searching));
-    this.store.dispatch(setBatchItemCreationTabIndex({index: 0}));
+    this.store.dispatch(setBatchItemCreationTabIndex({index: 1}));
   }
 }

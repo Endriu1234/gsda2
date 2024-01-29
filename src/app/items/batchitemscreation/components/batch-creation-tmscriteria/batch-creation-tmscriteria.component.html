@@ -122,6 +122,13 @@
                             </mat-form-field>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-3"></div>
+                        <div class="col-3">
+                            <app-small-spinner class="float-start ms-5"
+                                [style.visibility]="formState.controls.targetRedmineProject.value && !(formState.errors._targetRedmineProject?.$validateTmsTargetRedmineProjectError) && ((versions$ | async) == null || !(versions$ | async)?.length)?'visible':'hidden'"></app-small-spinner>
+                        </div>
+                    </div>
                 </div>
             </form>
         </mat-card-content>
