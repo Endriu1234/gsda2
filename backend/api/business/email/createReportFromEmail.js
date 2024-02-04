@@ -2,7 +2,7 @@ const cacheValueProvider = require('../cache/cacheValueProvider');
 
 const { createItem } = require('../redmine/itemCreator');
 
-module.exports.createItemFromEmail = async function (plainText, upperedPlainText, subject, html, errorCallback) {
+module.exports.createReportFromEmail = async function (plainText, upperedPlainText, subject, html, errorCallback) {
     const settings = await cacheValueProvider.getValue('items_from_emails_settings');
 
     if (settings.active) {

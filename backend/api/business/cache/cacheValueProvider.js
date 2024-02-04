@@ -82,8 +82,27 @@ const reqisteredCaches = {
         return results.sort((a, b) => a.name.localeCompare(b.name))
     },
     'items_from_emails_settings': async () => {
-        const settings = await ItemsFromEmailsSettings.findOne({ formId: 'ITEMS_FROM_EMAILS_SETTINGS_FORMID' });
-        return { ...settings.values };
+        const settings = await ItemsFromEmailsSettings.find({ active: true });
+        const retVal = [];
+
+        settings.forEach(m => {
+
+            const setting = {};
+
+            Object.keys(m._doc).forEach(key => {
+
+                if (key !== '_id' && key !== '__v') {
+                    const value = m._doc[key];
+
+                    if (value)
+                        setting[key] = m._doc[key];
+                }
+            });
+
+            retVal.push(setting);
+        });
+
+        return retVal;
     }
 }
 
