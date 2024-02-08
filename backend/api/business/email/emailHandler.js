@@ -2,6 +2,8 @@ const Imap = require('imap');
 const { simpleParser } = require('mailparser');
 const { htmlToText } = require('html-to-text');
 const { createItemFromEmail } = require('./createItemFromEmail');
+const { attachEmailToItem, GSDA_ATTACH } = require('./attachEmailToItem');
+const { createReportFromEmail } = require('./createReportFromEmail');
 
 const imapConfig = {
     user: process.env.GSDA_EMAIL_USER,
@@ -93,7 +95,6 @@ module.exports.test = function () {
                     if (!results || results.length === 0)
                         return;
 
-
                     console.log(`START`);
                     if (error1) {
                         console.log('error1');
@@ -125,7 +126,20 @@ module.exports.test = function () {
                                     const plainText = htmlToText(parsed.html, options);
                                     const upperedPlainText = plainText.toUpperCase();
 
-                                    createItemFromEmail(plainText, upperedPlainText, parsed.subject, parsed.html, errorCallback);
+                                    const gsdaResultIndex = upperedPlainText.indexOf("GSDA RESULT");
+                                    const gsdaCreateIndex = upperedPlainText.indexOf("GSDA CREATE");
+                                    const gsdAttachIndex = upperedPlainText.indexOf(GSDA_ATTACH);
+                                    const gsdaRepprtIndex = upperedPlainText.indexOf("GSDA REPORT");
+
+                                    if (gsdaCreateIndex !== -1 && (gsdaResultIndex === -1 || gsdaCreateIndex < gsdaResultIndex)) {
+                                        createItemFromEmail(plainText, upperedPlainText, parsed.subject, parsed.html, errorCallback);
+                                    }
+                                    else if (gsdAttachIndex !== -1 && (gsdaResultIndex === -1 || gsdAttachIndex < gsdaResultIndex)) {
+                                        attachEmailToItem(gsdAttachIndex, plainText, upperedPlainText, parsed.subject, parsed.html, errorCallback);
+                                    }
+                                    else if (gsdaRepprtIndex !== -1 && (gsdaResultIndex === -1 || gsdaRepprtIndex < gsdaResultIndex)) {
+                                        createReportFromEmail(plainText, upperedPlainText, parsed.subject, parsed.html, errorCallback);
+                                    }
                                 });
                             });
 
