@@ -75,7 +75,7 @@ module.exports.convertFormItemObjectToJSON = async function convertFormItemObjec
         for (const file of formItem.files) {
             redmineItem.issue.uploads.push({
                 token: file.token,
-                filename: file.originalname,
+                filename: file.filename,
                 content_type: file.mimetype
             });
         }

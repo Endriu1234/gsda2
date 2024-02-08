@@ -16,6 +16,6 @@ module.exports.loadRouting = (app) => {
         if (!err.message)
             err.message = 'Something went wrong! Ehh...';
 
-        res.status(statusCode).render('error', { err });
+        res.status(statusCode).json({'error': err });
     });
 }

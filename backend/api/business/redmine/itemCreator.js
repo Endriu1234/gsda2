@@ -1,6 +1,6 @@
 const redmineItemValidator = require('./validation/redmineItemValidator');
 const { convertFormItemObjectToJSON } = require('./tools/formItemObjectToJSONConverter');
-const { postRedmineJsonData, postFiles, getRedmineAddress } = require('./tools/redmineConnectionTools');
+const { postRedmineJsonData, postFiles, getRedmineAddress, deleteFile } = require('./tools/redmineConnectionTools');
 
 module.exports.createItem = async function (values) {
 
@@ -30,6 +30,11 @@ module.exports.createItem = async function (values) {
             retVal.redmineLink = `${getRedmineAddress(`issues/${result.redmineResponse.data.issue.id}`)}`;
     }
     else {
+        if (values.files && values.files.length > 0) {
+            for (const file of values.files) {
+                await deleteFile(file.path);
+            }
+        }
         retVal.success = false;
         retVal.errorMessage = validationResult.errorMsg;
     }
