@@ -124,8 +124,9 @@ module.exports.postFiles = async (files) => {
                 break;
 
             const buffer = await readFile(file.path);
+            const fileNameToRedmine = file.originalname.indexOf(' ') >= 0 ? file.filename : file.originalname;
 
-            const result = await axios.post(getRedmineAddress(`uploads.json?filename=${file.filename}`), buffer,
+            const result = await axios.post(getRedmineAddress(`uploads.json?filename=${fileNameToRedmine}`), buffer,
                 getRedmineApiConfiguration('application/octet-stream')).catch((error) => {
                     retVal.success = false;
                     retVal.errorMessage = error;

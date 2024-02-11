@@ -60,7 +60,8 @@ module.exports.getFileStorage = () => {
                 const name = getFileWithoutExtension(fullName);
                 const ext = getFileExtension(fullName);
                 const newName = name + '_' + Date.now() + '.' + ext;
-                req.body.description = req.body.description.replace(new RegExp(file.originalname, 'g'), newName);
+                if (file.originalname.indexOf(' ') >= 0)
+                    req.body.description = req.body.description.replace(new RegExp(file.originalname, 'g'), newName);
                 cb(null, newName);
             }
         });
