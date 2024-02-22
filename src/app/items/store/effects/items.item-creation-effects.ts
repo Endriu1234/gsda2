@@ -13,15 +13,17 @@ import { environment } from 'src/environments/environment';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { Item } from '../models/item.model';
 import {
-    breakBatchItemCreation, clearRedmineVersions, endResetItemCreationForm, fillItemById, identifyAndFillItemById, initRedmineVersions,
-    loadRedmineVersions, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startResetItemCreationForm
+    breakBatchItemCreation, clearRedmineVersions, endLoadingItemCreationUserPreferences, endResetItemCreationForm, fillItemById, identifyAndFillItemById, initRedmineVersions,
+    loadItemCreationUserPreferencesSetup,
+    loadRedmineVersions, saveItemCreationUserPreferences, setItemControlsByUserPreferences, setItemCreationUserPreferencesSetupByCtrl, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startLoadingItemCreationUserPreferences, startResetItemCreationForm
 } from '../actions/items.item-creation-actions';
 import { noopAction } from '../actions/items.common-actions';
-import { getItemCreationDialogState, getItemCreationFormState, getItemCreationFormWithSetup, getItemCreationMode } from '../selectors/items.item-creation-selectors';
-import { ITEM_CREATION_DIALOG, ITEM_CREATION_FORMID, ItemCreationMode } from '../state/items.item-creation-state';
+import { getItemCreationDialogState, getItemCreationFormState, getItemCreationFormWithSetup, getItemCreationMode, getItemCreationUserPreferencesSetupData } from '../selectors/items.item-creation-selectors';
+import { ITEM_CREATION_DIALOG, ITEM_CREATION_FORMID, ITEM_CREATION_USER_PREFERENCES_DIALOG, ItemCreationMode } from '../state/items.item-creation-state';
 import { SnackBarIcon } from '../../../shared/store/shared.state';
 import { continueBatchItemsCreation, forceEndBatchItemCreation, setLinkToCurrentProposedItemAndUnselect } from '../actions/items.batch-item-creation-actions';
 import { RedmineVersion } from '../../../shared/store/models/redmine-version.model';
+import { UserPreferencesHttpResponse } from '../models/itemcreation/userPreferences-http-response.model';
 
 export const validateUserError = "validateUserError";
 export const validateCRError = "validateCRError";
@@ -64,6 +66,12 @@ export class ItemsItemCreationEffects {
 
                 if (action.controlId === ITEM_CREATION_DIALOG + '.fromId')
                     return from(validateFromId(this.store, this.http, validateFromIdError, action.controlId, action.value));
+
+                if (action.controlId === ITEM_CREATION_FORMID + '.version')
+                    return of(setItemCreationUserPreferencesSetupByCtrl({control: ITEM_CREATION_FORMID + '.version'}));
+
+                if (action.controlId === ITEM_CREATION_FORMID + '.tracker')
+                    return of(setItemCreationUserPreferencesSetupByCtrl({control: ITEM_CREATION_FORMID + '.tracker'}));
 
                 return of(noopAction());
             }));
@@ -114,8 +122,8 @@ export class ItemsItemCreationEffects {
                                         }
 
                                         this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item saved', icon: SnackBarIcon.Success }));
-
-                                        return of(startResetItemCreationForm());
+                                        
+                                        return of(saveItemCreationUserPreferences({updateSetup: false}), startResetItemCreationForm());
                                     }
                                     else if (formData.creationFormSetupState.mode === ItemCreationMode.BatchItemWithGUI
                                         || formData.creationFormSetupState.mode === ItemCreationMode.BatchItemWithoutGUI) {
@@ -179,6 +187,20 @@ export class ItemsItemCreationEffects {
                 new SetUserDefinedPropertyAction(ITEM_CREATION_FORMID,
                     fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New),
                 new ResetAction(ITEM_CREATION_FORMID), endResetItemCreationForm());
+        })
+    ));
+
+    endResetItemCreationForm$ = createEffect(() => this.actions$.pipe(ofType(endResetItemCreationForm),
+        switchMap(() => {
+
+            return this.store.select(getItemCreationFormWithSetup).pipe(take(1), switchMap(itemFormData => {
+                if (itemFormData.creationFormSetupState.mode === ItemCreationMode.SingleItem) {
+                    return this.store.select(getItemCreationUserPreferencesSetupData).pipe(take(1), switchMap(userPreferencesSetup => {                   
+                        return of(setItemControlsByUserPreferences({preferences: userPreferencesSetup.userPreferences}));
+                    }))
+                }
+                return of(noopAction());
+            }))
         })
     ));
 
@@ -252,4 +274,109 @@ export class ItemsItemCreationEffects {
         }), map(redmineVersions => loadRedmineVersions({ redmineVersions }))
     ));
 
+    startLoadingItemCreationUserPreferences$ = createEffect(() => this.actions$.pipe(
+        ofType(startLoadingItemCreationUserPreferences),
+        switchMap(() => {
+            return this.store.select(getItemCreationFormWithSetup).pipe(take(1), switchMap(itemFormData => {
+                if (itemFormData.creationFormSetupState.mode === ItemCreationMode.SingleItem) {
+                    let params = new HttpParams();
+                    params = params.append("formId", ITEM_CREATION_FORMID);
+
+                    return this.http.get<UserPreferencesHttpResponse>(environment.apiUrl + '/gsda/user-preferences/get-user-preferences', { params }).pipe(mergeMap(response => {
+                        if (response.success) {
+                            if (response.records && response.records.formId === ITEM_CREATION_FORMID) {
+                                return of(endLoadingItemCreationUserPreferences({preferences: response.records}));
+                            } else {
+                                return of(endLoadingItemCreationUserPreferences({preferences: null}));
+                            }
+                        } else {
+                            this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage, icon: SnackBarIcon.Error }));
+                            return of(endLoadingItemCreationUserPreferences({preferences: null}));
+                        }
+                    }), catchError(error => {
+                        console.log(error);
+                        this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during loading user preferences", icon: SnackBarIcon.Error }));
+                        return of(endLoadingItemCreationUserPreferences({preferences: null}));
+                    }))
+                }
+                return of(noopAction());
+            }))
+        })
+    ));
+
+    endLoadingItemCreationUserPreferences$ = createEffect(() => this.actions$.pipe(
+        ofType(endLoadingItemCreationUserPreferences),
+        switchMap((param) => {
+            return of(setItemControlsByUserPreferences(param));
+        })
+    ));
+
+    setItemControlsByUserPreferences$ = createEffect(() => this.actions$.pipe(
+        ofType(setItemControlsByUserPreferences),
+        switchMap((param) => {
+            return this.store.select(getItemCreationFormWithSetup).pipe(take(1), switchMap(itemFormData => {
+                if (itemFormData.creationFormSetupState.mode === ItemCreationMode.SingleItem) {
+                    if (param && param.preferences) {
+                        return of(param.preferences.currentValues.project.length > 0 && param.preferences.setupValues.rememberProject ? new SetValueAction(ITEM_CREATION_FORMID + '.project', param.preferences.currentValues.project) : noopAction(),
+                                param.preferences.currentValues.version.length > 0  && param.preferences.setupValues.rememberVersion ? new SetValueAction(ITEM_CREATION_FORMID + '.version', param.preferences.currentValues.version) : noopAction(),
+                                param.preferences.currentValues.tracker.length > 0  && param.preferences.setupValues.rememberTracker ? new SetValueAction(ITEM_CREATION_FORMID + '.tracker', param.preferences.currentValues.tracker) : noopAction(),
+                                param.preferences.currentValues.user.length > 0  && param.preferences.setupValues.rememberUser ? new SetValueAction(ITEM_CREATION_FORMID + '.user', param.preferences.currentValues.user) : noopAction())
+                    } else {
+                        return of(noopAction());
+                    }
+                }
+                return of(noopAction());
+            }))
+        })
+    ));
+
+    loadItemCreationUserPreferencesSetup$ = createEffect(() => this.actions$.pipe(
+        ofType(loadItemCreationUserPreferencesSetup),
+        switchMap(() => {
+            return this.store.select(getItemCreationFormWithSetup).pipe(take(1), switchMap(itemFormData => {
+                if (itemFormData.creationFormSetupState.mode === ItemCreationMode.SingleItem) {
+                    return this.store.select(getItemCreationUserPreferencesSetupData).pipe(take(1), switchMap(userPreferencesSetup => {
+                    
+                        if (userPreferencesSetup.userPreferences) {
+                            return of(new SetValueAction(ITEM_CREATION_USER_PREFERENCES_DIALOG + '.rememberProject', userPreferencesSetup.userPreferences.setupValues.rememberProject),
+                                    new SetValueAction(ITEM_CREATION_USER_PREFERENCES_DIALOG + '.rememberVersion', userPreferencesSetup.userPreferences.setupValues.rememberVersion),
+                                    new SetValueAction(ITEM_CREATION_USER_PREFERENCES_DIALOG + '.rememberTracker', userPreferencesSetup.userPreferences.setupValues.rememberTracker),
+                                    new SetValueAction(ITEM_CREATION_USER_PREFERENCES_DIALOG + '.rememberUser', userPreferencesSetup.userPreferences.setupValues.rememberUser));
+                        } else {
+                            return of(noopAction());
+                        }
+                    }))
+                }
+                return of(noopAction());
+            }))
+        })
+    ))
+
+    saveItemCreationUserPreferences$ = createEffect(() => this.actions$.pipe(
+        ofType(saveItemCreationUserPreferences),
+        switchMap((param) => {
+            return this.store.select(getItemCreationFormWithSetup).pipe(take(1), switchMap(itemFormData => {
+                if (itemFormData.creationFormSetupState.mode === ItemCreationMode.SingleItem) {
+                    return this.store.select(getItemCreationUserPreferencesSetupData).pipe(take(1), switchMap(userPreferencesSetup => {
+                        let context = new HttpContext().set(TYPE_OF_SPINNER, SpinnerType.FullScreen);
+                        return this.http.post<UserPreferencesHttpResponse>(environment.apiUrl + '/gsda/user-preferences/save-user-preferences', userPreferencesSetup.userPreferences, { context }).pipe(switchMap(response => {
+                            if (response.success) {
+                                this.sharedStore.dispatch(addSnackbarNotification({ notification: 'User preferences saved', icon: SnackBarIcon.Success }));
+                            } else {
+                                console.log(response.errorMessage);
+                                this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage, icon: SnackBarIcon.Error }));
+                            }
+                            return of(noopAction());
+                        }), catchError(error => {
+                            console.log(error);
+                            this.sharedStore.dispatch(addSnackbarNotification({ notification: "Error during saving preferences", icon: SnackBarIcon.Error }));
+
+                            return of(noopAction());
+                        }))
+                    }))
+                }
+                return of(noopAction());
+            }))
+        })
+    ))
 }

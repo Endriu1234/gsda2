@@ -1,0 +1,25 @@
+<ng-container *ngIf="dialogState$ | async as dialogState">
+    <form novalidate [ngrxFormState]="dialogState">
+        <mat-card class="mt-1">
+            <mat-card-content>
+                <div>
+                    <mat-card-title>Set Form Preferences</mat-card-title>
+                </div>
+                <div class="d-flex flex-md-row justify-content-md-between flex-column mt-5 mb-4 ms-5 me-5">
+                    <mat-slide-toggle [ngrxFormControlState]="$any(dialogState).controls.rememberProject">Remember Project</mat-slide-toggle>
+                    <mat-slide-toggle [ngrxFormControlState]="$any(dialogState).controls.rememberVersion">Remember Version</mat-slide-toggle>
+                    <mat-slide-toggle [ngrxFormControlState]="$any(dialogState).controls.rememberTracker">Remember Tracker</mat-slide-toggle>
+                    <mat-slide-toggle [ngrxFormControlState]="$any(dialogState).controls.rememberUser">Remember User</mat-slide-toggle>
+                </div>
+            </mat-card-content>
+            <mat-card-actions [align]="'end'" class="jkWidthMarg">
+                <button mat-fab extended 
+                        color="primary" 
+                        class="me-3 my-2" 
+                        mat-dialog-close 
+                        (click)="CloseDialog()"
+                        [disabled]="dialogState.isValidationPending || dialogState.isInvalid">OK</button>
+            </mat-card-actions>
+        </mat-card>
+    </form>
+</ng-container>

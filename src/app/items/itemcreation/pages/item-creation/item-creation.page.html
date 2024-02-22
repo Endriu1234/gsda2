@@ -1,5 +1,14 @@
 <ng-container *ngIf="formState$ | async as formState">
     <form novalidate [ngrxFormState]="formState">
+        <div class="settings"><button
+                mat-mini-fab
+                color="primary"
+                *ngIf="!(isItemCreationFormCreatedFromBatch$ | async)"
+                (click)="showPreferences()"
+            >
+                <mat-icon fontIcon="settings"></mat-icon>
+            </button>
+        </div>
         <div class="d-flex flex-md-row justify-content-md-between flex-column my-4 jkWidthMarg">
             <mat-card-title>Item Creation</mat-card-title>
             <mat-card-subtitle><button
