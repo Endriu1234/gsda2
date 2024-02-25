@@ -15,6 +15,8 @@ export const getValidatedCRs = createSelector(getItemsState, (state: State) => s
 export const getValidatedIssues = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.validatedIssues);
 export const getValidatedTms = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.validatedTms);
 export const getItemCreationDialogState = createSelector(getItemsState, (state: State) => state.itemCreationFromIdDialog);
+export const getItemCreationUserPreferencesState = createSelector(getItemsState, (state: State) => state.itemCreationUserPreferences);
+export const getItemCreationUserPreferencesSetupData = createSelector(getItemsState, (state: State) => state.itemCreationUserPreferencesSetupData);
 export const getItemCreationFormState = createSelector(getItemsState, (state: State) => state.itemCreationFromData);
 
 export const getItemCreationFormTmsControl = createSelector(getItemsState, (state: State) => state.itemCreationFromData.controls.tms);

@@ -1,4 +1,5 @@
 const axios = require('axios');
+const fs = require('fs');
 
 function getRedmineApiConfiguration() {
     return getRedmineApiConfiguration('application/json');
@@ -81,6 +82,35 @@ module.exports.postRedmineJsonData = async (endpoint, jsonData) => {
     return retVal;
 }
 
+module.exports.deleteFile = async (filePath) => {
+    fs.access(filePath, fs.constants.R_OK | fs.constants.W_OK, (err) => {
+        console.log(err ? 'no access!' : 'can read/write');
+    });
+    fs.unlink(filePath, function(err) {
+        if(err && err.code == 'ENOENT') {
+            console.info("File doesn't exist, won't remove it.");
+        } else if (err) {
+            console.error("Error occurred while trying to remove file");
+            console.log(err);
+        } else {
+            console.info(`removed`);
+        }
+    });
+}
+
+const readFile = async (filePath) => {
+    return new Promise((resolve, reject) => {
+      fs.readFile(filePath, (error, fileContent) => {
+        if (error != null) {
+          reject(error);
+          return;
+        }
+  
+        resolve(fileContent);
+      });
+    });
+  };
+
 module.exports.postFiles = async (files) => {
     const retVal = {
         success: true,
@@ -93,7 +123,10 @@ module.exports.postFiles = async (files) => {
             if (!retVal.success)
                 break;
 
-            const result = await axios.post(getRedmineAddress(`uploads.json?filename=${file.originalname}`), file.buffer,
+            const buffer = await readFile(file.path);
+            const fileNameToRedmine = file.originalname.indexOf(' ') >= 0 ? file.filename : file.originalname;
+
+            const result = await axios.post(getRedmineAddress(`uploads.json?filename=${fileNameToRedmine}`), buffer,
                 getRedmineApiConfiguration('application/octet-stream')).catch((error) => {
                     retVal.success = false;
                     retVal.errorMessage = error;
@@ -103,6 +136,7 @@ module.exports.postFiles = async (files) => {
 
             if (result && result.data && result.data.upload && result.data.upload.token) {
                 file.token = result.data.upload.token;
+                await this.deleteFile(file.path);    //this could be wrong aproach (delete independently on result?)
             }
             else {
                 retVal.success = false;

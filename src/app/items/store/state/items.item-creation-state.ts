@@ -7,6 +7,7 @@ import { IssueValidation } from "../models/issue-validation.model";
 import { TmsValidation } from "../models/tms-validation.model";
 import { FromIdValidation } from "../models/fromId-validation.model";
 import { RedmineVersion } from "../../../shared/store/models/redmine-version.model";
+import { UserPreferences } from "../models/itemcreation/userPreferences.model";
 
 export enum ItemCreationMode {
     SingleItem = "SINGLE_ITEM_CREATION",
@@ -30,6 +31,8 @@ export interface ItemCreationSetupData {
     validatedFromId: FromIdValidation[];
     redmineVersionsLoaded: boolean;
     redmineVersions: RedmineVersion[];
+    loadingUserPreferences: boolean;
+    savingUserPreferences: boolean;
 }
 
 export function getItemCreationSetupDataInitialState(): ItemCreationSetupData {
@@ -47,7 +50,9 @@ export function getItemCreationSetupDataInitialState(): ItemCreationSetupData {
         validatedTms: [],
         validatedFromId: [],
         redmineVersionsLoaded: false,
-        redmineVersions: []
+        redmineVersions: [],
+        loadingUserPreferences: false,
+        savingUserPreferences: false
     };
 }
 
@@ -93,4 +98,47 @@ export function getItemCreationFromIdDialogInitialState(): FormGroupState<ItemCr
     return createFormGroupState<ItemCreationFromIdDialog>(ITEM_CREATION_DIALOG, {
         fromId: ''
     });
+}
+
+export interface ItemCreationUserPreferences {
+    rememberProject: boolean;
+    rememberVersion: boolean;
+    rememberTracker: boolean;
+    rememberUser: boolean;
+}
+
+export const ITEM_CREATION_USER_PREFERENCES_DIALOG = "ITEM_CREATION_USER_PREFERENCES_DIALOG";
+
+export function getItemCreationUserPreferencesInitialState(): FormGroupState<ItemCreationUserPreferences> {
+    return createFormGroupState<ItemCreationUserPreferences>(ITEM_CREATION_USER_PREFERENCES_DIALOG, {
+        rememberProject: false,
+        rememberVersion: false,
+        rememberTracker: false,
+        rememberUser: false
+    });
+}
+
+export interface ItemCreationUserPreferencesSetupData  {
+    userPreferences: UserPreferences;
+}
+
+export function getItemCreationUserPreferencesSetupDataInitialState(): ItemCreationUserPreferencesSetupData {
+    return {
+        userPreferences: {
+            formId: '',
+            user: '',
+            setupValues: {
+                rememberProject: false,
+                rememberVersion: false,
+                rememberTracker: false,
+                rememberUser: false
+            },
+            currentValues: {
+                project: '',
+                version: '',
+                tracker: '',
+                user: ''
+            }
+        }
+    };
 }

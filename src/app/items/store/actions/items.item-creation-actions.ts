@@ -5,6 +5,7 @@ import { TmsValidation } from '../models/tms-validation.model';
 import { FromIdValidation } from '../models/fromId-validation.model';
 import { ItemCreationMode } from '../state/items.item-creation-state';
 import { RedmineVersion } from '../../../shared/store/models/redmine-version.model';
+import { UserPreferences } from '../models/itemcreation/userPreferences.model';
 
 export const startResetItemCreationForm = createAction('[Items Component] Start Reset Item Creation From');
 export const endResetItemCreationForm = createAction('[Items Component] End Reset Item Creation From');
@@ -25,4 +26,9 @@ export const initRedmineVersions = createAction('[Items Component] Init Redmine 
 export const loadRedmineVersions = createAction('[Items Component] Load Redmine Versions', props<{ redmineVersions: RedmineVersion[] }>());
 export const clearRedmineVersions = createAction('[Items Component] Clear Redmine Versions');
 
-
+export const startLoadingItemCreationUserPreferences = createAction('[Items Component] Start Loading Item Creation User Preferences');
+export const endLoadingItemCreationUserPreferences = createAction('[Items Component] End Loading Item Creation User Preferences', props<{ preferences: UserPreferences | null }>()); 
+export const loadItemCreationUserPreferencesSetup = createAction('[Items Component] Load Item Creation User Preferences Setup');
+export const setItemCreationUserPreferencesSetupByCtrl = createAction('[Items Component] Set Item Creation User Preferences Setup By Control', props<{ control: string }>());
+export const saveItemCreationUserPreferences = createAction('[Items Component] Save Item Creation User Preferences', props<{ updateSetup: boolean }>());
+export const setItemControlsByUserPreferences = createAction('[Items Component] Set Item Control By User Preferences', props<{ preferences: UserPreferences | null }>()); 

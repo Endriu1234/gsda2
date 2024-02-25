@@ -23,6 +23,7 @@ import { DirectivesModule } from '../shared/directives/directives.module';
 import { ItemsFromEmailsPage } from './itemsfromemails/pages/items-from-emails/items-from-emails.page';
 import { ItemsFromEmailsSettingsComponent } from './itemsfromemails/components/items-from-emails-settings/items-from-emails-settings.component';
 import { ItemsFromEmailsEffects } from './store/effects/items.items-from-emails-effects';
+import { ItemCreationPreferencesComponent } from './itemcreation/pages/item-creation-preferences/item-creation-preferences.component';
 
 
 
@@ -37,7 +38,8 @@ import { ItemsFromEmailsEffects } from './store/effects/items.items-from-emails-
     BatchCreationRedmineCriteriaComponent,
     BatchCreationIdscriteriaComponent,
     ItemsFromEmailsPage,
-    ItemsFromEmailsSettingsComponent
+    ItemsFromEmailsSettingsComponent,
+    ItemCreationPreferencesComponent
   ],
   imports: [
     CommonModule,

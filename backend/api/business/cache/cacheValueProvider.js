@@ -1,4 +1,5 @@
 const ItemsFromEmailsSettings = require('../../model/gsda/itemsfromemails/ItemsFromEmailsSettings');
+const UserPreferences = require('../../model/gsda/user_preferences/userPreferences');
 const { getRedmineData } = require('../redmine/tools/redmineConnectionTools');
 const softDevDataProvider = require('../softdev/softDevDataProvider');
 const NodeCache = require("node-cache");
@@ -83,6 +84,29 @@ const reqisteredCaches = {
     },
     'items_from_emails_settings': async () => {
         const settings = await ItemsFromEmailsSettings.find({ active: true });
+        const retVal = [];
+
+        settings.forEach(m => {
+
+            const setting = {};
+
+            Object.keys(m._doc).forEach(key => {
+
+                if (key !== '_id' && key !== '__v') {
+                    const value = m._doc[key];
+
+                    if (value)
+                        setting[key] = m._doc[key];
+                }
+            });
+
+            retVal.push(setting);
+        });
+
+        return retVal;
+    },
+    'user_preferences': async () => {
+        const settings = await UserPreferences.find();
         const retVal = [];
 
         settings.forEach(m => {

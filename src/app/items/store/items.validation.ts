@@ -7,12 +7,13 @@ import { CRValidation } from "./models/cr-validation.model";
 import { IssueValidation } from "./models/issue-validation.model";
 import { TmsValidation } from "./models/tms-validation.model";
 import { environment } from 'src/environments/environment';
-import { addValidatedCR, addValidatedIssue, addValidatedTms } from "./actions/items.item-creation-actions";
+import { addValidatedCR, addValidatedIssue, addValidatedTms, setItemCreationUserPreferencesSetupByCtrl } from "./actions/items.item-creation-actions";
 import { getRedmineProjects, getRedmineUsers } from "./selectors/items.common-selectors";
 import { getValidatedCRs, getValidatedIssues, getValidatedTms } from "./selectors/items.item-creation-selectors";
 import { getItemsFromEmailsSettingsFormData, getItemsFromEmailsSettingsFormWithSetup, getItemsFromEmailsSettingsFormWithSetupAndAllGridData, getItemsFromEmailsSettingsFormWithSetupAndTrackers } from "./selectors/items.items-from-emails-selectors";
 import { ITEMS_FROM_EMAILS_SETTINGS_FORMID } from "./state/items.items-from-emails-state";
 import { clearRedmineVersionsForItemsFromEmail, initRedmineVersionsForItemsFromEmail } from "./actions/items.items-from-emails.actions";
+import { ITEM_CREATION_FORMID } from "./state/items.item-creation-state";
 
 
 export function validateUser(store: Store<State>, validateUserError: string, controlId: string, userName: string, required: boolean): Observable<any> {
@@ -25,7 +26,7 @@ export function validateUser(store: Store<State>, validateUserError: string, con
     }
     return store.select(getRedmineUsers).pipe(take(1), switchMap(users => {
         if (users.find(u => u.name == userName))
-            return of(new StartAsyncValidationAction(controlId, validateUserError), new ClearAsyncErrorAction(controlId, validateUserError));
+            return of(new StartAsyncValidationAction(controlId, validateUserError), new ClearAsyncErrorAction(controlId, validateUserError), setItemCreationUserPreferencesSetupByCtrl({control: ITEM_CREATION_FORMID + '.user'}));
 
         return of(new StartAsyncValidationAction(controlId, validateUserError), new SetAsyncErrorAction(controlId, validateUserError, "User invalid"));
     }));
@@ -198,7 +199,7 @@ export function validateProject(store: Store<State>, validateProjectError: strin
 
         if (projects.find(p => p.name == projectName))
             return of(new StartAsyncValidationAction(controlId, validateProjectError),
-                new ClearAsyncErrorAction(controlId, validateProjectError), initVersionAction);
+                new ClearAsyncErrorAction(controlId, validateProjectError), initVersionAction, setItemCreationUserPreferencesSetupByCtrl({control: ITEM_CREATION_FORMID + '.project'}));
 
         return of(new StartAsyncValidationAction(controlId, validateProjectError),
             new SetAsyncErrorAction(controlId, validateProjectError, "Project invalid"), clearVersionAction);

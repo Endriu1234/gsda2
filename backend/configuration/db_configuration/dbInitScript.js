@@ -155,6 +155,27 @@ const itemsFromEmailsSettingsRecords = [
 
 insertManyIntoCollection(itemsFromEmailsSettingsName, itemsFromEmailsSettingsRecords);
 
+//********************************************************************* */
+//              USER PREFERENCES
+//********************************************************************* */
+
+let userPreferencesName = 'userPreferences';
+console.log(`Handling ${userPreferencesName} collection`);
+
+if (removeCollectionsBeforeInitialization) {
+    removeCollection(userPreferencesName);
+}
+
+let userPreferencesCollectionIndex = {
+    formId: "text"
+};
+
+let userPreferencesCollectionIndexOptions = {
+    unique: false
+}
+
+createCollection(userPreferencesName, userPreferencesCollectionIndex, userPreferencesCollectionIndexOptions);
+
 // End of script
 console.log('Script Finished');
 

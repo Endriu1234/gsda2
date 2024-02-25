@@ -13,11 +13,12 @@ import { ItemCreationFromId } from "../item-creation-from-id/item-creation-from-
 import { MatDialog } from '@angular/material/dialog';
 import { FormSaveState, FORM_SAVE_STATE, SnackBarIcon } from 'src/app/shared/store/shared.state';
 import { initRedmineProjects, initRedmineTrackers, initRedmineUsers } from 'src/app/items/store/actions/items.common-actions';
-import { breakBatchItemCreation, identifyAndFillItemById } from 'src/app/items/store/actions/items.item-creation-actions';
+import { breakBatchItemCreation, identifyAndFillItemById, startLoadingItemCreationUserPreferences } from 'src/app/items/store/actions/items.item-creation-actions';
 import { ITEM_CREATION_FORMID } from 'src/app/items/store/state/items.item-creation-state';
 import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
 import * as _ from 'lodash';
 import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
+import { ItemCreationPreferencesComponent } from '../item-creation-preferences/item-creation-preferences.component';
 
 @Component({
   selector: 'app-item-creation',
@@ -74,6 +75,16 @@ export class ItemCreationPage implements OnInit, OnDestroy {
     }
   }
 
+  showPreferences() {
+    const dialogRef = this.dialog.open(ItemCreationPreferencesComponent, {
+      width: '65%',
+      disableClose: true,
+      enterAnimationDuration: 500,
+      exitAnimationDuration: 500,
+      restoreFocus: false
+    });
+  }
+
   ngOnInit(): void {
 
     this.store.select(fromCommonItemsSelectors.getRedmineTrackersLoaded).pipe(take(1)).subscribe((loaded: boolean) => {
@@ -102,6 +113,8 @@ export class ItemCreationPage implements OnInit, OnDestroy {
     this.isItemCreationFormCreatedFromBatch$ = this.store.select(fromItemCreationSelectors.isItemCreationFormCreatedFromBatch);
     this.versions$ = this.store.select(fromItemCreationSelectors.getRedmineVersionsByProject);
     this.files$ = this.store.select(fromItemCreationSelectors.getItemCreationFormFilestControl);
+
+    this.store.dispatch(startLoadingItemCreationUserPreferences());
   }
 
   ngOnDestroy() {

@@ -122,9 +122,15 @@ module.exports.validateRedmineItem = async (item) => {
                 return retVal;
             }
 
-            if (!file.buffer) {
+            if (!file.path || file.path.length === 0 || file.path.indexOf(file.filename) < 0) {
                 retVal.isValid = false;
-                retVal.errorMsg = 'There is a file w/o buffer';
+                retVal.errorMsg = 'There is no file...';
+                return retVal;
+            }
+
+            if (!file.size || parseInt(file.size) > parseInt(process.env.MAX_ATT_FILE_SIZE)) {
+                retVal.isValid = false;
+                retVal.errorMsg = 'There is a file which cannot be uploaded because it exceeds the maximum allowed size (5 MB)';
                 return retVal;
             }
         }

@@ -33,34 +33,44 @@ function setupMiddleWares(app) {
 
 let multerOnDisk = null;
 
-const MIME_TYPE_MAP = {
-    'image/png': 'png',
-    'image/jpeg': 'jpg',
-    'image/jpg': 'jpg'
+function getFileExtension(fileName) {
+    const tbl = fileName.split(".");
+    if (tbl.length === 1 || (tbl[0] === "" && tbl.length === 2)) {
+        return "";
+    }
+    return tbl.pop();
+}
+
+function getFileWithoutExtension(fileName) {
+    const tbl = fileName.split(".");
+    if (tbl.length === 1 || (tbl[0] === "" && tbl.length === 2)) {
+        return "";
+    }
+    return (fileName.substring(0, fileName.lastIndexOf('.')) || fileName);
 }
 
 module.exports.getFileStorage = () => {
     if (!multerOnDisk) {
-        const storage = multer.diskStorage({
+        const storage = multer.diskStorage({ //diskStorage //memoryStorage
             destination: (req, file, cb) => {
-                let error = null;
-
-                const isValid = MIME_TYPE_MAP[file.mimetype];
-                if (!isValid)
-                    error = new Error('Wrong file type');
-
-                cb(error, process.env.USER_FILES_PATH);
+                cb(null, process.env.USER_FILES_PATH);
             },
             filename: (req, file, cb) => {
-                const name = file.originalname.toLowerCase().split(' ').join('_');
-                const ext = MIME_TYPE_MAP[file.mimetype];
-                cb(null, name + '_' + Date.now() + '.' + ext);
+                const fullName = file.originalname.toLowerCase().split(' ').join('_');
+                const name = getFileWithoutExtension(fullName);
+                const ext = getFileExtension(fullName);
+                const newName = name + '_' + Date.now() + '.' + ext;
+                if (file.originalname.indexOf(' ') >= 0)
+                    req.body.description = req.body.description.replace(new RegExp(file.originalname, 'g'), newName);
+                cb(null, newName);
             }
         });
-
-        multerOnDisk = multer(storage);
+        
+        multerOnDisk = multer({
+            storage: storage,
+          });
     }
-
+    
     return multerOnDisk;
 }
 
