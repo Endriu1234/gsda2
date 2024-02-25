@@ -1,7 +1,6 @@
 const { set } = require('lodash');
 const cacheValueProvider = require('../cache/cacheValueProvider');
-
-const { createItem } = require('../redmine/itemCreator');
+const itemsFromTextCollector = require('./itemsFromTextCollector');
 
 const GSDA_ATTACH = "GSDA ATTACH";
 module.exports.GSDA_ATTACH = GSDA_ATTACH;
@@ -23,6 +22,11 @@ module.exports.attachEmailToItem = async function (commandIndex, plainText, uppe
         if (settings) {
             console.log('znaleziono alias: ');
             console.dir(settings);
+
+            const items = itemsFromTextCollector.collectItems(plainText, true);
+            console.log('Znaleziono Itemy:');
+            console.dir(items);
+
         }
         else
             console.log('Alias Settings were not found');

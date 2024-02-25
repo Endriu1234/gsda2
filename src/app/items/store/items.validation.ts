@@ -209,6 +209,11 @@ export function validateItemsFromEmailsSettingsName(store: Store<State>, validat
     if (!settingName)
         return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new SetAsyncErrorAction(controlId, validateItemsFromEmailsError, "Name invalid"));
 
+    const trimmedSettingsName = settingName.trim();
+
+    if (settingName.length !== trimmedSettingsName.length)
+        return of(new SetValueAction(controlId, trimmedSettingsName));
+
     return store.select(getItemsFromEmailsSettingsFormWithSetupAndAllGridData).pipe(take(1), switchMap(settingsData => {
         const nameOccurenceInGrid = settingsData.gridData.records.filter(p => p.name === settingName).length;
         let retVal = false;
