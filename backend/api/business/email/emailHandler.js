@@ -80,11 +80,11 @@ module.exports.getEmails = function (successCallback, errorCallback) {
 }
 
 module.exports.test = function () {
-    const successCallback = () => {
-        console.log('Success Test');
+    const successCallback = (success) => {
+        console.log(`Success Test: ${success}`);
     }
-    const errorCallback = () => {
-        console.log('Error Test');
+    const errorCallback = (error) => {
+        console.log(`Test error: ${error}`);
     }
 
     RunEmailAction((imap, errorCallback) => {
@@ -123,6 +123,9 @@ module.exports.test = function () {
                                         ]
                                     };
 
+                                    console.log("sparsowny email:");
+                                    console.dir(parsed.from.value);
+
                                     const plainText = htmlToText(parsed.html, options);
                                     const upperedPlainText = plainText.toUpperCase();
 
@@ -135,7 +138,7 @@ module.exports.test = function () {
                                         createItemFromEmail(plainText, upperedPlainText, parsed.subject, parsed.html, errorCallback);
                                     }
                                     else if (gsdAttachIndex !== -1 && (gsdaResultIndex === -1 || gsdAttachIndex < gsdaResultIndex)) {
-                                        attachEmailToItem(gsdAttachIndex, plainText, upperedPlainText, parsed.subject, parsed.html, errorCallback);
+                                        attachEmailToItem(gsdAttachIndex, parsed, plainText, errorCallback);
                                     }
                                     else if (gsdaRepprtIndex !== -1 && (gsdaResultIndex === -1 || gsdaRepprtIndex < gsdaResultIndex)) {
                                         createReportFromEmail(plainText, upperedPlainText, parsed.subject, parsed.html, errorCallback);

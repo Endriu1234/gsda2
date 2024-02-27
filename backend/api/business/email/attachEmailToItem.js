@@ -1,12 +1,13 @@
 const { set } = require('lodash');
 const cacheValueProvider = require('../cache/cacheValueProvider');
-
-const { createItem } = require('../redmine/itemCreator');
+const itemsFromTextCollector = require('./itemsFromTextCollector');
+const { postFiles, putRedmineJsonData } = require('../redmine/tools/redmineConnectionTools');
+const { sendEmail } = require('./emailSender');
 
 const GSDA_ATTACH = "GSDA ATTACH";
 module.exports.GSDA_ATTACH = GSDA_ATTACH;
 
-module.exports.attachEmailToItem = async function (commandIndex, plainText, upperedPlainText, subject, html, errorCallback) {
+module.exports.attachEmailToItem = async function (commandIndex, parsedEmail, plainText, errorCallback) {
 
     const endOfCommandIndex = commandIndex + GSDA_ATTACH.length;
     const newLineIndex = plainText.indexOf('\n', commandIndex);
@@ -21,45 +22,61 @@ module.exports.attachEmailToItem = async function (commandIndex, plainText, uppe
         const settings = allSettings.find(s => s.name === alias && (s.type === 'attach' || s.type === 'both'));
 
         if (settings) {
-            console.log('znaleziono alias: ');
-            console.dir(settings);
+
+            const items = itemsFromTextCollector.collectItems(plainText, true);
+
+            if (items.length > 0) {
+                const files = [{
+                    originalname: 'SOURCE_EMAIL.html',
+                    mimetype: 'text/html',
+                    token: '',
+                    encoding: 'utf-8',
+                    buffer: Buffer.from(parsedEmail.html, "utf-8")
+                }]
+
+                const postResult = postFiles(files);
+
+                if ((await postResult).success) {
+
+                    const data = {
+                        issue: {
+                            uploads: []
+                        }
+                    };
+
+                    for (const file of files) {
+                        data.issue.uploads.push({
+                            token: file.token,
+                            filename: file.originalname.indexOf(' ') >= 0 ? file.filename : file.originalname,
+                            content_type: file.mimetype
+                        });
+                    }
+
+                    console.log(`updatowany item: ${items[0]}`);
+
+                    const attachResult = await putRedmineJsonData(`issues/${items[0]}`, data);
+
+                    if (attachResult.success) {
+                        console.dir(parsedEmail.from);
+                        const emailSendResult = sendEmail(parsedEmail.subject, parsedEmail.from.value, 'GSDA RESULT: attachment added');
+                        console.log('resulatat emailowy: ');
+                        console.dir(emailSendResult);
+                    }
+                    else
+                        errorCallback('Attaching files failed');
+
+                }
+                else
+                    errorCallback(postFiles.errorMessage);
+            }
+            else
+                errorCallback('Items to attach were not found');
+
         }
         else
-            console.log('Alias Settings were not found');
+            errorCallback('Alias Settings were not found');
     }
     else
-        console.log('Incorrect Attach Command');
-
-
-    //  if (settings.active) {
-
-    // const itemData = {
-    //     project: settings.project,
-    //     tracker: settings.tracker,
-    //     subject: (subject ? subject : 'Email w/o subject'),
-    //     description: plainText,
-    //     issue: '',
-    //     user: settings.user,
-    //     cr: '',
-    //     tms: '',
-    //     version: settings.version,
-    //     est_time: '',
-    //     files: [{
-    //         originalname: 'SOURCE_EMAIL.html',
-    //         mimetype: 'text/html',
-    //         token: '',
-    //         encoding: 'utf-8',
-    //         buffer: Buffer.from(html, "utf-8")
-    //     }]
-    //        };
-
-    //      const itemCreationResult = await createItem(itemData);
-
-    //      if (!itemCreationResult.success) {
-    //           console.log(itemCreationResult.errorMessage);
-
-    //           if (errorCallback)
-    //errorCallback(itemCreationResult.errorMessage);
-    //     }
+        errorCallback('Incorrect Attach Command');
 }
 
