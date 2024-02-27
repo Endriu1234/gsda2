@@ -108,33 +108,46 @@ module.exports.validateRedmineItem = async (item) => {
 
     if (item.files && item.files.length > 0) {
 
-        for (const file of item.files) {
-
-            if (!file.mimetype || file.mimetype.length === 0) {
-                retVal.isValid = false;
-                retVal.errorMsg = 'There is an file w/o mimetype';
-                return retVal;
-            }
-
-            if (!file.originalname || file.originalname.length === 0) {
-                retVal.isValid = false;
-                retVal.errorMsg = 'There is a file w/o file name';
-                return retVal;
-            }
-
-            if (!file.path || file.path.length === 0 || file.path.indexOf(file.filename) < 0) {
-                retVal.isValid = false;
-                retVal.errorMsg = 'There is no file...';
-                return retVal;
-            }
-
-            if (!file.size || parseInt(file.size) > parseInt(process.env.MAX_ATT_FILE_SIZE)) {
-                retVal.isValid = false;
-                retVal.errorMsg = 'There is a file which cannot be uploaded because it exceeds the maximum allowed size (5 MB)';
-                return retVal;
-            }
-        }
+        validateFiles(retVal, item.files, false);
     }
 
     return retVal;
 }
+
+function validateFiles(retVal, files, required) {
+
+    if (required && (!files || files.length == 0)) {
+        retVal.isValid = false;
+        retVal.errorMsg = 'No files provided';
+        return retVal;
+    }
+
+    for (const file of files) {
+
+        if (!file.mimetype || file.mimetype.length === 0) {
+            retVal.isValid = false;
+            retVal.errorMsg = 'There is an file w/o mimetype';
+            return retVal;
+        }
+
+        if (!file.originalname || file.originalname.length === 0) {
+            retVal.isValid = false;
+            retVal.errorMsg = 'There is a file w/o file name';
+            return retVal;
+        }
+
+        if (!file.path || file.path.length === 0 || file.path.indexOf(file.filename) < 0) {
+            retVal.isValid = false;
+            retVal.errorMsg = 'There is no file...';
+            return retVal;
+        }
+
+        if (!file.size || parseInt(file.size) > parseInt(process.env.MAX_ATT_FILE_SIZE)) {
+            retVal.isValid = false;
+            retVal.errorMsg = 'There is a file which cannot be uploaded because it exceeds the maximum allowed size (5 MB)';
+            return retVal;
+        }
+    }
+}
+
+module.exports.validateFiles = validateFiles;
