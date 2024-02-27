@@ -2,6 +2,7 @@ const ItemsFromEmailsSettings = require('../../model/gsda/itemsfromemails/ItemsF
 const UserPreferences = require('../../model/gsda/user_preferences/userPreferences');
 const { getRedmineData } = require('../redmine/tools/redmineConnectionTools');
 const softDevDataProvider = require('../softdev/softDevDataProvider');
+const { getTmsTasks } = require('./cacheTmsTaskHelper');
 const NodeCache = require("node-cache");
 const cache = new NodeCache({ stdTTL: process.env.CACHE_TTL, checkperiod: process.env.CACHE_TTL * 0.2, useClones: false });
 
@@ -56,6 +57,10 @@ const reqisteredCaches = {
     'tms_clients': async () => {
         const result = await softDevDataProvider.getTmsClients();
         return result.sort((a, b) => a.TMS_CLIENT.localeCompare(b.TMS_CLIENT))
+    },
+    'tms_tasks': () => {
+        const result = getTmsTasks();
+        return result;
     },
     'redmine_versions': async () => {
         const projects = await this.getValue('redmine_projects');

@@ -3,6 +3,7 @@ const softDevValidator = require('../../../business/softdev/validation/softDevVa
 const softDevDataProvider = require('../../../business/softdev/softDevDataProvider');
 const redmineDataProvider = require('../../../business/redmine/redmineDataProvider');
 const { getRedmineAddress } = require('../../../business/redmine/tools/redmineConnectionTools');
+const cacheTmsHelper = require('../../../business/cache/cacheTmsTaskHelper');
 
 module.exports.checkTms = async (req, res) => {
     const retVal = {};
@@ -99,6 +100,9 @@ module.exports.getPotentialRedmineItemsFromTms = async (req, res) => {
         }
     }
     
+    retRecords.map((record) => {
+        record.TMS ? cacheTmsHelper.addValidatedTmsTasksToCache(record.TMS) : null;
+    });
     retVal.records = showCreated ? retRecords : retRecords.filter((record) => { return record.REDMINE_LINK === null || record.REDMINE_LINK.length <= 0 });
     
     return res.status(200).json(retVal);

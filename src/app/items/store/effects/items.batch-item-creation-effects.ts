@@ -312,12 +312,13 @@ export class ItemsBatchItemCreationEffects {
 
     forceEndBatchItemCreation$ = createEffect(() => this.actions$.pipe(
         ofType(forceEndBatchItemCreation),
-        switchMap(() => {
+        switchMap((withRedirection) => {
 
             return this.store.select(getBatchItemCreationRecords).pipe(take(1), switchMap(batchRecords => {
 
                 this.progressBarService.resetProgress();
-                this.router.navigate(['/items/batchitemscreation']);
+                if (withRedirection)
+                    this.router.navigate(['/items/batchitemscreation']);
                 return of(startResetItemCreationForm());
             }));
         })

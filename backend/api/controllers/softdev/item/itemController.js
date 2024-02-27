@@ -2,6 +2,7 @@ const { errorMonitor } = require('node-cache');
 const softDevDataProvider = require('../../../business/softdev/softDevDataProvider');
 const redmineDataProvider = require('../../../business/redmine/redmineDataProvider')
 const { getRedmineAddress } = require('../../../business/redmine/tools/redmineConnectionTools');
+const cacheTmsHelper = require('../../../business/cache/cacheTmsTaskHelper');
 
 module.exports.getItemById = async (req, res) => {
     const retVal = {};
@@ -73,6 +74,9 @@ module.exports.getPotentialRedmineItemsFromSDProject = async (req, res) => {
         }
     }
 
+    queryResults.map((record) => {
+        record.TMS ? cacheTmsHelper.addValidatedTmsTasksToCache(record.TMS) : null;
+    });
     retVal.records = req.query.showCreated === 'true' ? queryResults : queryResults.filter((record) => { return record.REDMINE_LINK === null || record.REDMINE_LINK.length <= 0 });
 
     return res.status(200).json(retVal);
@@ -176,6 +180,9 @@ module.exports.getPotentialRedmineItemsFromIds = async (req, res) => {
         queryResults.push(...tmsQueryResults);
     }
 
+    queryResults.map((record) => {
+        record.TMS ? cacheTmsHelper.addValidatedTmsTasksToCache(record.TMS) : null;
+    });
     retVal.records = req.query.showCreated === 'true' ? queryResults : queryResults.filter((record) => { return record.REDMINE_LINK === null || record.REDMINE_LINK.length <= 0 });
     
     return res.status(200).json(retVal);

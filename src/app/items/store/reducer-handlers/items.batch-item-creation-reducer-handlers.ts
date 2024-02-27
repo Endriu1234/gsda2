@@ -255,7 +255,7 @@ export function continueBatchItemsCreation(state: State): State {
     return newState;
 }
 
-export function forceEndBatchItemCreation(state: State): State {
+export function forceEndBatchItemCreation(state: State, args: {withRedirection: boolean}): State {
     const newState = _.cloneDeep(state);
     newState.batchItemCreationRecords.currentIndex = -1;
     newState.itemCreationSetupData.mode = ItemCreationMode.SingleItem;

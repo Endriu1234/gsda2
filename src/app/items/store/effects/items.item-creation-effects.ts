@@ -135,7 +135,7 @@ export class ItemsItemCreationEffects {
                                     }
                                     else if (formData.creationFormSetupState.mode === ItemCreationMode.BatchItemSingleRecord) {
                                         this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item saved', icon: SnackBarIcon.Success }));
-                                        return of(setLinkToCurrentProposedItemAndUnselect({ redmineLink: response.redmineLink }), forceEndBatchItemCreation());
+                                        return of(setLinkToCurrentProposedItemAndUnselect({ redmineLink: response.redmineLink }), forceEndBatchItemCreation({withRedirection: true}));
                                     }
 
                                     return of(noopAction());
@@ -149,7 +149,7 @@ export class ItemsItemCreationEffects {
                                             fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New));
                                     }
 
-                                    return of(forceEndBatchItemCreation());
+                                    return of(forceEndBatchItemCreation({withRedirection: true}));
                                 }
                             }), catchError(error => {
                                 console.log(error);
@@ -160,7 +160,7 @@ export class ItemsItemCreationEffects {
                                         fromSharedState.FORM_SAVE_STATE, fromSharedState.FormSaveState.New));
                                 }
 
-                                return of(forceEndBatchItemCreation());
+                                return of(forceEndBatchItemCreation({withRedirection: true}));
                             }))
                         }))
                     }
@@ -262,7 +262,7 @@ export class ItemsItemCreationEffects {
         ofType(breakBatchItemCreation),
         switchMap(() => {
             this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item(s) Creation aborted.', icon: SnackBarIcon.Info }));
-            return of(startResetItemCreationForm(), forceEndBatchItemCreation());
+            return of(forceEndBatchItemCreation({withRedirection: true}));
         })
     ));
 

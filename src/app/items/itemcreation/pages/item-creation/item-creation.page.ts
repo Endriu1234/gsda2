@@ -19,6 +19,7 @@ import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.mode
 import * as _ from 'lodash';
 import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 import { ItemCreationPreferencesComponent } from '../item-creation-preferences/item-creation-preferences.component';
+import { forceEndBatchItemCreation } from 'src/app/items/store/actions/items.batch-item-creation-actions';
 
 @Component({
   selector: 'app-item-creation',
@@ -118,6 +119,7 @@ export class ItemCreationPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.store.dispatch(forceEndBatchItemCreation({withRedirection: false}));
     this.subscriptions.forEach(s => { if (s) s.unsubscribe() });
   }
 
