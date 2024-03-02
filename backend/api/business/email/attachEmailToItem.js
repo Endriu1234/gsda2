@@ -1,4 +1,3 @@
-const { set } = require('lodash');
 const cacheValueProvider = require('../cache/cacheValueProvider');
 const itemsFromTextCollector = require('./itemsFromTextCollector');
 const { postFiles, putRedmineJsonData } = require('../redmine/tools/redmineConnectionTools');
@@ -7,8 +6,12 @@ const { sendEmail } = require('./emailSender');
 const GSDA_ATTACH = "GSDA ATTACH";
 module.exports.GSDA_ATTACH = GSDA_ATTACH;
 
-module.exports.attachEmailToItem = async function (commandIndex, parsedEmail, plainText, errorCallback) {
+module.exports.attachEmailToItem = async function (commandIndex, parsedEmail, plainText) {
 
+    const retVal = {
+        success: true,
+        errorMessage: ''
+    }
     const endOfCommandIndex = commandIndex + GSDA_ATTACH.length;
     const newLineIndex = plainText.indexOf('\n', commandIndex);
 
@@ -52,31 +55,41 @@ module.exports.attachEmailToItem = async function (commandIndex, parsedEmail, pl
                         });
                     }
 
-                    console.log(`updatowany item: ${items[0]}`);
-
                     const attachResult = await putRedmineJsonData(`issues/${items[0]}`, data);
 
                     if (attachResult.success) {
-                        console.dir(parsedEmail.from);
-                        const emailSendResult = sendEmail(parsedEmail.subject, parsedEmail.from.value, 'GSDA RESULT: attachment added');
-                        console.log('resulatat emailowy: ');
-                        console.dir(emailSendResult);
+                        const emailSendResult = await sendEmail(parsedEmail.subject, parsedEmail.from.value, 'GSDA RESULT: attachment added');
+                        retVal.success = emailSendResult.success;
+                        retVal.errorMessage = retVal.errorMessage;
                     }
-                    else
-                        errorCallback('Attaching files failed');
-
+                    else {
+                        retVal.success = false;
+                        retVal.errorMessage = 'Attaching files failed';
+                    }
                 }
-                else
-                    errorCallback(postFiles.errorMessage);
+                else {
+                    retVal.success = false;
+                    retVal.errorMessage = postFiles.errorMessage;
+                }
             }
-            else
-                errorCallback('Items to attach were not found');
-
+            else {
+                retVal.success = false;
+                retVal.errorMessage = 'Items to attach were not found';
+            }
         }
-        else
-            errorCallback('Alias Settings were not found');
+        else {
+            retVal.success = false;
+            retVal.errorMessage = 'Alias Settings were not found';
+        }
     }
-    else
-        errorCallback('Incorrect Attach Command');
+    else {
+        retVal.success = false;
+        retVal.errorMessage = 'Incorrect Attach Command';
+    }
+
+    if (!retVal.success)
+        await sendEmail(parsedEmail.subject, parsedEmail.from.value, `GSDA RESULT: attachment adding failed: ${retVal.errorMessage}`);
+
+    return retVal;
 }
 

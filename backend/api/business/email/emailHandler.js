@@ -5,189 +5,146 @@ const { createItemFromEmail } = require('./createItemFromEmail');
 const { attachEmailToItem, GSDA_ATTACH } = require('./attachEmailToItem');
 const { createReportFromEmail } = require('./createReportFromEmail');
 
-const imapConfig = {
-    user: process.env.GSDA_EMAIL_USER,
-    password: process.env.GSDA_EMAIL_PASSWORD,
-    host: process.env.GSDA_EMAIL_HOST,
-    port: process.env.GSDA_EMAIL_PORT,
-    tls: process.env.GSDA_EMAIL_TLS
-};
-
-function RunEmailAction(action, errorCallback) {
-    const imap = new Imap(imapConfig);
+module.exports.handleEmailCommands = function () {
 
     try {
-        imap.once('ready', () => action(imap));
+
+        const imapConfig = {
+            user: process.env.GSDA_EMAIL_USER,
+            password: process.env.GSDA_EMAIL_PASSWORD,
+            host: process.env.GSDA_EMAIL_HOST,
+            port: process.env.GSDA_EMAIL_PORT,
+            tls: process.env.GSDA_EMAIL_TLS,
+            keepalive: {
+                idleInterval: 60 * 1000
+            }
+        };
+
+        const imap = new Imap(imapConfig);
+
+        imap.once('ready', () => {
+            imap.openBox(process.env.GSDA_EMAIL_BOX, false, () => {
+                handleEmails(imap, true);
+            });
+        });
 
         imap.once('error', err => {
-            console.log(err);
+            console.log(`emailHandler.js (!): ${err}`);
+            console.dir(err);
+            imap.end();
         });
 
         imap.once('end', () => {
-            console.log('Connection ended');
+            console.log('emailHandler.js: imap connection ended');
         });
 
         imap.connect();
     }
     catch (error) {
-        console.log(error);
-
-        if (errorCallback)
-            errorCallback(error);
+        console.log(`emailHandler.js: ${error}`);
 
         try {
-            imap.destroy();
+            imap.end();
         }
         catch (error2) {
-            console.log(error2);
-
-            if (errorCallback)
-                errorCallback(error2);
+            console.log(`emailHandler.js: ${error2}`);
         }
     }
 }
 
-module.exports.getEmailBoxes = function (successCallback, errorCallback) {
-    RunEmailAction((imap, errorCallback) => {
-        imap.getBoxes((error, boxes) => {
+function handleEmails(imap, initEmailRecieveListening) {
+    imap.search(['ALL'],
+        (error1, results) => {
 
-            if (error) {
-                if (errorCallback)
-                    errorCallback(error);
+            if (error1) {
+                console.log(`emailHandler.js -> handleEmails(): ${error1}`);
+                imap.end();
+                return;
             }
-            else if (successCallback)
-                successCallback(boxes);
 
-            imap.end();
-        });
-    });
-}
+            if (!results || results.length === 0) {
 
-module.exports.getEmails = function (successCallback, errorCallback) {
-    RunEmailAction((imap, errorCallback) => {
-        imap.getBoxes((error, boxes) => {
+                if (initEmailRecieveListening)
+                    imap.on('mail', mail => handleEmails(imap, false));
 
-            if (error) {
-                if (errorCallback)
-                    errorCallback(error);
+                return;
             }
-            else if (successCallback)
-                successCallback(boxes);
 
-            imap.end();
-        });
-    });
-}
+            const f = imap.fetch(results, { bodies: '' });
 
-module.exports.test = function () {
-    const successCallback = (success) => {
-        console.log(`Success Test: ${success}`);
-    }
-    const errorCallback = (error) => {
-        console.log(`Test error: ${error}`);
-    }
+            f.on('message', msg => {
+                msg.on('body', stream => {
 
-    RunEmailAction((imap, errorCallback) => {
-        imap.openBox('gsda', false, () => {
-            imap.search(['ALL'],
-                (error1, results) => {
-
-                    if (!results || results.length === 0)
-                        return;
-
-                    console.log(`START`);
-                    if (error1) {
-                        console.log('error1');
-                        console.dir(error1);
-
-                        if (errorCallback)
-                            errorCallback(error1);
-                    }
-                    else {
-
-                        const f = imap.fetch(results, { bodies: '' });
-
-                        f.on('message', msg => {
-                            msg.on('body', stream => {
-
-                                simpleParser(stream, async (error2, parsed) => {
-                                    if (error2) {
-                                        console.log(error2);
-
-                                        if (errorCallback)
-                                            errorCallback(error2);
-                                    }
-                                    const options = {
-                                        selectors: [
-                                            { selector: 'img', format: 'skip' }
-                                        ]
-                                    };
-
-                                    console.log("sparsowny email:");
-                                    console.dir(parsed.from.value);
-
-                                    const plainText = htmlToText(parsed.html, options);
-                                    const upperedPlainText = plainText.toUpperCase();
-
-                                    const gsdaResultIndex = upperedPlainText.indexOf("GSDA RESULT");
-                                    const gsdaCreateIndex = upperedPlainText.indexOf("GSDA CREATE");
-                                    const gsdAttachIndex = upperedPlainText.indexOf(GSDA_ATTACH);
-                                    const gsdaRepprtIndex = upperedPlainText.indexOf("GSDA REPORT");
-
-                                    if (gsdaCreateIndex !== -1 && (gsdaResultIndex === -1 || gsdaCreateIndex < gsdaResultIndex)) {
-                                        createItemFromEmail(plainText, upperedPlainText, parsed.subject, parsed.html, errorCallback);
-                                    }
-                                    else if (gsdAttachIndex !== -1 && (gsdaResultIndex === -1 || gsdAttachIndex < gsdaResultIndex)) {
-                                        attachEmailToItem(gsdAttachIndex, parsed, plainText, errorCallback);
-                                    }
-                                    else if (gsdaRepprtIndex !== -1 && (gsdaResultIndex === -1 || gsdaRepprtIndex < gsdaResultIndex)) {
-                                        createReportFromEmail(plainText, upperedPlainText, parsed.subject, parsed.html, errorCallback);
-                                    }
-                                });
-                            });
-
-                            msg.once('attributes', attrs => {
-                                // const { uid } = attrs;
-                                // const success = imap.addFlags(uid, ['\\Deleted'], (error6) => {
-                                //     if (error6) {
-
-                                //         console.log(error6);
-
-                                //         if (errorCallback)
-                                //             errorCallback(error6);
-                                //     }
-                                // });
-
-                                // if (success !== true) {
-                                //     console.log(imap.LastErrorText);
-
-                                //     if (errorCallback)
-                                //         errorCallback(imap.LastErrorText);
-                                // }
-                            });
-                        });
-
-                        f.once('error', error3 => {
-                            console.log(error3);
-
-                            if (errorCallback)
-                                errorCallback(error3);
-
-                            return Promise.reject(error3);
-
-                        });
-                        f.once('end', () => {
-                            imap.closeBox(true, (error7) => {
-                                console.log(error7);
-
-                                if (errorCallback)
-                                    errorCallback(error7);
-                            });
-
+                    simpleParser(stream, async (error2, parsed) => {
+                        if (error2) {
+                            console.log(`emailHandler.js -> handleEmails(1): ${error2}`);
                             imap.end();
-                        });
-                    }
+                            return;
+                        }
+
+                        const options = {
+                            selectors: [
+                                { selector: 'img', format: 'skip' }
+                            ]
+                        };
+
+                        const plainText = htmlToText(parsed.html, options);
+                        const upperedPlainText = plainText.toUpperCase();
+
+                        const gsdaResultIndex = upperedPlainText.indexOf("GSDA RESULT");
+                        const gsdaCreateIndex = upperedPlainText.indexOf("GSDA CREATE");
+                        const gsdAttachIndex = upperedPlainText.indexOf(GSDA_ATTACH);
+                        const gsdaReportIndex = upperedPlainText.indexOf("GSDA REPORT");
+
+                        if (gsdaCreateIndex !== -1 && (gsdaResultIndex === -1 || gsdaCreateIndex < gsdaResultIndex)) {
+                            createItemFromEmail(plainText, upperedPlainText, parsed.subject, parsed.html, errorCallback);
+                        }
+                        else if (gsdAttachIndex !== -1 && (gsdaResultIndex === -1 || gsdAttachIndex < gsdaResultIndex)) {
+                            const attachResult = await attachEmailToItem(gsdAttachIndex, parsed, plainText);
+
+                            if (!attachResult.success)
+                                console.log(attachResult.errorMessage);
+                        }
+                        else if (gsdaReportIndex !== -1 && (gsdaResultIndex === -1 || gsdaReportIndex < gsdaResultIndex)) {
+                            createReportFromEmail(plainText, upperedPlainText, parsed.subject, parsed.html, errorCallback);
+                        }
+                    });
                 });
+
+                msg.once('attributes', attrs => {
+                    const { uid } = attrs;
+                    const success = imap.setFlags(uid, ['\\Deleted'], (error6) => {
+                        if (error6) {
+                            console.log(`emailHandler.js -> once 'attributes': ${error6}`);
+                            imap.end();
+                        }
+                    });
+
+                    imap.expunge([uid], (error7) => {
+                        if (error7) {
+                            console.log(`emailHandler.js -> once 'attributes': ${error7}`);
+                            imap.end();
+                        }
+                    });
+
+                    // if (success !== true) {
+                    //     console.log(`emailHandler.js -> handleEmails(3): ${imap.LastErrorText}`);
+                    // }
+                });
+            });
+
+            f.once('error', error3 => {
+                console.log(`emailHandler.js -> handleEmails(4): ${error3}`);
+                imap.end();
+
+                return Promise.reject(error3);
+
+            });
+            f.once('end', () => {
+                if (initEmailRecieveListening)
+                    imap.on('mail', mail => handleEmails(imap, false));
+            });
         });
-    });
+
 }
+

@@ -1,18 +1,26 @@
 const nodemailer = require("nodemailer");
 const smtpTransport = require('nodemailer-smtp-transport');
 
-const transporter = nodemailer.createTransport(smtpTransport({
-    host: process.env.GSDA_EMAIL_HOST,
-    secureConnection: process.env.GSDA_EMAIL_SMTP_SECURE_CONN,
-    tls: {
-        rejectUnauthorized: process.env.GSDA_EMAIL_SMTP_REJECT_UNAUTH
-    },
-    port: process.env.GSDA_EMAIL_SMTP_PORT,
-    auth: {
-        user: process.env.GSDA_EMAIL_USER,
-        pass: process.env.GSDA_EMAIL_PASSWORD
+let transporter = null;
+
+function getTransporter() {
+    if (!transporter) {
+        transporter = nodemailer.createTransport(smtpTransport({
+            host: process.env.GSDA_EMAIL_HOST,
+            secureConnection: false,
+            tls: {
+                rejectUnauthorized: false
+            },
+            port: process.env.GSDA_EMAIL_SMTP_PORT,
+            auth: {
+                user: process.env.GSDA_EMAIL_USER,
+                pass: process.env.GSDA_EMAIL_PASSWORD
+            }
+        }));
     }
-}));
+
+    return transporter;
+}
 
 module.exports.sendEmail = async function (subject, sendToArray, text, htmlText) {
     const retVal = {
@@ -20,49 +28,58 @@ module.exports.sendEmail = async function (subject, sendToArray, text, htmlText)
         errorMessage: ''
     }
 
-    if (subject && subject.length > 0) {
+    try {
+        if (subject && subject.length > 0) {
 
-        if (sendToArray && sendToArray.length > 0) {
+            if (sendToArray && sendToArray.length > 0) {
 
-            sendTo = '';
+                sendTo = '';
 
-            for (const adressObj of sendToArray) {
-                if (sendTo)
-                    sendTo = sendTo + ', ' + adressObj.address;
-                else
-                    sendTo = adressObj.address;
-            }
+                for (const adressObj of sendToArray) {
+                    if (sendTo)
+                        sendTo = sendTo + ', ' + adressObj.address;
+                    else
+                        sendTo = adressObj.address;
+                }
 
-            if (text && text.length > 0) {
+                if (text && text.length > 0) {
 
-                if (!htmlText)
-                    htmlText = `<p>${text}</p>`
+                    if (!htmlText)
+                        htmlText = `<p>${text}</p>`
 
 
-                const info = await transporter.sendMail({
-                    from: `"GSDA" <${process.env.GSDA_EMAIL_USER}>`,
-                    to: sendTo,
-                    subject: subject,
-                    text: text,
-                    html: htmlText,
-                });
+                    const info = await getTransporter().sendMail({
+                        from: `"GSDA" <${process.env.GSDA_EMAIL_USER}>`,
+                        to: sendTo,
+                        subject: subject,
+                        text: text,
+                        html: htmlText,
+                    });
 
-                console.dir(info);
-                console.log("Message sent: %s", info.messageId);
+                    if (!info && !info.accepted && !info.accepted.length == 0) {
+                        retVal.success = false;
+                        retVal.errorMessage = 'Something went wrong during saving email';
+                    }
+                }
+                else {
+                    retVal.success = false;
+                    retVal.errorMessage = 'Email Text not provided';
+                }
             }
             else {
                 retVal.success = false;
-                retVal.errorMessage = 'Email Text not provided';
+                retVal.errorMessage = 'Send To array not provided';
             }
         }
         else {
             retVal.success = false;
-            retVal.errorMessage = 'Send To array not provided';
+            retVal.errorMessage = 'Subject for email not provided';
         }
     }
-    else {
+    catch (error) {
+        console.log(error);
         retVal.success = false;
-        retVal.errorMessage = 'Subject for email not provided';
+        retVal.errorMessage = 'Error was thrown during sending email';
     }
 
     return retVal;

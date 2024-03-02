@@ -6,9 +6,6 @@ module.exports.validateEmailAlias = async function (body) {
         errorMessage: ''
     };
 
-    console.log('start walidacji');
-    console.dir(body);
-
     if (body.values) {
         const trackers = await cacheValueProvider.getValue('redmine_trackers');
         const users = await cacheValueProvider.getValue('redmine_users');
@@ -115,9 +112,6 @@ module.exports.validateEmailAlias = async function (body) {
         retVal.success = false;
         retVal.errorMessage = 'Alias values were not provided';
     }
-
-    console.log('koneic walidacji');
-    console.debug(retVal);
 
     return retVal;
 }
