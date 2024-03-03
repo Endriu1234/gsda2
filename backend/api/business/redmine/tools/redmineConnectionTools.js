@@ -152,13 +152,17 @@ module.exports.postFiles = async (files) => {
     return retVal;
 }
 
-module.exports.putRedmineJsonData = async (endpoint, jsonData) => {
+module.exports.putRedmineJsonData = async (endpoint, jsonData, ignoreRedirect) => {
     const retVal = {
         success: true,
         redmineLink: ''
     }
 
     retVal.redmineResponse = await axios.put(getRedmineAddress(endpoint), jsonData, getRedmineApiConfiguration()).catch((error) => {
+
+        if (ignoreRedirect && error.code === 'ERR_FR_TOO_MANY_REDIRECTS')
+            return;
+
         retVal.success = false;
         logError(error);
     });

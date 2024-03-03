@@ -85,8 +85,6 @@ module.exports.saveItemsFromEmailsSettings = async (req, res) => {
         retVal.errorMessage = err;
     }
 
-    emailHandler.test();
-
     return res.status(200).json(retVal);
 }
 

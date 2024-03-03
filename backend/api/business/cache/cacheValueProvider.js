@@ -45,6 +45,10 @@ const reqisteredCaches = {
         const result = await getRedmineData('custom_fields.json');
         return result.custom_fields;
     },
+    'redmine_issue_statuses': async () => {
+        const result = await getRedmineData('issue_statuses.json');
+        return result.issue_statuses;
+    },
     'softdev_projects': async () => {
         const result = await softDevDataProvider.getVersions();
         return result.sort((a, b) => a.PRODUCT_VERSION_NAME.localeCompare(b.PRODUCT_VERSION_NAME));

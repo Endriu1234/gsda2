@@ -2,6 +2,7 @@ const cacheValueProvider = require('../cache/cacheValueProvider');
 const itemsFromTextCollector = require('./itemsFromTextCollector');
 const { postFiles, putRedmineJsonData } = require('../redmine/tools/redmineConnectionTools');
 const { sendEmail } = require('./emailSender');
+const { closeItems } = require('../redmine/itemCloser');
 
 const GSDA_ATTACH = "GSDA ATTACH";
 module.exports.GSDA_ATTACH = GSDA_ATTACH;
@@ -58,9 +59,24 @@ module.exports.attachEmailToItem = async function (commandIndex, parsedEmail, pl
                     const attachResult = await putRedmineJsonData(`issues/${items[0]}`, data);
 
                     if (attachResult.success) {
-                        const emailSendResult = await sendEmail(parsedEmail.subject, parsedEmail.from.value, 'GSDA RESULT: attachment added');
-                        retVal.success = emailSendResult.success;
-                        retVal.errorMessage = retVal.errorMessage;
+
+                        const itemsToClose = [];
+
+                        if (settings.closeItemsAfterAttach === 'latest')
+                            itemsToClose.push(items[0]);
+                        else if (settings.closeItemsAfterAttach === 'earliest')
+                            itemsToClose.push(items[items.length - 1]);
+                        else if (settings.closeItemsAfterAttach === 'all')
+                            itemsToClose.push(...items);
+
+                        if (itemsToClose.length > 0) {
+                            const closeResult = await closeItems(itemsToClose);
+
+                            if (!closeResult.success) {
+                                retVal.success = closeResult.success;
+                                retVal.retVal = closeResult.errorMessage;
+                            }
+                        }
                     }
                     else {
                         retVal.success = false;
@@ -87,8 +103,17 @@ module.exports.attachEmailToItem = async function (commandIndex, parsedEmail, pl
         retVal.errorMessage = 'Incorrect Attach Command';
     }
 
-    if (!retVal.success)
+    if (retVal.success) {
+        const emailSendResult = await sendEmail(parsedEmail.subject, parsedEmail.from.value, 'GSDA RESULT: attachment added');
+
+        if (!emailSendResult.success) {
+            retVal.success = emailSendResult.success;
+            retVal.errorMessage = retVal.errorMessage;
+        }
+    }
+    else {
         await sendEmail(parsedEmail.subject, parsedEmail.from.value, `GSDA RESULT: attachment adding failed: ${retVal.errorMessage}`);
+    }
 
     return retVal;
 }
