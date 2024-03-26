@@ -16,6 +16,8 @@ module.exports.attachEmailToItem = async function (commandIndex, parsedEmail, pl
     const endOfCommandIndex = commandIndex + GSDA_ATTACH.length;
     const newLineIndex = plainText.indexOf('\n', commandIndex);
 
+    let sendTo = [];
+
     if (newLineIndex >= endOfCommandIndex) {
         let alias = plainText.substring(endOfCommandIndex, newLineIndex).trim();
 
@@ -27,15 +29,27 @@ module.exports.attachEmailToItem = async function (commandIndex, parsedEmail, pl
 
         if (settings) {
 
-            const items = itemsFromTextCollector.collectItems(plainText, true);
+            if (settings.sendAttachResultTo === 'sender') {
+                sendTo = parsedEmail.from.value; 
+            } else {
+                sendTo = parsedEmail.from.value;
+                if (parsedEmail.to && parsedEmail.to.value)
+                    sendTo.push(...parsedEmail.to.value);
+                if (parsedEmail.cc && parsedEmail.cc.value)
+                    sendTo.push(...parsedEmail.cc.value);
+            }
 
+            const items = itemsFromTextCollector.collectItems(plainText, false);
+            
             if (items.length > 0) {
+                const attExt = parsedEmail.html ? ".html" : ".txt";
+                const attName = parsedEmail.subject ? parsedEmail.subject.substring(0,100).replace(/ /g,"_") + attExt : 'SOURCE_EMAIL' + attExt
                 const files = [{
-                    originalname: 'SOURCE_EMAIL.html',
+                    originalname: attName,
                     mimetype: 'text/html',
                     token: '',
                     encoding: 'utf-8',
-                    buffer: Buffer.from(parsedEmail.html, "utf-8")
+                    buffer: Buffer.from(parsedEmail.html ? parsedEmail.html : parsedEmail.text, "utf-8")
                 }]
 
                 const postResult = postFiles(files);
@@ -104,7 +118,7 @@ module.exports.attachEmailToItem = async function (commandIndex, parsedEmail, pl
     }
 
     if (retVal.success) {
-        const emailSendResult = await sendEmail(parsedEmail.subject, parsedEmail.from.value, 'GSDA RESULT: attachment added');
+        const emailSendResult = await sendEmail(parsedEmail.subject, sendTo.length > 0 ? sendTo : parsedEmail.from.value, 'GSDA RESULT: attachment added');
 
         if (!emailSendResult.success) {
             retVal.success = emailSendResult.success;
@@ -112,7 +126,7 @@ module.exports.attachEmailToItem = async function (commandIndex, parsedEmail, pl
         }
     }
     else {
-        await sendEmail(parsedEmail.subject, parsedEmail.from.value, `GSDA RESULT: attachment adding failed: ${retVal.errorMessage}`);
+        await sendEmail(parsedEmail.subject, sendTo.length > 0 ? sendTo : parsedEmail.from.value, `GSDA RESULT: attachment adding failed: ${retVal.errorMessage}`);
     }
 
     return retVal;

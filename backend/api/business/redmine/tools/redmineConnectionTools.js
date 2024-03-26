@@ -83,19 +83,23 @@ module.exports.postRedmineJsonData = async (endpoint, jsonData) => {
 }
 
 module.exports.deleteFile = async (filePath) => {
-    fs.access(filePath, fs.constants.R_OK | fs.constants.W_OK, (err) => {
-        console.log(err ? 'no access!' : 'can read/write');
-    });
-    fs.unlink(filePath, function (err) {
-        if (err && err.code == 'ENOENT') {
-            console.info("File doesn't exist, won't remove it.");
-        } else if (err) {
-            console.error("Error occurred while trying to remove file");
-            console.log(err);
-        } else {
-            console.info(`removed`);
-        }
-    });
+    if (filePath && filePath.length > 0) {
+        fs.access(filePath, fs.constants.R_OK | fs.constants.W_OK, (err) => {
+            console.log(err ? 'no access!' : 'can read/write');
+        });
+        fs.unlink(filePath, function (err) {
+            if (err && err.code == 'ENOENT') {
+                console.info("File doesn't exist, won't remove it.");
+            } else if (err) {
+                console.error("Error occurred while trying to remove file");
+                console.log(err);
+            } else {
+                console.info(`removed`);
+            }
+        });
+    } else {
+        console.log("No file path!");
+    }
 }
 
 const readFile = async (filePath) => {

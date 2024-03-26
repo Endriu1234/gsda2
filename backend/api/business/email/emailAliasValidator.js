@@ -17,7 +17,11 @@ module.exports.validateEmailAlias = async function (body) {
             retVal.success = false;
             retVal.errorMessage = 'Alias Type were not provided';
         }
-        else if (!body.values.parsingMode || !(body.values.parsingMode === 'plain' || body.values.parsingMode === 'plainAndHtmlAttachment' || body.values.parsingMode === 'parsedHtml')) {
+        else if (body.values.type !== 'attach' 
+            && (!body.values.parsingMode 
+                || !(body.values.parsingMode === 'plain' 
+                    || body.values.parsingMode === 'plainAndHtmlAttachment' 
+                    || body.values.parsingMode === 'parsedHtml'))) {
             retVal.success = false;
             retVal.errorMessage = 'Alias Parsing Mode were not provided';
         }
@@ -58,8 +62,7 @@ module.exports.validateEmailAlias = async function (body) {
         }
         else if (body.values.type !== 'create'
             && (!body.values.sendAttachResultTo
-                || !(body.values.sendAttachResultTo === 'none'
-                    || body.values.sendAttachResultTo === 'sender'
+                || !(body.values.sendAttachResultTo === 'sender'
                     || body.values.sendAttachResultTo === 'all'))) {
             retVal.success = false;
             retVal.errorMessage = 'Alias Send Attach Result To was not provided';

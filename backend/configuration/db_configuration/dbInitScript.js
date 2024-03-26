@@ -84,7 +84,7 @@ const itemsFromEmailsSettingsRecords = [
         findCRs: 'latest',
         addAttachments: false,
         closeItemsAfterAttach: 'none',
-        sendAttachResultTo: 'none',
+        sendAttachResultTo: 'all',
         modifiedBy: 'gsda'
     },
     {
@@ -100,7 +100,7 @@ const itemsFromEmailsSettingsRecords = [
         findCRs: 'latest',
         addAttachments: false,
         closeItemsAfterAttach: 'none',
-        sendAttachResultTo: 'none',
+        sendAttachResultTo: 'all',
         modifiedBy: 'gsda'
     },
     {
@@ -116,7 +116,7 @@ const itemsFromEmailsSettingsRecords = [
         findCRs: 'latest',
         addAttachments: false,
         closeItemsAfterAttach: 'none',
-        sendAttachResultTo: 'none',
+        sendAttachResultTo: 'all',
         modifiedBy: 'gsda'
     },
     {
@@ -143,7 +143,7 @@ const itemsFromEmailsSettingsRecords = [
         project: 'Demo',
         version: '',
         user: 'Andrzej Czaja',
-        parsingMode: 'plainAndHtmlAttachment',
+        parsingMode: '',
         findIssues: 'latest',
         findCRs: 'latest',
         addAttachments: false,

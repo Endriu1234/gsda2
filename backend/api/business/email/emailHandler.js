@@ -63,7 +63,6 @@ function handleEmails(imap, initEmailRecieveListening) {
             }
 
             if (!results || results.length === 0) {
-
                 if (initEmailRecieveListening)
                     imap.on('mail', mail => handleEmails(imap, false));
 
@@ -87,8 +86,8 @@ function handleEmails(imap, initEmailRecieveListening) {
                                 { selector: 'img', format: 'skip' }
                             ]
                         };
-
-                        const plainText = htmlToText(parsed.html, options);
+                        
+                        const plainText = parsed.html ? htmlToText(parsed.html, options) : parsed.text;
                         const upperedPlainText = plainText.toUpperCase();
 
                         const gsdaResultIndex = upperedPlainText.indexOf("GSDA RESULT");
@@ -97,7 +96,7 @@ function handleEmails(imap, initEmailRecieveListening) {
                         const gsdaReportIndex = upperedPlainText.indexOf("GSDA REPORT");
 
                         if (gsdaCreateIndex !== -1 && (gsdaResultIndex === -1 || gsdaCreateIndex < gsdaResultIndex)) {
-                            createItemFromEmail(plainText, upperedPlainText, parsed.subject, parsed.html, errorCallback);
+                            createItemFromEmail(gsdaCreateIndex, parsed, plainText/*, errorCallback*/);
                         }
                         else if (gsdAttachIndex !== -1 && (gsdaResultIndex === -1 || gsdAttachIndex < gsdaResultIndex)) {
                             const attachResult = await attachEmailToItem(gsdAttachIndex, parsed, plainText);

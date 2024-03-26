@@ -102,12 +102,12 @@
                                 </mat-autocomplete>
                             </mat-form-field>
                             <mat-error *ngIf="formState.errors._user">
-                                User is required
+                                User not matched
                             </mat-error>
                         </div>
                     </div>
                     <div class="row mt-3">
-                        <div class="col-3">
+                        <div class="col-3" *ngIf="$any(formState).value.type !== 'attach'">
                             <mat-form-field appearance="outline" [style.width.%]=100>
                                 <mat-label>Parsing Mode</mat-label>
                                 <mat-select [ngrxFormControlState]="$any(formState).controls.parsingMode">
@@ -172,7 +172,6 @@
                             <mat-form-field appearance="outline" [style.width.%]=100>
                                 <mat-label>Send Attach Result To</mat-label>
                                 <mat-select [ngrxFormControlState]="$any(formState).controls.sendAttachResultTo">
-                                    <mat-option value="none">None</mat-option>
                                     <mat-option value="sender">Sender</mat-option>
                                     <mat-option value="all">All</mat-option>
                                 </mat-select>
@@ -202,7 +201,6 @@
                             <mat-form-field appearance="outline" [style.width.%]=100>
                                 <mat-label>Send Attach Result To</mat-label>
                                 <mat-select [ngrxFormControlState]="$any(formState).controls.sendAttachResultTo">
-                                    <mat-option value="none">None</mat-option>
                                     <mat-option value="sender">Sender</mat-option>
                                     <mat-option value="all">All</mat-option>
                                 </mat-select>
@@ -343,7 +341,6 @@
                                         <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Modified By: </strong><span>{{element.modifiedBy}}</span>
                                     </p>
                                     <p *ngIf="element.type == 'attach'">
-                                        <strong>Parsing Mode: </strong><span>{{element.parsingMode}}</span>
                                         <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Close Items After Attach: </strong><span>{{element.closeItemsAfterAttach}}</span>
                                         <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Send Attach Result To: </strong><span>{{element.sendAttachResultTo}}</span>
                                         <strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Modified By: </strong><span>{{element.modifiedBy}}</span>
