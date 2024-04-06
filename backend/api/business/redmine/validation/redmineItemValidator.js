@@ -137,15 +137,27 @@ function validateFiles(retVal, files, required) {
         }
 
         if (!file.path || file.path.length === 0 || file.path.indexOf(file.filename) < 0) {
-            retVal.isValid = false;
-            retVal.errorMsg = 'There is no file...';
-            return retVal;
+            if (!file.buffer || file.buffer.length === 0) {
+                retVal.isValid = false;
+                retVal.errorMsg = 'There is no file...';
+                return retVal;
+            }
         }
 
-        if (!file.size || parseInt(file.size) > parseInt(process.env.MAX_ATT_FILE_SIZE)) {
-            retVal.isValid = false;
-            retVal.errorMsg = 'There is a file which cannot be uploaded because it exceeds the maximum allowed size (5 MB)';
-            return retVal;
+        if (file.path) {
+            if (!file.size || parseInt(file.size) > parseInt(process.env.MAX_ATT_FILE_SIZE)) {
+                retVal.isValid = false;
+                retVal.errorMsg = 'There is a file which cannot be uploaded because it exceeds the maximum allowed size (5 MB)';
+                return retVal;
+            }
+        } else {
+            if (!file.buffer.length || parseInt(file.buffer.length) > parseInt(process.env.MAX_ATT_FILE_SIZE)) {
+                console.log(file.buffer.length);
+                console.log(parseInt(file.buffer.length));
+                retVal.isValid = false;
+                retVal.errorMsg = 'There is a file which cannot be uploaded because it exceeds the maximum allowed size (5 MB)';
+                return retVal;
+            }
         }
     }
 }

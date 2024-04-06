@@ -2,11 +2,13 @@ const cacheValueProvider = require('../cache/cacheValueProvider');
 
 const { createItem } = require('../redmine/itemCreator');
 
-module.exports.createReportFromEmail = async function (plainText, upperedPlainText, subject, html, errorCallback) {
+module.exports.createReportFromEmail = async function (plainText, upperedPlainText, subject, parsedEmail/*, errorCallback*/) {
     const settings = await cacheValueProvider.getValue('items_from_emails_settings');
 
     if (settings.active) {
 
+        const attExt = parsedEmail.html ? ".html" : ".txt";
+        const attName = subject ? subject.substring(0,100).replace(/ /g,"_") + attExt : 'SOURCE_EMAIL' + attExt;
         const itemData = {
             project: settings.project,
             tracker: settings.tracker,
@@ -19,11 +21,11 @@ module.exports.createReportFromEmail = async function (plainText, upperedPlainTe
             version: settings.version,
             est_time: '',
             files: [{
-                originalname: 'SOURCE_EMAIL.html',
+                originalname: attName,
                 mimetype: 'text/html',
                 token: '',
                 encoding: 'utf-8',
-                buffer: Buffer.from(html, "utf-8")
+                buffer: Buffer.from(parsedEmail.html ? parsedEmail.html : parsedEmail.text, "utf-8")
             }]
         };
 

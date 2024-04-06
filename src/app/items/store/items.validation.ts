@@ -40,7 +40,7 @@ export function validateUserForItemsFromEmails(store: Store<State>, validateUser
                 new ClearAsyncErrorAction(controlId, validateUserError));
         }
 
-        return validateUser(store, validateUserError, controlId, userName, true);
+        return validateUser(store, validateUserError, controlId, userName, false);
     }));
 }
 
@@ -286,7 +286,7 @@ export function validateItemsFromEmailsSettingsSendAttachResultTo(store: Store<S
 
     return store.select(getItemsFromEmailsSettingsFormWithSetup).pipe(take(1), switchMap(settingsData => {
 
-        if (!settingsData.formData.value.type || settingsData.formData.value.type === 'create' || sendAttachResultTo === 'none' || sendAttachResultTo === 'sender' || sendAttachResultTo === 'all')
+        if (!settingsData.formData.value.type || settingsData.formData.value.type === 'create' || sendAttachResultTo === 'sender' || sendAttachResultTo === 'all')
             return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new ClearAsyncErrorAction(controlId, validateItemsFromEmailsError));
 
         return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new SetAsyncErrorAction(controlId, validateItemsFromEmailsError, "Send Attach Result To invalid"));
@@ -297,7 +297,7 @@ export function validateItemsFromEmailsSettingsSendAttachResultTo(store: Store<S
 export function validateItemsFromEmailsSettingsParsingMode(store: Store<State>, validateItemsFromEmailsError: string, controlId: string, parsingMode: string): Observable<any> {
     return store.select(getItemsFromEmailsSettingsFormData).pipe(take(1), switchMap(settingsData => {
 
-        if (!settingsData.value.type || parsingMode === 'plain' || parsingMode === 'plainAndHtmlAttachment' || parsingMode === 'parsedHtml')
+        if (!settingsData.value.type || settingsData.value.type === 'attach' || parsingMode === 'plain' || parsingMode === 'plainAndHtmlAttachment' || parsingMode === 'parsedHtml')
             return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new ClearAsyncErrorAction(controlId, validateItemsFromEmailsError));
 
         return of(new StartAsyncValidationAction(controlId, validateItemsFromEmailsError), new SetAsyncErrorAction(controlId, validateItemsFromEmailsError, "Parsing Mode invalid"));
