@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const multer = require('multer');
+const path = require('path');
 
 
 function configurePATH() {
@@ -19,7 +20,7 @@ async function connectToMongo() {
     await mongoose.connect(process.env.MONGO_DB_ADRESS, {});
 }
 
-function setupMiddleWares(app) {
+function setupMiddleWares(app, directory) {
     app.use(cors());
     app.use(bodyParser.json());
     app.use(express.urlencoded({ extended: true }));
@@ -29,6 +30,9 @@ function setupMiddleWares(app) {
             replaceWith: '_' // 
         }
     ));
+
+    const path = directory + "/app";
+    app.use(express.static(path));
 }
 
 let multerOnDisk = null;
@@ -65,17 +69,17 @@ module.exports.getFileStorage = () => {
                 cb(null, newName);
             }
         });
-        
+
         multerOnDisk = multer({
             storage: storage,
-          });
+        });
     }
-    
+
     return multerOnDisk;
 }
 
 module.exports.loadAppConfiguration = (app, directory) => {
     configurePATH();
     connectToMongo();
-    setupMiddleWares(app);
+    setupMiddleWares(app, directory);
 }
