@@ -1,7 +1,7 @@
 const Imap = require('imap');
 const { simpleParser } = require('mailparser');
 const { htmlToText } = require('html-to-text');
-const { createItemFromEmail } = require('./createItemFromEmail');
+const { createItemFromEmail, GSDA_CREATE } = require('./createItemFromEmail');
 const { attachEmailToItem, GSDA_ATTACH } = require('./attachEmailToItem');
 const { createReportFromEmail } = require('./createReportFromEmail');
 
@@ -91,12 +91,12 @@ function handleEmails(imap, initEmailRecieveListening) {
                         const upperedPlainText = plainText.toUpperCase();
 
                         const gsdaResultIndex = upperedPlainText.indexOf("GSDA RESULT");
-                        const gsdaCreateIndex = upperedPlainText.indexOf("GSDA CREATE");
+                        const gsdaCreateIndex = upperedPlainText.indexOf(GSDA_CREATE);
                         const gsdAttachIndex = upperedPlainText.indexOf(GSDA_ATTACH);
                         const gsdaReportIndex = upperedPlainText.indexOf("GSDA REPORT");
 
                         if (gsdaCreateIndex !== -1 && (gsdaResultIndex === -1 || gsdaCreateIndex < gsdaResultIndex)) {
-                            createItemFromEmail(gsdaCreateIndex, parsed, plainText/*, errorCallback*/);
+                            createItemFromEmail(gsdaCreateIndex, parsed, plainText);
                         }
                         else if (gsdAttachIndex !== -1 && (gsdaResultIndex === -1 || gsdAttachIndex < gsdaResultIndex)) {
                             const attachResult = await attachEmailToItem(gsdAttachIndex, parsed, plainText);

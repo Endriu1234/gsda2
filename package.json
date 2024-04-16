@@ -36,7 +36,7 @@
     "express-mongo-sanitize": "^2.2.0",
     "fs": "^0.0.1-security",
     "html-to-text": "^9.0.5",
-    "imap": "^0.8.19",
+    "imap": "^0.8.17",
     "jsonwebtoken": "^9.0.1",
     "ldap-authentication": "^3.0.3",
     "lodash": "^4.17.21",
@@ -48,10 +48,11 @@
     "ngrx-forms": "^8.0.0",
     "node-cache": "^5.1.2",
     "nodemailer": "^6.9.10",
-    "nodemailer-smtp-transport": "^2.7.4",
+    "nodemailer-smtp-transport": "^2.4.2",
     "oracledb": "^5.5.0",
     "rxjs": "~7.5.0",
     "sweetalert2": "^11.4.8",
+    "to-textile": "^0.1.1",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {

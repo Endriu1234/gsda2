@@ -3,11 +3,14 @@ const issuesFromEmailCollector = require('./issuesFromEmailCollector');
 const crsFromEmailCollector = require('./crsFromEmailCollector');
 const { sendEmail } = require('./emailSender');
 const { createItem } = require('../redmine/itemCreator');
+const { getTextileAndPicFromHtml } = require('./tools/emailHtmlToTexttileHelper');
 
 const GSDA_CREATE = "GSDA CREATE";
+const CREATE = 'create';
+const BOTH = 'both';
 module.exports.GSDA_CREATE = GSDA_CREATE;
 
-module.exports.createItemFromEmail = async function (commandIndex, parsedEmail, plainText, errorCallback) {
+module.exports.createItemFromEmail = async function (commandIndex, parsedEmail, plainText) {
 
     const retVal = {
         success: true,
@@ -18,6 +21,7 @@ module.exports.createItemFromEmail = async function (commandIndex, parsedEmail, 
     const newLineIndex = plainText.indexOf('\n', commandIndex);
 
     let sendTo = [];
+    let creationType = CREATE;
     let itemCreationResult = undefined;
     let newLine = "<br>";
 
@@ -28,7 +32,7 @@ module.exports.createItemFromEmail = async function (commandIndex, parsedEmail, 
             alias = 'General';
 
         const allSettings = await cacheValueProvider.getValue('items_from_emails_settings');
-        const settings = allSettings.find(s => s.name === alias && (s.type === 'create' || s.type === 'both'));
+        const settings = allSettings.find(s => s.name === alias && (s.type === CREATE || s.type === BOTH));
 
         if (settings) {
 
@@ -58,7 +62,41 @@ module.exports.createItemFromEmail = async function (commandIndex, parsedEmail, 
                 issues = issuesFromEmailCollector.collectIssuesAsString(plainText, issuesFromEmailCollector.collectorTypeEnum.EARLIEST);
             }
 
+            let descriptionText = plainText;
             let files = [];
+
+            if (settings.parsingMode) {
+                if (settings.parsingMode === 'parsedHtml') {
+                    const objTxtPic = getTextileAndPicFromHtml(parsedEmail.html);
+
+                    if (objTxtPic) {
+                        if (objTxtPic.textile && objTxtPic.textile.length > 0) {
+                            descriptionText = objTxtPic.textile;
+                        }
+
+                        if (objTxtPic.pictures && objTxtPic.pictures.length > 0) {
+                            objTxtPic.pictures.map(txtPic => {
+                                files.push({
+                                    originalname: txtPic.name,
+                                    mimetype: txtPic.mimetype,
+                                    token: '',
+                                    encoding: 'utf-8',
+                                    buffer: txtPic.picture
+                                })
+                            })
+                        }
+                    }
+                } else if (settings.parsingMode === 'plainAndHtmlAttachment') {
+                    files.push({
+                        originalname: attName,
+                        mimetype: 'text/html',
+                        token: '',
+                        encoding: 'utf-8',
+                        buffer: Buffer.from(parsedEmail.html ? parsedEmail.html : parsedEmail.text, "utf-8")
+                    });
+                }
+            }
+
             if (settings.addAttachments && parsedEmail.attachments && parsedEmail.attachments.length > 0) {
                 parsedEmail.attachments.map(att => {
                     files.push({
@@ -75,7 +113,7 @@ module.exports.createItemFromEmail = async function (commandIndex, parsedEmail, 
                 project: settings.project,
                 tracker: settings.tracker,
                 subject: (parsedEmail.subject ? parsedEmail.subject : 'Email w/o subject'),
-                description: plainText,
+                description: descriptionText,
                 issue: issues,
                 user: settings.user,
                 cr: crs,
@@ -88,12 +126,9 @@ module.exports.createItemFromEmail = async function (commandIndex, parsedEmail, 
             itemCreationResult = await createItem(itemData);
 
             if (!itemCreationResult.success) {
-
                 retVal.success = false;
                 retVal.errorMessage = 'Problem with adding to Redmine';
 
-                /*if (errorCallback)
-                    errorCallback(itemCreationResult.errorMessage);*/
             }
         } else {
             retVal.success = false;
