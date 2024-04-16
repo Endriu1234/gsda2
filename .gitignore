@@ -2,7 +2,8 @@
 
 # Backend
 backend/configuration/env_configuration/configurations
-
+backend/configuration/security_configuration
+backend/app
 # Frontend
 src/environments
 
