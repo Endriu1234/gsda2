@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "backend": "nodemon backend/app.js",
-    "production": "ng build && nodemon backend/app.js"
+    "production": "ng build && set NODE_ENV=production && nodemon backend/app.js"
   },
   "private": true,
   "dependencies": {
