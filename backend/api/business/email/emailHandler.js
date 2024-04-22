@@ -90,11 +90,11 @@ function handleEmails(imap, initEmailRecieveListening) {
                         const plainText = parsed.html ? htmlToText(parsed.html, options) : parsed.text;
                         const upperedPlainText = plainText.toUpperCase();
 
-                        const gsdaResultIndex = upperedPlainText.indexOf("GSDA RESULT");
-                        const gsdaCreateIndex = upperedPlainText.indexOf(GSDA_CREATE);
-                        const gsdAttachIndex = upperedPlainText.indexOf(GSDA_ATTACH);
-                        const gsdaReportIndex = upperedPlainText.indexOf("GSDA REPORT");
-
+                        const gsdaResultIndex = upperedPlainText.trimStart().slice(0,upperedPlainText.indexOf('\n')).indexOf("GSDA RESULT");
+                        const gsdaCreateIndex = upperedPlainText.trimStart().slice(0,upperedPlainText.indexOf('\n')).indexOf(GSDA_CREATE);
+                        const gsdAttachIndex = upperedPlainText.trimStart().slice(0,upperedPlainText.indexOf('\n')).indexOf(GSDA_ATTACH);
+                        const gsdaReportIndex = upperedPlainText.trimStart().slice(0,upperedPlainText.indexOf('\n')).indexOf("GSDA REPORT");
+                        
                         if (gsdaCreateIndex !== -1 && (gsdaResultIndex === -1 || gsdaCreateIndex < gsdaResultIndex)) {
                             createItemFromEmail(gsdaCreateIndex, parsed, plainText);
                         }

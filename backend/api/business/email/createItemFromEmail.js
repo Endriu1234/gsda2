@@ -3,7 +3,7 @@ const issuesFromEmailCollector = require('./issuesFromEmailCollector');
 const crsFromEmailCollector = require('./crsFromEmailCollector');
 const { sendEmail } = require('./emailSender');
 const { createItem } = require('../redmine/itemCreator');
-const { getTextileAndPicFromHtml } = require('./tools/emailHtmlToTexttileHelper');
+const { getTextileAndPicFromHtml/*, insertAtBeginningHtml*/ } = require('./tools/emailHtmlToTexttileHelper');
 
 const GSDA_CREATE = "GSDA CREATE";
 const CREATE = 'create';
@@ -140,7 +140,8 @@ module.exports.createItemFromEmail = async function (commandIndex, parsedEmail, 
     }
 
     if (retVal.success) {
-        const emailSendResult = await sendEmail(parsedEmail.subject, sendTo.length > 0 ? sendTo : parsedEmail.from.value, `GSDA RESULT: item created ${newLine} ${itemCreationResult.redmineLink}`);
+        let htmlTextResponse = parsedEmail.html ? /*insertAtBeginningHtml(parsedEmail.html, */`<p>GSDA RESULT: item created</p><a href="${itemCreationResult.redmineLink}" target="_blank">${itemCreationResult.redmineLink}</a><br><br><br><br>`/*)*/ : '';       
+        const emailSendResult = await sendEmail(parsedEmail.subject, sendTo.length > 0 ? sendTo : parsedEmail.from.value, `GSDA RESULT: item created ${newLine} ${itemCreationResult.redmineLink}`, htmlTextResponse);
 
         if (!emailSendResult.success) {
             retVal.success = emailSendResult.success;

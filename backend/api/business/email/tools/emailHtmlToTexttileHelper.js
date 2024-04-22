@@ -42,6 +42,23 @@ module.exports.getTextileAndPicFromHtml = function (emailHtml) {
 }
 
 
+module.exports.insertAtBeginningHtml = function (emailHtml, htmlTextToInsert) {
+    let retHtml = emailHtml;
+
+    if (emailHtml && htmlTextToInsert) {
+        const startTextHtml = "<body";
+        const endBody = ">";
+
+        let startIndex = emailHtml.indexOf(startTextHtml);
+        let endIndex = emailHtml.indexOf(endBody, startIndex + startTextHtml.length);
+
+        retHtml = emailHtml.slice(0, endIndex + endBody.length) + htmlTextToInsert + emailHtml.slice(endIndex + endBody.length, emailHtml.length);
+    }
+
+    return retHtml;
+}
+
+
 function getSimpleHtmlAndPictures(emailHtml) {
     let html = '';
 
