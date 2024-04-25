@@ -11,7 +11,7 @@ module.exports.getRedmineItemsPerIssues = async (redmineProject, onlyOpen = true
 
         if (project) {
             const onlyOpenQuery = onlyOpen ? 'open' : '*'
-            const currentProjectItems = await getRedmineData(`issues.json?project_id=${project.id}&status_id=${onlyOpenQuery}`, false);
+            const currentProjectItems = await getRedmineData(`issues.json?project_id=${project.id}&status_id=${onlyOpenQuery}`, true);
             const itemsPerIssue = {};
 
             for (const item of currentProjectItems.issues) {

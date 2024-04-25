@@ -50,11 +50,7 @@ module.exports.getPotentialRedmineItemsFromSDProject = async (req, res) => {
     if (redmineItems) {
         if (!(req.query.itemLevel === 'cr')) {
             for (const softDevRecord of queryResults) {
-                if (redmineItems[softDevRecord.ISSUE] !== undefined
-                    && (redmineItems[softDevRecord.ISSUE][0].subject === softDevRecord.SUBJECT 
-                        || redmineItems[softDevRecord.ISSUE][0].subject.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.SUBJECT.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))
-                    && (redmineItems[softDevRecord.ISSUE][0].description === softDevRecord.DESCRIPTION
-                        || redmineItems[softDevRecord.ISSUE][0].description.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,'') === softDevRecord.DESCRIPTION.replace(/\r/g,'').replace(/\n/g,'').replace(/\t/g,''))) {
+                if (redmineItems[softDevRecord.ISSUE] !== undefined) {
                     
                     softDevRecord.REDMINE_LINK = `${getRedmineAddress(`issues/${redmineItems[softDevRecord.ISSUE][0].id}`)}`;
                     softDevRecord.SELECTED = false;
