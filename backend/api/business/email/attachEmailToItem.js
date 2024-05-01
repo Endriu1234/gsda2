@@ -30,7 +30,7 @@ module.exports.attachEmailToItem = async function (commandIndex, parsedEmail, pl
         if (settings) {
 
             if (settings.sendAttachResultTo === 'sender') {
-                sendTo = parsedEmail.from.value; 
+                sendTo = parsedEmail.from.value;
             } else {
                 sendTo = parsedEmail.from.value;
                 if (parsedEmail.to && parsedEmail.to.value)
@@ -40,10 +40,10 @@ module.exports.attachEmailToItem = async function (commandIndex, parsedEmail, pl
             }
 
             const items = itemsFromTextCollector.collectItems(plainText, false);
-            
+
             if (items.length > 0) {
                 const attExt = parsedEmail.html ? ".html" : ".txt";
-                const attName = parsedEmail.subject ? parsedEmail.subject.substring(0,100).replace(/ /g,"_") + attExt : 'SOURCE_EMAIL' + attExt
+                const attName = parsedEmail.subject ? parsedEmail.subject.substring(0, 100).replace(/ /g, "_") + attExt : 'SOURCE_EMAIL' + attExt
                 const files = [{
                     originalname: attName,
                     mimetype: 'text/html',
@@ -70,7 +70,7 @@ module.exports.attachEmailToItem = async function (commandIndex, parsedEmail, pl
                         });
                     }
 
-                    const attachResult = await putRedmineJsonData(`issues/${items[0]}`, data);
+                    const attachResult = await putRedmineJsonData(`issues/${items[0]}.json`, data);
 
                     if (attachResult.success) {
 

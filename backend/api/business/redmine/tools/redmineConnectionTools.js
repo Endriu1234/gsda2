@@ -162,7 +162,7 @@ module.exports.putRedmineJsonData = async (endpoint, jsonData, ignoreRedirect) =
         redmineLink: ''
     }
 
-    retVal.redmineResponse = await axios.put(getRedmineAddress(endpoint), jsonData, getRedmineApiConfiguration()).catch((error) => {
+    retVal.redmineResponse = await axios.put(getRedmineAddress(endpoint), jsonData, getRedmineApiConfiguration('application/json')).catch((error) => {
 
         if (ignoreRedirect && error.code === 'ERR_FR_TOO_MANY_REDIRECTS')
             return;
