@@ -8,12 +8,14 @@ const itemsSdRoutes = require('../../api/routes/softdev/item/itemRoutes');
 const authRoutes = require('./auth/authRoutes');
 const itemsFromEmailsRoutes = require('./gsda/itemsfromemails/itemsFromEmailsRoutes');
 const userPreferencesRoutes = require('./gsda/user_preferences/userPreferencesRoutes');
+const rmSetupRoutes = require('../../api/routes/redmine/setup/setupRoutes');
 
 const express = require('express');
 const router = express.Router();
 
 router.use('/redmine/items/', itemsRoutes);
 router.use('/redmine/projects/', rmProjectsRoutes);
+router.use('/redmine/setup/', rmSetupRoutes);
 router.use('/softdev/projects/', projectsRoutes);
 router.use('/softdev/crs/', crsRoutes);
 router.use('/softdev/issues/', issuesRoutes);
