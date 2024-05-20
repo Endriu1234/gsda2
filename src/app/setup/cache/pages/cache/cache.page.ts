@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { FormGroupState } from 'ngrx-forms';
 import * as fromCacheRefreshSelectors from '../../../store/selectors/setup.selectors';
 import * as fromItemsState from '../../../store/state/setup.state';
-import { refreshCache } from 'src/app/setup/store/actions/setup.actions';
+import { refreshCache, refreshCustomFields, refreshEmailSettings, refreshRedmineProjects, refreshSDProjects, refreshUserPreferences, refreshVersions } from 'src/app/setup/store/actions/setup.actions';
 
 @Component({
   selector: 'app-cache',
@@ -28,4 +28,22 @@ export class CachePage implements OnInit {
     this.store.dispatch(refreshCache());
   }
 
+  refreshUserPreferences() {
+    this.store.dispatch(refreshUserPreferences());
+  }
+  refreshEmailSettings() {
+    this.store.dispatch(refreshEmailSettings());
+  }
+  refreshCustomFields() {
+    this.store.dispatch(refreshCustomFields());
+  }
+  refreshRedmineProjects() {
+    this.store.dispatch(refreshRedmineProjects());
+  }
+  refreshSDProjects() {
+    this.store.dispatch(refreshSDProjects());
+  }
+  refreshVersions() {
+    this.store.dispatch(refreshVersions());
+  }
 }

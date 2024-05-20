@@ -1,12 +1,24 @@
 import { FormGroupState, createFormGroupState } from "ngrx-forms";
 
 export interface CacheRefreshSetupData {
-    refreshInProgress: boolean
+    refreshInProgress: boolean;
+    refreshVersionsInProgress: boolean;
+    refreshSDProjectsInProgress: boolean;
+    refreshRedmineProjectsInProgress: boolean;
+    refreshCustomFieldsInProgress: boolean;
+    refreshEmailSettingsInProgress: boolean;
+    refreshUserPreferencesInProgress: boolean;
 }
 
 export function getCacheRefreshSetupDataInitialState(): CacheRefreshSetupData {
     return {
-        refreshInProgress: false
+        refreshInProgress: false,
+        refreshVersionsInProgress: false,
+        refreshSDProjectsInProgress: false,
+        refreshRedmineProjectsInProgress: false,
+        refreshCustomFieldsInProgress: false,
+        refreshEmailSettingsInProgress: false,
+        refreshUserPreferencesInProgress: false
     };
 }
 

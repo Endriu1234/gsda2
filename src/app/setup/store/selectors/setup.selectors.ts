@@ -10,5 +10,7 @@ export const getCacheRefreshSetupDataState = createSelector(getSetupState, (stat
 export const getItemCreationFormCanActivateSave = createSelector(getCacheRefreshSetupDataState, isCacheRefreshingInProgress);
 
 function isCacheRefreshingInProgress(refreshCacheSetupState: CacheRefreshSetupData): boolean {
-    return refreshCacheSetupState.refreshInProgress;
+    return refreshCacheSetupState.refreshInProgress || refreshCacheSetupState.refreshCustomFieldsInProgress || refreshCacheSetupState.refreshEmailSettingsInProgress
+        || refreshCacheSetupState.refreshRedmineProjectsInProgress || refreshCacheSetupState.refreshSDProjectsInProgress 
+        || refreshCacheSetupState.refreshUserPreferencesInProgress || refreshCacheSetupState.refreshVersionsInProgress;
 }

@@ -13,7 +13,55 @@
                         color="primary"
                         class="me-3 my-2"
                         (click)="refreshCache()"
-                    >Refresh Cache</button>
+                    >Refresh All Caches</button>
+                    <button
+                        mat-fab
+                        extended
+                        [disabled]="isCacheRefreshingInProgress$ | async"
+                        color="primary"
+                        class="me-3 my-2"
+                        (click)="refreshVersions()"
+                    >Refresh Version</button>
+                    <button
+                        mat-fab
+                        extended
+                        [disabled]="isCacheRefreshingInProgress$ | async"
+                        color="primary"
+                        class="me-3 my-2"
+                        (click)="refreshSDProjects()"
+                    >Refresh SoftDev Projects</button>
+                    <button
+                        mat-fab
+                        extended
+                        [disabled]="isCacheRefreshingInProgress$ | async"
+                        color="primary"
+                        class="me-3 my-2"
+                        (click)="refreshRedmineProjects()"
+                    >Refresh Redmine Projects</button>
+                    <button
+                        mat-fab
+                        extended
+                        [disabled]="isCacheRefreshingInProgress$ | async"
+                        color="primary"
+                        class="me-3 my-2"
+                        (click)="refreshCustomFields()"
+                    >Refresh Custom Fields</button>
+                    <button
+                        mat-fab
+                        extended
+                        [disabled]="isCacheRefreshingInProgress$ | async"
+                        color="primary"
+                        class="me-3 my-2"
+                        (click)="refreshEmailSettings()"
+                    >Refresh Email Settings</button>
+                    <button
+                        mat-fab
+                        extended
+                        [disabled]="isCacheRefreshingInProgress$ | async"
+                        color="primary"
+                        class="me-3 my-2"
+                        (click)="refreshUserPreferences()"
+                    >Refresh User Preferences</button>
                     <app-small-spinner class="float-start" [style.width.%]=100
                         [style.visibility]="(isCacheRefreshingInProgress$ | async)?'visible':'hidden'"></app-small-spinner>
                 </div>
