@@ -148,3 +148,58 @@ module.exports.clearCache = async () => {
     console.log('Clearing cache');
     cache.flushAll();
 }
+
+module.exports.refreshProjects = async() => {
+    this.deleteValue('redmine_projects');
+    await this.getValue('redmine_projects');
+}
+
+module.exports.refreshTrackers = async() => {
+    this.deleteValue('redmine_trackers');
+    await this.getValue('redmine_trackers');
+}
+
+module.exports.refreshUsers = async() => {
+    this.deleteValue('redmine_users');
+    await this.getValue('redmine_users');
+}
+
+module.exports.refreshCustomFields = async() => {
+    this.deleteValue('redmine_custom_fields');
+    await this.getValue('redmine_custom_fields');
+}
+
+module.exports.refreshIssueStatuses = async() => {
+    this.deleteValue('redmine_issue_statuses');
+    await this.getValue('redmine_issue_statuses');
+}
+
+module.exports.refreshSDProjects = async() => {
+    this.deleteValue('softdev_projects');
+    await this.getValue('softdev_projects');
+}
+
+module.exports.refreshTmsUsers = async() => {
+    this.deleteValue('tms_users');
+    await this.getValue('tms_users');
+}
+
+module.exports.refreshTmsClients = async() => {
+    this.deleteValue('tms_clients');
+    await this.getValue('tms_clients');
+}
+
+module.exports.refreshVersions = async() => {
+    this.deleteValue('redmine_versions');
+    await this.getValue('redmine_versions');
+}
+
+module.exports.refreshEmailSettings = async() => {
+    this.deleteValue('items_from_emails_settings');
+    await this.getValue('items_from_emails_settings');
+}
+
+module.exports.refreshUserPreferences = async() => {
+    this.deleteValue('user_preferences');
+    await this.getValue('user_preferences');
+}

@@ -1,1 +1,71 @@
-<p>cache works!</p>
+<ng-container *ngIf="formState$ | async as formState">
+    <form novalidate [ngrxFormState]="formState">
+        <div class="d-flex flex-md-row justify-content-md-between flex-column my-4 jkWidthMarg">
+            <mat-card-title>Cache Refreshing</mat-card-title>
+        </div>
+        <mat-card class="mt-1">
+            <mat-card-content>
+                <div class="d-flex flex-column">
+                    <button
+                        mat-fab
+                        extended
+                        [disabled]="isCacheRefreshingInProgress$ | async"
+                        color="primary"
+                        class="me-3 my-2"
+                        (click)="refreshCache()"
+                    >Refresh All Caches</button>
+                    <button
+                        mat-fab
+                        extended
+                        [disabled]="isCacheRefreshingInProgress$ | async"
+                        color="primary"
+                        class="me-3 my-2"
+                        (click)="refreshVersions()"
+                    >Refresh Version</button>
+                    <button
+                        mat-fab
+                        extended
+                        [disabled]="isCacheRefreshingInProgress$ | async"
+                        color="primary"
+                        class="me-3 my-2"
+                        (click)="refreshSDProjects()"
+                    >Refresh SoftDev Projects</button>
+                    <button
+                        mat-fab
+                        extended
+                        [disabled]="isCacheRefreshingInProgress$ | async"
+                        color="primary"
+                        class="me-3 my-2"
+                        (click)="refreshRedmineProjects()"
+                    >Refresh Redmine Projects</button>
+                    <button
+                        mat-fab
+                        extended
+                        [disabled]="isCacheRefreshingInProgress$ | async"
+                        color="primary"
+                        class="me-3 my-2"
+                        (click)="refreshCustomFields()"
+                    >Refresh Custom Fields</button>
+                    <button
+                        mat-fab
+                        extended
+                        [disabled]="isCacheRefreshingInProgress$ | async"
+                        color="primary"
+                        class="me-3 my-2"
+                        (click)="refreshEmailSettings()"
+                    >Refresh Email Settings</button>
+                    <button
+                        mat-fab
+                        extended
+                        [disabled]="isCacheRefreshingInProgress$ | async"
+                        color="primary"
+                        class="me-3 my-2"
+                        (click)="refreshUserPreferences()"
+                    >Refresh User Preferences</button>
+                    <app-small-spinner class="float-start" [style.width.%]=100
+                        [style.visibility]="(isCacheRefreshingInProgress$ | async)?'visible':'hidden'"></app-small-spinner>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </form>
+</ng-container>
