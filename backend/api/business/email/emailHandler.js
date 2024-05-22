@@ -32,6 +32,16 @@ module.exports.handleEmailCommands = function () {
             console.log(`emailHandler.js (!): ${err}`);
             console.dir(err);
             imap.end();
+            if (process.env.GSDA_EMAIL_RESTART_DELAY && process.env.GSDA_EMAIL_RESTART_DELAY > 0) {
+                console.log('Trying to reconnect');
+                setTimeout(() => {
+                    console.log('Trying to reconnect2');
+
+                    imap.connect();
+                    console.log('Trying after reconnect3');
+
+                }, process.env.GSDA_EMAIL_RESTART_DELAY);
+            }
         });
 
         imap.once('end', () => {
@@ -86,15 +96,15 @@ function handleEmails(imap, initEmailRecieveListening) {
                                 { selector: 'img', format: 'skip' }
                             ]
                         };
-                        
+
                         const plainText = parsed.html ? htmlToText(parsed.html, options) : parsed.text;
                         const upperedPlainText = plainText.toUpperCase();
 
-                        const gsdaResultIndex = upperedPlainText.trimStart().slice(0,upperedPlainText.indexOf('\n')).indexOf("GSDA RESULT");
-                        const gsdaCreateIndex = upperedPlainText.trimStart().slice(0,upperedPlainText.indexOf('\n')).indexOf(GSDA_CREATE);
-                        const gsdAttachIndex = upperedPlainText.trimStart().slice(0,upperedPlainText.indexOf('\n')).indexOf(GSDA_ATTACH);
-                        const gsdaReportIndex = upperedPlainText.trimStart().slice(0,upperedPlainText.indexOf('\n')).indexOf("GSDA REPORT");
-                        
+                        const gsdaResultIndex = upperedPlainText.trimStart().slice(0, upperedPlainText.indexOf('\n')).indexOf("GSDA RESULT");
+                        const gsdaCreateIndex = upperedPlainText.trimStart().slice(0, upperedPlainText.indexOf('\n')).indexOf(GSDA_CREATE);
+                        const gsdAttachIndex = upperedPlainText.trimStart().slice(0, upperedPlainText.indexOf('\n')).indexOf(GSDA_ATTACH);
+                        const gsdaReportIndex = upperedPlainText.trimStart().slice(0, upperedPlainText.indexOf('\n')).indexOf("GSDA REPORT");
+
                         if (gsdaCreateIndex !== -1 && (gsdaResultIndex === -1 || gsdaCreateIndex < gsdaResultIndex)) {
                             createItemFromEmail(gsdaCreateIndex, parsed, plainText);
                         }
