@@ -12,6 +12,7 @@ export class SoftDevProject {
     public PRODUCT_TESTING_MGR: string;
     public PRODUCT_PROGRAMMING_MGR: string;
     public PRODUCT_PROJECT_MGR: string;
+    public EDD_APPROVALS: string;
 
     constructor(
         PRODUCT_VERSION_ID: number,
@@ -26,7 +27,8 @@ export class SoftDevProject {
         PRODUCT_DELIVERY_DATE: string,
         PRODUCT_TESTING_MGR: string,
         PRODUCT_PROGRAMMING_MGR: string,
-        PRODUCT_PROJECT_MGR: string) {
+        PRODUCT_PROJECT_MGR: string,
+        EDD_APPROVALS: string) {
 
         this.PRODUCT_VERSION_ID = PRODUCT_VERSION_ID;
         this.PRODUCT_VERSION_NAME = PRODUCT_VERSION_NAME;
@@ -41,5 +43,6 @@ export class SoftDevProject {
         this.PRODUCT_TESTING_MGR = PRODUCT_TESTING_MGR;
         this.PRODUCT_PROGRAMMING_MGR = PRODUCT_PROGRAMMING_MGR;
         this.PRODUCT_PROJECT_MGR = PRODUCT_PROJECT_MGR;
+        this.EDD_APPROVALS = EDD_APPROVALS;
     }
 }

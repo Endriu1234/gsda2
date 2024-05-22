@@ -253,7 +253,9 @@ export class ProjectsEffects {
         sWiki += `h2. Project Name \n\n`;
         sWiki += `* ${sdProject.PROJECT_NAME} \n\n`;
         sWiki += `h2. Branch \n\n`;
-        sWiki += `* ${sdProject.PRODUCT_BRANCH}`;
+        sWiki += `* ${sdProject.PRODUCT_BRANCH} \n\n`;
+        sWiki += `h2. EDD Approvals \n\n`;
+        sWiki += `* *${sdProject.EDD_APPROVALS}*`;
 
         return sWiki;
     }

@@ -14,7 +14,8 @@ module.exports.getSDActiveProjectsQuery = () => {
     proj.pj_delivery_date product_delivery_date, 
     (SELECT gus_user_firstname || ' ' || gus_user_lastname FROM sd_live.global_users WHERE aa_id = proj.pj_testing_mngr_aa) AS product_testing_mgr,
     (SELECT gus_user_firstname || ' ' || gus_user_lastname FROM sd_live.global_users WHERE aa_id = proj.pj_program_mngr_aa) AS product_programming_mgr,
-    (SELECT gus_user_firstname || ' ' || gus_user_lastname FROM sd_live.global_users WHERE aa_id =  proj.pj_project_mngr_aa) AS product_project_mgr 
+    (SELECT gus_user_firstname || ' ' || gus_user_lastname FROM sd_live.global_users WHERE aa_id =  proj.pj_project_mngr_aa) AS product_project_mgr,
+    GET_EDD_APPROVERS(proj.aa_id) as edd_approvals 
 FROM 
     sd_live.prod_version prd_version, sd_live.product product, sd_live.project proj
 WHERE 
