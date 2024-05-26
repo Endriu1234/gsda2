@@ -17,4 +17,7 @@ export const loadRedmineProjects = createAction('[Items Component] Load Redmine 
 export const initSoftDevProjects = createAction('[Items Component] Init SoftDev Projects');
 export const loadSoftDevProjects = createAction('[Items Component] Load SoftDev Projects', props<{ softDevProjects: SoftDevProject[] }>());
 
+export const refreshRedmineProjects = createAction('[Items Component] Refresh Redmine Projects');
+export const endRefreshingRedmineProjects = createAction('[Items Component] End Refreshing Redmine Projects');
+
 export const noopAction = createAction('[Items Component] Noop Action');

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { from, map, switchMap } from "rxjs";
+import { from, map, mergeMap, of, switchMap } from "rxjs";
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { RedmineTracker } from '../models/redmine-tracker.model';
 import { environment } from 'src/environments/environment';
@@ -11,8 +11,9 @@ import * as fromSharedState from '../../../shared/store/shared.state';
 import { Store } from '@ngrx/store';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 import { SoftDevProject } from 'src/app/shared/store/models/softdev-project.model';
-import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, initSoftDevProjects, loadRedmineProjects, loadRedmineTrackers, loadRedmineUsers, loadSoftDevProjects } from '../actions/items.common-actions';
-import { RedmineVersion } from '../../../shared/store/models/redmine-version.model';
+import { endRefreshingRedmineProjects, initRedmineProjects, initRedmineTrackers, initRedmineUsers, initSoftDevProjects, loadRedmineProjects, loadRedmineTrackers, loadRedmineUsers, loadSoftDevProjects, refreshRedmineProjects } from '../actions/items.common-actions';
+import { RefreshCacheHttpResponse } from 'src/app/setup/store/models/refreshCache-response.model';
+import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
 
 @Injectable()
 export class ItemsCommonEffects {
@@ -44,5 +45,19 @@ export class ItemsCommonEffects {
         switchMap(() => {
             return this.http.get<SoftDevProject[]>(environment.apiUrl + '/softdev/projects/get-softdev-projects');
         }), map(softDevProjects => loadSoftDevProjects({ softDevProjects }))
+    ));
+
+    refreshRedmineProjects$ = createEffect(() => this.actions$.pipe(
+        ofType(refreshRedmineProjects),
+        switchMap(() => {
+            return this.http.get<RefreshCacheHttpResponse>(environment.apiUrl + '/redmine/setup/refresh-redmine-projects').pipe(mergeMap(response => {
+                if (response.success) {
+                    this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Redmine Projects refreshed', icon: fromSharedState.SnackBarIcon.Success }));
+                } else {
+                    this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage, icon: fromSharedState.SnackBarIcon.Error }));
+                }
+                return of(initRedmineProjects(), endRefreshingRedmineProjects());
+            }))
+        })
     ));
 }

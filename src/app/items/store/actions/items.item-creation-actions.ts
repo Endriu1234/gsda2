@@ -32,3 +32,6 @@ export const loadItemCreationUserPreferencesSetup = createAction('[Items Compone
 export const setItemCreationUserPreferencesSetupByCtrl = createAction('[Items Component] Set Item Creation User Preferences Setup By Control', props<{ control: string }>());
 export const saveItemCreationUserPreferences = createAction('[Items Component] Save Item Creation User Preferences', props<{ updateSetup: boolean }>());
 export const setItemControlsByUserPreferences = createAction('[Items Component] Set Item Control By User Preferences', props<{ preferences: UserPreferences | null }>()); 
+
+export const refreshVersions = createAction('[Items Component] Refresh Redmine Versions');
+export const endRefreshingVersions = createAction('[Items Component] End Refreshing Redmine Versions');

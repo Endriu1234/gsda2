@@ -12,8 +12,8 @@ import { trimUpperConverter } from '../../../../shared/tools/validators/ngrxValu
 import { ItemCreationFromId } from "../item-creation-from-id/item-creation-from-id";
 import { MatDialog } from '@angular/material/dialog';
 import { FormSaveState, FORM_SAVE_STATE, SnackBarIcon } from 'src/app/shared/store/shared.state';
-import { initRedmineProjects, initRedmineTrackers, initRedmineUsers } from 'src/app/items/store/actions/items.common-actions';
-import { breakBatchItemCreation, identifyAndFillItemById, startLoadingItemCreationUserPreferences } from 'src/app/items/store/actions/items.item-creation-actions';
+import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, refreshRedmineProjects } from 'src/app/items/store/actions/items.common-actions';
+import { breakBatchItemCreation, identifyAndFillItemById, refreshVersions, startLoadingItemCreationUserPreferences } from 'src/app/items/store/actions/items.item-creation-actions';
 import { ITEM_CREATION_FORMID } from 'src/app/items/store/state/items.item-creation-state';
 import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
 import * as _ from 'lodash';
@@ -35,6 +35,8 @@ export class ItemCreationPage implements OnInit, OnDestroy {
   getItemCreationFormSuitableForDefault$: Observable<boolean> | null = null;
   getItemCreationFormCanActivateSave$: Observable<boolean> | null = null;
   isItemCreationFormCreatedFromBatch$: Observable<boolean> | null = null;
+  isVersionRefreshingInProgress$: Observable<boolean> | null = null;
+  isRedmineProjectRefreshingInProgress$: Observable<boolean> | null = null;
   versions$: Observable<RedmineVersion[]> | null = null;
   files$: Observable<File[]> | null = null;
   private subscriptions: (Subscription | undefined)[] = [];
@@ -114,7 +116,8 @@ export class ItemCreationPage implements OnInit, OnDestroy {
     this.isItemCreationFormCreatedFromBatch$ = this.store.select(fromItemCreationSelectors.isItemCreationFormCreatedFromBatch);
     this.versions$ = this.store.select(fromItemCreationSelectors.getRedmineVersionsByProject);
     this.files$ = this.store.select(fromItemCreationSelectors.getItemCreationFormFilestControl);
-
+    this.isVersionRefreshingInProgress$ = this.store.select(fromItemCreationSelectors.isVersionRefreshingInProgress);
+    this.isRedmineProjectRefreshingInProgress$ = this.store.select(fromCommonItemsSelectors.isRedmineProjectRefreshingInProgress);
     this.store.dispatch(startLoadingItemCreationUserPreferences());
   }
 
@@ -259,6 +262,14 @@ export class ItemCreationPage implements OnInit, OnDestroy {
     }
 
     return bRet;
+  }
+
+  refreshRedmineProjects() {
+    this.store.dispatch(refreshRedmineProjects());
+  }
+
+  refreshVersions() {
+    this.store.dispatch(refreshVersions());
   }
 
 }

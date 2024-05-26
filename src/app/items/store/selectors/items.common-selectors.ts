@@ -14,3 +14,4 @@ export const getRedmineUsers = createSelector(getItemsState, (state: State) => s
 export const getRedmineUsersLoaded = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.redmineUsersLoaded);
 
 export const getSoftDevProjects = createSelector(getItemsState, (state: State) => state.itemsSetupData.softDevProjects);
+export const isRedmineProjectRefreshingInProgress = createSelector(getItemsState, (state: State) => state.itemsSetupData.refreshingRedmineProjects);

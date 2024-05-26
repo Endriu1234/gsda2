@@ -13,9 +13,9 @@ import { environment } from 'src/environments/environment';
 import { SpinnerType, TYPE_OF_SPINNER } from 'src/app/shared/tools/interceptors/http-context-params';
 import { Item } from '../models/item.model';
 import {
-    breakBatchItemCreation, clearRedmineVersions, endLoadingItemCreationUserPreferences, endResetItemCreationForm, fillItemById, identifyAndFillItemById, initRedmineVersions,
+    breakBatchItemCreation, clearRedmineVersions, endLoadingItemCreationUserPreferences, endRefreshingVersions, endResetItemCreationForm, fillItemById, identifyAndFillItemById, initRedmineVersions,
     loadItemCreationUserPreferencesSetup,
-    loadRedmineVersions, saveItemCreationUserPreferences, setItemControlsByUserPreferences, setItemCreationUserPreferencesSetupByCtrl, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startLoadingItemCreationUserPreferences, startResetItemCreationForm
+    loadRedmineVersions, refreshVersions, saveItemCreationUserPreferences, setItemControlsByUserPreferences, setItemCreationUserPreferencesSetupByCtrl, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startLoadingItemCreationUserPreferences, startResetItemCreationForm
 } from '../actions/items.item-creation-actions';
 import { noopAction } from '../actions/items.common-actions';
 import { getItemCreationDialogState, getItemCreationFormState, getItemCreationFormWithSetup, getItemCreationMode, getItemCreationUserPreferencesSetupData } from '../selectors/items.item-creation-selectors';
@@ -24,6 +24,7 @@ import { SnackBarIcon } from '../../../shared/store/shared.state';
 import { continueBatchItemsCreation, forceEndBatchItemCreation, setLinkToCurrentProposedItemAndUnselect } from '../actions/items.batch-item-creation-actions';
 import { RedmineVersion } from '../../../shared/store/models/redmine-version.model';
 import { UserPreferencesHttpResponse } from '../models/itemcreation/userPreferences-http-response.model';
+import { RefreshCacheHttpResponse } from 'src/app/setup/store/models/refreshCache-response.model';
 
 export const validateUserError = "validateUserError";
 export const validateCRError = "validateCRError";
@@ -379,4 +380,20 @@ export class ItemsItemCreationEffects {
             }))
         })
     ))
+
+    refreshVersions$ = createEffect(() => this.actions$.pipe(
+        ofType(refreshVersions),
+        switchMap(() => {
+            return this.http.get<RefreshCacheHttpResponse>(environment.apiUrl + '/redmine/setup/refresh-versions').pipe(mergeMap(response => {
+                if (response.success) {
+                    this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Versions refreshed', icon: fromSharedState.SnackBarIcon.Success }));
+                } else {
+                    this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage, icon: fromSharedState.SnackBarIcon.Error }));
+                }
+                return this.store.select(getItemCreationFormState).pipe(take(1), switchMap(itemCreationForm => {
+                    return of(initRedmineVersions({projectName: itemCreationForm.value.project}), endRefreshingVersions());
+                }))
+            }))
+        })
+    ));
 }

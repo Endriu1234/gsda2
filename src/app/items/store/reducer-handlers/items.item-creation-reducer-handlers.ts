@@ -150,3 +150,15 @@ export function setItemCreationUserPreferencesSetupByCtrl(state: State, args: { 
 
     return newState;
 }
+
+export function refreshVersions(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemCreationSetupData.refreshingVersions = true;
+    return newState;
+}
+
+export function endRefreshingVersions(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemCreationSetupData.refreshingVersions = false;
+    return newState;
+}

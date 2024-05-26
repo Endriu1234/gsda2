@@ -112,3 +112,15 @@ export function loadSoftDevProjects(state: State, args: { softDevProjects: SoftD
         = filterSoftDevProjects(args.softDevProjects, newState.batchItemCreationSdCriteriaFormData.value.targetRedmineProject);
     return newState;
 }
+
+export function refreshRedmineProjects(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemsSetupData.refreshingRedmineProjects = true;
+    return newState;
+}
+
+export function endRefreshingRedmineProjects(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.itemsSetupData.refreshingRedmineProjects = false;
+    return newState;
+}

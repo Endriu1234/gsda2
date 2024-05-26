@@ -7,8 +7,8 @@ import * as fromItemsFromEmailsReducerHanders from './reducer-handlers/items.ite
 
 import { onNgrxForms, wrapReducerWithFormStateUpdate, updateGroup, validate, ValidationErrors } from 'ngrx-forms';
 import { required } from 'ngrx-forms/validation';
-import { initRedmineProjects, initRedmineTrackers, initRedmineUsers, initSoftDevProjects, loadRedmineProjects, loadRedmineTrackers, loadRedmineUsers, loadSoftDevProjects } from './actions/items.common-actions';
-import { addValidatedCR, addValidatedFromId, addValidatedIssue, addValidatedTms, clearRedmineVersions, endLoadingItemCreationUserPreferences, endResetItemCreationForm, initRedmineVersions, loadRedmineVersions, saveItemCreationUserPreferences, setItemCreationFormMode, setItemCreationUserPreferencesSetupByCtrl, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startLoadingItemCreationUserPreferences, startResetItemCreationForm } from './actions/items.item-creation-actions';
+import { endRefreshingRedmineProjects, initRedmineProjects, initRedmineTrackers, initRedmineUsers, initSoftDevProjects, loadRedmineProjects, loadRedmineTrackers, loadRedmineUsers, loadSoftDevProjects, refreshRedmineProjects } from './actions/items.common-actions';
+import { addValidatedCR, addValidatedFromId, addValidatedIssue, addValidatedTms, clearRedmineVersions, endLoadingItemCreationUserPreferences, endRefreshingVersions, endResetItemCreationForm, initRedmineVersions, loadRedmineVersions, refreshVersions, saveItemCreationUserPreferences, setItemCreationFormMode, setItemCreationUserPreferencesSetupByCtrl, setRedmineProjectsFilterForItemCreation, setRedmineUsersByLetterFilter, startLoadingItemCreationUserPreferences, startResetItemCreationForm } from './actions/items.item-creation-actions';
 import { continueBatchItemsCreation, forceEndBatchItemCreation, setBatchItemCreationRecords, setLinkToCurrentProposedItemAndUnselect, setRedmineProjectsFilterForBatchItemCreationSdCriteria, setSoftDevProjectsFilterForBatchItemCreationSdCriteria, startBatchItemsCreation, toggleAllPropsedItemsSelection, togglePropsedItemSelection, dragAndDropBatchItemsCreationColumns, createOneRecordFromBatch, updateBatchItemCreationFormColumn, setRedmineSourceProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForBatchItemCreationCriteria, setRedmineTargetProjectsFilterForTmsBatchItemCreationCriteria, setRedmineUsersByLetterFilterForTmsBatchItemCreationCriteria, initTmsClients, loadTmsClients, setTmsClientsByLetterFilter, setRedmineTargetProjectsFilterForIdsBatchItemCreationCriteria, initRedmineVersionsForIds, loadRedmineVersionsForIds, clearRedmineVersionsForIds, initRedmineVersionsForTms, loadRedmineVersionsForTms, clearRedmineVersionsForTms, initRedmineVersionsForRedmine, clearRedmineVersionsForRedmine, loadRedmineVersionsForRedmine, initRedmineVersionsForSd, loadRedmineVersionsForSd, clearRedmineVersionsForSd, setBatchItemCreationTabIndex, setBatchItemCreationSelectedTabIndex } from './actions/items.batch-item-creation-actions';
 import { ItemCreationFromData } from './state/items.item-creation-state';
 import {
@@ -39,6 +39,8 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
     on(initRedmineProjects, fromCommonReducerHanders.initRedmineProjects),
     on(initSoftDevProjects, fromCommonReducerHanders.initSoftDevProjects),
     on(loadSoftDevProjects, fromCommonReducerHanders.loadSoftDevProjects),
+    on(refreshRedmineProjects, fromCommonReducerHanders.refreshRedmineProjects),
+    on(endRefreshingRedmineProjects, fromCommonReducerHanders.endRefreshingRedmineProjects),
 
     on(setRedmineProjectsFilterForItemCreation, fromItemCreationReducerHanders.setRedmineProjectsFilterForItemCreation),
     on(addValidatedCR, fromItemCreationReducerHanders.addValidatedCR),
@@ -51,6 +53,8 @@ export const regularReducer = createReducer(initialState, onNgrxForms(),
     on(initRedmineVersions, fromItemCreationReducerHanders.initRedmineVersions),
     on(loadRedmineVersions, fromItemCreationReducerHanders.loadRedmineVersions),
     on(clearRedmineVersions, fromItemCreationReducerHanders.clearRedmineVersions),
+    on(refreshVersions, fromItemCreationReducerHanders.refreshVersions),
+    on(endRefreshingVersions, fromItemCreationReducerHanders.endRefreshingVersions),
 
     on(startLoadingItemCreationUserPreferences, fromItemCreationReducerHanders.startLoadingItemCreationUserPreferences),
     on(endLoadingItemCreationUserPreferences, fromItemCreationReducerHanders.endLoadingItemCreationUserPreferences),

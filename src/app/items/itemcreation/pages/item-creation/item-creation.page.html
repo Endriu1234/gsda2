@@ -24,7 +24,7 @@
                     *ngIf="formState.isTouched && (formState.errors._project?.$validateProjectError || formState.errors._project?.required)">
                     Project is required
                 </mat-error>
-                <div class="d-flex flex-md-row justify-content-md-between flex-column">
+                <div class="d-flex flex-md-row justify-content-md-between flex-column align-items-center">
                     <mat-form-field appearance="outline" class="mt-2" [style.width.%]=49>
                         <mat-label>Redmine Project</mat-label>
                         <input type="text"
@@ -37,6 +37,12 @@
                             </mat-option>
                         </mat-autocomplete>
                     </mat-form-field>
+                    <button mat-mini-fab color="primary" [matTooltip]="'Refresh Projects'" 
+                        matTooltipPosition="after" class="me-3"
+                        (click)="refreshRedmineProjects();$event.stopPropagation()"
+                        [disabled]="(isRedmineProjectRefreshingInProgress$ | async)">
+                        <mat-icon fontIcon="refresh"></mat-icon>
+                    </button>
                     <mat-form-field appearance="outline" class="mt-2" [style.width.%]=49>
                         <mat-label>Version</mat-label>
                         <mat-select [ngrxFormControlState]="$any(formState).controls.version">
@@ -45,10 +51,24 @@
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
+                    <button mat-mini-fab color="primary" [matTooltip]="'Refresh Versions'"
+                        matTooltipPosition="after"
+                        (click)="refreshVersions();$event.stopPropagation()"
+                        [disabled]="(isVersionRefreshingInProgress$ | async)">
+                        <mat-icon fontIcon="refresh"></mat-icon>
+                    </button>
                 </div>
-                <div>
-                    <app-small-spinner class="float-start ms-5" [style.width.%]=100
-                        [style.visibility]="formState.controls.project.value && !(formState.errors._project?.$validateProjectError) && ((versions$ | async) == null || !(versions$ | async)?.length)?'visible':'hidden'"></app-small-spinner>
+                <div class="d-flex flex-md-row justify-content-start flex-column">
+                    <mat-error [style.width.%]=100 class="pe-md-2"
+                        [style.visibility]="'hidden'">
+                        <app-small-spinner class="float-start ms-5"
+                        [style.visibility]="(isRedmineProjectRefreshingInProgress$ | async)?'visible':'hidden'"></app-small-spinner>
+                    </mat-error>
+                    <mat-error [style.width.%]=100 class="pe-md-2"
+                        [style.visibility]="'hidden'">
+                        <app-small-spinner class="float-start ms-5"
+                        [style.visibility]="(formState.controls.project.value || (isVersionRefreshingInProgress$ | async)) && !(formState.errors._project?.$validateProjectError && !(isVersionRefreshingInProgress$ | async)) && ((versions$ | async) == null || !(versions$ | async)?.length || (isVersionRefreshingInProgress$ | async))?'visible':'hidden'"></app-small-spinner>
+                    </mat-error>
                 </div>
             </mat-card-content>
         </mat-card>

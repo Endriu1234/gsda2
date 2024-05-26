@@ -9,6 +9,7 @@ export interface ItemsSetupData {
     softDevProjects: SoftDevProject[];
     redmineTrackersLoaded: boolean;
     redmineTrackers: RedmineTracker[];
+    refreshingRedmineProjects: boolean;
 }
 
 export function getItemsSetupDataInitialState(): ItemsSetupData {
@@ -18,6 +19,7 @@ export function getItemsSetupDataInitialState(): ItemsSetupData {
         softDevProjectsLoaded: false,
         softDevProjects: [],
         redmineTrackersLoaded: false,
-        redmineTrackers: []
+        redmineTrackers: [],
+        refreshingRedmineProjects: false
     }
 }

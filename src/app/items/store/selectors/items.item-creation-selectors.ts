@@ -18,6 +18,7 @@ export const getItemCreationDialogState = createSelector(getItemsState, (state: 
 export const getItemCreationUserPreferencesState = createSelector(getItemsState, (state: State) => state.itemCreationUserPreferences);
 export const getItemCreationUserPreferencesSetupData = createSelector(getItemsState, (state: State) => state.itemCreationUserPreferencesSetupData);
 export const getItemCreationFormState = createSelector(getItemsState, (state: State) => state.itemCreationFromData);
+export const isVersionRefreshingInProgress = createSelector(getItemsState, (state: State) => state.itemCreationSetupData.refreshingVersions);
 
 export const getItemCreationFormTmsControl = createSelector(getItemsState, (state: State) => state.itemCreationFromData.controls.tms);
 export const getItemCreationFormCRControl = createSelector(getItemsState, (state: State) => state.itemCreationFromData.controls.cr);

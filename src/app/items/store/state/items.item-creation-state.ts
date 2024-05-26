@@ -33,6 +33,7 @@ export interface ItemCreationSetupData {
     redmineVersions: RedmineVersion[];
     loadingUserPreferences: boolean;
     savingUserPreferences: boolean;
+    refreshingVersions: boolean;
 }
 
 export function getItemCreationSetupDataInitialState(): ItemCreationSetupData {
@@ -52,7 +53,8 @@ export function getItemCreationSetupDataInitialState(): ItemCreationSetupData {
         redmineVersionsLoaded: false,
         redmineVersions: [],
         loadingUserPreferences: false,
-        savingUserPreferences: false
+        savingUserPreferences: false,
+        refreshingVersions: false
     };
 }
 
