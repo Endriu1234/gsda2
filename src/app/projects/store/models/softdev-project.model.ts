@@ -1,5 +1,6 @@
 export class SoftDevProject {
     public PRODUCT_VERSION_ID: number;
+    public PROJECT_VERSION_ID: number;
     public PRODUCT_VERSION_NAME: string;
     public PROJECT_NAME: string;
     public PRODUCT_BRANCH: string;
@@ -13,11 +14,14 @@ export class SoftDevProject {
     public PRODUCT_PROGRAMMING_MGR: string;
     public PRODUCT_PROJECT_MGR: string;
     public EDD_APPROVALS: string;
+    public PRG_ACTIVITIES: string;
 
-    constructor(PRODUCT_VERSION_ID: number, PRODUCT_VERSION_NAME: string, PROJECT_NAME: string, PRODUCT_BRANCH: string, PRODUCT_RELEASE_CANDIDATE: string,
+    constructor(PRODUCT_VERSION_ID: number, PROJECT_VERSION_ID: number, PRODUCT_VERSION_NAME: string, PROJECT_NAME: string, PRODUCT_BRANCH: string, PRODUCT_RELEASE_CANDIDATE: string,
         PRODUCT_DEV_START: string, PRODUCT_DEV_END: string, PRODUCT_TEST_START: string, PRODUCT_TEST_END: string,
-        PRODUCT_DELIVERY_DATE: string, PRODUCT_TESTING_MGR: string, PRODUCT_PROGRAMMING_MGR: string, PRODUCT_PROJECT_MGR: string, EDD_APPROVALS: string) {
+        PRODUCT_DELIVERY_DATE: string, PRODUCT_TESTING_MGR: string, PRODUCT_PROGRAMMING_MGR: string, PRODUCT_PROJECT_MGR: string, EDD_APPROVALS: string,
+        PRG_ACTIVITIES: string) {
         this.PRODUCT_VERSION_ID = PRODUCT_VERSION_ID;
+        this.PROJECT_VERSION_ID = PROJECT_VERSION_ID;
         this.PRODUCT_VERSION_NAME = PRODUCT_VERSION_NAME;
         this.PROJECT_NAME = PROJECT_NAME;
         this.PRODUCT_BRANCH = PRODUCT_BRANCH;
@@ -31,5 +35,6 @@ export class SoftDevProject {
         this.PRODUCT_PROGRAMMING_MGR = PRODUCT_PROGRAMMING_MGR;
         this.PRODUCT_PROJECT_MGR = PRODUCT_PROJECT_MGR;
         this.EDD_APPROVALS = EDD_APPROVALS;
+        this.PRG_ACTIVITIES = PRG_ACTIVITIES;
     }
 }

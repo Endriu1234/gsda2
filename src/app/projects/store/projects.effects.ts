@@ -255,7 +255,9 @@ export class ProjectsEffects {
         sWiki += `h2. Branch \n\n`;
         sWiki += `* ${sdProject.PRODUCT_BRANCH} \n\n`;
         sWiki += `h2. EDD Approvals \n\n`;
-        sWiki += `* *${sdProject.EDD_APPROVALS}*`;
+        sWiki += `* *${sdProject.EDD_APPROVALS}* \n\n`;
+        sWiki += `h2. PRG Activities \n\n`;
+        sWiki += `<pre>${sdProject.PRG_ACTIVITIES}</pre>`
 
         return sWiki;
     }

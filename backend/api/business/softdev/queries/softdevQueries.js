@@ -3,6 +3,7 @@ const { query } = require("express");
 module.exports.getSDActiveProjectsQuery = () => {
     return `SELECT 
     prd_version.aa_id AS product_version_id,
+    proj.aa_id as project_version_id,
     prd_version.prv_version AS product_version_name,
     proj.pj_name AS project_name, 
     proj.pj_svn_branch AS product_branch,
@@ -15,7 +16,8 @@ module.exports.getSDActiveProjectsQuery = () => {
     (SELECT gus_user_firstname || ' ' || gus_user_lastname FROM sd_live.global_users WHERE aa_id = proj.pj_testing_mngr_aa) AS product_testing_mgr,
     (SELECT gus_user_firstname || ' ' || gus_user_lastname FROM sd_live.global_users WHERE aa_id = proj.pj_program_mngr_aa) AS product_programming_mgr,
     (SELECT gus_user_firstname || ' ' || gus_user_lastname FROM sd_live.global_users WHERE aa_id =  proj.pj_project_mngr_aa) AS product_project_mgr,
-    GET_EDD_APPROVERS(proj.aa_id) as edd_approvals 
+    GET_EDD_APPROVERS(proj.aa_id) as edd_approvals,
+    GET_PRG_ACTIVITIES_BY_PROJ(proj.aa_id) as prg_activities 
 FROM 
     sd_live.prod_version prd_version, sd_live.product product, sd_live.project proj
 WHERE 
@@ -23,6 +25,8 @@ WHERE
     AND product.prd_id = 'GENE'
     AND prd_version.prv_is_active = 'Y'
     AND proj.pj_version_aa = prd_version.aa_id
+    AND proj.pj_delivery_date is not null
+    AND trunc(proj.pj_delivery_date) >= trunc(current_date - 30)
     AND proj.pj_status not in ('Canceled', 'Closed', 'Delivered', 'Doc Reviewed', 'Doc Created', 'Finished', 'Scope Approved')
     AND proj.pj_active = 'Y' `};
 
