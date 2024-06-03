@@ -317,7 +317,7 @@ export class ItemsBatchItemCreationEffects {
             return this.store.select(getBatchItemCreationRecords).pipe(take(1), switchMap(batchRecords => {
 
                 this.progressBarService.resetProgress();
-                if (withRedirection)
+                if (withRedirection && withRedirection.withRedirection)
                     this.router.navigate(['/items/batchitemscreation']);
                 return of(startResetItemCreationForm());
             }));

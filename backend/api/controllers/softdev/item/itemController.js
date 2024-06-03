@@ -15,6 +15,8 @@ module.exports.getItemById = async (req, res) => {
             retVal.tms_id = item[0].TMS_ID;
             retVal.item_summary = item[0].ITEM_SUMMARY;
             retVal.item_description = item[0].ITEM_DESCRIPTION;
+            retVal.tracker = item[0].TRACKER;
+            retVal.cr_est_hours = item[0].CR_EST_HOURS;
         }
     }
 

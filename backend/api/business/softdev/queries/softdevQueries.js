@@ -330,7 +330,20 @@ module.exports.getItemDataByIssue = () => {
                 aa_uf_id          as issue_id,
                 iss_summary       as item_summary,
                 iss_desc          as item_description,
-                iss_user_18       as tms_id
+                iss_user_18       as tms_id,
+                case
+                    when issue.iss_type = 'Defect' Then
+                    'Bug'
+                    when (select issrc.isr_source_type
+                            from sd_live.issue_source issrc
+                            where issrc.isr_issue_aa = issue.aa_id
+                            and rownum = 1) = 'Autotesting' and
+                        issue.iss_type = 'Defect' Then
+                    'Regression'
+                    else
+                    issue.iss_type
+                end AS tracker,
+                '' AS cr_est_hours
             FROM sd_live.issue       issue
             WHERE issue.aa_uf_id = :issue`;
 }
@@ -340,7 +353,24 @@ module.exports.getItemDataByCR = () => {
                 cr.iss_uf_id        as issue_id,
                 cr.iss_summary      as item_description,
                 cr.cr_summary       as item_summary,
-                cr.iss_user_18      as tms_id
+                cr.iss_user_18      as tms_id,
+                (select case
+                    when issue.iss_type = 'Defect' Then
+                     'Bug'
+                    when (select issrc.isr_source_type
+                            from sd_live.issue_source issrc
+                           where issrc.isr_issue_aa = issue.aa_id
+                             and rownum = 1) = 'Autotesting' and
+                         issue.iss_type = 'Defect' Then
+                     'Regression'
+                    else
+                     issue.iss_type
+                  end
+             from sd_live.issue issue
+            where issue.aa_id = cr.CR_ISSUE_AA) AS tracker,
+          (select ROUND(sl.iso_esth_code / 60, 1)
+             from sd_live.issue_solution sl
+            where sl.aa_id = cr.CR_ISSUE_SOLUTION_AA) AS cr_est_hours
             FROM sd_live.change_request_v cr
             WHERE cr.aa_uf_id = :cr`;
 }
@@ -350,7 +380,9 @@ module.exports.getItemDataByTms = () => {
                 tms.softdev_id                  as issue_id,
                 txt.problemfulltext             as item_description,
                 tms.client || '-' || tms.id     as item_summary,
-                tms.client || '-' || tms.id     as tms_id
+                tms.client || '-' || tms.id     as tms_id,
+                'TMS Task' AS tracker,
+                '' AS cr_est_hours
             FROM SD_LIVE.Tms_Problem_v tms, SD_LIVE.Tms_Problem_Full_Text txt
             WHERE txt.TASK_AA_ID = tms.aa_id
                 AND tms.client = :tmsClient 

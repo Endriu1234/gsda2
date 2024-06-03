@@ -218,7 +218,9 @@ export class ItemsItemCreationEffects {
                         new SetValueAction(ITEM_CREATION_FORMID + '.description', item.item_description),
                         new SetValueAction(ITEM_CREATION_FORMID + '.issue', item.issue_id),
                         new SetValueAction(ITEM_CREATION_FORMID + '.cr', item.cr_id),
-                        new SetValueAction(ITEM_CREATION_FORMID + '.tms', item.tms_id))
+                        new SetValueAction(ITEM_CREATION_FORMID + '.tms', item.tms_id),
+                        new SetValueAction(ITEM_CREATION_FORMID + '.est_time', item.cr_est_hours),
+                        new SetValueAction(ITEM_CREATION_FORMID + '.tracker', item.tracker))
                 }))
             }), catchError(error => {
                 console.log(error);
@@ -249,7 +251,9 @@ export class ItemsItemCreationEffects {
                         new SetValueAction(ITEM_CREATION_FORMID + '.description', item.item_description),
                         new SetValueAction(ITEM_CREATION_FORMID + '.issue', item.issue_id),
                         new SetValueAction(ITEM_CREATION_FORMID + '.cr', item.cr_id),
-                        new SetValueAction(ITEM_CREATION_FORMID + '.tms', item.tms_id))
+                        new SetValueAction(ITEM_CREATION_FORMID + '.tms', item.tms_id),
+                        new SetValueAction(ITEM_CREATION_FORMID + '.est_time', item.cr_est_hours),
+                        new SetValueAction(ITEM_CREATION_FORMID + '.tracker', item.tracker))
                 }))
             }), catchError(error => {
                 console.log(error);
