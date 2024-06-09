@@ -33,6 +33,8 @@ export const validateTmsError = "validateTmsError";
 export const validateFromIdError = "validateFromIdError";
 export const validateProjectError = "validateProjectError";
 
+const buttonStyle = 'background:linear-gradient(to bottom, #44c767 5%, #5cbf2a 100%);background-color:#44c767;border-radius:7px;border:3px solid #addbb1;display:inline-block;cursor:pointer;color:#ffffff;font-family:Arial;font-size:14px;padding:12px 6px;text-decoration:none;'
+
 @Injectable()
 export class ItemsItemCreationEffects {
     constructor(private actions$: Actions,
@@ -122,7 +124,8 @@ export class ItemsItemCreationEffects {
                                             window.location.href = response.redmineLink;
                                         }
 
-                                        this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Item saved', icon: SnackBarIcon.Success }));
+                                        const btn = response.redmineLink && response.redmineLink.length > 0 ? `Item saved  <a href="${response.redmineLink}" target="_blank" style="${buttonStyle}">Open Redmine</a>` : 'Item saved';
+                                        this.sharedStore.dispatch(addSnackbarNotification({ notification: btn, icon: SnackBarIcon.Success }));
                                         
                                         return of(saveItemCreationUserPreferences({updateSetup: false}), startResetItemCreationForm());
                                     }
