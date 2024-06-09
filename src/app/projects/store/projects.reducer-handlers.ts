@@ -91,3 +91,39 @@ export function clearRedmineVersions(state: State): State {
     newState.versionCreationSetupData.redmineVersionsLoaded = false;
     return newState;
 }
+
+export function refreshRedmineProjects(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.versionCreationSetupData.refreshingRedmineProjects = true;
+    return newState;
+}
+
+export function endRefreshingRedmineProjects(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.versionCreationSetupData.refreshingRedmineProjects = false;
+    return newState;
+}
+
+export function refreshSDProjects(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.versionCreationSetupData.refreshingSDProjects = true;
+    return newState;
+}
+
+export function endRefreshingSDProjects(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.versionCreationSetupData.refreshingSDProjects = false;
+    return newState;
+}
+
+export function refreshVersions(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.versionCreationSetupData.refreshingVersions = true;
+    return newState;
+}
+
+export function endRefreshingVersions(state: State): State {
+    const newState: State = _.cloneDeep(state);
+    newState.versionCreationSetupData.refreshingVersions = false;
+    return newState;
+}

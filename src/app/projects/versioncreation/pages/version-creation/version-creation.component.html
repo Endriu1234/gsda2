@@ -28,6 +28,12 @@
                             </mat-option>
                         </mat-autocomplete>
                     </mat-form-field>
+                    <button mat-mini-fab color="primary" [matTooltip]="'Refresh Projects'" 
+                        matTooltipPosition="after" class="me-3"
+                        (click)="refreshRedmineProjects();$event.stopPropagation()"
+                        [disabled]="(isRedmineProjectRefreshingInProgress$ | async)">
+                        <mat-icon fontIcon="refresh"></mat-icon>
+                    </button>
                     <mat-form-field appearance="outline" class="" [style.width.%]=49>
                         <mat-label>SoftDev Source Project / Packet</mat-label>
                         <input type="text"
@@ -41,9 +47,15 @@
                             </mat-option>
                         </mat-autocomplete>
                     </mat-form-field>
+                    <button mat-mini-fab color="primary" [matTooltip]="'Refresh SoftDev Projects'"
+                        matTooltipPosition="after"
+                        (click)="refreshSDProjects();$event.stopPropagation()"
+                        [disabled]="(isSDProjectRefreshingInProgress$ | async)">
+                        <mat-icon fontIcon="refresh"></mat-icon>
+                    </button>
                 </div>
-                <div class="d-flex flex-md-row justify-content-md-between flex-column">
-                    <mat-form-field appearance="outline" class="jk-form-field" [style.width.%]=49>
+                <div>
+                    <mat-form-field appearance="outline" class="jk-form-field" [style.width.%]=46>
                         <mat-label>Version</mat-label>
                         <mat-select [ngrxFormControlState]="$any(formState).controls.version">
                             <mat-option *ngFor="let version of versions$ | async" [value]="version.name">
@@ -51,6 +63,12 @@
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
+                    <button mat-mini-fab color="primary" [matTooltip]="'Refresh Versions'"
+                        matTooltipPosition="after"
+                        (click)="refreshVersions();$event.stopPropagation()"
+                        [disabled]="(isVersionRefreshingInProgress$ | async)">
+                        <mat-icon fontIcon="refresh"></mat-icon>
+                    </button>
                 </div>
                 <div class="d-flex flex-md-row justify-content-md-between flex-column">
                     <app-small-spinner class="float-start ms-5"

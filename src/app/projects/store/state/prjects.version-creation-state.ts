@@ -10,6 +10,9 @@ export interface VersionCreationSetupData {
     softdevProjectsFiltered: SoftDevProject[];
     redmineVersions: RedmineVersion[];
     redmineVersionsLoaded: boolean;
+    refreshingVersions: boolean;
+    refreshingRedmineProjects: boolean;
+    refreshingSDProjects: boolean;
 }
 
 export function getVersionCreationSetupDataInitialState(): VersionCreationSetupData {
@@ -17,7 +20,10 @@ export function getVersionCreationSetupDataInitialState(): VersionCreationSetupD
         redmineProjectsFiltered: [],
         softdevProjectsFiltered: [],
         redmineVersions: [],
-        redmineVersionsLoaded: false
+        redmineVersionsLoaded: false,
+        refreshingVersions: false,
+        refreshingRedmineProjects: false,
+        refreshingSDProjects: false
     };
 }
 

@@ -7,7 +7,7 @@ import * as fromProjectsState from '../../../store/state/projects.state';
 import * as fromSharedState from '../../../../shared/store/shared.state';
 import { RedmineProject } from 'src/app/shared/store/models/redmine-project.model';
 import { MatDialog } from '@angular/material/dialog';
-import { initRedmineProjects, initSoftDevProjects } from 'src/app/projects/store/projects.actions';
+import { initRedmineProjects, initSoftDevProjects, refreshRedmineProjects, refreshSDProjects, refreshVersions } from 'src/app/projects/store/projects.actions';
 import { FORM_SAVE_STATE, FORM_UPDATE_STATE, FormSaveState, FormUpdateState } from '../../../../shared/store/shared.state';
 import { SoftDevProject } from 'src/app/shared/store/models/softdev-project.model';
 import { dateValueConverter } from 'src/app/shared/tools/validators/ngrxValueConverters';
@@ -27,6 +27,9 @@ export class VersionCreationComponent implements OnInit  {
   canActivateVersionUpdate$: Observable<boolean> | null = null;
   softDevProjectsFiltered$: Observable<SoftDevProject[]> | null = null;
   versions$: Observable<RedmineVersion[]> | null = null;
+  isVersionRefreshingInProgress$: Observable<boolean> | null = null;
+  isRedmineProjectRefreshingInProgress$: Observable<boolean> | null = null;
+  isSDProjectRefreshingInProgress$: Observable<boolean> | null = null;
   dateConverter = dateValueConverter;
 
   constructor(private store: Store<fromProjectsState.State>, private sharedStore: Store<fromSharedState.State>, private dialog: MatDialog) {
@@ -53,6 +56,9 @@ export class VersionCreationComponent implements OnInit  {
 
     this.canActivateVersionSave$ = this.store.select(fromProjectsSelectors.canActivateVersionSave);
     this.canActivateVersionUpdate$ = this.store.select(fromProjectsSelectors.canActivateVersionUpdate);
+    this.isVersionRefreshingInProgress$ = this.store.select(fromProjectsSelectors.isVersionRefreshingInProgress);
+    this.isRedmineProjectRefreshingInProgress$ = this.store.select(fromProjectsSelectors.isRedmineProjectRefreshingInProgress);
+    this.isSDProjectRefreshingInProgress$ = this.store.select(fromProjectsSelectors.isSDProjectRefreshingInProgress);
   }
 
   createVersion() {
@@ -69,5 +75,17 @@ export class VersionCreationComponent implements OnInit  {
 
   updateAndOpenVersion() {
     this.store.dispatch(new SetUserDefinedPropertyAction(VERSION_CREATION_FORMID, FORM_UPDATE_STATE, FormUpdateState.UpdatingWithRedirect));
+  }
+
+  refreshSDProjects() {
+    this.store.dispatch(refreshSDProjects()); 
+  }
+
+  refreshRedmineProjects() {
+    this.store.dispatch(refreshRedmineProjects()); 
+  }
+
+  refreshVersions() {
+    this.store.dispatch(refreshVersions());
   }
 }

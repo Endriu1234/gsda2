@@ -21,3 +21,6 @@ export const getSoftDevProjectsForVersionFiltered = createSelector(getProjectsSt
 export const getRedmineVersionsByProject = createSelector(getProjectsState, (state: State) => state.versionCreationSetupData.redmineVersions);
 export const canActivateVersionSave = createSelector(getVersionCreationFormState, canVersionCreationFormBeSaved);
 export const canActivateVersionUpdate = createSelector(getVersionCreationFormState, canVersionCreationFormBeUpdated);
+export const isRedmineProjectRefreshingInProgress = createSelector(getProjectsState, (state: State) => state.versionCreationSetupData.refreshingRedmineProjects);
+export const isSDProjectRefreshingInProgress = createSelector(getProjectsState, (state: State) => state.versionCreationSetupData.refreshingSDProjects);
+export const isVersionRefreshingInProgress = createSelector(getProjectsState, (state: State) => state.versionCreationSetupData.refreshingVersions);

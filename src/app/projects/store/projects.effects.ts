@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, from, map, mergeMap, of, startWith, switchMap, take } from "rxjs";
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { initRedmineProjects, loadRedmineProjects, initSoftDevProjects, loadSoftDevProjects, fillProjectById, noopAction, setRedmineProjectsFilter, setSoftDevProjectsFilter, resetProjectCreationForm, setVersionRedmineProjectsFilter, setVersionSoftDevProjectsFilter, setVersionDataBaseonSDProject, resetVersionCreationForm, initRedmineVersions, loadRedmineVersions, resetPartiallyVersionCreationForm, fillVersionFormByVersion } from './projects.actions';
+import { initRedmineProjects, loadRedmineProjects, initSoftDevProjects, loadSoftDevProjects, fillProjectById, noopAction, setRedmineProjectsFilter, setSoftDevProjectsFilter, resetProjectCreationForm, setVersionRedmineProjectsFilter, setVersionSoftDevProjectsFilter, setVersionDataBaseonSDProject, resetVersionCreationForm, initRedmineVersions, loadRedmineVersions, resetPartiallyVersionCreationForm, fillVersionFormByVersion, refreshVersions, endRefreshingVersions, refreshRedmineProjects, endRefreshingRedmineProjects, refreshSDProjects, endRefreshingSDProjects } from './projects.actions';
 import { RedmineProject } from '../../shared/store/models/redmine-project.model';
 import { SoftDevProject } from './models/softdev-project.model';
 import { addSnackbarNotification } from 'src/app/shared/store/shared.actions';
@@ -21,6 +21,7 @@ import { GsdaRedmineHttpResponse } from 'src/app/shared/http/model/gsda-redmine-
 import { SnackBarIcon } from '../../shared/store/shared.state';
 import { VERSION_CREATION_FORMID } from './state/prjects.version-creation-state';
 import { RedmineVersion } from 'src/app/shared/store/models/redmine-version.model';
+import { RefreshCacheHttpResponse } from 'src/app/setup/store/models/refreshCache-response.model';
 
 const GET_SD_PROJECTS_URL = environment.apiUrl + '/softdev/projects/get-softdev-projects';
 const GET_REDMINE_PROJECTS_URL = environment.apiUrl + '/redmine/items/get-redmine-projects';
@@ -376,6 +377,50 @@ export class ProjectsEffects {
                 console.log(error);
                 this.sharedStore.dispatch(addSnackbarNotification({ notification: "Something went wrong during defaulting!", icon: SnackBarIcon.Error }));
                 return of(noopAction());
+            }))
+        })
+    ));
+
+    refreshVersions$ = createEffect(() => this.actions$.pipe(
+        ofType(refreshVersions),
+        switchMap(() => {
+            return this.http.get<RefreshCacheHttpResponse>(environment.apiUrl + '/redmine/setup/refresh-versions').pipe(mergeMap(response => {
+                if (response.success) {
+                    this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Versions refreshed', icon: fromSharedState.SnackBarIcon.Success }));
+                } else {
+                    this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage, icon: fromSharedState.SnackBarIcon.Error }));
+                }
+                return this.store.select(getVersionCreationFormState).pipe(take(1), switchMap(versionCreationForm => {
+                    return of(initRedmineVersions({projectName: versionCreationForm.value.redmine_project}), endRefreshingVersions());
+                }))
+            }))
+        })
+    ));
+
+    refreshRedmineProjects$ = createEffect(() => this.actions$.pipe(
+        ofType(refreshRedmineProjects),
+        switchMap(() => {
+            return this.http.get<RefreshCacheHttpResponse>(environment.apiUrl + '/redmine/setup/refresh-redmine-projects').pipe(mergeMap(response => {
+                if (response.success) {
+                    this.sharedStore.dispatch(addSnackbarNotification({ notification: 'Redmine Projects refreshed', icon: fromSharedState.SnackBarIcon.Success }));
+                } else {
+                    this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage, icon: fromSharedState.SnackBarIcon.Error }));
+                }
+                return of(initRedmineProjects(), endRefreshingRedmineProjects());
+            }))
+        })
+    ));
+
+    refreshSDProjects$ = createEffect(() => this.actions$.pipe(
+        ofType(refreshSDProjects),
+        switchMap(() => {
+            return this.http.get<RefreshCacheHttpResponse>(environment.apiUrl + '/redmine/setup/refresh-sd-projects').pipe(mergeMap(response => {
+                if (response.success) {
+                    this.sharedStore.dispatch(addSnackbarNotification({ notification: 'SoftDev Projects refreshed', icon: fromSharedState.SnackBarIcon.Success }));
+                } else {
+                    this.sharedStore.dispatch(addSnackbarNotification({ notification: response.errorMessage, icon: fromSharedState.SnackBarIcon.Error }));
+                }
+                return of(initSoftDevProjects(), endRefreshingSDProjects());
             }))
         })
     ));
