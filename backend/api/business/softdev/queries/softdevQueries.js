@@ -23,7 +23,6 @@ FROM
 WHERE 
     prd_version.prv_product_aa = product.aa_id
     AND product.prd_id = 'GENE'
-    AND prd_version.prv_is_active = 'Y'
     AND proj.pj_version_aa = prd_version.aa_id
     AND proj.pj_delivery_date is not null
     AND trunc(proj.pj_delivery_date) >= trunc(current_date - 30)
