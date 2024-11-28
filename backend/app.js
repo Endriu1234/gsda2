@@ -15,8 +15,8 @@ app.listen(process.env.APP_PORT, () => {
     const currTime = new Date(Date.now());
     console.log(`${currTime.toLocaleString()}: Serving on port ${process.env.APP_PORT} with configuration ${process.env.CONFIGURATION_NAME} `);
 
-    if (process.env.EMAIL_COMMANDS)
-        emailHandler.handleEmailCommands();
+    /*if (process.env.EMAIL_COMMANDS)
+        emailHandler.handleEmailCommands();*/
 });
 
 

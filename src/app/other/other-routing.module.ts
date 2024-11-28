@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { FindSupportGuysPage } from './findsupportguys/pages/find-support-guys/find-support-guys.page';
+import { SoftdevQueriesComponent } from './softdevqueries/pages/softdev-queries/softdev-queries.component';
 
 const routes: Routes = [
     {
@@ -11,6 +12,10 @@ const routes: Routes = [
     {
         path: 'findsupportguys',
         component: FindSupportGuysPage
+    },
+    {
+        path: 'softdevqueries',
+        component: SoftdevQueriesComponent
     }
 ];
 

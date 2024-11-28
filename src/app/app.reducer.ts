@@ -10,6 +10,8 @@ import * as fromAuthState from './auth/store/auth.state';
 import * as fromAuth from './auth/store/auth.reducer';
 import * as fromSetup from './setup/store/setup.reducer'
 import * as fromSetupState from './setup/store/state/setup.state';
+import * as fromOther from './other/store/other.reducer';
+import * as fromOtherState from './other/store/state/other.state';
 
 export interface State {
     [fromNavigation.navigationReducerKey]: fromNavigation.State,
@@ -17,7 +19,8 @@ export interface State {
     [fromProjects.projectsReducerKey]: fromProjectsState.State,
     [fromShared.sharedReducerKey]: fromSharedState.State,
     [fromAuth.authReducerKey]: fromAuthState.State,
-    [fromSetup.setupReducerKey]: fromSetupState.State
+    [fromSetup.setupReducerKey]: fromSetupState.State,
+    [fromOther.otherReducerKey]: fromOtherState.State
 }
 
 export const reducers: ActionReducerMap<State> = {
@@ -26,7 +29,8 @@ export const reducers: ActionReducerMap<State> = {
     [fromProjects.projectsReducerKey]: fromProjects.projectsReducer,
     [fromShared.sharedReducerKey]: fromShared.sharedReducer,
     [fromAuth.authReducerKey]: fromAuth.authReducer,
-    [fromSetup.setupReducerKey]: fromSetup.setupReducer
+    [fromSetup.setupReducerKey]: fromSetup.setupReducer,
+    [fromOther.otherReducerKey]: fromOther.otherReducer
 };
 
 

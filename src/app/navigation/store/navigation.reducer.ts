@@ -101,6 +101,11 @@ const initialState: State = {
                     caption: 'Find Support Guys',
                     route: '/other/findsupportguys',
                     icon: 'person_search'
+                },
+                {
+                    caption: 'SoftDev Query',
+                    route: '/other/softdevqueries',
+                    icon: 'table_rows'
                 }
             ]
         },

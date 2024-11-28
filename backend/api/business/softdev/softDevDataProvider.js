@@ -29,6 +29,32 @@ async function executeSoftDevQuery(query, bindParams) {
     }
 }
 
+async function executeSoftDevQueryFullData(query, bindParams) {
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection({
+            user: process.env.SOFTDEV_DB_USER,
+            password: process.env.SOFTDEV_DB_PASS,
+            connectString: `${process.env.SOFTDEV_DB_HOST}:${process.env.SOFT_DEV_DB_PORT}/${process.env.SOFT_DEV_DB_SID}`
+        });
+
+        const result = await connection.execute(query, bindParams ? bindParams : []);
+        return result;
+
+    } catch (err) {
+        console.error(err);
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
+}
+
 module.exports.getVersions = async () => {
 
     return await executeSoftDevQuery(softdevQueries.getSDActiveProjectsQuery());
@@ -135,4 +161,9 @@ module.exports.getIdsByTmsTasksPotentialRedmineItems = async (tblTms, targetRedm
     params.push(...tblTms);
         
     return await executeSoftDevQuery(softdevQueries.getQueryForIdsByTmsPotentialRedmineItems(tblTms.length), params);
+}
+
+module.exports.getSDDatafromQuery = async (query) => {
+        
+    return await executeSoftDevQueryFullData(query);
 }
